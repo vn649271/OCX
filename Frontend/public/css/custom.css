@@ -6,12 +6,12 @@
 
 @font-face {
     font-family: Bunya-Light;
-    src: url(../fonts/Bunya-Light.ttf) ;
+    src: url(../fonts/Bunya-Light.ttf);
 }
 
 @font-face {
     font-family: Bunya-Regular;
-    src: url(../fonts/Bunya-Regular.ttf) ;
+    src: url(../fonts/Bunya-Regular.ttf);
 }
 
 .main-font {
@@ -86,10 +86,6 @@
     color: #302E2E;
 }
 
-.text-darkgray {
-    color: #302E2E;
-}
-
 .text-green {
     color: #01FD38;
 }
@@ -112,6 +108,10 @@
 
 .main-radius {
     border-radius: 10px;
+}
+
+.bg-chart-green {
+    background-color: #5ce1e675;
 }
 
 /* main-option */
@@ -251,6 +251,22 @@ a {
     background-color: #01c1cc;
     color: white;
 }
+
+.exchange-btn {
+    border-top-left-radius: 20px;
+}
+.liquidity-btn {
+    border-top-right-radius: 20px;
+}
+
+.chart-container {
+    border-radius: 10px;
+}
+
+.down-arrow {
+    fill: #01c1cc !important;
+}
+
 
 /* responsive */
 
