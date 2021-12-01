@@ -27,8 +27,8 @@ export default function Header() {
 
                 <div className="header-right flex items-center">
                     <div className="auth-btn_group rounded-full flex ">
-                        <p className="login-btn capitalize main-font font-14 cursor-pointer m-0 hover-transition px-5  border-2 blue-border main-color-blue ">log in</p>
-                        <p className="signup-btn capitalize font-14 main-font cursor-pointer  m-0 hover-transition px-5   border-2 blue-border main-color-blue ">sign up</p>
+                    <a href="/login">   <p className="login-btn capitalize main-font font-14 cursor-pointer m-0 hover-transition px-5  border-2 blue-border main-color-blue ">log in</p></a>
+                    <a href="/register">  <p className="signup-btn capitalize font-14 main-font cursor-pointer  m-0 hover-transition px-5   border-2 blue-border main-color-blue ">sign up</p></a>
                     </div>
                 </div>
             </div>

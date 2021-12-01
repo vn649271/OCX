@@ -1,6 +1,6 @@
 import Header from "../common/Header";
 import Footer from "../common/Footer";
-import ExchangeChart from "../common/exchange/ExchangeChart";
+import ApexChart from "../common/exchange/ApexChart";
 import ExchangeSwap from "../common/exchange/ExchangeSwap";
 
 export default function Home() {
@@ -9,7 +9,7 @@ export default function Home() {
             <Header />
             <div className="main-container">
                 <div className="w-full flex">
-                    <ExchangeChart />
+                    <ApexChart />
                     <ExchangeSwap />
                 </div>
             </div>

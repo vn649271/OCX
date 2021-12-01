@@ -1,5 +1,3 @@
-import singleLogo from "../../common/assets/images/img/circle-logo.png";
-
 
 export default function Seconds() {
     return (

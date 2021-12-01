@@ -8,6 +8,7 @@
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.6.0",
+    "apexcharts": "^3.31.0",
     "autoprefixer": "^9.8.6",
     "postcss": "^7.0.35",
     "react": "^17.0.1",
@@ -17,7 +18,9 @@
     "react-slick": "^0.28.1",
     "slick-carousel": "^1.8.1",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.2",
-    "web-vitals": "^0.2.4"
+    "web-vitals": "^0.2.4",
+    "axios": "^0.19.0",
+    "jwt-decode": "^2.2.0"
   },
   "scripts": {
     "start": "craco start",
