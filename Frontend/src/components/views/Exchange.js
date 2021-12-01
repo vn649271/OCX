@@ -1,7 +1,8 @@
 import Header from "../common/Header";
 import Footer from "../common/Footer";
-import ApexChart from "../common/exchange/ApexChart";
-import ExchangeSwap from "../common/exchange/ExchangeSwap";
+// import ApexChart from "../common/exchange/ApexChart";
+import ApexChart from "./ApexChart";
+// import ExchangeSwap from "../common/exchange/ExchangeSwap";
 
 export default function Home() {
     return (
@@ -10,7 +11,7 @@ export default function Home() {
             <div className="main-container">
                 <div className="w-full flex">
                     <ApexChart />
-                    <ExchangeSwap />
+                    {/* <ExchangeSwap /> */}
                 </div>
             </div>
             <Footer />
