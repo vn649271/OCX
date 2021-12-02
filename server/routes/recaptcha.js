@@ -13,7 +13,6 @@ router.post('/', function(req, res) {
         secretKey + 
         "&response=" + req.body['g-recaptcha-response'] + 
         "&remoteip=" + req.connection.remoteAddress;
-    console.log(verificationURL);
     request_func(verificationURL,function(error, response, body) {
         body = JSON.parse(body);
         if(body.success !== undefined && !body.success) {
