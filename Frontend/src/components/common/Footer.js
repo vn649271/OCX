@@ -1,4 +1,6 @@
 import mainLogo from './assets/images/logo/logo.png';
+import { Link } from "react-router-dom";
+
 
 export default function Footer() {
     return (
@@ -8,23 +10,23 @@ export default function Footer() {
                     <p className="footer-col_title main-color-blue font-24 mian-bold">ABOUT</p>
                     <ul className="sc-hkeOVe fNpLiB">
                         <li className="main-font font-18 main-color">
-                            <a href="#" className="">Contact</a>
+                            <Link to="/home" className="">Contact</Link>
                         </li>
                         <li className="main-font font-18 main-color">
-                            <a href="#" className="">Brand</a>
+                            <Link to="/home" className="">Brand</Link>
                         </li>
                         <li className="main-font font-18 main-color">
-                            <a href="#" className="">Blog</a>
+                            <Link to="/home" className="">Blog</Link>
                         </li>
                         <li className="main-font font-18 main-color">
-                            <a href="#" className="">Community</a>
+                            <Link to="/home" className="">Community</Link>
                         </li>
                         <li className="main-font font-18 main-color">
-                            <a href="#" className="">CAKE token</a>
+                            <Link to="/home" className="">CAKE token</Link>
                         </li>
                         <li className="main-font font-18 main-color"><span className="">—</span></li>
                         <li className="main-font font-18 main-color">
-                            <a href="#" className="main-color-blue">Online Store</a>
+                            <Link to="/home" className="main-color-blue">Online Store</Link>
                         </li>
                     </ul>
                 </div>
@@ -32,13 +34,13 @@ export default function Footer() {
                     <p className="footer-col_title main-color-blue font-24 mian-bold">HELP</p>
                     <ul className="sc-hkeOVe fNpLiB">
                         <li className="main-font font-18 main-color">
-                            <a href="#" className="">Customer Support</a>
+                            <Link to="/home" className="">Customer Support</Link>
                         </li>
                         <li className="main-font font-18 main-color">
-                            <a href="#" className="">Troubleshooting</a>
+                            <Link to="/home" className="">Troubleshooting</Link>
                         </li>
                         <li className="main-font font-18 main-color">
-                            <a href="#" className="">Guides</a>
+                            <Link to="/home" className="">Guides</Link>
                         </li>
                     </ul>
                 </div>
@@ -46,24 +48,24 @@ export default function Footer() {
                     <p className="footer-col_title main-color-blue font-24 mian-bold">DEVELOPERS</p>
                     <ul className="sc-hkeOVe fNpLiB">
                         <li className="main-font font-18 main-color">
-                            <a href="#" className="">Github</a>
+                            <Link to="/home" className="">Github</Link>
                         </li>
                         <li className="main-font font-18 main-color">
-                            <a href="#" className="">Documentation</a>
+                            <Link to="/home" className="">Documentation</Link>
                         </li>
                         <li className="main-font font-18 main-color">
-                            <a href="#" className="">Bug Bounty</a>
+                            <Link to="/home" className="">Bug Bounty</Link>
                         </li>
                         <li className="main-font font-18 main-color">
-                            <a href="#" className="">Audits</a>
+                            <Link to="/home" className="">Audits</Link>
                         </li>
                         <li className="main-font font-18 main-color">
-                            <a href="#" className="">Careers</a>
+                            <Link to="/home" className="">Careers</Link>
                         </li>
                     </ul>
                 </div>
                 <div className="footer-col text-left footer-logo">
-                    <a href="#">
+                    <Link to="/home">
                         <div className="main-logo flex items-center hover-transition">
                             <div className="mr-5">
                                 <img src={mainLogo} alt="main-logo" width="60" />
@@ -72,7 +74,7 @@ export default function Footer() {
                                 Open Chain
                             </span>
                         </div>
-                    </a>
+                    </Link>
                 </div>
             </div>
         </div >

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 
 export default function Seconds() {
     return (
@@ -11,9 +12,9 @@ export default function Seconds() {
                     <p className="main-font font-24 main-color text-center main-lineheight ">IOS and Android apps.</p>
                 </div>
                 <div className="mt-10">
-                    <a href="#" className="font-24 main-font main-color-blue text-center">
+                    <Link to="/home" className="font-24 main-font main-color-blue text-center">
                         Learn how to start
-                    </a>
+                    </Link>
                 </div>
                 <div className="main-btn text-white main-font font-24 button-bg py-3 px-10 my-10 hover-transition">
                     Connect Wallet
