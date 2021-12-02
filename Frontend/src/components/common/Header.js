@@ -1,7 +1,6 @@
 import mainLogo from './assets/images/logo/logo.png';
 import { Link } from "react-router-dom";
 
-
 export default function Header() {
     return (
         <header className="bg-white py-3">
@@ -29,8 +28,8 @@ export default function Header() {
 
                 <div className="header-right flex items-center">
                     <div className="auth-btn_group rounded-full flex ">
-                    <Link to="/login">   <p className="login-btn capitalize main-font font-14 cursor-pointer m-0 hover-transition px-5  border-2 blue-border main-color-blue ">log in</p></Link>
-                    <Link to="/register">  <p className="signup-btn capitalize font-14 main-font cursor-pointer  m-0 hover-transition px-5   border-2 blue-border main-color-blue ">sign up</p></Link>
+                        <Link to="/login">   <p className="login-btn capitalize main-font font-14 cursor-pointer m-0 hover-transition px-5  border-2 blue-border main-color-blue ">log in</p></Link>
+                        <Link to="/register">  <p className="signup-btn capitalize font-14 main-font cursor-pointer  m-0 hover-transition px-5   border-2 blue-border main-color-blue ">sign up</p></Link>
                     </div>
                 </div>
             </div>

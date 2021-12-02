@@ -91,7 +91,7 @@ export default class Foo extends React.Component {
     render() {
         return (
             <div className="bg-chart-green chart-container p-10">
-                <Chart options={this.options} series={this.series} width={800} height={400} className="chart-content"  />
+                <Chart options={this.options} series={this.series}  className="chart-content"  />
             </div>
         )
     }
