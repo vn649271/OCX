@@ -7,8 +7,6 @@ import Login from './components/views/Login'
 import Register from './components/views/Register'
 import Dashboard from './components/Dashboard'
 import About from './components/About'
-import Signup from './components/Signup'
-
 
 function App() {
   return (
@@ -29,7 +27,6 @@ function App() {
       <Route path="/register" component={Register} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/about" component={About} />
-      <Route path="/signup" component={Signup} />
     </Router >
   );
 }

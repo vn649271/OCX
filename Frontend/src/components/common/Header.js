@@ -22,7 +22,7 @@ export default function Header() {
                         <Link to="#"> <span className="header-nav_items main-color px-5 py-2">News</span></Link>
                         <Link to="#"> <span className="header-nav_items main-color px-5 py-2">About Us</span></Link>
                         <Link to="#"> <span className="header-nav_items main-color px-5 py-2">Whitepapaer</span></Link>
-                        <Link to="/signup"> <span className="header-nav_items main-color px-5 py-2">Contact</span></Link>
+                        <Link to="#"> <span className="header-nav_items main-color px-5 py-2">Contact</span></Link>
                     </div>
                 </div>
 
