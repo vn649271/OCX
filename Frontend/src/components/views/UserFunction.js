@@ -37,7 +37,8 @@ export const verifyRecaptcha = (token, onResponse) => {
     .then(response => {
       if (response == undefined || response == null ||
       response.data == undefined || response.data == null ||
-      response.data.verify == undefined || response.data.verify == null) {
+      response.data.verify == undefined || response.data.verify == null ||
+      response.data.verify - 0 == 0) {
         alert("Failed to verify recaptcha");
         return;
       }
