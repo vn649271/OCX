@@ -28,3 +28,22 @@ export const login = user => {
         alert(err)
     })
 }
+
+export const verifyRecaptcha = (token, onResponse) => {
+  return axios
+    .post('http://localhost:5000/recaptcha', {
+      "g-recaptcha-response": token
+    })
+    .then(response => {
+      if (response == undefined || response == null ||
+      response.data == undefined || response.data == null ||
+      response.data.verify == undefined || response.data.verify == null) {
+        alert("Failed to verify recaptcha");
+        return;
+      }
+      onResponse(response.data.verify);
+    })
+    .catch(err => {
+      alert(err)
+  })
+}
