@@ -5,6 +5,7 @@ import Exchange from "./components/views/Exchange";
 import Liquidity from "./components/views/Liquidity";
 import Login from './components/views/Login'
 import Register from './components/views/Register'
+import Confirm from "./components/views/Confirm";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
       </Route>
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
+      <Route path="/confirm" component={Confirm} />
     </Router >
   );
 }
