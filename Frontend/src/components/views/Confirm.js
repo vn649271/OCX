@@ -1,10 +1,29 @@
 import React, { Component } from "react";
 import Header from "../common/Header";
 import Footer from "../common/Footer";
-
+import { verifyPinCode } from "./UserFunction";
 
 
 export default class Confirm extends Component {
+  constructor(props) {
+    super(props);
+    this.onChange = this.onChange.bind(this);
+
+    this.state = {
+      verifyCode: ''
+    }
+  }
+
+  onChange = e => {
+    verifyPinCode(e.target.value, ret => {
+      if (ret) {
+        this.props.history.push(`/login`)
+      } else {
+        console.log("Invalid Pin Code");
+      }
+    })
+  }
+
   render() {
     return (
       <div>
@@ -18,6 +37,8 @@ export default class Confirm extends Component {
               name="confirm"
               placeholder="Verifycode"
               id="confirm"
+              onChange={this.onChange}
+              // value={this.state.verifyCode}
               autoComplete="off" />
 
 

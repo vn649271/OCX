@@ -80,7 +80,8 @@ export default class Register extends Component {
         password: me.state.password
       }
       register(newUser, () => {
-        me.props.history.push(`/login`)
+        me.props.history.push(`/confirm`)
+        // me.props.history.push(`/login`)
       })
     }
   }
