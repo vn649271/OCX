@@ -14,6 +14,7 @@ export default class Register extends Component {
   constructor(props) {
     super(props);
     me = this;
+    
     /***** Begin of initialization for reCAPTCHA ******/
     const loadScriptByURL = (id, url, callback) => {
       const isScriptExist = document.getElementById(id);
