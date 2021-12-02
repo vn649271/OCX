@@ -21,7 +21,7 @@ router.post('/', function(req, res) {
         }
         // req.flash("success", "Recaptcha passed");
         // res.redirect('/');
-        res.json({"responseSuccess" : "Sucess"});
+        res.json({"verify" : "1"});
     });
 });
 
