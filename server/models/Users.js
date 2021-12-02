@@ -22,6 +22,14 @@ module.exports = db.sequelize.define(
         password: {
             type: Sequalize.STRING
         },
+        token: {
+            type: Sequalize.STRING
+        },
+        country: {
+            type: Sequalize.STRING
+        },
+        status: {
+            type: Sequalize.INTEGER
+        }
     }
-
 )
