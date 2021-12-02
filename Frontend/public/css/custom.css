@@ -122,6 +122,7 @@ html, body {
     font-family: Qualy-Light;
     font-size: 10px;
     font-weight: 400;
+    scroll-behavior: smooth;
 }
 
 /* * {
@@ -283,6 +284,33 @@ a {
     /* visibility: hidden; */
 }
 
+.scroll {
+    opacity: 0.3;
+    background-color: aqua;
+    width: 40px;
+    height: 40px;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    border-radius: 5px;
+    border: none;
+  }
+  .scroll:hover {
+    opacity: 1;
+  }
+  .scroll span {
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -9px;
+    margin-left: -5px;
+  }
+  
+  .full-opacity {
+    opacity: 1;
+  }
+
 /* .chart-container {
     width: 1000px !important;
 } */
@@ -295,17 +323,18 @@ a {
     html, body {
         font-size: 8px;
     }
-    
+
 }
 
 @media (max-width: 768px) {
     html, body {
         font-size: 8px;
     }
-    
+
     .exchange-content {
         flex-direction: column !important;
     }
+
     .header-navgation {
         display: none !important;
     }
@@ -315,7 +344,7 @@ a {
     }
 
     .mobile-nav {
-       display: block;
+        display: block;
     }
 
     .responsive-part {
