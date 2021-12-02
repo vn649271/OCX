@@ -79,14 +79,14 @@ export default class Login extends Component {
           <div className="home-card mx-auto auth-form">
             <form id="login-form" className="form" onSubmit={this.onSubmit}>
               <p className="text-center main-font font-30 main-color-blue mb-10 capitalize">Sign In your account</p>
-              <GoogleLogin
+              {/* <GoogleLogin
                 clientId={GOOGLE_LOGIN_CLIENT_ID}
                 buttonText="Google Singup"
                 onSuccess={this.responseGoogle}
                 onFailure={this.responseGoogle}
                 className="google-button"
                 cookiePolicy={'single_host_origin'}
-              />
+              /> */}
               <input
                 type="email"
                 className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded mb-10"
