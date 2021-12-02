@@ -75,6 +75,21 @@ class UserAuthController {
         })
     }
 
+    verifyToken = (req, res) => {
+        User.findOne({
+            where: {
+                token: req.body.pinCode
+            }
+        })
+        .then(user => {
+            if (!user) {
+                res.json({ verify: 0 });
+                return;
+            }
+            res.json({ verify: 1 });
+        });
+    }
+
     updateToken = (email, token) => {
         User.findOne({
             where: {
@@ -86,9 +101,9 @@ class UserAuthController {
                 res.status(400).json({ error: 'User does not exists' })
                 return;
             }
-            user.update('token', token)
-            .then(user => {
-                res.send(token);
+            user.update({'token': token})
+            .then(ret => {
+                // res.send(token);
             });
         });
     }
@@ -96,7 +111,6 @@ class UserAuthController {
     //send email
     sendEmail = (userInfo, response) => {
         var toAddress = userInfo.email;
-        
         var smtpConfig = {
             host: 'smtp.gmail.com',
             port: 465,
@@ -114,6 +128,7 @@ class UserAuthController {
                     `${pinCode}` +
                 '<br> to verify your email address' +
             '</p>';
+        this.updateToken(toAddress, pinCode);
         var mailOptions = {
             from: process.env.ADMIN_GMAIL_ADDRESS,
             to: toAddress,

@@ -37,6 +37,26 @@ export const login = user => {
     })
 }
 
+export const verifyPinCode = (pinCode, onResponse) => {
+  return axios
+    .post('http://localhost:5000/users/verifyPinCode', {
+      pinCode: pinCode
+    })
+    .then(response => {
+      if (response == undefined || response == null ||
+      response.data == undefined || response.data == null ||
+      response.data.verify == undefined || response.data.verify == null ||
+      response.data.verify - 0 == 0) {
+        alert("Failed to verify recaptcha");
+        return;
+      }
+      onResponse(response.data.verify);
+    })
+    .catch(err => {
+      alert(err)
+    })
+}
+
 export const verifyRecaptcha = (token, onResponse) => {
   return axios
     .post('http://localhost:5000/recaptcha', {
@@ -56,3 +76,4 @@ export const verifyRecaptcha = (token, onResponse) => {
       alert(err)
     })
 }
+
