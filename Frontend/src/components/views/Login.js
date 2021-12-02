@@ -4,12 +4,16 @@ import { login, verifyRecaptcha } from "./UserFunction";
 import Header from "../common/Header";
 import Footer from "../common/Footer";
 import RecaptchaComponent from "../common/Recaptcha";
+import { GoogleLogin } from 'react-google-login';
+
+const GOOGLE_LOGIN_CLIENT_ID = '618639350562-ta19emhaehlhdoelghnv5176jketlah4.apps.googleusercontent.com';
+
 
 var me;
 
 export default class Login extends Component {
-  
-  
+
+
   constructor(props) {
     super(props);
     me = this;
@@ -24,8 +28,27 @@ export default class Login extends Component {
     this.onChange = this.onChange.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
     this.submitData = this.submitData.bind(this)
+    this.responseGoogle = this.responseGoogle.bind(this)
   }
 
+  responseGoogle = (response) => {
+    if (response == undefined || response == null ||
+    response.profileObj == undefined || response.profileObj == null ||
+    response.profileObj.email == undefined || response.profileObj.email == null ) {
+      alert("Invalid Google Acount Information");
+      return;
+    }
+    let profile = response.profileObj;
+    const user = {
+      email: profile.email,
+      password: profile.googleId
+    }
+    login(user).then(res => {
+      if (res) {
+        me.props.history.push('/home')
+      }
+    })
+  }
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value })
   }
@@ -42,7 +65,7 @@ export default class Login extends Component {
       }
     })
   }
- 
+
   onSubmit(e) {
     e.preventDefault()
     this.recaptchaComponent.run(this.submitData);
@@ -56,7 +79,14 @@ export default class Login extends Component {
           <div className="home-card mx-auto auth-form">
             <form id="login-form" className="form" onSubmit={this.onSubmit}>
               <p className="text-center main-font font-30 main-color-blue mb-10 capitalize">Sign In your account</p>
-
+              <GoogleLogin
+                clientId={GOOGLE_LOGIN_CLIENT_ID}
+                buttonText="Google Singup"
+                onSuccess={this.responseGoogle}
+                onFailure={this.responseGoogle}
+                className="google-button"
+                cookiePolicy={'single_host_origin'}
+              />
               <input
                 type="email"
                 className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded mb-10"

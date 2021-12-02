@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { register, verifyRecaptcha, googleAuthenticaion } from "./UserFunction";
+import { login, register, verifyRecaptcha, googleAuthenticaion } from "./UserFunction";
 import Header from "../common/Header";
 import Footer from "../common/Footer";
 import signimg from '../common/assets/images/img/main-img.png';
@@ -42,13 +42,29 @@ export default class Register extends Component {
   }
 
   responseGoogle = (response) => {
-    console.log(response);
+    if (response == undefined || response == null ||
+    response.profileObj == undefined || response.profileObj == null ||
+    response.profileObj.email == undefined || response.profileObj.email == null ) {
+      alert("Invalid Google Acount Information");
+      return;
+    }
+    let profile = response.profileObj;
+    const newUser = {
+      first_name: profile.familyName,
+      last_name: profile.givenName,
+      email: profile.email,
+      password: profile.googleId,
+      email_type: 1
+    }
+    register(newUser, res => {
+      if (res != undefined && res != null &&
+      res.error != undefined && res.error == 0) {
+        me.props.history.push('/login')
+      }
+    })
   }
 
   submitData = (param, recaptchaToken) => {
-    // me.setLoading(false);
-    // me.setResponse(resp);
-    console.log("!!!!!!!!!!!!! Register.submitData(): ", param, recaptchaToken);
     if (me.state.password !== me.state.c_password) {
       alert("Invalid Password")
     }
@@ -59,6 +75,7 @@ export default class Register extends Component {
       const newUser = {
         first_name: me.state.first_name,
         last_name: me.state.last_name,
+        email_type: 0,
         email: me.state.email,
         password: me.state.password
       }

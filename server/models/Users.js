@@ -14,10 +14,12 @@ module.exports = db.sequelize.define(
         },
         last_name: {
             type: Sequalize.STRING
-
         },
         email: {
             type: Sequalize.STRING
+        },
+        email_type: {
+            type: Sequalize.TINYINT
         },
         password: {
             type: Sequalize.STRING
