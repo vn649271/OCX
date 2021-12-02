@@ -253,10 +253,10 @@ a {
 }
 
 .exchange-btn {
-    border-top-left-radius: 20px;
+    border-top-left-radius: 10px;
 }
 .liquidity-btn {
-    border-top-right-radius: 20px;
+    border-top-right-radius: 10px;
 }
 
 .chart-container {
@@ -266,6 +266,12 @@ a {
 .down-arrow {
     fill: #01c1cc !important;
 }
+
+.form-title {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
 
 
 /* responsive */

@@ -13,7 +13,7 @@ export default function Liquidity() {
                 <div className="flex">
                     <div className="auth-btn_group rounded-full flex mx-auto">
                         <Link to="/exchange">
-                            <p className="exchange-btn  capitalize main-font font-20 cursor-pointer m-0 hover-transition px-5  border-2 border-r-0 blue-border main-font">Exchange</p>
+                            <p className="exchange-btn  capitalize main-font font-20 cursor-pointer m-0 hover-transition px-5  border-2 border-r-0 blue-border main-color-blue main-font">Exchange</p>
                         </Link>
                         <Link to="/liquidity">
                             <p className="liquidity-btn capitalize font-20 main-font cursor-pointer  m-0 hover-transition px-5   border-2 blue-border main-color-blue button-bg main-font text-white">Liquidity</p>
