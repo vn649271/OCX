@@ -13,11 +13,16 @@ class UserAuthController {
     }
 
     register = (req, res) => {
+        let today = new Date().toISOString().substr(0, 10);
         const userData = {
             first_name: req.body.first_name,
             last_name: req.body.last_name,
             email: req.body.email,
             password: req.body.password,
+            token: "",
+            status: 0,
+            created_at: today,
+            updated_at: today
         };
         User.findOne({
             where: {
@@ -28,8 +33,7 @@ class UserAuthController {
             if (!user) {
                 bcrypt.hash(req.body.password, 10, (err, hash) => {
                     userData.password = hash;
-                    User.create(userData)
-                    .then(user => {
+                    User.create(userData).then(user => {
                         me.sendEmail(user, res);
                         // res.json({ status: user.email + " Registered" });
                     })
@@ -117,6 +121,8 @@ class UserAuthController {
             html: mailContent
         };
         transporter.sendMail(mailOptions, function(error) {
+            // response.json({ error: 0 } );
+            // return;
             if (error) {
                 console.log("####### Failed to send mail: ", error);
                 response.json({ error: 1, message: error.message } );

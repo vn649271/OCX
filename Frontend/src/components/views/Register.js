@@ -8,7 +8,6 @@ import RecaptchaComponent from "../common/Recaptcha";
 
 import { GoogleLogin } from 'react-google-login';
 
-const SITE_KEY = '6LdoC28dAAAAACQ6Wbl7YPpOZVGHr9H-YQBKUkAA'; //process.env.RECAPTCHA_SITE_KEY;
 const GOOGLE_LOGIN_CLIENT_ID = '618639350562-ta19emhaehlhdoelghnv5176jketlah4.apps.googleusercontent.com';
 
 var me;
@@ -20,43 +19,21 @@ export default class Register extends Component {
     super(props);
     me = this;
 
-    /***** Begin of initialization for reCAPTCHA ******/
-    const loadScriptByURL = (id, url, callback) => {
-      const isScriptExist = document.getElementById(id);
-
-      if (!isScriptExist) {
-        var script = document.createElement("script");
-        script.type = "text/javascript";
-        script.src = url;
-        script.id = id;
-        script.onload = function () {
-          if (callback) callback();
-        };
-        document.body.appendChild(script);
-      }
-
-      if (isScriptExist && callback) callback();
-    }
-    // load the script by passing the URL
-    loadScriptByURL("recaptcha-key", `https://www.google.com/recaptcha/api.js?render=${SITE_KEY}`, function () {
-      console.log("Script loaded!");
-    });
-    /***** End of initialization for reCAPTCHA ******/
-
     this.state = {
       first_name: '',
       last_name: '',
       email: '',
       password: '',
       c_password: '',
-      submitted: 0,
       errors: {}
     }
+    this.recaptchaComponent = new RecaptchaComponent();
 
     // this.setLoading = this.setLoading.bind(this)
     // this.setResponse = this.setResponse.bind(this)
     this.onChange = this.onChange.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
+    this.submitData = this.submitData.bind(this)
     this.responseGoogle = this.responseGoogle.bind(this)
   }
 
@@ -68,43 +45,32 @@ export default class Register extends Component {
     console.log(response);
   }
 
-  submitData = (token) => {
-    // call a backend API to verify reCAPTCHA response
-    this.state.submitted = 1;
-    verifyRecaptcha(token, resp => {
-      // me.setLoading(false);
-      // me.setResponse(resp);
-      if (me.state.password !== me.state.c_password) {
-        alert("Invalid Password")
+  submitData = (param, recaptchaToken) => {
+    // me.setLoading(false);
+    // me.setResponse(resp);
+    console.log("!!!!!!!!!!!!! Register.submitData(): ", param, recaptchaToken);
+    if (me.state.password !== me.state.c_password) {
+      alert("Invalid Password")
+    }
+    else if (me.state.first_name === '' || me.state.last_name === '' || me.state.email === '') {
+      alert("Enter all the fields")
+    }
+    else {
+      const newUser = {
+        first_name: me.state.first_name,
+        last_name: me.state.last_name,
+        email: me.state.email,
+        password: me.state.password
       }
-      else if (me.state.first_name === '' || me.state.last_name === '' || me.state.email === '') {
-        alert("Enter all the fields")
-      }
-      else {
-        const newUser = {
-          first_name: me.state.first_name,
-          last_name: me.state.last_name,
-          email: me.state.email,
-          password: me.state.password
-        }
-        register(newUser, () => {
-          me.props.history.push(`/login`)
-        })
-      }
-    });
+      register(newUser, () => {
+        me.props.history.push(`/login`)
+      })
+    }
   }
 
   onSubmit = (e) => {
     e.preventDefault();
-    if (window.grecaptcha == undefined || window.grecaptcha == null) {
-      alert("Failed to init reCAPTCHA");
-      return;
-    }
-    window.grecaptcha.ready(() => {
-      window.grecaptcha.execute(SITE_KEY, { action: 'submit' }).then(token => {
-        me.submitData(token);
-      });
-    });
+    this.recaptchaComponent.run(this.submitData);
   }
 
   render() {
@@ -183,11 +149,10 @@ export default class Register extends Component {
                       className="w-full text-center py-3 rounded button-bg text-white hover-transition font-14 main-font focus:outline-none my-1"
                       value="Submit" autoComplete="off"
                     />
-                    <RecaptchaComponent value={this.state.submitted} />
                   </div>
                   <div className="main-font main-color font-16 m-8 capitalize">
                     Already have an account?
-                    <Link className="border-b border-gray-400 main-color-blue ml-5" to="/login">Log In Here</Link>
+                    <Link className="border-b border-gray-400 main-color-blue ml-5" to="/login">Login here</Link>
                   </div>
                 </form>
               </div>

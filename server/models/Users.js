@@ -30,6 +30,12 @@ module.exports = db.sequelize.define(
         },
         status: {
             type: Sequalize.INTEGER
-        }
+        },
+        created_at: {
+            type: Sequalize.DATE
+        },
+        updated_at: {
+            type: Sequalize.DATE
+        }        
     }
 )
