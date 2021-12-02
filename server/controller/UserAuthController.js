@@ -30,8 +30,8 @@ class UserAuthController {
                     userData.password = hash;
                     User.create(userData)
                     .then(user => {
-                        me.sendEmail(user);
-                        res.json({ status: user.email + " Registered" });
+                        me.sendEmail(user, res);
+                        // res.json({ status: user.email + " Registered" });
                     })
                     .catch(err => {
                         res.send(err + " ==error");
@@ -90,7 +90,7 @@ class UserAuthController {
     }
     
     //send email
-    sendEmail = (userInfo) => {
+    sendEmail = (userInfo, response) => {
         var toAddress = userInfo.email;
         
         var smtpConfig = {
@@ -103,20 +103,25 @@ class UserAuthController {
             }
         };
         var transporter = nodemailer.createTransport(smtpConfig);    
-        let port = process.env.PORT;
+        var pinCode = randtoken.generate(5);
         let mailContent = 
-            '<p> 123456' + '</p>';
+            '<p>You requested for email verification, ' + 
+                'kindly use this pin code <br>' + 
+                    `${pinCode}` +
+                '<br> to verify your email address' +
+            '</p>';
         var mailOptions = {
             from: process.env.ADMIN_GMAIL_ADDRESS,
             to: toAddress,
             subject: 'Email verification - openchain.com',
             html: mailContent
         };
-        transporter.sendMail(mailOptions, function(error, info) {
+        transporter.sendMail(mailOptions, function(error) {
             if (error) {
-                onComplete(1, error);
+                console.log("####### Failed to send mail: ", error);
+                response.json({ error: 1, message: error.message } );
             } else {
-                onComplete(0);
+                response.json({ error: 0 } );
             }
         });
     }

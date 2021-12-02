@@ -3,10 +3,13 @@ import { Link } from "react-router-dom";
 import { register, verifyRecaptcha, googleAuthenticaion } from "./UserFunction";
 import Header from "../common/Header";
 import Footer from "../common/Footer";
+import signimg from '../common/assets/images/img/main-img.png';
+import RecaptchaComponent from "../common/Recaptcha";
 
 import { GoogleLogin } from 'react-google-login';
 
 const SITE_KEY = '6LdoC28dAAAAACQ6Wbl7YPpOZVGHr9H-YQBKUkAA'; //process.env.RECAPTCHA_SITE_KEY;
+const GOOGLE_LOGIN_CLIENT_ID = '618639350562-ta19emhaehlhdoelghnv5176jketlah4.apps.googleusercontent.com';
 
 var me;
 
@@ -16,11 +19,11 @@ export default class Register extends Component {
   constructor(props) {
     super(props);
     me = this;
-    
+
     /***** Begin of initialization for reCAPTCHA ******/
     const loadScriptByURL = (id, url, callback) => {
       const isScriptExist = document.getElementById(id);
- 
+
       if (!isScriptExist) {
         var script = document.createElement("script");
         script.type = "text/javascript";
@@ -31,7 +34,7 @@ export default class Register extends Component {
         };
         document.body.appendChild(script);
       }
- 
+
       if (isScriptExist && callback) callback();
     }
     // load the script by passing the URL
@@ -46,9 +49,10 @@ export default class Register extends Component {
       email: '',
       password: '',
       c_password: '',
+      submitted: 0,
       errors: {}
     }
-    
+
     // this.setLoading = this.setLoading.bind(this)
     // this.setResponse = this.setResponse.bind(this)
     this.onChange = this.onChange.bind(this)
@@ -63,9 +67,10 @@ export default class Register extends Component {
   responseGoogle = (response) => {
     console.log(response);
   }
-  
+
   submitData = (token) => {
     // call a backend API to verify reCAPTCHA response
+    this.state.submitted = 1;
     verifyRecaptcha(token, resp => {
       // me.setLoading(false);
       // me.setResponse(resp);
@@ -88,7 +93,7 @@ export default class Register extends Component {
       }
     });
   }
- 
+
   onSubmit = (e) => {
     e.preventDefault();
     if (window.grecaptcha == undefined || window.grecaptcha == null) {
@@ -106,86 +111,84 @@ export default class Register extends Component {
     return (
       <div>
         <Header />
-        <div id="reg">
-          <div className="main-container">
-            <div
-              id="reg-row"
-              className="flex justify-center items-center"
-            >
-              <div id="reg-column" className="w-1/2">
-                <div id="reg-box" className="w-full">
-                  <form id="reg-form" className="form" onSubmit={this.onSubmit}>
-                    <div className="bg-grey-lighter min-h-screen flex flex-col">
-                      <div className="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
-                        <div className="bg-white px-6 py-8 rounded shadow-md text-black w-full">
-                          <h1 className="mb-8 text-3xl text-center">Sign up</h1>
-                          <GoogleLogin
-                            clientId="618639350562-ta19emhaehlhdoelghnv5176jketlah4.apps.googleusercontent.com"
-                            buttonText="Google Singup"
-                            onSuccess={this.responseGoogle}
-                            onFailure={this.responseGoogle}
-                            cookiePolicy={'single_host_origin'}
-                          />
-                          <input
-                            type="text"
-                            className="block border border-grey-light w-full p-3 rounded mb-4"
-                            name="first_name"
-                            id="first_name"
-                            autoComplete="none"
-                            placeholder="First Name"
-                            value={this.state.first_name}
-                            onChange={this.onChange} />
-                          <input
-                            type="text"
-                            className="block border border-grey-light w-full p-3 rounded mb-4"
-                            name="last_name"
-                            id="last_name"
-                            autoComplete="none"
-                            placeholder="Last Name"
-                            value={this.state.last_name}
-                            onChange={this.onChange} />
+        <div className="main-container py-20 px-80">
+          {/* <div className="flex">
+            <p className="form-title mx-auto  capitalize main-font font-20 cursor-pointer m-0 hover-transition px-20  border-2 border-r-0 blue-border button-bg main-font text-white ">Sign Up</p>
+          </div> */}
+          <div className="home-card w-full">
+            <p className="text-center main-font font-30 main-color-blue mb-10 capitalize">Create a new account</p>
+            <div className="flex">
+              <div className="sign-left w-1/2 flex flex-col items-center justify-around p-20">
+                <img src={signimg} width={200} />
+                <GoogleLogin
+                  clientId={GOOGLE_LOGIN_CLIENT_ID}
+                  buttonText="Google Singup"
+                  onSuccess={this.responseGoogle}
+                  onFailure={this.responseGoogle}
+                  cookiePolicy={'single_host_origin'}
+                />
+              </div>
+              <div className="w-1/2 border-l border-gray-300 pl-10">
+                <form id="reg-form" className="form" onSubmit={this.onSubmit} autocomplete="off">
+                  <div className=" px-6 py-8 text-black">
+                    <input
+                      type="text"
+                      className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded mb-10"
+                      name="first_name"
+                      id="first_name"
+                      autoComplete="none"
+                      placeholder="First Name"
+                      value={this.state.first_name}
+                      onChange={this.onChange} autocomplete="off" />
+                    <input
+                      type="text"
+                      className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded mb-10"
+                      name="last_name"
+                      id="last_name"
+                      autoComplete="none"
+                      placeholder="Last Name"
+                      value={this.state.last_name}
+                      onChange={this.onChange} autocomplete="off" />
 
-                          <input
-                            type="email"
-                            className="block border border-grey-light w-full p-3 rounded mb-4"
-                            name="email"
-                            id="email"
-                            autoComplete="none"
-                            placeholder="Email"
-                            value={this.state.email}
-                            onChange={this.onChange} />
+                    <input
+                      type="email"
+                      className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded mb-10"
+                      name="email"
+                      id="email"
+                      autoComplete="none"
+                      placeholder="Email"
+                      value={this.state.email}
+                      onChange={this.onChange} autocomplete="off" />
 
-                          <input
-                            type="password"
-                            className="block border border-grey-light w-full p-3 rounded mb-4"
-                            name="password"
-                            autoComplete="none"
-                            value={this.state.password}
-                            onChange={this.onChange}
-                            placeholder="Password" />
-                          <input
-                            type="password"
-                            className="block border border-grey-light w-full p-3 rounded mb-4"
-                            name="c_password"
-                            id="c_password"
-                            autoComplete="none"
-                            value={this.state.c_password}
-                            onChange={this.onChange}
-                            placeholder="Confirm Password" />
-                          <input
-                            type="submit"
-                            className="w-full text-center py-3 rounded bg-green text-black hover:bg-green-dark focus:outline-none my-1"
-                            value="Submit"
-                          />
-                        </div>
-                        <div className="text-grey-dark mt-6">
-                          Already have an account?
-                          <Link className="no-underline border-b border-blue text-blue" to="/login">Login here</Link>
-                        </div>
-                      </div>
-                    </div>
-                  </form>
-                </div>
+                    <input
+                      type="password"
+                      className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded mb-10"
+                      name="password"
+                      autoComplete="none"
+                      value={this.state.password}
+                      onChange={this.onChange}
+                      placeholder="Password" autocomplete="off" />
+                    <input
+                      type="password"
+                      className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded mb-10"
+                      name="c_password"
+                      id="c_password"
+                      autoComplete="none"
+                      value={this.state.c_password}
+                      onChange={this.onChange}
+                      placeholder="Confirm Password" autocomplete="off" />
+                    <input
+                      type="submit"
+                      className="w-full text-center py-3 rounded button-bg text-white hover-transition font-14 main-font focus:outline-none my-1"
+                      value="Submit" autocomplete="off"
+                    />
+                    <RecaptchaComponent value={this.state.submitted} />
+                  </div>
+                  <div className="main-font main-color font-16 m-8">
+                    Already have an account?
+                    <Link className="border-b border-gray-400 main-color-blue ml-5" to="/login">Login here</Link>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
