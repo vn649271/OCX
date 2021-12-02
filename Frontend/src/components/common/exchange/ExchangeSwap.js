@@ -2,12 +2,12 @@ import cake from '../assets/images/icons/cake.png';
 
 export default function ExchangeSwap() {
     return (
-        <div className="home-card py-10 px-0 w-full ml-20">
+        <div className="home-card py-10 px-0 w-full h-full">
             <div className="swap-card_header pb-5 border-b-2 border-gray-200">
-                <p className="main-font font-20 main-color text-center ">Swap</p>
+                <p className="main-font font-30 main-color text-center ">Swap</p>
                 <p className="main-font font-16 main-color text-center">Trade tokens in an instant</p>
             </div>
-            <div className="swap-card_body p-5">
+            <div className="swap-card_body px-10 pt-10 xl:pt-20">
                 <div>
                     <div className="flex items-center hover-transition ml-5 cursor-pointer">
                         <svg viewBox="0 0 16 16" width="24px" color="text" xmlns="http://www.w3.org/2000/svg" className="sc-bdnxRM kDWlca">
@@ -42,7 +42,9 @@ export default function ExchangeSwap() {
                     </div>
                 </div>
             </div>
-            <div className="main-btn button-bg text-white py-5 text-center hover-transition mt-5">Connect Wallet</div>
+            <div className="px-5 pt-10 xl:pt-20">
+                <div className="main-btn button-bg text-white py-5 text-center hover-transition mt-5">Connect Wallet</div>
+            </div>
         </div >
     );
 }
