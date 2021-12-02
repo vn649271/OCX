@@ -5,8 +5,6 @@ import Exchange from "./components/views/Exchange";
 import Liquidity from "./components/views/Liquidity";
 import Login from './components/views/Login'
 import Register from './components/views/Register'
-import Dashboard from './components/Dashboard'
-import About from './components/About'
 
 function App() {
   return (
@@ -25,8 +23,6 @@ function App() {
       </Route>
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
-      <Route path="/dashboard" component={Dashboard} />
-      <Route path="/about" component={About} />
     </Router >
   );
 }
