@@ -3,9 +3,9 @@ require('dotenv').config();
 const SITE_KEY = '6LdoC28dAAAAACQ6Wbl7YPpOZVGHr9H-YQBKUkAA'; //process.env.RECAPTCHA_SITE_KEY;
  
 function RecaptchaComponent() {
- 
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+
+  // const [name, setName] = useState('');
+  // const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState(null);
  
@@ -51,8 +51,8 @@ function RecaptchaComponent() {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        "name": name,
-        "email": email,
+        // "name": name,
+        // "email": email,
         "g-recaptcha-response": token
       })
     }).then(res => res.json()).then(res => {
@@ -62,8 +62,8 @@ function RecaptchaComponent() {
   }
  
   return (
-    <div className="Recaptcha">
-      <h3>reCAPTCHA v3 in React - <a href="https://www.cluemediator.com/" target="_blank" rel="noopener noreferrer">Clue Mediator</a></h3>
+    <div className="Recaptcha" onClick={handleOnClick}>
+      {/* <h3>reCAPTCHA v3 in React - <a href="https://www.cluemediator.com/" target="_blank" rel="noopener noreferrer">Clue Mediator</a></h3>
       <div className="box">
         <label>Name: </label>
         <input type="text" onChange={e => setName(e.target.value)} value={name} />
@@ -71,10 +71,10 @@ function RecaptchaComponent() {
       <div className="box">
         <label>Email: </label>
         <input type="text" onChange={e => setEmail(e.target.value)} value={email} />
-      </div>
-      <button onClick={handleOnClick} disabled={loading}>{loading ? 'Submitting...' : 'Submit'}</button>
-      <br /><br />
-      {response && <label>Output:<br /><pre>{JSON.stringify(response, undefined, 2)}</pre></label>}
+      </div> */}
+      <button disabled={loading}>{loading ? 'Submitting...' : 'Submit'}</button>
+      {/* <br /><br />
+      {response && <label>Output:<br /><pre>{JSON.stringify(response, undefined, 2)}</pre></label>} */}
     </div>
   );
 }

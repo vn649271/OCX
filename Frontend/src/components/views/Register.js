@@ -1,12 +1,46 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { register } from "./UserFunction";
+import { register, verifyRecaptcha } from "./UserFunction";
 import Header from "../common/Header";
 import Footer from "../common/Footer";
 
+const SITE_KEY = '6LdoC28dAAAAACQ6Wbl7YPpOZVGHr9H-YQBKUkAA'; //process.env.RECAPTCHA_SITE_KEY;
+
+var me;
+
 export default class Register extends Component {
+
+
   constructor(props) {
     super(props);
+    me = this;
+    /***** Begin of initialization for reCAPTCHA ******/
+    // this.state = {
+    //   loading: false,
+    //   response: null
+    // }
+    const loadScriptByURL = (id, url, callback) => {
+      const isScriptExist = document.getElementById(id);
+ 
+      if (!isScriptExist) {
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = url;
+        script.id = id;
+        script.onload = function () {
+          if (callback) callback();
+        };
+        document.body.appendChild(script);
+      }
+ 
+      if (isScriptExist && callback) callback();
+    }
+    // load the script by passing the URL
+    loadScriptByURL("recaptcha-key", `https://www.google.com/recaptcha/api.js?render=${SITE_KEY}`, function () {
+      console.log("Script loaded!");
+    });
+    /***** End of initialization for reCAPTCHA ******/
+
     this.state = {
       first_name: '',
       last_name: '',
@@ -15,35 +49,93 @@ export default class Register extends Component {
       c_password: '',
       errors: {}
     }
+    
+    // this.setLoading = this.setLoading.bind(this)
+    // this.setResponse = this.setResponse.bind(this)
     this.onChange = this.onChange.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
   }
+
+  // setLoading = (val) => { this.loading = val  }
+  // setResponse = (val) => { this.response = val  }
+
   // componentDidMount(){
   //     document.body.style.background = "#17a2b8";
   // }
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value })
   }
-  onSubmit(e) {
-    e.preventDefault()
-    if (this.state.password !== this.state.c_password) {
-      alert("Invalid Password")
-    }
-    else if (this.state.first_name === '' || this.state.last_name === '' || this.state.email === '') {
-      alert("Enter all the fields")
-    }
-    else {
-      const newUser = {
-        first_name: this.state.first_name,
-        last_name: this.state.last_name,
-        email: this.state.email,
-        password: this.state.password
-      }
 
-      register(newUser).then(res => {
-        this.props.history.push(`/login`)
-      })
+  // handleOnClick = (e) => {
+  //   e.preventDefault();
+  //   this.setLoading(true);
+  //   if (window.grecaptcha == undefined || window.grecaptcha == null) {
+  //     alert("Failed to init reCAPTCHA");
+  //     return;
+  //   }
+  //   window.grecaptcha.ready(() => {
+  //     window.grecaptcha.execute(SITE_KEY, { action: 'submit' }).then(token => {
+  //       me.submitData(token);
+  //     });
+  //   });
+  // }
+ 
+  submitData = (token) => {
+    // call a backend API to verify reCAPTCHA response
+    verifyRecaptcha(token, resp => {
+      // me.setLoading(false);
+      console.log('verify recaptcha: ', resp);
+      // me.setResponse(resp);
+      if (me.state.password !== me.state.c_password) {
+        alert("Invalid Password")
+      }
+      else if (me.state.first_name === '' || me.state.last_name === '' || me.state.email === '') {
+        alert("Enter all the fields")
+      }
+      else {
+        const newUser = {
+          first_name: me.state.first_name,
+          last_name: me.state.last_name,
+          email: me.state.email,
+          password: me.state.password
+        }
+        register(newUser).then(res => {
+          me.props.history.push(`/login`)
+        })
+      }
+    });
+  }
+ 
+  onSubmit = (e) => {
+    e.preventDefault();
+    if (window.grecaptcha == undefined || window.grecaptcha == null) {
+      alert("Failed to init reCAPTCHA");
+      return;
     }
+    window.grecaptcha.ready(() => {
+      window.grecaptcha.execute(SITE_KEY, { action: 'submit' }).then(token => {
+        me.submitData(token);
+      });
+    });
+    // let recaptchaElem = document.getElementsByClassName('Recaptcha');
+    // console.log("-----------------------recaptchaElem: ", recaptchaElem);
+    // if (this.state.password !== this.state.c_password) {
+    //   alert("Invalid Password")
+    // }
+    // else if (this.state.first_name === '' || this.state.last_name === '' || this.state.email === '') {
+    //   alert("Enter all the fields")
+    // }
+    // else {
+    //   const newUser = {
+    //     first_name: this.state.first_name,
+    //     last_name: this.state.last_name,
+    //     email: this.state.email,
+    //     password: this.state.password
+    //   }
+    //   register(newUser).then(res => {
+    //     this.props.history.push(`/login`)
+    //   })
+    // }
   }
   render() {
     return (
