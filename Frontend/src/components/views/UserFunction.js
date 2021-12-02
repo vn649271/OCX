@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-export const register = newUser => {
+export const register = (newUser, onSuccessCallback) => {
   return axios
     .post("http://localhost:5000/users/register", {
       first_name: newUser.first_name,
@@ -10,7 +10,15 @@ export const register = newUser => {
       password: newUser.password,
       country: newUser.country
     })
-    .then(res => {      
+    .then(response => {
+      if (response != undefined && response != null &&
+      response.data != undefined && response.data != null &&
+      response.data.error != undefined && response.data.error != null &&
+      response.data.error > 0) {
+        alert("Failed to register: " + response.data.message);
+        return;
+      }
+      onSuccessCallback();
     });
 };
 
@@ -46,5 +54,5 @@ export const verifyRecaptcha = (token, onResponse) => {
     })
     .catch(err => {
       alert(err)
-  })
+    })
 }

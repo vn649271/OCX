@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { register, verifyRecaptcha } from "./UserFunction";
+import { register, verifyRecaptcha, googleAuthenticaion } from "./UserFunction";
 import Header from "../common/Header";
 import Footer from "../common/Footer";
+
+import { GoogleLogin } from 'react-google-login';
 
 const SITE_KEY = '6LdoC28dAAAAACQ6Wbl7YPpOZVGHr9H-YQBKUkAA'; //process.env.RECAPTCHA_SITE_KEY;
 
@@ -51,17 +53,21 @@ export default class Register extends Component {
     // this.setResponse = this.setResponse.bind(this)
     this.onChange = this.onChange.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
+    this.responseGoogle = this.responseGoogle.bind(this)
   }
 
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value })
   }
 
+  responseGoogle = (response) => {
+    console.log(response);
+  }
+  
   submitData = (token) => {
     // call a backend API to verify reCAPTCHA response
     verifyRecaptcha(token, resp => {
       // me.setLoading(false);
-      console.log('verify recaptcha: ', resp);
       // me.setResponse(resp);
       if (me.state.password !== me.state.c_password) {
         alert("Invalid Password")
@@ -76,7 +82,7 @@ export default class Register extends Component {
           email: me.state.email,
           password: me.state.password
         }
-        register(newUser).then(res => {
+        register(newUser, () => {
           me.props.history.push(`/login`)
         })
       }
@@ -95,7 +101,7 @@ export default class Register extends Component {
       });
     });
   }
-  
+
   render() {
     return (
       <div>
@@ -113,6 +119,13 @@ export default class Register extends Component {
                       <div className="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
                         <div className="bg-white px-6 py-8 rounded shadow-md text-black w-full">
                           <h1 className="mb-8 text-3xl text-center">Sign up</h1>
+                          <GoogleLogin
+                            clientId="618639350562-ta19emhaehlhdoelghnv5176jketlah4.apps.googleusercontent.com"
+                            buttonText="Google Singup"
+                            onSuccess={this.responseGoogle}
+                            onFailure={this.responseGoogle}
+                            cookiePolicy={'single_host_origin'}
+                          />
                           <input
                             type="text"
                             className="block border border-grey-light w-full p-3 rounded mb-4"

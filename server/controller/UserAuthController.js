@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../models/Users");
+var nodemailer = require('nodemailer');
+var randtoken = require('rand-token');
 require('dotenv').config();
 
 var me;
@@ -28,7 +30,7 @@ class UserAuthController {
                     userData.password = hash;
                     User.create(userData)
                     .then(user => {
-                        me.sendEmail(user.email);
+                        me.sendEmail(user);
                         res.json({ status: user.email + " Registered" });
                     })
                     .catch(err => {
@@ -36,7 +38,7 @@ class UserAuthController {
                     });
                 });
             } else {
-                res.json({ error: "User already exists" });
+                res.json({ error: 1, message: "User already exists" });
             }
         })
         .catch(err => {
@@ -88,35 +90,7 @@ class UserAuthController {
     }
     
     //send email
-    sendEmail = (toAddress) => {
-        var type = 'success',
-            msg = 'Email already verified';
-        if (result.length < 1) {
-            req.flash('error', 'The Email is not registered with us');
-            res.redirect('/');
-            return;
-        }
-        if(result[0].verify > 0 ) {
-            req.flash(type, msg);
-            res.redirect('/');
-            return;
-        }
-        var token = randtoken.generate(20);
-        this._sendEmail(toAddress, token, function(error, errInfo) {
-            if (error == 0) {
-                me.updateToken(toAddress, token);
-                type = 'success';
-                msg = 'The verification link has been sent to your email address';
-            } else {
-                type = 'error';
-                msg = errInfo.message; //'Something goes to wrong. Please try again';
-            }
-            req.flash(type, msg);
-            res.redirect('/');
-        });
-    }
-
-    _sendEmail = (toAddress, token, onComplete) => {
+    sendEmail = (userInfo) => {
         var toAddress = toAddress;
         var token = token;
         
