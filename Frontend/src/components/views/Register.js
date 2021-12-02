@@ -15,10 +15,6 @@ export default class Register extends Component {
     super(props);
     me = this;
     /***** Begin of initialization for reCAPTCHA ******/
-    // this.state = {
-    //   loading: false,
-    //   response: null
-    // }
     const loadScriptByURL = (id, url, callback) => {
       const isScriptExist = document.getElementById(id);
  
@@ -56,30 +52,10 @@ export default class Register extends Component {
     this.onSubmit = this.onSubmit.bind(this)
   }
 
-  // setLoading = (val) => { this.loading = val  }
-  // setResponse = (val) => { this.response = val  }
-
-  // componentDidMount(){
-  //     document.body.style.background = "#17a2b8";
-  // }
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value })
   }
 
-  // handleOnClick = (e) => {
-  //   e.preventDefault();
-  //   this.setLoading(true);
-  //   if (window.grecaptcha == undefined || window.grecaptcha == null) {
-  //     alert("Failed to init reCAPTCHA");
-  //     return;
-  //   }
-  //   window.grecaptcha.ready(() => {
-  //     window.grecaptcha.execute(SITE_KEY, { action: 'submit' }).then(token => {
-  //       me.submitData(token);
-  //     });
-  //   });
-  // }
- 
   submitData = (token) => {
     // call a backend API to verify reCAPTCHA response
     verifyRecaptcha(token, resp => {
@@ -117,26 +93,8 @@ export default class Register extends Component {
         me.submitData(token);
       });
     });
-    // let recaptchaElem = document.getElementsByClassName('Recaptcha');
-    // console.log("-----------------------recaptchaElem: ", recaptchaElem);
-    // if (this.state.password !== this.state.c_password) {
-    //   alert("Invalid Password")
-    // }
-    // else if (this.state.first_name === '' || this.state.last_name === '' || this.state.email === '') {
-    //   alert("Enter all the fields")
-    // }
-    // else {
-    //   const newUser = {
-    //     first_name: this.state.first_name,
-    //     last_name: this.state.last_name,
-    //     email: this.state.email,
-    //     password: this.state.password
-    //   }
-    //   register(newUser).then(res => {
-    //     this.props.history.push(`/login`)
-    //   })
-    // }
   }
+  
   render() {
     return (
       <div>
