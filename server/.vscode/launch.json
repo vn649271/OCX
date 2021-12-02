@@ -6,7 +6,7 @@
     "configurations": [
         {
             "command": "npm run dev",
-            "name": "Run nodemon index.js",
+            "name": "Run npm dev",
             "request": "launch",
             "type": "node-terminal"
         }
