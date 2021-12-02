@@ -18,7 +18,7 @@ export const register = (newUser, onSuccessCallback) => {
         alert("Failed to register: " + response.data.message);
         return;
       }
-      onSuccessCallback();
+      onSuccessCallback(response.data);
     });
 };
 
