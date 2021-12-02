@@ -255,6 +255,7 @@ a {
 .exchange-btn {
     border-top-left-radius: 10px;
 }
+
 .liquidity-btn {
     border-top-right-radius: 10px;
 }
@@ -272,6 +273,20 @@ a {
     border-top-right-radius: 10px;
 }
 
+.mobile-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: none;
+    /* visibility: hidden; */
+}
+
+/* .chart-container {
+    width: 1000px !important;
+} */
+
 
 
 /* responsive */
@@ -280,15 +295,27 @@ a {
     html, body {
         font-size: 8px;
     }
+    
 }
 
 @media (max-width: 768px) {
     html, body {
         font-size: 8px;
     }
-
+    
+    .exchange-content {
+        flex-direction: column !important;
+    }
     .header-navgation {
         display: none !important;
+    }
+
+    .exchange-container {
+        margin-top: 0 !important;
+    }
+
+    .mobile-nav {
+       display: block;
     }
 
     .responsive-part {

@@ -7,6 +7,8 @@ import Earn from "../common/homepage/Earn";
 import Games from "../common/homepage/Games";
 import Cake from "../common/homepage/Cake";
 import Seconds from "../common/homepage/Seconds";
+import MobileNav from "../common/MobileNav";
+
 
 export default function Home() {
     return (
@@ -20,6 +22,7 @@ export default function Home() {
             <Seconds />
             <Games />
             <Footer />
+            <MobileNav />
         </div>
     );
 }
