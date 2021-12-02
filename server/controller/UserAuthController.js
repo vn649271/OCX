@@ -91,8 +91,7 @@ class UserAuthController {
     
     //send email
     sendEmail = (userInfo) => {
-        var toAddress = toAddress;
-        var token = token;
+        var toAddress = userInfo.email;
         
         var smtpConfig = {
             host: 'smtp.gmail.com',
@@ -106,11 +105,7 @@ class UserAuthController {
         var transporter = nodemailer.createTransport(smtpConfig);    
         let port = process.env.PORT;
         let mailContent = 
-            '<p>You requested for email verification, ' + 
-                'kindly use this ' + 
-                    `<a href="http://localhost:${port}/email/verify?token=${token}">link</a>` +
-                ' to verify your email address' +
-            '</p>';
+            '<p> 123456' + '</p>';
         var mailOptions = {
             from: process.env.ADMIN_GMAIL_ADDRESS,
             to: toAddress,
