@@ -294,22 +294,40 @@ a {
     right: 10px;
     border-radius: 5px;
     border: none;
-  }
-  .scroll:hover {
+}
+
+.scroll:hover {
     opacity: 1;
-  }
-  .scroll span {
+}
+
+.scroll span {
     color: white;
     position: absolute;
     top: 50%;
     left: 50%;
     margin-top: -9px;
     margin-left: -5px;
-  }
-  
-  .full-opacity {
+}
+
+.full-opacity {
     opacity: 1;
-  }
+}
+
+.google-button {
+    width: 100% !important;
+    margin: auto !important;
+    background-color: #01c1cc !important;
+    padding: 2px 5px !important;
+    margin-left: 10px !important;
+    font-family: Qualy-Light !important;
+    color: white !important;
+    font-weight: bold !important;
+}
+
+button:focus {
+    outline: none !important;
+    border: none  !important;
+}
 
 /* .chart-container {
     width: 1000px !important;
@@ -396,6 +414,24 @@ a {
 @media (max-width: 414px) {
     html, body {
         font-size: 6px;
+    }
+
+    .sign-logo {
+        width: 100px !important;
+        margin-bottom: 20px;
+    }
+
+    .signup-form {
+        flex-direction: column;
+    }
+
+    .signup-content {
+        width: 100% !important;
+        border: 0;
+    }
+
+    .auth-form {
+        width: 100%;
     }
 
     .main-container {

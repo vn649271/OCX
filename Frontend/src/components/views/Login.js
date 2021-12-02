@@ -8,9 +8,9 @@ const SITE_KEY = '6LdoC28dAAAAACQ6Wbl7YPpOZVGHr9H-YQBKUkAA'; //process.env.RECAP
 
 var me;
 
-export default class Login extends Component {
-  
-  
+export default class Sign extends Component {
+
+
   constructor(props) {
     super(props);
     me = this;
@@ -18,7 +18,7 @@ export default class Login extends Component {
     /***** Begin of initialization for reCAPTCHA ******/
     const loadScriptByURL = (id, url, callback) => {
       const isScriptExist = document.getElementById(id);
-  
+
       if (!isScriptExist) {
         var script = document.createElement("script");
         script.type = "text/javascript";
@@ -29,7 +29,7 @@ export default class Login extends Component {
         };
         document.body.appendChild(script);
       }
-  
+
       if (isScriptExist && callback) callback();
     }
     // load the script by passing the URL
@@ -37,7 +37,7 @@ export default class Login extends Component {
       console.log("Script loaded!");
     });
     /***** End of initialization for reCAPTCHA ******/
-    
+
     this.state = {
       email: '',
       password: '',
@@ -68,7 +68,7 @@ export default class Login extends Component {
       })
     });
   }
- 
+
   onSubmit(e) {
     e.preventDefault()
     if (window.grecaptcha == undefined || window.grecaptcha == null) {
@@ -87,50 +87,43 @@ export default class Login extends Component {
     return (
       <div>
         <Header />
-        <div id="login">
+        <div className="main-container p-20">
+          <div className="home-card mx-auto auth-form">
+            <form id="login-form" className="form" onSubmit={this.onSubmit}>
+              <p className="text-center main-font font-30 main-color-blue mb-10 capitalize">Sign In your account</p>
 
-          <div className="main-container">
-            <div
-              id="login-row"
-              className="flex justify-center items-center"
-            >
-              <div id="login-column" className="w-1/2">
-                <div id="login-box" className="w-full">
-                  <form id="login-form" className="form" onSubmit={this.onSubmit}>
-                    <h3 className="text-center text-info">Login</h3>
-                    <input
-                      type="email"
-                      className="block border border-grey-light w-full p-3 rounded mb-4"
-                      name="email"
-                      id="username"
-                      autoComplete="none"
-                      placeholder="Email"
-                      value={this.state.email}
-                      onChange={this.onChange} />
+              <input
+                type="email"
+                className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded mb-10"
+                name="email"
+                id="username"
+                autoComplete="none"
+                placeholder="Email"
+                value={this.state.email}
+                onChange={this.onChange}
+                autoComplete="off" />
 
-                    <input
-                      type="password"
-                      className="block border border-grey-light w-full p-3 rounded mb-4"
-                      name="password"
-                      autoComplete="none"
-                      value={this.state.password}
-                      onChange={this.onChange}
-                      placeholder="Password" />
+              <input
+                type="password"
+                className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded mb-10"
+                name="password"
+                autoComplete="none"
+                value={this.state.password}
+                onChange={this.onChange}
+                placeholder="Password"
+                autoComplete="off" />
 
-                    <input
-                      type="submit"
-                      className="w-full text-center py-3 rounded bg-green text-black hover:bg-green-dark focus:outline-none my-1"
-                      value="Login"
-                    />
+              <input
+                type="submit"
+                className="w-full text-center py-3 rounded button-bg text-white hover-transition font-14 main-font focus:outline-none m"
+                value="Login"
+              />
 
-                    <div id="register-link" className="text-right">
-
-                      <Link className="text-info" to="/register">Register here</Link>
-                    </div>
-                  </form>
-                </div>
+              <div className="main-font main-color font-14 my-8 capitalize">
+                Do you want create an account?
+                <Link className="border-b border-gray-400 main-color-blue ml-5" to="/register">Sign Up Here</Link>
               </div>
-            </div>
+            </form>
           </div>
         </div>
         <Footer />
