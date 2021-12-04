@@ -6,7 +6,7 @@ var session = require('express-session');
 var flash = require('express-flash');
 const cookieSession = require('cookie-session');
 const passport = require('passport');
-require('./utils/passportPreset');
+require('./utils/PassportPreset');
 require('dotenv').config();
 var randtoken = require('rand-token');
 

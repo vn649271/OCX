@@ -1,9 +1,11 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const User = require("../models/Users");
+const User = require("../models/Firestore/Users");
 var nodemailer = require('nodemailer');
 var randtoken = require('rand-token');
 require('dotenv').config();
+
+var TOKEN_GENERATION_SECRET_KEY = process.env.SECRET_KEY;
 
 var me;
 
@@ -20,11 +22,12 @@ class UserAuthController {
             email: req.body.email,
             password: req.body.password,
             token: "",
+            pin_code: "",
             status: 0,
             created_at: today,
             updated_at: today
         };
-        User.findOne({
+        new User().findOne({
             where: {
                 email: req.body.email
             }
@@ -33,8 +36,13 @@ class UserAuthController {
             if (!user) {
                 bcrypt.hash(req.body.password, 10, (err, hash) => {
                     userData.password = hash;
-                    User.create(userData).then(user => {
-                        me.sendEmail(user, res);
+                    new User().create(userData).then(newUserId => {
+                        if (newUserId === null) {
+                            res.json({ error: 1, message: "Failed to add new user" });
+                            return;
+			}
+                        me.sendEmail(newUserId, userData, res);
+			return;
                         // res.json({ status: user.email + " Registered" });
                     })
                     .catch(err => {
@@ -51,18 +59,23 @@ class UserAuthController {
     }
 
     login = (req, res) => {     
-        User.findOne({
+        new User().findOne({
             where: {
                 email: req.body.email
             }      
         })
         .then(user => {
             if (user) {
-              if(bcrypt.compareSync(req.body.password, user.password)){
-                    let token = jwt.sign(user.dataValues, process.env.SECRET_KEY, {
-                        expiresIn: 1440
-                    })
-                    res.send(token)
+                if(bcrypt.compareSync(req.body.password, user.password)){
+		    let lastToken = user.token;
+		    if  (lastToken === undefined || lastToken === null || lastToken == "") {
+                        lastToken = user.pin_code;
+		    }
+                    let token = jwt.sign({ token: lastToken }, TOKEN_GENERATION_SECRET_KEY, {
+                       expiresIn: 1440
+                    });
+		    let ret = new User().setToken(user.id, token);
+                    res.json({ error: 0, message: token });
                 } else {
                     res.status(400).json({error: 'Wrong Credendials'})
                 }
@@ -75,10 +88,10 @@ class UserAuthController {
         })
     }
 
-    verifyToken = (req, res) => {
-        User.findOne({
+    verifyPinCode = (req, res) => {
+        new User().findOne({
             where: {
-                token: req.body.pinCode
+                pin_code: req.body.pinCode
             }
         })
         .then(user => {
@@ -90,26 +103,8 @@ class UserAuthController {
         });
     }
 
-    updateToken = (email, token) => {
-        User.findOne({
-            where: {
-                email: email
-            }
-        })
-        .then(user => {
-            if (!user) {
-                res.status(400).json({ error: 'User does not exists' })
-                return;
-            }
-            user.update({'token': token})
-            .then(ret => {
-                // res.send(token);
-            });
-        });
-    }
-    
     //send email
-    sendEmail = (userInfo, response) => {
+    sendEmail = (newUserId, userInfo, response) => {
         var toAddress = userInfo.email;
         var smtpConfig = {
             host: 'smtp.gmail.com',
@@ -124,20 +119,19 @@ class UserAuthController {
         var pinCode = randtoken.generate(5);
         let mailContent = 
             '<p>You requested for email verification, ' + 
-                'kindly use this pin code <br>' + 
+                'kindly use this pin code <br><b>' + 
                     `${pinCode}` +
-                '<br> to verify your email address' +
+                '</b><br> to verify your email address' +
             '</p>';
-        this.updateToken(toAddress, pinCode);
+        let ret = new User().setPinCode(newUserId, pinCode);
         var mailOptions = {
             from: process.env.ADMIN_GMAIL_ADDRESS,
             to: toAddress,
             subject: 'Email verification - openchain.com',
             html: mailContent
         };
+
         transporter.sendMail(mailOptions, function(error) {
-            // response.json({ error: 0 } );
-            // return;
             if (error) {
                 console.log("####### Failed to send mail: ", error);
                 response.json({ error: 1, message: error.message } );
