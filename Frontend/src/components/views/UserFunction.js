@@ -11,9 +11,9 @@ export const register = (newUser, onSuccessCallback) => {
       country: newUser.country
     })
     .then(response => {
-      if (response != undefined && response != null &&
-      response.data != undefined && response.data != null &&
-      response.data.error != undefined && response.data.error != null &&
+      if (response !== undefined && response !== null &&
+      response.data !== undefined && response.data !== null &&
+      response.data.error !== undefined && response.data.error !== null &&
       response.data.error > 0) {
         alert("Failed to register: " + response.data.message);
         return;
@@ -43,10 +43,10 @@ export const verifyPinCode = (pinCode, onResponse) => {
       pinCode: pinCode
     })
     .then(response => {
-      if (response == undefined || response == null ||
-      response.data == undefined || response.data == null ||
-      response.data.verify == undefined || response.data.verify == null ||
-      response.data.verify - 0 == 0) {
+      if (response === undefined || response === null ||
+      response.data === undefined || response.data === null ||
+      response.data.verify === undefined || response.data.verify === null ||
+      response.data.verify - 0 === 0) {
         alert("Failed to verify recaptcha");
         return;
       }
@@ -63,10 +63,10 @@ export const verifyRecaptcha = (token, onResponse) => {
       "g-recaptcha-response": token
     })
     .then(response => {
-      if (response == undefined || response == null ||
-      response.data == undefined || response.data == null ||
-      response.data.verify == undefined || response.data.verify == null ||
-      response.data.verify - 0 == 0) {
+      if (response === undefined || response === null ||
+      response.data === undefined || response.data === null ||
+      response.data.verify === undefined || response.data.verify === null ||
+      response.data.verify - 0 === 0) {
         alert("Failed to verify recaptcha");
         return;
       }

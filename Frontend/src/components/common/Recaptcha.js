@@ -2,12 +2,10 @@ import { verifyRecaptcha } from "../views/UserFunction";
 
 const SITE_KEY = '6LdoC28dAAAAACQ6Wbl7YPpOZVGHr9H-YQBKUkAA'; //process.env.RECAPTCHA_SITE_KEY;
 
-var me;
 
 export default class RecaptchaComponent {
 
     constructor() {
-        me = this;
 
         /***** Begin of initialization for reCAPTCHA ******/
         const loadScriptByURL = (id, url, callback) => {

@@ -12,7 +12,6 @@
     "autoprefixer": "^9.8.6",
     "axios": "^0.19.0",
     "dotenv": "^10.0.0",
-    "express-favicon": "^2.0.1",
     "jwt-decode": "^2.2.0",
     "postcss": "^7.0.35",
     "react": "^17.0.1",
@@ -27,7 +26,7 @@
     "web-vitals": "^0.2.4"
   },
   "scripts": {
-    "start": "node server.js",
+    "start": "craco start",
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject"

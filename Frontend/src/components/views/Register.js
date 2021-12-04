@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { login, register, verifyRecaptcha, googleAuthenticaion } from "./UserFunction";
+import { register } from "./UserFunction";
 import Header from "../common/Header";
 import Footer from "../common/Footer";
 import signimg from '../common/assets/images/img/main-img.png';
@@ -8,7 +8,7 @@ import RecaptchaComponent from "../common/Recaptcha";
 
 import { GoogleLogin } from 'react-google-login';
 
-const GOOGLE_LOGIN_CLIENT_ID = '618639350562-ta19emhaehlhdoelghnv5176jketlah4.apps.googleusercontent.com';
+const GOOGLE_LOGIN_CLIENT_ID = '533897933750-s85rovfjr2p6tg1pes1qdi89l8vo829g.apps.googleusercontent.com';
 
 var me;
 
@@ -42,9 +42,9 @@ export default class Register extends Component {
   }
 
   responseGoogle = (response) => {
-    if (response == undefined || response == null ||
-    response.profileObj == undefined || response.profileObj == null ||
-    response.profileObj.email == undefined || response.profileObj.email == null ) {
+    if (response === undefined || response === null ||
+    response.profileObj === undefined || response.profileObj === null ||
+    response.profileObj.email === undefined || response.profileObj.email === null ) {
       alert("Invalid Google Acount Information");
       return;
     }
@@ -57,8 +57,8 @@ export default class Register extends Component {
       email_type: 1
     }
     register(newUser, res => {
-      if (res != undefined && res != null &&
-      res.error != undefined && res.error == 0) {
+      if (res !== undefined && res !== null &&
+      res.error !== undefined && res.error === 0) {
         me.props.history.push('/login')
       }
     })
@@ -103,7 +103,7 @@ export default class Register extends Component {
             <p className="text-center main-font font-30 main-color-blue mb-10 capitalize">Create a new account</p>
             <div className="flex signup-form">
               <div className="signup-content w-1/2 flex flex-col items-center justify-around p-20">
-                <img src={signimg} width={200} className="sign-logo" />
+                <img src={signimg} alt="sign-logo" width={200} className="sign-logo" />
                 <GoogleLogin
                   clientId={GOOGLE_LOGIN_CLIENT_ID}
                   buttonText="Google Singup"
@@ -121,7 +121,6 @@ export default class Register extends Component {
                       className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded mb-10"
                       name="first_name"
                       id="first_name"
-                      autoComplete="none"
                       placeholder="First Name"
                       value={this.state.first_name}
                       onChange={this.onChange} autoComplete="off" />
@@ -130,7 +129,6 @@ export default class Register extends Component {
                       className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded mb-10"
                       name="last_name"
                       id="last_name"
-                      autoComplete="none"
                       placeholder="Last Name"
                       value={this.state.last_name}
                       onChange={this.onChange} autoComplete="off" />
@@ -140,7 +138,6 @@ export default class Register extends Component {
                       className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded mb-10"
                       name="email"
                       id="email"
-                      autoComplete="none"
                       placeholder="Email"
                       value={this.state.email}
                       onChange={this.onChange} autoComplete="off" />
@@ -149,7 +146,6 @@ export default class Register extends Component {
                       type="password"
                       className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded mb-10"
                       name="password"
-                      autoComplete="none"
                       value={this.state.password}
                       onChange={this.onChange}
                       placeholder="Password" autoComplete="off" />
@@ -158,7 +154,6 @@ export default class Register extends Component {
                       className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded mb-10"
                       name="c_password"
                       id="c_password"
-                      autoComplete="none"
                       value={this.state.c_password}
                       onChange={this.onChange}
                       placeholder="Confirm Password" autoComplete="off" />
