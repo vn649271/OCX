@@ -9,7 +9,6 @@ export default class Foo extends React.Component {
 
         var ts2 = 1484418600000;
         var dates = [];
-        var spikes = [5, -5, 3, -3, 8, -8]
         for (var i = 0; i < 120; i++) {
             ts2 = ts2 + 86400000;
             dates.push([ts2, dataSeries[1][i].value])
@@ -57,7 +56,8 @@ export default class Foo extends React.Component {
                 }
             },
             stroke: {
-                curve: 'straight'
+                curve: 'straight',
+		width: 3
             },
             yaxis: {
                 min: 20000000,
@@ -73,9 +73,6 @@ export default class Foo extends React.Component {
             },
             xaxis: {
                 type: 'datetime',
-            },
-            stroke: {
-                width: 3
             },
             tooltip: {
                 shared: false,

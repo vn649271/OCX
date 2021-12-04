@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { login, verifyRecaptcha } from "./UserFunction";
+import { login } from "./UserFunction";
 import Header from "../common/Header";
 import Footer from "../common/Footer";
 import RecaptchaComponent from "../common/Recaptcha";
 import { GoogleLogin } from 'react-google-login';
 
-const GOOGLE_LOGIN_CLIENT_ID = '618639350562-ta19emhaehlhdoelghnv5176jketlah4.apps.googleusercontent.com';
+const GOOGLE_LOGIN_CLIENT_ID = '533897933750-s85rovfjr2p6tg1pes1qdi89l8vo829g.apps.googleusercontent.com';
 
 
 var me;
@@ -32,9 +32,9 @@ export default class Login extends Component {
   }
 
   responseGoogle = (response) => {
-    if (response == undefined || response == null ||
-    response.profileObj == undefined || response.profileObj == null ||
-    response.profileObj.email == undefined || response.profileObj.email == null ) {
+    if (response === undefined || response === null ||
+    response.profileObj === undefined || response.profileObj === null ||
+    response.profileObj.email === undefined || response.profileObj.email === null ) {
       alert("Invalid Google Acount Information");
       return;
     }
@@ -79,20 +79,19 @@ export default class Login extends Component {
           <div className="home-card mx-auto auth-form">
             <form id="login-form" className="form" onSubmit={this.onSubmit}>
               <p className="text-center main-font font-30 main-color-blue mb-10 capitalize">Sign In your account</p>
-              {/* <GoogleLogin
+              <GoogleLogin
                 clientId={GOOGLE_LOGIN_CLIENT_ID}
                 buttonText="Google Singup"
                 onSuccess={this.responseGoogle}
                 onFailure={this.responseGoogle}
                 className="google-button"
                 cookiePolicy={'single_host_origin'}
-              /> */}
+              />
               <input
                 type="email"
                 className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded mb-10"
                 name="email"
                 id="username"
-                autoComplete="none"
                 placeholder="Email"
                 value={this.state.email}
                 onChange={this.onChange}
@@ -102,7 +101,6 @@ export default class Login extends Component {
                 type="password"
                 className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded mb-10"
                 name="password"
-                autoComplete="none"
                 value={this.state.password}
                 onChange={this.onChange}
                 placeholder="Password"
