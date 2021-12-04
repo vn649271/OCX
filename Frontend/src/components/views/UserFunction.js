@@ -1,9 +1,10 @@
 import axios from "axios";
 
+var BACKEND_BASE_URL = "https://openchaindexbackend.dt.r.appspot.com";
 
 export const register = (newUser, onSuccessCallback) => {
   return axios
-    .post("http://localhost:5000/users/register", {
+    .post(BACKEND_BASE_URL + "/users/register", {
       first_name: newUser.first_name,
       last_name: newUser.last_name,
       email: newUser.email,
@@ -24,12 +25,12 @@ export const register = (newUser, onSuccessCallback) => {
 
 export const login = user => {
     return axios
-      .post('http://localhost:5000/users/login', {
+      .post(BACKEND_BASE_URL + "/users/login", {
         email: user.email,
         password: user.password
       })
       .then(response => {
-        localStorage.setItem('usertoken', response.data)
+        localStorage.setItem("usertoken", response.data)
         return response.data
       })
       .catch(err => {
@@ -39,7 +40,7 @@ export const login = user => {
 
 export const verifyPinCode = (pinCode, onResponse) => {
   return axios
-    .post('http://localhost:5000/users/verifyPinCode', {
+    .post(BACKEND_BASE_URL + "/users/verifyPinCode", {
       pinCode: pinCode
     })
     .then(response => {
@@ -59,8 +60,8 @@ export const verifyPinCode = (pinCode, onResponse) => {
 
 export const verifyRecaptcha = (token, onResponse) => {
   return axios
-    .post('http://localhost:5000/recaptcha', {
-      "g-recaptcha-response": token
+    .post(BACKEND_BASE_URL + "/recaptcha", {
+        "g-recaptcha-response": token
     })
     .then(response => {
       if (response === undefined || response === null ||
@@ -76,4 +77,3 @@ export const verifyRecaptcha = (token, onResponse) => {
       alert(err)
     })
 }
-

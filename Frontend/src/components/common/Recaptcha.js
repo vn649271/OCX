@@ -1,7 +1,6 @@
 import { verifyRecaptcha } from "../views/UserFunction";
 
-const SITE_KEY = '6LdoC28dAAAAACQ6Wbl7YPpOZVGHr9H-YQBKUkAA'; //process.env.RECAPTCHA_SITE_KEY;
-
+const SITE_KEY = "6LdoC28dAAAAACQ6Wbl7YPpOZVGHr9H-YQBKUkAA";
 
 export default class RecaptchaComponent {
 
@@ -32,12 +31,12 @@ export default class RecaptchaComponent {
 
     // call a backend API to verify reCAPTCHA response
     run(onSuccessCallback, params = null) {
-        if (window.grecaptcha == undefined || window.grecaptcha == null) {
+        if (window.grecaptcha === undefined || window.grecaptcha === null) {
             alert("Failed to init reCAPTCHA");
             return;
         }
         window.grecaptcha.ready(() => {
-            window.grecaptcha.execute(SITE_KEY, { action: 'submit' }).then(recaptchaToken => {
+            window.grecaptcha.execute(SITE_KEY, { action: "submit" }).then(recaptchaToken => {
                 verifyRecaptcha(recaptchaToken, resp => {
                     onSuccessCallback(params, recaptchaToken)
                 });
