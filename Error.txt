@@ -1,0 +1,10 @@
++ 2021-12-05
+  + Sign Up 
+    - Rename the button "Google Sign In" to "Google Login"
+    - Add mobile contact and mobile verification to "Google Sign Up"
+    - Add mobile number, email verification send and email verification code to "Email verification"
+    - Show passsword-double-check message
+    - Show wrong-password message
+    - Show password-requirement message
+    - Add email confirmation
+    - Check on the format for email
