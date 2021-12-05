@@ -106,10 +106,10 @@ export default class Register extends Component {
                 <img src={signimg} alt="sign-logo" width={200} className="sign-logo" />
                 <GoogleLogin
                   clientId={GOOGLE_LOGIN_CLIENT_ID}
-                  buttonText="Google Singup"
+                  buttonText="Google Sign Up"
                   onSuccess={this.responseGoogle}
                   onFailure={this.responseGoogle}
-                  className="google-button"
+                  className="google-signup-button"
                   cookiePolicy={'single_host_origin'}
                 />
               </div>

@@ -313,7 +313,7 @@ a {
     opacity: 1;
 }
 
-.google-button {
+.google-signup-button {
     width: 100% !important;
     margin: auto !important;
     background-color: #01c1cc !important;
@@ -322,6 +322,22 @@ a {
     font-family: Qualy-Light !important;
     color: white !important;
     font-weight: bold !important;
+}
+
+.google-login-button {
+    width: 100% !important;
+    margin: auto !important;
+    background-color: #01c1cc !important;
+    padding: 2px 5px !important;
+    margin-left: 0px !important;
+    margin-bottom: 30px !important;
+    font-family: Qualy-Light !important;
+    color: white !important;
+    font-weight: bold !important;
+}
+
+div.rememberme-container {
+    margin: 20px 0 20px 10px;
 }
 
 button:focus {
