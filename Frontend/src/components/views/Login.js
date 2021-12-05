@@ -24,11 +24,26 @@ export default class Login extends Component {
       errors: ''
     }
     this.recaptchaComponent = new RecaptchaComponent();
+    
 
     this.onChange = this.onChange.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
     this.submitData = this.submitData.bind(this)
     this.responseGoogle = this.responseGoogle.bind(this)
+  }
+  
+  componentDidMount() {
+    this.rmCheck = document.getElementById("rememberMe");
+    this.emailInput = document.getElementById("username");
+    
+    if (localStorage.checkbox && localStorage.checkbox !== "") {
+        this.rmCheck.setAttribute("checked", "checked");
+	this.setState({ email: localStorage.username });
+        // this.emailInput.value = localStorage.username;
+    } else {
+        this.rmCheck.removeAttribute("checked");
+        this.emailInput.value = "";
+    }
   }
 
   responseGoogle = (response) => {
@@ -49,6 +64,7 @@ export default class Login extends Component {
       }
     })
   }
+  
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value })
   }
@@ -67,7 +83,16 @@ export default class Login extends Component {
   }
 
   onSubmit(e) {
-    e.preventDefault()
+    e.preventDefault();
+
+    if (this.rmCheck.checked && this.emailInput.value !== "") {
+        localStorage.username = this.emailInput.value;
+        localStorage.checkbox = this.rmCheck.value;
+    } else {
+        localStorage.username = "";
+        localStorage.checkbox = "";
+    }
+
     this.recaptchaComponent.run(this.submitData);
   }
 
@@ -81,10 +106,10 @@ export default class Login extends Component {
               <p className="text-center main-font font-30 main-color-blue mb-10 capitalize">Sign In your account</p>
               <GoogleLogin
                 clientId={GOOGLE_LOGIN_CLIENT_ID}
-                buttonText="Google Singup"
+                buttonText="Google Sign In"
                 onSuccess={this.responseGoogle}
                 onFailure={this.responseGoogle}
-                className="google-button"
+                className="google-login-button"
                 cookiePolicy={'single_host_origin'}
               />
               <input
@@ -104,12 +129,21 @@ export default class Login extends Component {
                 value={this.state.password}
                 onChange={this.onChange}
                 placeholder="Password"
-                autoComplete="off" />
-
+                 autoComplete="off" />
+	      <div className="flex items-center rememberme-container">
+                <input 
+	          type="checkbox" 
+	          value="lsRememberMe" 
+	          id="rememberMe" /> 
+	        <label 
+	          for="rememberMe" className="main-font main-color ml-3 font-14">
+	            Remember me
+	        </label>
+	      </div>
               <input
                 type="submit"
                 className="w-full text-center py-3 rounded button-bg text-white hover-transition font-14 main-font focus:outline-none m"
-                value="Login"
+                value="Sign In"
               />
 
               <div className="main-font main-color font-14 my-8 capitalize">
