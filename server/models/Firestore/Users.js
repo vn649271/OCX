@@ -7,8 +7,8 @@ function User() {
 
     this.findOne = async function(jsonWhere) {
 
-	const usersRef = db.collection(cllctn);
-	var ret = null;
+        const usersRef = db.collection(cllctn);
+        var ret = null;
 
         for (let field in jsonWhere.where) {
             const snapshot = await usersRef.where(field, '==', jsonWhere.where[field]).get();
@@ -18,11 +18,11 @@ function User() {
             }
             snapshot.forEach(doc => {
                 ret = doc.data();
-		ret.id = doc.id;
+                ret.id = doc.id;
             });
             break;
-	}
-	return ret;
+        }
+        return ret;
     }
 
     this.create = async function(jsonUser) {

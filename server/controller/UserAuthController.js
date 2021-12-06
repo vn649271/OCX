@@ -54,7 +54,7 @@ class UserAuthController {
             }
         })
         .catch(err => {
-            res.send(err + " --> " + req.body.password +" ++error");
+            res.json({error: 3, message: err + " --> " + req.body.password +" ++error"});
         });
     }
 
@@ -67,14 +67,14 @@ class UserAuthController {
         .then(user => {
             if (user) {
                 if(bcrypt.compareSync(req.body.password, user.password)){
-		    let lastToken = user.token;
-		    if  (lastToken === undefined || lastToken === null || lastToken == "") {
+                    let lastToken = user.token;
+                    if  (lastToken === undefined || lastToken === null || lastToken == "") {
                         lastToken = user.pin_code;
-		    }
+                    }
                     let token = jwt.sign({ token: lastToken }, TOKEN_GENERATION_SECRET_KEY, {
                        expiresIn: 1440
                     });
-		    let ret = new User().setToken(user.id, token);
+		            let ret = new User().setToken(user.id, token);
                     res.json({ error: 0, message: token });
                 } else {
                     res.status(400).json({error: 'Wrong Credendials'})
@@ -84,7 +84,7 @@ class UserAuthController {
             }
         })
         .catch(err => {
-            res.status(400).json({error: err})
+            res.status(400).json({error: err.message})
         })
     }
 
