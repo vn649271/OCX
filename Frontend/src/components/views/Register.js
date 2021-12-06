@@ -362,7 +362,6 @@ export default class Register extends Component {
                         placeholder="Email"
                         value={this.state.email}
                         onChange={this.handleInputChange} autoComplete="off" />
-                      <button className="absolute border border-grey-light button-bg p-5 font-16 main-font focus:outline-none rounded text-white verify-button">Send Code</button>
                       <span className="help-block main-font text-red-400 font-14">{this.state.errors.email}</span>
                     </div>
                     <div className="mb-10">
