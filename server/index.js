@@ -54,5 +54,5 @@ app.use('/recaptcha', recaptchaRouter);
 app.use('/google', gmailAuthRouter);
 
 app.listen(port, () => {
-  console.log("server running");
+  console.log("server running at ", port);
 });
