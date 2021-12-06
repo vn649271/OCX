@@ -13,6 +13,7 @@ import MobileNav from "../common/MobileNav";
 
 
 export default function Home() {
+    
     return (
         <div>
             <Header />

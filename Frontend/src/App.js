@@ -6,6 +6,7 @@ import Liquidity from "./components/views/Liquidity";
 import Login from './components/views/Login'
 import Register from './components/views/Register'
 import Confirm from "./components/views/Confirm";
+import Dashboard from "./components/views/Dashboard";
 
 function App() {
   return (
@@ -15,6 +16,9 @@ function App() {
       </Route>
       <Route exact path="/home">
         <Homepage />
+      </Route>
+      <Route exact path="/dashboard">
+        <Dashboard />
       </Route>
       <Route exact path="/exchange">
         <Exchange />

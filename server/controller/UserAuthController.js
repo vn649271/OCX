@@ -130,10 +130,10 @@ class UserAuthController {
             subject: 'Email verification - openchain.com',
             html: mailContent
         };
-
+        response.json({ error: 0 });
+        return;
         transporter.sendMail(mailOptions, function (error) {
-            response.json({ error: 0 });
-            return;
+
             if (error) {
                 console.log("####### Failed to send mail: ", error);
                 response.json({ error: 1, message: error.message });
