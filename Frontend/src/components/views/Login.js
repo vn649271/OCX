@@ -24,32 +24,33 @@ export default class Login extends Component {
       errors: ''
     }
     this.recaptchaComponent = new RecaptchaComponent();
-    
+
 
     this.onChange = this.onChange.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
     this.submitData = this.submitData.bind(this)
     this.responseGoogle = this.responseGoogle.bind(this)
   }
-  
+
   componentDidMount() {
     this.rmCheck = document.getElementById("rememberMe");
     this.emailInput = document.getElementById("username");
-    
+
     if (localStorage.checkbox && localStorage.checkbox !== "") {
-        this.rmCheck.setAttribute("checked", "checked");
-	this.setState({ email: localStorage.username });
-        // this.emailInput.value = localStorage.username;
+      this.rmCheck.setAttribute("checked", "checked");
+      this.setState({ email: localStorage.username });
+      // this.emailInput.value = localStorage.username;
     } else {
-        this.rmCheck.removeAttribute("checked");
-        this.emailInput.value = "";
+      this.rmCheck.removeAttribute("checked");
+      this.emailInput.value = "";
     }
+    document.getElementsByClassName('profile-dropdown-menu')[0].classList.add('hidden');
   }
 
   responseGoogle = (response) => {
     if (response === undefined || response === null ||
-    response.profileObj === undefined || response.profileObj === null ||
-    response.profileObj.email === undefined || response.profileObj.email === null ) {
+      response.profileObj === undefined || response.profileObj === null ||
+      response.profileObj.email === undefined || response.profileObj.email === null) {
       alert("Invalid Google Acount Information");
       return;
     }
@@ -59,12 +60,13 @@ export default class Login extends Component {
       password: profile.googleId
     }
     login(user).then(res => {
+      console.log(res);
       if (res) {
-        me.props.history.push('/home')
+        me.props.history.push('/dashboard')
       }
     })
   }
-  
+
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value })
   }
@@ -77,7 +79,9 @@ export default class Login extends Component {
     }
     login(user).then(res => {
       if (res) {
-        me.props.history.push('/home')
+        localStorage.userToken = res.message;
+        localStorage.email = this.state.email;
+        me.props.history.push('/dashboard')
       }
     })
   }
@@ -86,11 +90,11 @@ export default class Login extends Component {
     e.preventDefault();
 
     if (this.rmCheck.checked && this.emailInput.value !== "") {
-        localStorage.username = this.emailInput.value;
-        localStorage.checkbox = this.rmCheck.value;
+      localStorage.username = this.emailInput.value;
+      localStorage.checkbox = this.rmCheck.value;
     } else {
-        localStorage.username = "";
-        localStorage.checkbox = "";
+      localStorage.username = "";
+      localStorage.checkbox = "";
     }
 
     this.recaptchaComponent.run(this.submitData);
@@ -129,17 +133,17 @@ export default class Login extends Component {
                 value={this.state.password}
                 onChange={this.onChange}
                 placeholder="Password"
-                 autoComplete="off" />
-	      <div className="flex items-center rememberme-container">
-                <input 
-	          type="checkbox" 
-	          value="lsRememberMe" 
-	          id="rememberMe" /> 
-	        <label 
-	          htmlFor="rememberMe" className="main-font main-color ml-3 font-14">
-	            Remember me
-	        </label>
-	      </div>
+                autoComplete="off" />
+              <div className="flex items-center rememberme-container">
+                <input
+                  type="checkbox"
+                  value="lsRememberMe"
+                  id="rememberMe" />
+                <label
+                  htmlFor="rememberMe" className="main-font main-color ml-3 font-14">
+                  Remember me
+                </label>
+              </div>
               <input
                 type="submit"
                 className="w-full text-center py-3 rounded button-bg text-white hover-transition font-14 main-font focus:outline-none m"

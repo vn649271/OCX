@@ -8,6 +8,8 @@ import FormValidator from '../common/FormValidator';
 import Alert from "../common/Alert"
 import signimg from '../common/assets/images/img/main-img.png';
 import RecaptchaComponent from "../common/Recaptcha";
+import 'react-phone-number-input/style.css'
+import PhoneInput from 'react-phone-number-input'
 
 import { GoogleLogin } from 'react-google-login';
 
@@ -38,6 +40,7 @@ export default class Register extends Component {
     this.setPassword = this.setPassword.bind(this)
     this.setPasswordConfirm = this.setPasswordConfirm.bind(this)
     this.validate = this.validate.bind(this)
+    this.onPhone4EmailChange = this.onPhone4EmailChange.bind(this)
 
     /*
     this.validator = new FormValidator([{
@@ -63,12 +66,12 @@ export default class Register extends Component {
       args: [/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/],
       message: 'Enter valid email address (like "victor@gmail.com").'
     }, {
-      field: 'phone',
+      field: 'phone_for_email',
       method: 'isEmpty',
       validWhen: false,
-      message: 'Enter a phone number.'
+      message: 'Enter a phone_for_email number.'
     }, {
-      field: 'phone',
+      field: 'phone_for_email',
       method: 'matches',
       args: [/^\(?\d\d\d\)? ?\d\d\d-?\d\d\d\d$/],
       validWhen: true,
@@ -96,6 +99,7 @@ export default class Register extends Component {
   passwordMatch = (confirmation, state) => (state.password === confirmation)
 
   componentDidMount() {
+    document.getElementsByClassName('profile-dropdown-menu')[0].classList.add('hidden');
   }
 
   handleInputChange = event => {
@@ -107,13 +111,25 @@ export default class Register extends Component {
     });
   }
 
+  onPhone4EmailChange = val => {
+    console.log(val)
+    this.state.input.phone_for_email = val;
+    console.log(this.state.input);
+  }
+
+  onPhone4GmailChange = val => {
+    console.log(val)
+    this.state.input.phone_for_gmail = val;
+    console.log(this.state.input);
+  }
+
   validate = () => {
     let input = this.state.input;
     let errors = {
       first_name: '',
       last_name: '',
       email: '',
-      phone: '',
+      phone_for_email: '',
       password: '',
       confirm_password: '',
     };
@@ -184,20 +200,20 @@ export default class Register extends Component {
       }
     }
 
-    if (!input["phone"]) {
+    if (!input["phone_for_email"]) {
       isValid = false;
-      errors["phone"] = 'Please enter phone number';
+      errors["phone_for_email"] = 'Please enter phone number';
     }
     // pattern = new RegExp(/((\(\d{3}\) ?)|(\d{3}-))?\d{3}-\d{4}/);
     // if (!pattern.test(input["email"])) {
     //   isValid = false;
-    //   errors["phone"] = 'Please enter valid phone number(10 digits)';
+    //   errors["phone_for_email"] = 'Please enter valid phone number(10 digits)';
     // }
-    
+
     // pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
-    // if (!pattern.test(input["phone"])) {
+    // if (!pattern.test(input["phone_for_email"])) {
     //   isValid = false;
-    //   errors["phone"] = 'Please enter valid phone number';
+    //   errors["phone_for_email"] = 'Please enter valid phone number';
     // }
 
     this.setState({
@@ -212,6 +228,7 @@ export default class Register extends Component {
 
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value })
+    console.log(e.target)
   }
 
   responseGoogle = (response) => {
@@ -243,7 +260,8 @@ export default class Register extends Component {
       last_name: me.state.input.last_name,
       email_type: 0,
       email: me.state.input.email,
-      password: me.state.input.password
+      password: me.state.input.password,
+      phone_for_email: me.state.input.phone_for_email
     }
     register(newUser, () => {
       me.props.history.push(`/confirm`)
@@ -256,14 +274,6 @@ export default class Register extends Component {
     if (this.validate()) {
       console.log("validation OK!");
       this.recaptchaComponent.run(this.submitData);
-      // let input = {};
-      // input["first_name"] = "";
-      // input["last_name"] = "";
-      // input["email"] = "";
-      // input["phone"] = "";
-      // input["password"] = "";
-      // input["confirm_password"] = "";
-      // this.setState({ input: input });
     }
   }
 
@@ -279,22 +289,31 @@ export default class Register extends Component {
               <div className="signup-content w-1/2 flex flex-col items-center justify-center p-20 md:p-10">
                 <img src={signimg} alt="sign-logo" width={200} className="sign-logo mb-16" />
                 <div className="signup-content_box w-full relative">
-                  <div className="phone-verify-notification mb-10">
+                  <div className="mb-10">
+                    <PhoneInput
+                      placeholder="Enter phone number"
+                      name="phone_for_gmail"
+                      value={this.state.phone_for_email}
+                      onChange={this.onPhone4GmailChange}
+                      className="phone-for-gmail block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded" />
+                    <button className="absolute border border-grey-light button-bg p-5 font-16 main-font focus:outline-none rounded text-white verify-button">Send Code</button>
+                  </div>
+                  {/* <div className="phone-verify-notification mb-10">
                     <input
                       type="phone"
                       className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded "
-                      name="phone"
-                      // value={this.state.phone}
+                      name="phone_for_email"
+                      // value={this.state.phone_for_email}
                       onChange={this.handleInputChange}
                       placeholder="Phone Number" autoComplete="off" />
                     <button className="absolute border border-grey-light button-bg p-5 font-16 main-font focus:outline-none rounded text-white verify-button">Send Code</button>
-                    <span className="help-block main-font text-red-400 font-16">{this.state.errors.phone}</span>
-                  </div>
+                    <span className="help-block main-font text-red-400 font-16">{this.state.errors.phone_for_email}</span>
+                  </div> */}
                   <input
                     type="text"
                     className="block border border-grey-light bg-gray-100  w-full p-5 mb-10 font-16 main-font focus:outline-none rounded "
                     name="verification-code"
-                    // value={this.state.phone}
+                    // value={this.state.phone_for_email}
                     onChange={this.handleInputChange}
                     placeholder="Verification Code" autoComplete="off" />
                   <GoogleLogin
@@ -347,14 +366,14 @@ export default class Register extends Component {
                       <span className="help-block main-font text-red-400 font-14">{this.state.errors.email}</span>
                     </div>
                     <div className="mb-10">
-                      <input
-                        type="phone"
-                        className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded "
-                        name="phone"
-                        value={this.state.phone}
-                        onChange={this.handleInputChange}
-                        placeholder="Phone Number" autoComplete="off" />
-                      <span className="help-block main-font text-red-400 font-14">{this.state.errors.phone}</span>
+                      <PhoneInput
+                        placeholder="Enter phone number"
+                        name="phone_for_email"
+                        value={this.state.phone_for_email}
+                        onChange={this.onPhone4EmailChange}
+                        className="phone-for-email block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded" />
+
+                      <span className="help-block main-font text-red-400 font-14">{this.state.errors.phone_for_email}</span>
                     </div>
                     <div className="mb-10">
                       <input
