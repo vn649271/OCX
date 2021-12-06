@@ -285,8 +285,8 @@ export default class Register extends Component {
           <div className="home-card w-full">
             <p className="text-center main-font font-30 main-color-blue mb-10 capitalize">Create a new account</p>
             <div className="flex signup-form">
-              <div className="signup-content w-1/2 flex flex-col items-center justify-center p-20 md:p-10">
-                <img src={signimg} alt="sign-logo" width={200} className="sign-logo mb-16" />
+              <div className="signup-content w-1/2 flex flex-col items-center justify-center p-20 md:pb-10 md:pt-0">
+                <img src={signimg} alt="sign-logo" width={150} className="sign-logo mb-14" />
                 <div className="signup-content_box w-full relative">
                   <div className="mb-10">
                     <PhoneInput
@@ -328,8 +328,8 @@ export default class Register extends Component {
               <div className="w-1/2 signup-content border-l border-gray-300 pl-20 md:pl-10 pr-20">
                 {/* <form id="reg-form" className="form" onSubmit={this.onSubmit} autoComplete="off"> */}
                   <div className="text-black">
-                    <div className="flex">
-                      <div className="mb-10 ml-2">
+                    <div className="flex w-full">
+                      <div className="mb-10 w-full md:w-1/2">
                         <input
                           type="text"
                           className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded "
@@ -340,7 +340,7 @@ export default class Register extends Component {
                           onChange={this.handleInputChange} autoComplete="off" />
                         <span className="help-block main-font text-red-400 font-16">{this.state.errors.first_name}</span>
                       </div>
-                      <div className="mb-10 ml-2">
+                      <div className="mb-10 ml-2 w-full md:w-1/2">
                         <input
                           type="text"
                           className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded "
