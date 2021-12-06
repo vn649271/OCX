@@ -5,6 +5,7 @@ import Header from "../common/Header";
 import Footer from "../common/Footer";
 import RecaptchaComponent from "../common/Recaptcha";
 import { GoogleLogin } from 'react-google-login';
+import Alert from "../common/Alert";
 
 const GOOGLE_LOGIN_CLIENT_ID = '533897933750-s85rovfjr2p6tg1pes1qdi89l8vo829g.apps.googleusercontent.com';
 
@@ -49,9 +50,9 @@ export default class Login extends Component {
 
   responseGoogle = (response) => {
     if (response === undefined || response === null ||
-      response.profileObj === undefined || response.profileObj === null ||
-      response.profileObj.email === undefined || response.profileObj.email === null) {
-      alert("Invalid Google Acount Information");
+    response.profileObj === undefined || response.profileObj === null ||
+    response.profileObj.email === undefined || response.profileObj.email === null) {
+      Alert("Invalid Google Acount Information");
       return;
     }
     let profile = response.profileObj;
@@ -60,7 +61,6 @@ export default class Login extends Component {
       password: profile.googleId
     }
     login(user).then(res => {
-      console.log(res);
       if (res) {
         me.props.history.push('/dashboard')
       }

@@ -5,7 +5,7 @@ const request_func = require('request');
 router.post('/', function(req, res) {
     if(req.body['g-recaptcha-response'] === undefined || req.body['g-recaptcha-response'] === '' || req.body['g-recaptcha-response'] === null)
     {
-        return res.json({"responseError" : "something goes to wrong"});
+        return res.json({error: 1, message: "There something is wrong in recaptcha"});
     }
     const secretKey = process.env.RECAPTCHA_SECRET_KEY;
     const verificationURL = 
@@ -16,11 +16,9 @@ router.post('/', function(req, res) {
     request_func(verificationURL,function(error, response, body) {
         body = JSON.parse(body);
         if(body.success !== undefined && !body.success) {
-            return res.json({"responseError" : "Failed captcha verification"});
+            return res.json({error: 2, message: "Failed captcha verification"});
         }
-        // req.flash("success", "Recaptcha passed");
-        // res.redirect('/');
-        res.json({"verify" : 1});
+        res.json({error: 0});
     });
 });
 

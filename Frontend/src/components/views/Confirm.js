@@ -1,27 +1,39 @@
 import React, { Component } from "react";
 import Header from "../common/Header";
 import Footer from "../common/Footer";
-import { verifyPinCode } from "./UserFunction";
+import Alert from "../common/Alert";
+import { verifyPinCode, requestPinCodeAgain } from "./UserFunction";
 
 
 export default class Confirm extends Component {
   constructor(props) {
     super(props);
-    this.onChange = this.onChange.bind(this);
+
+    this.onVerifyComplete = this.onVerifyComplete.bind(this)
+    this.onVerify = this.onVerify.bind(this);
+    this.onRequestPinCodeAgain = this.onRequestPinCodeAgain.bind(this)
 
     this.state = {
-      verifyCode: ''
+      verifyCode: '',
+      email: props.location.state.email
     }
   }
 
-  onChange = e => {
-    verifyPinCode(e.target.value, ret => {
-      if (ret) {
-        this.props.history.push(`/login`)
-      } else {
-        console.log("Invalid Pin Code");
-      }
-    })
+  onVerifyComplete(ret) {
+    if (!ret.error) {
+      this.props.history.push(`/login`)
+    } else {
+      Alert(ret.message);
+    }
+  }
+
+  onVerify = e => {
+    let confirmCode = document.getElementById('confirm_code').value;
+    verifyPinCode(confirmCode, this.onVerifyComplete)
+  }
+
+  onRequestPinCodeAgain = e => {
+    requestPinCodeAgain(this.state.email);
   }
 
   render() {
@@ -39,14 +51,13 @@ export default class Confirm extends Component {
             <input
               type="text"
               className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded mb-10"
-              name="confirm"
+              name="confirm_code"
               placeholder="Verifycode"
-              id="confirm"
-              onChange={this.onChange}
+              id="confirm_code"
               // value={this.state.verifyCode}
               autoComplete="off" />
-          <button type="button" className="button-bg main-font text-white w-full block hover-transition blue-border rounded-lg py-3 my-10 font-16">Confirm</button>
-          <button type="button" className="bg-white main-font main-color-blue w-full block blue-border  hover-transition rounded-lg py-3 my-3 font-16">Resend Code</button>
+            <button type="button" onClick={this.onVerify} className="button-bg main-font text-white w-full block hover-transition blue-border rounded-lg py-3 my-10 font-16">Confirm</button>
+            <button type="button" onClick={this.onRequestPinCodeAgain} className="bg-white main-font main-color-blue w-full block blue-border  hover-transition rounded-lg py-3 my-3 font-16">Resend Code</button>
           </div>
         </div>
         <Footer />

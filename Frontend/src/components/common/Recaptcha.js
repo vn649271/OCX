@@ -1,4 +1,5 @@
 import { verifyRecaptcha } from "../views/UserFunction";
+import Alert from "./Alert";
 
 const SITE_KEY = "6LdoC28dAAAAACQ6Wbl7YPpOZVGHr9H-YQBKUkAA";
 
@@ -32,7 +33,7 @@ export default class RecaptchaComponent {
     // call a backend API to verify reCAPTCHA response
     run(onSuccessCallback, params = null) {
         if (window.grecaptcha === undefined || window.grecaptcha === null) {
-            alert("Failed to init reCAPTCHA");
+            Alert("Failed to init reCAPTCHA");
             return;
         }
         window.grecaptcha.ready(() => {

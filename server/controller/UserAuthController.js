@@ -14,6 +14,23 @@ class UserAuthController {
         me = this;
     }
 
+    requestPinCodeAgain = (req, res) => {
+        new User().findOne({
+            where: {
+                email: req.body.email
+            }
+        }).then(user => {
+            if (user) {
+                me.sendEmail(user.id, user, res);
+                return;
+            } else {
+                res.json({ error: 1, message: "User already exists" });
+            }
+        }).catch(err => {
+            res.json({ error: 3, message: err + " --> " + req.body.password + " ++error" });
+        });
+    }
+
     register = (req, res) => {
         let today = new Date().toISOString().substr(0, 10);
         const userData = {
@@ -31,31 +48,28 @@ class UserAuthController {
             where: {
                 email: req.body.email
             }
-        })
-            .then(user => {
-                if (!user) {
-                    bcrypt.hash(req.body.password, 10, (err, hash) => {
-                        userData.password = hash;
-                        new User().create(userData).then(newUserId => {
-                            if (newUserId === null) {
-                                res.json({ error: 1, message: "Failed to add new user" });
-                                return;
-                            }
-                            me.sendEmail(newUserId, userData, res);
+        }).then(user => {
+            if (!user) {
+                bcrypt.hash(req.body.password, 10, (err, hash) => {
+                    userData.password = hash;
+                    new User().create(userData).then(newUserId => {
+                        if (newUserId === null) {
+                            res.json({ error: 1, message: "Failed to add new user" });
                             return;
-                            // res.json({ status: user.email + " Registered" });
-                        })
-                            .catch(err => {
-                                res.send(err + " ==error");
-                            });
+                        }
+                        me.sendEmail(newUserId, userData, res);
+                        return;
+                        // res.json({ status: user.email + " Registered" });
+                    }).catch(err => {
+                        res.json({error: 1, message: err + " ==error"});
                     });
-                } else {
-                    res.json({ error: 1, message: "User already exists" });
-                }
-            })
-            .catch(err => {
-                res.json({ error: 3, message: err + " --> " + req.body.password + " ++error" });
-            });
+                });
+            } else {
+                res.json({ error: 2, message: "User already exists" });
+            }
+        }).catch(err => {
+            res.json({ error: 3, message: err + " --> " + req.body.password + " ++error" });
+        });
     }
 
     login = (req, res) => {
@@ -63,29 +77,27 @@ class UserAuthController {
             where: {
                 email: req.body.email
             }
-        })
-            .then(user => {
-                if (user) {
-                    if (bcrypt.compareSync(req.body.password, user.password)) {
-                        let lastToken = user.token;
-                        if (lastToken === undefined || lastToken === null || lastToken == "") {
-                            lastToken = user.pin_code;
-                        }
-                        let token = jwt.sign({ token: lastToken }, TOKEN_GENERATION_SECRET_KEY, {
-                            expiresIn: 1440
-                        });
-                        let ret = new User().setToken(user.id, token);
-                        res.json({ error: 0, message: token });
-                    } else {
-                        res.status(400).json({ error: 'Wrong Credendials' })
+        }).then(user => {
+            if (user) {
+                if (bcrypt.compareSync(req.body.password, user.password)) {
+                    let lastToken = user.token;
+                    if (lastToken === undefined || lastToken === null || lastToken == "") {
+                        lastToken = user.pin_code;
                     }
+                    let token = jwt.sign({ token: lastToken }, TOKEN_GENERATION_SECRET_KEY, {
+                        expiresIn: 1440
+                    });
+                    let ret = new User().setToken(user.id, token);
+                    res.json({ error: 0, message: token });
                 } else {
-                    res.status(400).json({ error: 'User does not exists' })
+                    res.status(400).json({ error: 'Wrong Credendials' })
                 }
-            })
-            .catch(err => {
-                res.status(400).json({ error: err.message })
-            })
+            } else {
+                res.status(400).json({ error: 'User does not exists' })
+            }
+        }).catch(err => {
+            res.status(400).json({ error: err.message })
+        })
     }
 
     verifyPinCode = (req, res) => {
@@ -93,14 +105,17 @@ class UserAuthController {
             where: {
                 pin_code: req.body.pinCode
             }
-        })
-            .then(user => {
-                if (!user) {
-                    res.json({ verify: 0 });
-                    return;
-                }
-                res.json({ verify: 1 });
-            });
+        }).then(user => {
+            if (!user) {
+                res.json({ error: 1, message: 'Failed to verify with code from Email' });
+                return;
+            }
+            if (user.status > 0) {
+                res.json({ error: 2, message: 'The verification code was used already' });
+                return;
+            }
+            res.json({ error: 0 });
+        });
     }
 
     //send email

@@ -1,4 +1,5 @@
 import axios from "axios";
+import Alert from "../common/Alert";
 
 // var BACKEND_BASE_URL = "https://openchaindexbackend.dt.r.appspot.com";
 var BACKEND_BASE_URL = "http://localhost:5000";
@@ -17,7 +18,7 @@ export const register = (newUser, onSuccessCallback) => {
                 response.data !== undefined && response.data !== null &&
                 response.data.error !== undefined && response.data.error !== null &&
                 response.data.error > 0) {
-                alert("Failed to register: " + response.data.message);
+                Alert("Failed to register: " + response.data.message);
                 return;
             }
             onSuccessCallback(response.data);
@@ -35,7 +36,7 @@ export const login = user => {
             return response.data
         })
         .catch(err => {
-            alert(err)
+            Alert(err)
         })
 }
 
@@ -46,16 +47,38 @@ export const verifyPinCode = (pinCode, onResponse) => {
         })
         .then(response => {
             if (response === undefined || response === null ||
-                response.data === undefined || response.data === null ||
-                response.data.verify === undefined || response.data.verify === null ||
-                response.data.verify - 0 === 0) {
-                alert("Failed to verify recaptcha");
+            response.data === undefined || response.data === null ||
+            response.data.error === undefined || response.data.error === null ||
+            response.data.error - 0 > 0) {
+                Alert("Failed to verify code: ", response.data.message);
                 return;
             }
-            onResponse(response.data.verify);
+            onResponse(response.data.error);
         })
         .catch(err => {
-            alert(err)
+            Alert(err)
+        })
+}
+
+export const requestPinCodeAgain = (email, onResponse) => {
+    return axios
+        .post(BACKEND_BASE_URL + "/users/requestPinCodeAgain", {
+            email: email
+        })
+        .then(response => {
+            if (response === undefined || response === null ||
+            response.data === undefined || response.data === null ||
+            response.data.error === undefined || response.data.error === null ||
+            response.data.error - 0 > 0) {
+                Alert("Failed to verify code: ", response.data.message);
+                return;
+            }
+            if (onResponse) {
+                onResponse(response.data.error);
+            }
+        })
+        .catch(err => {
+            Alert(err)
         })
 }
 
@@ -66,15 +89,15 @@ export const verifyRecaptcha = (token, onResponse) => {
         })
         .then(response => {
             if (response === undefined || response === null ||
-                response.data === undefined || response.data === null ||
-                response.data.verify === undefined || response.data.verify === null ||
-                response.data.verify - 0 === 0) {
-                alert("Failed to verify recaptcha");
+            response.data === undefined || response.data === null ||
+            response.data.error === undefined || response.data.error === null ||
+            response.data.error - 0 > 0) {
+                Alert("Failed to verify code: ", response.data.message);
                 return;
             }
-            onResponse(response.data.verify);
+            onResponse(response.data.error);
         })
         .catch(err => {
-            alert(err)
+            Alert(err)
         })
 }

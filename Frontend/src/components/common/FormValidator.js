@@ -9,7 +9,6 @@ class FormValidator {
     // for each validation rule
     this.validations.forEach(rule => {
       if (!validation[rule.field].isInvalid) {
-        console.log("validation field: ", rule.field);
         const field_value = state[rule.field].toString();
         const args = rule.args || [];
         const validation_method = typeof rule.method === 'string' ? validator[rule.method] : rule.method
