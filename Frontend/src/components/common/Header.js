@@ -36,14 +36,14 @@ export default function Header(props) {
                 <div className="header-right flex items-center">
                     <div className="profile-dropdown-menu p-10 hidden">
                         <div className="dropdown inline-block relative">
-                            <button className="bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded inline-flex items-center">
+                            <button className="profile-dropdown-btn capitalize main-font font-14 cursor-pointer m-0 hover-transition px-5  border-2 blue-border main-color-blue">
                                 <span className="mr-1">Dropdown</span>
                                 <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /> </svg>
                             </button>
                             <ul className="dropdown-menu absolute hidden text-gray-700 pt-1">
-                                <li className=""> <Link to="#">   <p className="login-btn capitalize main-font font-14 cursor-pointer m-0 hover-transition px-5  border-2 blue-border main-color-blue ">aaa</p></Link></li>
-                                <li className=""> <Link to="#">   <p className="login-btn capitalize main-font font-14 cursor-pointer m-0 hover-transition px-5  border-2 blue-border main-color-blue ">aaa</p></Link></li>
-                                <li className=""> <button type="button" className="" onClick={handleLogout} >Log Out</button> </li>
+                                <li className=""> <Link to="#">   <p className="profile-dropdown-item capitalize main-font font-14 cursor-pointer m-0 hover-transition px-5  border-2 blue-border main-color-blue ">aaa</p></Link></li>
+                                <li className=""> <Link to="#">   <p className="profile-dropdown-item capitalize main-font font-14 cursor-pointer m-0 hover-transition px-5  border-2 blue-border main-color-blue ">aaa</p></Link></li>
+                                <li className=""> <button type="button" className="profile-dropdown-item  capitalize main-font font-14 cursor-pointer m-0 hover-transition px-5  border-2 blue-border main-color-blue" onClick={handleLogout} >Log Out</button> </li>
                             </ul>
                         </div>
                     </div>
