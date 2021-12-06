@@ -10,7 +10,8 @@ import signimg from '../common/assets/images/img/main-img.png';
 import RecaptchaComponent from "../common/Recaptcha";
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
-
+// import { Button, Spinner } from 'react-bootstrap'
+// import 'bootstrap/dist/css/bootstrap.min.css';
 import { GoogleLogin } from 'react-google-login';
 
 const GOOGLE_LOGIN_CLIENT_ID = '533897933750-s85rovfjr2p6tg1pes1qdi89l8vo829g.apps.googleusercontent.com';
@@ -25,7 +26,8 @@ export default class Register extends Component {
 
     this.state = {
       input: {},
-      errors: {}
+      errors: {},
+      loading: false
     }
     this.recaptchaComponent = new RecaptchaComponent();
 
@@ -118,7 +120,7 @@ export default class Register extends Component {
   onPhone4GmailChange = val => {
     this.state.input.phone_for_gmail = val;
   }
-
+  
   validate = () => {
     let input = this.state.input;
     let errors = {
@@ -244,7 +246,7 @@ export default class Register extends Component {
     register(newUser, res => {
       if (res !== undefined && res !== null &&
         res.error !== undefined && res.error === 0) {
-        me.props.history.push('/login', {email: me.state.input.email})
+        me.props.history.push('/login', { email: me.state.input.email })
       }
     })
   }
@@ -259,14 +261,18 @@ export default class Register extends Component {
       phone_for_email: me.state.input.phone_for_email
     }
     register(newUser, () => {
-      me.props.history.push(`/confirm`, {email: me.state.input.email})
+      me.setState({ loading: false });
+      me.props.history.push(`/confirm`, { email: me.state.input.email })
     })
   }
 
   onSubmit = (e) => {
     e.preventDefault();
+    this.setState({ loading: true });    
     if (this.validate()) {
       this.recaptchaComponent.run(this.submitData);
+    } else {
+      this.setState({ loading: false });
     }
   }
 
@@ -320,7 +326,7 @@ export default class Register extends Component {
                 </div>
               </div>
               <div className="w-1/2 signup-content border-l border-gray-300 pl-20 md:pl-10 pr-20">
-                <form id="reg-form" className="form" onSubmit={this.onSubmit} autoComplete="off">
+                {/* <form id="reg-form" className="form" onSubmit={this.onSubmit} autoComplete="off"> */}
                   <div className="text-black">
                     <div className="flex">
                       <div className="mb-10 ml-2">
@@ -388,17 +394,30 @@ export default class Register extends Component {
                         placeholder="Confirm Password" autoComplete="off" />
                       <span className="help-block main-font text-red-400 font-14">{this.state.errors.confirm_password}</span>
                     </div>
-                    <input
+                    {/* <input
                       type="submit"
                       className="w-full text-center py-5 rounded button-bg text-white hover-transition font-16 main-font focus:outline-none my-1"
                       value="Submit" autoComplete="off"
-                    />
+                    /> */}
+                    <button 
+                    className="spinner-button w-full text-center py-5 rounded button-bg text-white hover-transition font-16 main-font focus:outline-none my-1"
+                    onClick={this.onSubmit} 
+                    disabled={this.state.loading}>
+                      {this.state.loading && (
+                        <i
+                          className="fa od-spinner"
+                          style={{ marginRight: "15px" }}
+                        >( )</i>
+                      )}
+                      {this.state.loading && <span>Submitting</span>}
+                      {!this.state.loading && <span>Submit</span>}
+                    </button>
                   </div>
                   <div className="main-font main-color font-16 m-8 capitalize">
                     Already have an account?
                     <Link className="border-b border-gray-400 main-color-blue ml-5" to="/login">Login here</Link>
                   </div>
-                </form>
+                {/* </form> */}
               </div>
             </div>
           </div>

@@ -90,13 +90,13 @@ class UserAuthController {
                     let ret = new User().setToken(user.id, token);
                     res.json({ error: 0, message: token });
                 } else {
-                    res.status(400).json({ error: 'Wrong Credendials' })
+                    res.json({ error: 1, message: 'Wrong Credendials' })
                 }
             } else {
-                res.status(400).json({ error: 'User does not exists' })
+                res.json({ error: 2, message: 'User does not exists' })
             }
         }).catch(err => {
-            res.status(400).json({ error: err.message })
+            res.json({ error: 3, message: err.message })
         })
     }
 

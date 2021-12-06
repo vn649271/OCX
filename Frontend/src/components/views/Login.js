@@ -22,7 +22,8 @@ export default class Login extends Component {
     this.state = {
       email: '',
       password: '',
-      errors: ''
+      errors: '',
+      loading: false
     }
     this.recaptchaComponent = new RecaptchaComponent();
 
@@ -50,8 +51,8 @@ export default class Login extends Component {
 
   responseGoogle = (response) => {
     if (response === undefined || response === null ||
-    response.profileObj === undefined || response.profileObj === null ||
-    response.profileObj.email === undefined || response.profileObj.email === null) {
+      response.profileObj === undefined || response.profileObj === null ||
+      response.profileObj.email === undefined || response.profileObj.email === null) {
       Alert("Invalid Google Acount Information");
       return;
     }
@@ -71,17 +72,26 @@ export default class Login extends Component {
     this.setState({ [e.target.name]: e.target.value })
   }
 
-  submitData = (token) => {
+  submitData = (params, token) => {
+    if (token === null) {
+      me.setState({ loading: false });
+      Alert("Failed to init reCAPTCHA");
+      return;
+    }
     // call a backend API to verify reCAPTCHA response
     const user = {
       email: this.state.email,
       password: this.state.password
     }
     login(user).then(res => {
-      if (res) {
+      me.setState({ loading: false });
+      console.log(res);
+      if (!res.error) {
         localStorage.userToken = res.message;
         localStorage.email = this.state.email;
         me.props.history.push('/dashboard')
+      } else {
+        Alert(res.message);
       }
     })
   }
@@ -96,7 +106,7 @@ export default class Login extends Component {
       localStorage.username = "";
       localStorage.checkbox = "";
     }
-
+    this.setState({ loading: true });
     this.recaptchaComponent.run(this.submitData);
   }
 
@@ -106,7 +116,7 @@ export default class Login extends Component {
         <Header />
         <div className="main-container p-20">
           <div className="home-card mx-auto auth-form">
-            <form id="login-form" className="form" onSubmit={this.onSubmit}>
+            {/* <form id="login-form" className="form" onSubmit={this.onSubmit}> */}
               <p className="text-center main-font font-30 main-color-blue mb-10 capitalize">Login</p>
               <GoogleLogin
                 clientId={GOOGLE_LOGIN_CLIENT_ID}
@@ -144,17 +154,29 @@ export default class Login extends Component {
                   Remember me
                 </label>
               </div>
-              <input
+              {/* <input
                 type="submit"
                 className="w-full text-center py-3 rounded button-bg text-white hover-transition font-14 main-font focus:outline-none m"
                 value="Login"
-              />
-
+              /> */}
+              <button 
+              className="spinner-button w-full text-center py-3 rounded button-bg text-white hover-transition font-14 main-font focus:outline-none m"
+              onClick={this.onSubmit} 
+              disabled={this.state.loading}>
+                {this.state.loading && (
+                  <i
+                    className="fa od-spinner"
+                    style={{ marginRight: "15px" }}
+                  >( )</i>
+                )}
+                {this.state.loading && <span>Login</span>}
+                {!this.state.loading && <span>Login</span>}
+              </button>
               <div className="main-font main-color font-14 my-8 capitalize">
                 Do you want create an account?
                 <Link className="border-b border-gray-400 main-color-blue ml-5" to="/register">Sign Up Here</Link>
               </div>
-            </form>
+            {/* </form> */}
           </div>
         </div>
         <Footer />
