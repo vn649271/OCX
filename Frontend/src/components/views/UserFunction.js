@@ -50,10 +50,10 @@ export const verifyPinCode = (pinCode, onResponse) => {
             response.data === undefined || response.data === null ||
             response.data.error === undefined || response.data.error === null ||
             response.data.error - 0 > 0) {
-                Alert("Failed to verify code: ", response.data.message);
+                onResponse(response.data);
                 return;
             }
-            onResponse(response.data.error);
+            onResponse(response.data);
         })
         .catch(err => {
             Alert(err)

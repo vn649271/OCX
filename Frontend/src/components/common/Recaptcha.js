@@ -31,15 +31,16 @@ export default class RecaptchaComponent {
     }
 
     // call a backend API to verify reCAPTCHA response
-    run(onSuccessCallback, params = null) {
+    run(onFinishCallback, params = null) {
         if (window.grecaptcha === undefined || window.grecaptcha === null) {
-            Alert("Failed to init reCAPTCHA");
+            // Alert("Failed to init reCAPTCHA");
+            onFinishCallback(params, null);
             return;
         }
         window.grecaptcha.ready(() => {
             window.grecaptcha.execute(SITE_KEY, { action: "submit" }).then(recaptchaToken => {
                 verifyRecaptcha(recaptchaToken, resp => {
-                    onSuccessCallback(params, recaptchaToken)
+                    onFinishCallback(params, recaptchaToken)
                 });
             });
         });

@@ -12,14 +12,18 @@ export default class Confirm extends Component {
     this.onVerifyComplete = this.onVerifyComplete.bind(this)
     this.onVerify = this.onVerify.bind(this);
     this.onRequestPinCodeAgain = this.onRequestPinCodeAgain.bind(this)
+    this.onCompleteResending = this.onCompleteResending.bind(this)
 
     this.state = {
       verifyCode: '',
-      email: props.location.state.email
+      email: props.location.state.email,
+      loading: false,
+      resending: false
     }
   }
 
   onVerifyComplete(ret) {
+    this.setState({ loading: false });
     if (!ret.error) {
       this.props.history.push(`/login`)
     } else {
@@ -29,11 +33,21 @@ export default class Confirm extends Component {
 
   onVerify = e => {
     let confirmCode = document.getElementById('confirm_code').value;
+    if (confirmCode === "") {
+      Alert("Please input your verification code");
+      return;
+    }
+    this.setState({ loading: true });
     verifyPinCode(confirmCode, this.onVerifyComplete)
   }
 
+  onCompleteResending = (err) => {
+    this.setState({ resending: false });
+  }
+
   onRequestPinCodeAgain = e => {
-    requestPinCodeAgain(this.state.email);
+    this.setState({ resending: true });
+    requestPinCodeAgain(this.state.email, this.onCompleteResending);
   }
 
   render() {
@@ -56,8 +70,34 @@ export default class Confirm extends Component {
               id="confirm_code"
               // value={this.state.verifyCode}
               autoComplete="off" />
-            <button type="button" onClick={this.onVerify} className="button-bg main-font text-white w-full block hover-transition blue-border rounded-lg py-3 my-10 font-16">Confirm</button>
-            <button type="button" onClick={this.onRequestPinCodeAgain} className="bg-white main-font main-color-blue w-full block blue-border  hover-transition rounded-lg py-3 my-3 font-16">Resend Code</button>
+            <button 
+            className="spinner-button button-bg main-font text-white w-full block hover-transition blue-border rounded-lg py-3 my-10 font-16" 
+            onClick={this.onVerify} 
+            disabled={this.state.loading}>
+              {this.state.loading && (
+                <i
+                  className="fa od-spinner"
+                  style={{ marginRight: "15px" }}
+                >( )</i>
+              )}
+              {this.state.loading && <span>Conforming</span>}
+              {!this.state.loading && <span>Confirm</span>}
+            </button>
+            {/* <button type="button" onClick={this.onVerify} className="button-bg main-font text-white w-full block hover-transition blue-border rounded-lg py-3 my-10 font-16">Confirm</button> */}
+            <button 
+            className="spinner-buttonbg-white main-font main-color-blue w-full block blue-border  hover-transition rounded-lg py-3 my-3 font-16" 
+            onClick={this.onRequestPinCodeAgain} 
+            disabled={this.state.resending}>
+              {this.state.resending && (
+                <i
+                  className="fa od-spinner"
+                  style={{ marginRight: "15px" }}
+                >( )</i>
+              )}
+              {this.state.resending && <span>Resending Code</span>}
+              {!this.state.resending && <span>Resend Code</span>}
+            </button>            
+            {/* <button type="button" onClick={this.onRequestPinCodeAgain} className="bg-white main-font main-color-blue w-full block blue-border  hover-transition rounded-lg py-3 my-3 font-16">Resend Code</button> */}
           </div>
         </div>
         <Footer />
