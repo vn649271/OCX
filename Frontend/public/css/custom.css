@@ -318,7 +318,7 @@ a {
     margin: auto !important;
     background-color: #01c1cc !important;
     padding: 2px 5px !important;
-    margin-left: 10px !important;
+    margin-left: 0px !important;
     font-family: Qualy-Light !important;
     color: white !important;
     font-weight: bold !important;
@@ -336,6 +336,11 @@ a {
     font-weight: bold !important;
 }
 
+.verify-button {
+    right: 0;
+    top: 0;
+}
+
 div.rememberme-container {
     margin: 20px 0 20px 10px;
 }
@@ -345,10 +350,7 @@ button:focus {
     border: none  !important;
 }
 
-/* .chart-container {
-    width: 1000px !important;
-} */
-
+/* .help-block  */
 
 
 /* responsive */
