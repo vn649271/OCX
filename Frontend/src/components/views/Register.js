@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { register } from "./UserFunction";
 import Header from "../common/Header";
 import Footer from "../common/Footer";
+import FormValidator from '../common/FormValidator';
 import signimg from '../common/assets/images/img/main-img.png';
 import RecaptchaComponent from "../common/Recaptcha";
 
@@ -35,6 +36,86 @@ export default class Register extends Component {
     this.onSubmit = this.onSubmit.bind(this)
     this.submitData = this.submitData.bind(this)
     this.responseGoogle = this.responseGoogle.bind(this)
+    this.passwordMatch = this.passwordMatch.bind(this)
+    this.handleInputChange = this.handleInputChange.bind(this)
+    this.handleFormSubmit = this.handleFormSubmit.bind(this)
+
+    this.validator = new FormValidator([{
+      field: 'first_name',
+      method: 'isEmpty',
+      validWhen: false,
+      message: 'Enter first name.'
+    },
+    {
+      field: 'last_name',
+      method: 'isEmpty',
+      validWhen: false,
+      message: 'Enter last name.'
+    }, {
+      field: 'email',
+      method: 'isEmpty',
+      validWhen: false,
+      message: 'Enter your email address.'
+    }, {
+      field: 'email',
+      method: 'isEmail',
+      validWhen: true,
+      message: 'Enter valid email address (it has to include "@").'
+    }, {
+      field: 'phone',
+      method: 'isEmpty',
+      validWhen: false,
+      message: 'Enter a phone number.'
+    }, {
+      field: 'phone',
+      method: 'matches',
+      args: [/^\(?\d\d\d\)? ?\d\d\d-?\d\d\d\d$/],
+      validWhen: true,
+      message: 'Enter valid phone number (10 digits).'
+    }, {
+      field: 'password',
+      method: 'isEmpty',
+      validWhen: false,
+      message: 'Enter password.'
+    }, {
+      field: 'password_confirmation',
+      method: 'isEmpty',
+      validWhen: false,
+      message: 'Enter Password confirmation.'
+    }, {
+      field: 'password_confirmation',
+      method: this.passwordMatch, // notice that we are passing a custom function here
+      validWhen: true,
+      message: 'Password and password confirmation do not match.'
+    }]);
+    this.state = {
+      first_name: '',
+      last_name: '',
+      email: '',
+      phone: '',
+      password: '',
+      password_confirmation: '',
+      validation: this.validator.valid(),
+    }
+    this.submitted = false;
+  }
+  passwordMatch = (confirmation, state) => (state.password === confirmation)
+  handleInputChange = event => {
+    event.preventDefault();
+    this.setState({
+      [event.target.name]: event.target.value,
+    });
+  }
+  handleFormSubmit = event => {
+    event.preventDefault();
+    const validation = this.validator.validate(this.state);
+    this.setState({
+      validation
+    });
+    this.submitted = true;
+    if (validation.isValid) {
+      //reaches here if form validates successfully...
+    }
   }
 
   onChange(e) {
@@ -43,9 +124,9 @@ export default class Register extends Component {
 
   responseGoogle = (response) => {
     if (response === undefined || response === null ||
-    response.profileObj === undefined || response.profileObj === null ||
-    response.profileObj.email === undefined || response.profileObj.email === null ) {
-      alert("Invalid Google Acount Information");
+      response.profileObj === undefined || response.profileObj === null ||
+      response.profileObj.email === undefined || response.profileObj.email === null) {
+      // alert("Invalid Google Acount Information");
       return;
     }
     let profile = response.profileObj;
@@ -58,7 +139,7 @@ export default class Register extends Component {
     }
     register(newUser, res => {
       if (res !== undefined && res !== null &&
-      res.error !== undefined && res.error === 0) {
+        res.error !== undefined && res.error === 0) {
         me.props.history.push('/login')
       }
     })
@@ -88,78 +169,123 @@ export default class Register extends Component {
 
   onSubmit = (e) => {
     e.preventDefault();
+    this.handleFormSubmit(e);
     this.recaptchaComponent.run(this.submitData);
   }
 
   render() {
+    let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation
     return (
       <div>
         <Header />
         <div className="main-container py-20 px-10 lg:px-80">
-          {/* <div className="flex">
-            <p className="form-title mx-auto  capitalize main-font font-20 cursor-pointer m-0 hover-transition px-20  border-2 border-r-0 blue-border button-bg main-font text-white ">Sign Up</p>
-          </div> */}
           <div className="home-card w-full">
             <p className="text-center main-font font-30 main-color-blue mb-10 capitalize">Create a new account</p>
             <div className="flex signup-form">
-              <div className="signup-content w-1/2 flex flex-col items-center justify-around p-20">
-                <img src={signimg} alt="sign-logo" width={200} className="sign-logo" />
-                <GoogleLogin
-                  clientId={GOOGLE_LOGIN_CLIENT_ID}
-                  buttonText="Google Sign Up"
-                  onSuccess={this.responseGoogle}
-                  onFailure={this.responseGoogle}
-                  className="google-signup-button"
-                  cookiePolicy={'single_host_origin'}
-                />
+              <div className="signup-content w-1/2 flex flex-col items-center justify-center p-20 md:p-10">
+                <img src={signimg} alt="sign-logo" width={200} className="sign-logo mb-16" />
+                <div className="signup-content_box w-full relative">
+                  <div className={validation.phone.isInvalid && 'has-error'} className="mb-10">
+                    <input
+                      type="phone"
+                      className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded "
+                      name="phone"
+                      // value={this.state.phone}
+                      // onChange={this.handleInputChange}
+                      placeholder="Phone Number" autoComplete="off" />
+                    <button className="absolute border border-grey-light button-bg p-5 font-16 main-font focus:outline-none rounded text-white verify-button">Send Code</button>
+                    <span className="help-block main-font text-red-400 font-16">{validation.phone.message}</span>
+                  </div>
+                  <input
+                    type="text"
+                    className="block border border-grey-light bg-gray-100  w-full p-5 mb-10 font-16 main-font focus:outline-none rounded "
+                    name="verification-code"
+                    // value={this.state.phone}
+                    // onChange={this.handleInputChange}
+                    placeholder="Verification Code" autoComplete="off" />
+                  <GoogleLogin
+                    clientId={GOOGLE_LOGIN_CLIENT_ID}
+                    buttonText="Google Sign Up"
+                    onSuccess={this.responseGoogle}
+                    onFailure={this.responseGoogle}
+                    className="google-signup-button hover-transition"
+                    cookiePolicy={'single_host_origin'}
+                  />
+                </div>
               </div>
-              <div className="w-1/ signup-content border-l border-gray-300 pl-10">
+              <div className="w-1/2 signup-content border-l border-gray-300 pl-20 md:pl-10 pr-20">
                 <form id="reg-form" className="form" onSubmit={this.onSubmit} autoComplete="off">
-                  <div className=" px-6 py-8 text-black">
-                    <input
-                      type="text"
-                      className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded mb-10"
-                      name="first_name"
-                      id="first_name"
-                      placeholder="First Name"
-                      value={this.state.first_name}
-                      onChange={this.onChange} autoComplete="off" />
-                    <input
-                      type="text"
-                      className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded mb-10"
-                      name="last_name"
-                      id="last_name"
-                      placeholder="Last Name"
-                      value={this.state.last_name}
-                      onChange={this.onChange} autoComplete="off" />
-
-                    <input
-                      type="email"
-                      className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded mb-10"
-                      name="email"
-                      id="email"
-                      placeholder="Email"
-                      value={this.state.email}
-                      onChange={this.onChange} autoComplete="off" />
-
-                    <input
-                      type="password"
-                      className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded mb-10"
-                      name="password"
-                      value={this.state.password}
-                      onChange={this.onChange}
-                      placeholder="Password" autoComplete="off" />
-                    <input
-                      type="password"
-                      className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded mb-10"
-                      name="c_password"
-                      id="c_password"
-                      value={this.state.c_password}
-                      onChange={this.onChange}
-                      placeholder="Confirm Password" autoComplete="off" />
+                  <div className="text-black">
+                    <div className="flex">
+                      <div className={validation.email.isInvalid && 'has-error'} className="mb-10 mr-2">
+                        <input
+                          type="text"
+                          className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded "
+                          name="first_name"
+                          id="first_name"
+                          placeholder="First Name"
+                          value={this.state.first_name}
+                          onChange={this.handleInputChange} autoComplete="off" />
+                        <span className="help-block main-font text-red-400 font-16">{validation.first_name.message}</span>
+                      </div>
+                      <div className={validation.email.isInvalid && 'has-error'} className="mb-10 ml-2">
+                        <input
+                          type="text"
+                          className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded "
+                          name="last_name"
+                          id="last_name"
+                          placeholder="Last Name"
+                          value={this.state.last_name}
+                          onChange={this.handleInputChange} autoComplete="off" />
+                        <span className="help-block main-font text-red-400 font-16">{validation.last_name.message}</span>
+                      </div>
+                    </div>
+                    <div className={validation.email.isInvalid && 'has-error'} className="mb-10 relative">
+                      <input
+                        type="email"
+                        className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded "
+                        name="email"
+                        id="email"
+                        placeholder="Email"
+                        value={this.state.email}
+                        onChange={this.handleInputChange} autoComplete="off" />
+                      <button className="absolute border border-grey-light button-bg p-5 font-16 main-font focus:outline-none rounded text-white verify-button">Send Code</button>
+                      <span className="help-block main-font text-red-400 font-16">{validation.email.message}</span>
+                    </div>
+                    <div className={validation.phone.isInvalid && 'has-error'} className="mb-10">
+                      <input
+                        type="phone"
+                        className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded "
+                        name="phone"
+                        value={this.state.phone}
+                        onChange={this.handleInputChange}
+                        placeholder="Phone Number" autoComplete="off" />
+                      <span className="help-block main-font text-red-400 font-16">{validation.phone.message}</span>
+                    </div>
+                    <div className={validation.password.isInvalid && 'has-error'} className="mb-10">
+                      <input
+                        type="password"
+                        className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded "
+                        name="password"
+                        value={this.state.password}
+                        onChange={this.handleInputChange}
+                        placeholder="Password" autoComplete="off" />
+                      <span className="help-block main-font text-red-400 font-16">{validation.password.message}</span>
+                    </div>
+                    <div className={validation.password_confirmation.isInvalid && 'has-error'} className="mb-10">
+                      <input
+                        type="password"
+                        className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded "
+                        name="c_password"
+                        id="c_password"
+                        value={this.state.c_password}
+                        onChange={this.handleInputChange}
+                        placeholder="Confirm Password" autoComplete="off" />
+                      <span className="help-block main-font text-red-400 font-16">{validation.password_confirmation.message}</span>
+                    </div>
                     <input
                       type="submit"
-                      className="w-full text-center py-3 rounded button-bg text-white hover-transition font-14 main-font focus:outline-none my-1"
+                      className="w-full text-center py-5 rounded button-bg text-white hover-transition font-16 main-font focus:outline-none my-1"
                       value="Submit" autoComplete="off"
                     />
                   </div>

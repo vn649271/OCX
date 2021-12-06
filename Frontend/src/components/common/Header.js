@@ -21,14 +21,14 @@ export default function Header() {
                         <Link to="/exchange"> <span className="header-nav_items main-color px-5 py-2">Exchange</span></Link>
                         <Link to="#"> <span className="header-nav_items main-color px-5 py-2">News</span></Link>
                         <Link to="#"> <span className="header-nav_items main-color px-5 py-2">About Us</span></Link>
-                        <Link to="#"> <span className="header-nav_items main-color px-5 py-2">Whitepapaer</span></Link>
-                        <Link to="#"> <span className="header-nav_items main-color px-5 py-2">Contact</span></Link>
+                        <Link to="/sign"> <span className="header-nav_items main-color px-5 py-2">Whitepapaer</span></Link>
+                        <Link to="/signup"> <span className="header-nav_items main-color px-5 py-2">Contact</span></Link>
                     </div>
                 </div>
 
                 <div className="header-right flex items-center">
                     <div className="auth-btn_group rounded-full flex ">
-                        <Link to="/login">   <p className="login-btn capitalize main-font font-14 cursor-pointer m-0 hover-transition px-5  border-2 blue-border main-color-blue ">log in</p></Link>
+                        <Link to="/login">   <p className="login-btn capitalize main-font font-14 cursor-pointer m-0 hover-transition px-5  border-2 blue-border main-color-blue ">login</p></Link>
                         <Link to="/register">  <p className="signup-btn capitalize font-14 main-font cursor-pointer  m-0 hover-transition px-5   border-2 blue-border main-color-blue ">sign up</p></Link>
                     </div>
                 </div>
