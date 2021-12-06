@@ -4,6 +4,8 @@ import { register } from "./UserFunction";
 import Header from "../common/Header";
 import Footer from "../common/Footer";
 import FormValidator from '../common/FormValidator';
+// import PasswordChecklist from "react-password-checklist"
+import Alert from "../common/Alert"
 import signimg from '../common/assets/images/img/main-img.png';
 import RecaptchaComponent from "../common/Recaptcha";
 
@@ -15,17 +17,12 @@ var me;
 
 export default class Register extends Component {
 
-
   constructor(props) {
     super(props);
     me = this;
 
     this.state = {
-      first_name: '',
-      last_name: '',
-      email: '',
-      password: '',
-      c_password: '',
+      input: {},
       errors: {}
     }
     this.recaptchaComponent = new RecaptchaComponent();
@@ -38,8 +35,11 @@ export default class Register extends Component {
     this.responseGoogle = this.responseGoogle.bind(this)
     this.passwordMatch = this.passwordMatch.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
-    this.handleFormSubmit = this.handleFormSubmit.bind(this)
+    this.setPassword = this.setPassword.bind(this)
+    this.setPasswordConfirm = this.setPasswordConfirm.bind(this)
+    this.validate = this.validate.bind(this)
 
+    /*
     this.validator = new FormValidator([{
       field: 'first_name',
       method: 'isEmpty',
@@ -60,7 +60,8 @@ export default class Register extends Component {
       field: 'email',
       method: 'isEmail',
       validWhen: true,
-      message: 'Enter valid email address (it has to include "@").'
+      args: [/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/],
+      message: 'Enter valid email address (like "victor@gmail.com").'
     }, {
       field: 'phone',
       method: 'isEmpty',
@@ -88,35 +89,126 @@ export default class Register extends Component {
       validWhen: true,
       message: 'Password and password confirmation do not match.'
     }]);
-    this.state = {
+    */
+    // this.submitted = false;
+  }
+
+  passwordMatch = (confirmation, state) => (state.password === confirmation)
+
+  componentDidMount() {
+  }
+
+  handleInputChange = event => {
+    let input = this.state.input;
+    input[event.target.name] = event.target.value;
+
+    this.setState({
+      input
+    });
+  }
+
+  validate = () => {
+    let input = this.state.input;
+    let errors = {
       first_name: '',
       last_name: '',
       email: '',
       phone: '',
       password: '',
-      password_confirmation: '',
-      validation: this.validator.valid(),
+      confirm_password: '',
+    };
+    this.setState({ errors: errors });
+
+    let isValid = true;
+
+    if (!input["first_name"]) {
+      isValid = false;
+      errors["first_name"] = "Please enter your first name.";
     }
-    this.submitted = false;
-  }
-  passwordMatch = (confirmation, state) => (state.password === confirmation)
-  handleInputChange = event => {
-    event.preventDefault();
-    this.setState({
-      [event.target.name]: event.target.value,
-    });
-  }
-  handleFormSubmit = event => {
-    event.preventDefault();
-    const validation = this.validator.validate(this.state);
-    this.setState({
-      validation
-    });
-    this.submitted = true;
-    if (validation.isValid) {
-      //reaches here if form validates successfully...
+
+    if (typeof input["first_name"] !== "undefined") {
+      const re = /^\S*$/;
+      if (input["first_name"].length < 1 || !re.test(input["first_name"])) {
+        isValid = false;
+        errors["first_name"] = "Please enter valid first name.";
+      }
     }
+
+    if (!input["last_name"]) {
+      isValid = false;
+      errors["last_name"] = "Please enter your last name.";
+    }
+
+    if (typeof input["last_name"] !== "undefined") {
+      const re = /^\S*$/;
+      if (input["last_name"].length < 1 || !re.test(input["last_name"])) {
+        isValid = false;
+        errors["last_name"] = "Please enter valid last name.";
+      }
+    }
+
+    if (!input["email"]) {
+      isValid = false;
+      errors["email"] = "Please enter your email Address.";
+    }
+
+    if (typeof input["email"] !== "undefined") {
+      var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
+      if (!pattern.test(input["email"])) {
+        isValid = false;
+        errors["email"] = 'Please enter valid email address (like "v@gmail.com")';
+      }
+    }
+
+    if (!input["password"]) {
+      isValid = false;
+      errors["password"] = "Please enter your password.";
+    }
+
+    if (!input["confirm_password"]) {
+      isValid = false;
+      errors["confirm_password"] = "Please enter your confirm password.";
+    }
+
+    if (typeof input["password"] !== "undefined") {
+      if (input["password"].length < 6) {
+        isValid = false;
+        errors["password"] = "Please add at least 6 charachter.";
+      }
+    }
+
+    if (typeof input["password"] !== "undefined" && typeof input["confirm_password"] !== "undefined") {
+      if (input["password"] !== input["confirm_password"]) {
+        isValid = false;
+        errors["confirm_password"] = "Passwords don't match.";
+      }
+    }
+
+    if (!input["phone"]) {
+      isValid = false;
+      errors["phone"] = 'Please enter phone number';
+    }
+    // pattern = new RegExp(/((\(\d{3}\) ?)|(\d{3}-))?\d{3}-\d{4}/);
+    // if (!pattern.test(input["email"])) {
+    //   isValid = false;
+    //   errors["phone"] = 'Please enter valid phone number(10 digits)';
+    // }
+    
+    // pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
+    // if (!pattern.test(input["phone"])) {
+    //   isValid = false;
+    //   errors["phone"] = 'Please enter valid phone number';
+    // }
+
+    this.setState({
+      errors: errors
+    });
+
+    return isValid;
   }
+
+  setPassword = value => { this.setState({ password: value }) }
+  setPasswordConfirm = value => { this.setState({ confirm_password: value }) }
 
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value })
@@ -146,35 +238,37 @@ export default class Register extends Component {
   }
 
   submitData = (param, recaptchaToken) => {
-    if (me.state.password !== me.state.c_password) {
-      alert("Invalid Password")
+    const newUser = {
+      first_name: me.state.input.first_name,
+      last_name: me.state.input.last_name,
+      email_type: 0,
+      email: me.state.input.email,
+      password: me.state.input.password
     }
-    else if (me.state.first_name === '' || me.state.last_name === '' || me.state.email === '') {
-      alert("Enter all the fields")
-    }
-    else {
-      const newUser = {
-        first_name: me.state.first_name,
-        last_name: me.state.last_name,
-        email_type: 0,
-        email: me.state.email,
-        password: me.state.password
-      }
-      register(newUser, () => {
-        me.props.history.push(`/confirm`)
-        // me.props.history.push(`/login`)
-      })
-    }
+    register(newUser, () => {
+      me.props.history.push(`/confirm`)
+      // me.props.history.push(`/login`)
+    })
   }
 
   onSubmit = (e) => {
     e.preventDefault();
-    this.handleFormSubmit(e);
-    this.recaptchaComponent.run(this.submitData);
+    if (this.validate()) {
+      console.log("validation OK!");
+      this.recaptchaComponent.run(this.submitData);
+      // let input = {};
+      // input["first_name"] = "";
+      // input["last_name"] = "";
+      // input["email"] = "";
+      // input["phone"] = "";
+      // input["password"] = "";
+      // input["confirm_password"] = "";
+      // this.setState({ input: input });
+    }
   }
 
   render() {
-    let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation
+    // let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation
     return (
       <div>
         <Header />
@@ -185,23 +279,23 @@ export default class Register extends Component {
               <div className="signup-content w-1/2 flex flex-col items-center justify-center p-20 md:p-10">
                 <img src={signimg} alt="sign-logo" width={200} className="sign-logo mb-16" />
                 <div className="signup-content_box w-full relative">
-                  <div className={validation.phone.isInvalid && 'has-error'} className="mb-10">
+                  <div className="phone-verify-notification mb-10">
                     <input
                       type="phone"
                       className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded "
                       name="phone"
                       // value={this.state.phone}
-                      // onChange={this.handleInputChange}
+                      onChange={this.handleInputChange}
                       placeholder="Phone Number" autoComplete="off" />
                     <button className="absolute border border-grey-light button-bg p-5 font-16 main-font focus:outline-none rounded text-white verify-button">Send Code</button>
-                    <span className="help-block main-font text-red-400 font-16">{validation.phone.message}</span>
+                    <span className="help-block main-font text-red-400 font-16">{this.state.errors.phone}</span>
                   </div>
                   <input
                     type="text"
                     className="block border border-grey-light bg-gray-100  w-full p-5 mb-10 font-16 main-font focus:outline-none rounded "
                     name="verification-code"
                     // value={this.state.phone}
-                    // onChange={this.handleInputChange}
+                    onChange={this.handleInputChange}
                     placeholder="Verification Code" autoComplete="off" />
                   <GoogleLogin
                     clientId={GOOGLE_LOGIN_CLIENT_ID}
@@ -217,7 +311,7 @@ export default class Register extends Component {
                 <form id="reg-form" className="form" onSubmit={this.onSubmit} autoComplete="off">
                   <div className="text-black">
                     <div className="flex">
-                      <div className={validation.email.isInvalid && 'has-error'} className="mb-10 mr-2">
+                      <div className="mb-10 ml-2">
                         <input
                           type="text"
                           className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded "
@@ -226,9 +320,9 @@ export default class Register extends Component {
                           placeholder="First Name"
                           value={this.state.first_name}
                           onChange={this.handleInputChange} autoComplete="off" />
-                        <span className="help-block main-font text-red-400 font-16">{validation.first_name.message}</span>
+                        <span className="help-block main-font text-red-400 font-16">{this.state.errors.first_name}</span>
                       </div>
-                      <div className={validation.email.isInvalid && 'has-error'} className="mb-10 ml-2">
+                      <div className="mb-10 ml-2">
                         <input
                           type="text"
                           className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded "
@@ -237,12 +331,12 @@ export default class Register extends Component {
                           placeholder="Last Name"
                           value={this.state.last_name}
                           onChange={this.handleInputChange} autoComplete="off" />
-                        <span className="help-block main-font text-red-400 font-16">{validation.last_name.message}</span>
+                        <span className="help-block main-font text-red-400 font-16">{this.state.errors.last_name}</span>
                       </div>
                     </div>
-                    <div className={validation.email.isInvalid && 'has-error'} className="mb-10 relative">
+                    <div className="mb-10 relative">
                       <input
-                        type="email"
+                        type="text"
                         className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded "
                         name="email"
                         id="email"
@@ -250,9 +344,9 @@ export default class Register extends Component {
                         value={this.state.email}
                         onChange={this.handleInputChange} autoComplete="off" />
                       <button className="absolute border border-grey-light button-bg p-5 font-16 main-font focus:outline-none rounded text-white verify-button">Send Code</button>
-                      <span className="help-block main-font text-red-400 font-16">{validation.email.message}</span>
+                      <span className="help-block main-font text-red-400 font-14">{this.state.errors.email}</span>
                     </div>
-                    <div className={validation.phone.isInvalid && 'has-error'} className="mb-10">
+                    <div className="mb-10">
                       <input
                         type="phone"
                         className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded "
@@ -260,9 +354,9 @@ export default class Register extends Component {
                         value={this.state.phone}
                         onChange={this.handleInputChange}
                         placeholder="Phone Number" autoComplete="off" />
-                      <span className="help-block main-font text-red-400 font-16">{validation.phone.message}</span>
+                      <span className="help-block main-font text-red-400 font-14">{this.state.errors.phone}</span>
                     </div>
-                    <div className={validation.password.isInvalid && 'has-error'} className="mb-10">
+                    <div className="mb-10">
                       <input
                         type="password"
                         className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded "
@@ -270,18 +364,18 @@ export default class Register extends Component {
                         value={this.state.password}
                         onChange={this.handleInputChange}
                         placeholder="Password" autoComplete="off" />
-                      <span className="help-block main-font text-red-400 font-16">{validation.password.message}</span>
+                      <span className="help-block main-font text-red-400 font-14">{this.state.errors.password}</span>
                     </div>
-                    <div className={validation.password_confirmation.isInvalid && 'has-error'} className="mb-10">
+                    <div className="mb-10">
                       <input
                         type="password"
                         className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded "
-                        name="c_password"
-                        id="c_password"
-                        value={this.state.c_password}
+                        name="confirm_password"
+                        id="confirm_password"
+                        value={this.state.confirm_password}
                         onChange={this.handleInputChange}
                         placeholder="Confirm Password" autoComplete="off" />
-                      <span className="help-block main-font text-red-400 font-16">{validation.password_confirmation.message}</span>
+                      <span className="help-block main-font text-red-400 font-14">{this.state.errors.confirm_password}</span>
                     </div>
                     <input
                       type="submit"
