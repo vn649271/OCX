@@ -103,10 +103,10 @@ export default class Login extends Component {
         <div className="main-container p-20">
           <div className="home-card mx-auto auth-form">
             <form id="login-form" className="form" onSubmit={this.onSubmit}>
-              <p className="text-center main-font font-30 main-color-blue mb-10 capitalize">Sign In your account</p>
+              <p className="text-center main-font font-30 main-color-blue mb-10 capitalize">Login</p>
               <GoogleLogin
                 clientId={GOOGLE_LOGIN_CLIENT_ID}
-                buttonText="Google Sign In"
+                buttonText="Google Login"
                 onSuccess={this.responseGoogle}
                 onFailure={this.responseGoogle}
                 className="google-login-button"
@@ -136,14 +136,14 @@ export default class Login extends Component {
 	          value="lsRememberMe" 
 	          id="rememberMe" /> 
 	        <label 
-	          for="rememberMe" className="main-font main-color ml-3 font-14">
+	          htmlFor="rememberMe" className="main-font main-color ml-3 font-14">
 	            Remember me
 	        </label>
 	      </div>
               <input
                 type="submit"
                 className="w-full text-center py-3 rounded button-bg text-white hover-transition font-14 main-font focus:outline-none m"
-                value="Sign In"
+                value="Login"
               />
 
               <div className="main-font main-color font-14 my-8 capitalize">
