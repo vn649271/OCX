@@ -39,7 +39,6 @@ export default class Dashboard extends Component {
 
     render() {
         if (this.state.redirect) {
-            console.log("-------------------", this.state.redirect);
             return <Redirect to={this.state.redirect} />
         }
         return (

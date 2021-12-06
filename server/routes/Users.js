@@ -9,5 +9,6 @@ users.use(cors());
 users.post("/register", userAuthController.register);
 users.post("/login", userAuthController.login);
 users.post("/verifyPinCode", userAuthController.verifyPinCode);
+users.post("/requestPinCodeAgain", userAuthController.requestPinCodeAgain);
 
 module.exports = users;

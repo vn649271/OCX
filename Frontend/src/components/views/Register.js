@@ -112,15 +112,11 @@ export default class Register extends Component {
   }
 
   onPhone4EmailChange = val => {
-    console.log(val)
     this.state.input.phone_for_email = val;
-    console.log(this.state.input);
   }
 
   onPhone4GmailChange = val => {
-    console.log(val)
     this.state.input.phone_for_gmail = val;
-    console.log(this.state.input);
   }
 
   validate = () => {
@@ -228,7 +224,6 @@ export default class Register extends Component {
 
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value })
-    console.log(e.target)
   }
 
   responseGoogle = (response) => {
@@ -249,7 +244,7 @@ export default class Register extends Component {
     register(newUser, res => {
       if (res !== undefined && res !== null &&
         res.error !== undefined && res.error === 0) {
-        me.props.history.push('/login')
+        me.props.history.push('/login', {email: me.state.input.email})
       }
     })
   }
@@ -264,15 +259,13 @@ export default class Register extends Component {
       phone_for_email: me.state.input.phone_for_email
     }
     register(newUser, () => {
-      me.props.history.push(`/confirm`)
-      // me.props.history.push(`/login`)
+      me.props.history.push(`/confirm`, {email: me.state.input.email})
     })
   }
 
   onSubmit = (e) => {
     e.preventDefault();
     if (this.validate()) {
-      console.log("validation OK!");
       this.recaptchaComponent.run(this.submitData);
     }
   }
