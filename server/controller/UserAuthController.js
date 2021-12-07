@@ -24,7 +24,7 @@ class UserAuthController {
                 me.sendEmail(user.id, user, res);
                 return;
             } else {
-                res.json({ error: 1, message: "User already exists" });
+                res.json({ error: 1, message: "User already exists." });
             }
         }).catch(err => {
             res.json({ error: 3, message: err + " --> " + req.body.password + " ++error" });
@@ -56,7 +56,7 @@ class UserAuthController {
                     userData.password = hash;
                     new User().create(userData).then(newUserId => {
                         if (newUserId === null) {
-                            res.json({ error: 1, message: "Failed to add new user" });
+                            res.json({ error: 1, message: "Failed to add new user." });
                             return;
                         }
                         me.sendEmail(newUserId, userData, res);
@@ -67,7 +67,7 @@ class UserAuthController {
                     });
                 });
             } else {
-                res.json({ error: 2, message: "User already exists" });
+                res.json({ error: 2, message: "User already exists." });
             }
         }).catch(err => {
             res.json({ error: 3, message: err + " --> " + req.body.password + " ++error" });
@@ -92,10 +92,10 @@ class UserAuthController {
                     let ret = new User().setToken(user.id, token);
                     res.json({ error: 0, message: token });
                 } else {
-                    res.json({ error: 1, message: 'Wrong Credendials' })
+                    res.json({ error: 1, message: 'Wrong Email or password. Please check again.' })
                 }
             } else {
-                res.json({ error: 2, message: 'User does not exists' })
+                res.json({ error: 2, message: 'User does not exists.' })
             }
         }).catch(err => {
             res.json({ error: 3, message: err.message })
@@ -109,11 +109,11 @@ class UserAuthController {
             }
         }).then(user => {
             if (!user) {
-                res.json({ error: 1, message: 'Failed to verify code' });
+                res.json({ error: 1, message: 'Failed to verify code.' });
                 return;
             }
             if (user.status > 0) {
-                res.json({ error: 2, message: 'The verification code was used already' });
+                res.json({ error: 2, message: 'The verification code was used already.' });
                 return;
             }
             res.json({ error: 0 });
@@ -144,7 +144,7 @@ class UserAuthController {
         var mailOptions = {
             from: process.env.ADMIN_GMAIL_ADDRESS,
             to: toAddress,
-            subject: 'Email verification - openchain.com',
+            subject: 'Email verification - openchain.exchange',
             html: mailContent
         };
         response.json({ error: 0 });
