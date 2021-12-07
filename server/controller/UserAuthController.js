@@ -38,6 +38,7 @@ class UserAuthController {
             last_name: req.body.last_name,
             email: req.body.email,
             password: req.body.password,
+            phone: req.body.phone,
             token: "",
             pin_code: "",
             status: 0,
