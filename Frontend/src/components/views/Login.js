@@ -22,16 +22,26 @@ export default class Login extends Component {
     this.state = {
       email: '',
       password: '',
-      errors: '',
+      errors: {
+        email: '',
+        password: ''
+      },
+      notify: '',
       loading: false
     }
+    if (props !== undefined && props !== null &&
+    props.location !== undefined && props.location !== null &&
+    props.location.state !== undefined && props.location.state !== null &&
+    props.location.state.email !== undefined && props.location.state.email !== null) {
+      localStorage.email = props.location.state.email;
+    }
+
     this.recaptchaComponent = new RecaptchaComponent();
 
-
-    this.onChange = this.onChange.bind(this)
-    this.onSubmit = this.onSubmit.bind(this)
-    this.submitData = this.submitData.bind(this)
-    this.responseGoogle = this.responseGoogle.bind(this)
+    this.onChange = this.onChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+    this.submitData = this.submitData.bind(this);
+    this.responseGoogle = this.responseGoogle.bind(this);
   }
 
   componentDidMount() {
@@ -40,8 +50,8 @@ export default class Login extends Component {
 
     if (localStorage.checkbox && localStorage.checkbox !== "") {
       this.rmCheck.setAttribute("checked", "checked");
-      this.setState({ email: localStorage.username });
-      // this.emailInput.value = localStorage.username;
+      this.setState({ email: localStorage.email });
+      // this.emailInput.value = localStorage.email;
     } else {
       this.rmCheck.removeAttribute("checked");
       this.emailInput.value = "";
@@ -91,19 +101,26 @@ export default class Login extends Component {
         localStorage.email = this.state.email;
         me.props.history.push('/dashboard')
       } else {
-        Alert(res.message);
+        this.setState( {notify: res.message });
       }
     })
   }
 
   onSubmit(e) {
     e.preventDefault();
-
+    if (this.state.email.trim() === "") {
+      this.setState({ errors: {email: "Please input your Email"} });
+      return;
+    }
+    if (this.state.password.trim() === "") {
+      this.setState({ errors: {password: "Please input password for your Email"} });
+      return;
+    }
     if (this.rmCheck.checked && this.emailInput.value !== "") {
-      localStorage.username = this.emailInput.value;
+      localStorage.email = this.emailInput.value;
       localStorage.checkbox = this.rmCheck.value;
     } else {
-      localStorage.username = "";
+      localStorage.email = "";
       localStorage.checkbox = "";
     }
     this.setState({ loading: true });
@@ -117,65 +134,67 @@ export default class Login extends Component {
         <div className="main-container p-20">
           <div className="home-card mx-auto auth-form">
             {/* <form id="login-form" className="form" onSubmit={this.onSubmit}> */}
-              <p className="text-center main-font font-30 main-color-blue mb-10 capitalize">Login</p>
-              <GoogleLogin
-                clientId={GOOGLE_LOGIN_CLIENT_ID}
-                buttonText="Google Login"
-                onSuccess={this.responseGoogle}
-                onFailure={this.responseGoogle}
-                className="google-login-button"
-                cookiePolicy={'single_host_origin'}
-              />
+            <p className="text-center main-font font-30 main-color-blue mb-10 capitalize">Login</p>
+            <GoogleLogin
+              clientId={GOOGLE_LOGIN_CLIENT_ID}
+              buttonText="Google Login"
+              onSuccess={this.responseGoogle}
+              onFailure={this.responseGoogle}
+              className="google-login-button"
+              cookiePolicy={'single_host_origin'}
+            />
+            <span className="help-block main-font text-red-400 font-16">{this.state.notify}</span>
+            <input
+              type="email"
+              className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded mb-10"
+              name="email"
+              id="username"
+              placeholder="Email"
+              value={this.state.email}
+              onChange={this.onChange}
+              autoComplete="off" />
+            <span className="help-block main-font text-red-400 font-16">{this.state.errors.email}</span>
+            <input
+              type="password"
+              className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded mb-10"
+              name="password"
+              value={this.state.password}
+              onChange={this.onChange}
+              placeholder="Password"
+              autoComplete="off" />
+            <span className="help-block main-font text-red-400 font-16">{this.state.errors.password}</span>
+            <div className="flex items-center rememberme-container">
               <input
-                type="email"
-                className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded mb-10"
-                name="email"
-                id="username"
-                placeholder="Email"
-                value={this.state.email}
-                onChange={this.onChange}
-                autoComplete="off" />
-
-              <input
-                type="password"
-                className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded mb-10"
-                name="password"
-                value={this.state.password}
-                onChange={this.onChange}
-                placeholder="Password"
-                autoComplete="off" />
-              <div className="flex items-center rememberme-container">
-                <input
-                  type="checkbox"
-                  value="lsRememberMe"
-                  id="rememberMe" />
-                <label
-                  htmlFor="rememberMe" className="main-font main-color ml-3 font-14">
-                  Remember me
-                </label>
-              </div>
-              {/* <input
+                type="checkbox"
+                value="lsRememberMe"
+                id="rememberMe" />
+              <label
+                htmlFor="rememberMe" className="main-font main-color ml-3 font-14">
+                Remember me
+              </label>
+            </div>
+            {/* <input
                 type="submit"
                 className="w-full text-center py-3 rounded button-bg text-white hover-transition font-14 main-font focus:outline-none m"
                 value="Login"
               /> */}
-              <button 
+            <button
               className="spinner-button w-full text-center py-3 rounded button-bg text-white hover-transition font-14 main-font focus:outline-none m"
-              onClick={this.onSubmit} 
+              onClick={this.onSubmit}
               disabled={this.state.loading}>
-                {this.state.loading && (
-                  <i
-                    className="fa od-spinner"
-                    style={{ marginRight: "15px" }}
-                  >( )</i>
-                )}
-                {this.state.loading && <span>Login</span>}
-                {!this.state.loading && <span>Login</span>}
-              </button>
-              <div className="main-font main-color font-14 my-8 capitalize">
-                Do you want create an account?
-                <Link className="border-b border-gray-400 main-color-blue ml-5" to="/register">Sign Up Here</Link>
-              </div>
+              {this.state.loading && (
+                <i
+                  className="fa od-spinner"
+                  style={{ marginRight: "15px" }}
+                >( )</i>
+              )}
+              {this.state.loading && <span>Login</span>}
+              {!this.state.loading && <span>Login</span>}
+            </button>
+            <div className="main-font main-color font-14 my-8 capitalize">
+              Do you want create an account?
+              <Link className="border-b border-gray-400 main-color-blue ml-5" to="/register">Sign Up Here</Link>
+            </div>
             {/* </form> */}
           </div>
         </div>

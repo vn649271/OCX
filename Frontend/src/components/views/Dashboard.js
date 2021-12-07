@@ -23,8 +23,9 @@ export default class Dashboard extends Component {
     }
 
     validateUser = token => {
-        console.log("Dashboard.validateUser(): ", token);
-
+        console.log("Dashboard.validateUser(): token=", token);
+        if (!token)
+            return false;
         return true;
     }
 
@@ -34,6 +35,7 @@ export default class Dashboard extends Component {
         } else {
             document.getElementsByClassName('auth-btn_group')[0].classList.add('hidden');
             document.getElementsByClassName('profile-dropdown-menu')[0].classList.remove('hidden');
+            localStorage.setItem("userToken", "");
         }
     }
 

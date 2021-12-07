@@ -39,7 +39,7 @@ export default class Confirm extends Component {
   onVerifyComplete(ret) {
     this.setState({ loading: false });
     if (!ret.error) {
-      this.props.history.push(`/login`)
+      this.props.history.push(`/login`, { email: this.state.email })
     } else {
       this.setState({errors: {confirmCode: ret.message}});
       this.setState({ notify: DEFAULT_NOTIFY_TEXT });
