@@ -110,7 +110,6 @@ export default class Register extends Component {
       errors.last_name = "";
       errors.register_result = "";
 
-      console.log('validation of last_name');
       if (!input["last_name"]) {
         isValid = false;
         errors["last_name"] = "Please enter your last name.";
@@ -222,7 +221,6 @@ export default class Register extends Component {
     this.setState({
       input
     });
-    console.log(input);
     this.validate(event.target.name);
   }
 
