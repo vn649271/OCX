@@ -1,9 +1,14 @@
 const { Firestore } = require('@google-cloud/firestore');
 
 const db = new Firestore();
-const cllctn = 'users';
+const cllctn = 'phones';
 
-function User() {
+function Phone() {
+
+    this.getById = function(phoneId) {
+        const phoneRef = db.collection(cllctn).doc(phoneId);
+        return phoneRef.data();
+    }
 
     this.findOne = async function (jsonWhere) {
 
@@ -25,33 +30,29 @@ function User() {
         return ret;
     }
 
-    this.create = async function (jsonUser) {
-        // Add a new document in collection "users"
+    this.create = async function (jsonPhone) {
         let now = new Date();
-        jsonUser.created_at = now;
-        jsonUser.updated_at = now;
+        jsonPhone.created_at = now;
+        jsonPhone.updated_at = now;
 
-        const res = await db.collection(cllctn).add(jsonUser);
+        const res = await db.collection(cllctn).add(jsonPhone);
         if (res !== null) {
             return res.id;
         }
         return null;
     }
 
-    this.setPinCode = async function (userId, pinCode) {
-        const userRef = db.collection(cllctn).doc(userId);
-        let now = new Date();
-        const res = await userRef.update({ pin_code: pinCode, updated_at: now });
+    this.setVerifyCode = async function (phoneId, verifyCody) {
+        const phoneRef = db.collection(cllctn).doc(phoneId);
+        const res = await phoneRef.update({ verify_code: verifyCody });
         return res;
     }
 
-    this.setToken = async function (userId, token) {
-        const userRef = db.collection(cllctn).doc(userId);
-        let now = new Date();
-        const res = await userRef.update({ token: token, updated_at: now });
+    this.setStatus = async function (phoneId, status) {
+        const phoneRef = db.collection(cllctn).doc(phoneId);
+        const res = await phoneRef.update({ status: status });
         return res;
     }
-
 }
 
-module.exports = User;
+module.exports = Phone;
