@@ -3,7 +3,7 @@ const router = express.Router();
 const passport = require('passport');
 
 router.get("/failed", (req, res) => {
-    res.send("Failed")
+    res.json({error: 1, messsage: "Failed"})
 });
 
 var passportAuthCallback = passport.authenticate(
@@ -27,7 +27,7 @@ router.get(
     passportAuthFailedCallback,
     function (req, res) {
         if (req.user) {
-            res.send(`Welcome ${req.user.email}`)
+            res.json({error: 0, message: req.user})
         } else {
             res.sendStatus(401);
         }

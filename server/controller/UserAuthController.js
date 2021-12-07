@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../models/Firestore/Users");
+const Phone = require("../models/Firestore/Phone");
 var nodemailer = require('nodemailer');
 var randtoken = require('rand-token');
 require('dotenv').config();
@@ -31,20 +32,26 @@ class UserAuthController {
         });
     }
 
-    register = (req, res) => {
-        let today = new Date().toISOString().substr(0, 10);
+    registerWithGmail = (req, res) => {
+        // First get phone info with phoneId
+        var phoneModel = new Phone();
+        if (req.body.email_type !== undefined && req.body.email_type) {
+            var phoneInfo = phoneModel.getById(req.body.phoneId);
+            if (phoneInfo === undefined || phoneInfo === null) {
+                res.json({ error: 1, message: "Failed to get phone information." });
+                return;
+            }
+        }
         const userData = {
             first_name: req.body.first_name,
             last_name: req.body.last_name,
             email: req.body.email,
             password: req.body.password,
-            phone: req.body.phone_for_email,
+            phone: phoneInfo.number,
             email_type: req.body.email_type,
             token: "",
             pin_code: "",
-            status: 0,
-            created_at: today,
-            updated_at: today
+            status: 0
         };
         new User().findOne({
             where: {
@@ -56,21 +63,57 @@ class UserAuthController {
                     userData.password = hash;
                     new User().create(userData).then(newUserId => {
                         if (newUserId === null) {
-                            res.json({ error: 1, message: "Failed to add new user." });
+                            res.json({ error: 2, message: "Failed to add new user." });
+                            return;
+                        }
+                        res.json({ error: 0 });
+                    });
+                });
+            }
+        });
+    }
+
+    register = (req, res) => {
+        if (req.body.email_type) {
+            this.registerWithGmail(req, res);
+            return;
+        }
+        const userData = {
+            first_name: req.body.first_name,
+            last_name: req.body.last_name,
+            email: req.body.email,
+            password: req.body.password,
+            phone: req.body.phone_for_email,
+            email_type: req.body.email_type,
+            token: "",
+            pin_code: "",
+            status: 0
+        };
+        new User().findOne({
+            where: {
+                email: req.body.email
+            }
+        }).then(user => {
+            if (!user) {
+                bcrypt.hash(req.body.password, 10, (err, hash) => {
+                    userData.password = hash;
+                    new User().create(userData).then(newUserId => {
+                        if (newUserId === null) {
+                            res.json({ error: 2, message: "Failed to add new user." });
                             return;
                         }
                         me.sendEmail(newUserId, userData, res);
                         return;
                         // res.json({ status: user.email + " Registered" });
                     }).catch(err => {
-                        res.json({error: 1, message: err + " ==error"});
+                        res.json({ error: 3, message: err + " ==error" });
                     });
                 });
             } else {
-                res.json({ error: 2, message: "User already exists." });
+                res.json({ error: 4, message: "User already exists." });
             }
         }).catch(err => {
-            res.json({ error: 3, message: err + " --> " + req.body.password + " ++error" });
+            res.json({ error: 5, message: err + " --> " + req.body.password + " ++error" });
         });
     }
 
