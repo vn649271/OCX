@@ -8,3 +8,16 @@
     - Show password-requirement message
     - Add email confirmation
     - Check on the format for email
+2021-12-07
+  + Sign Up
+    - Password strength
+    - Validation of data whenever input
+  + Confirm
+    - When wrong verification code
+    - Erase old verification code input when resend
+  + Login
+    - Update email input when remember me checked
+    - When wrong password and empty one
+    - Prevent go to home page when click "OPEN CHAIN" in dashboard(because of once logined)
+  + Send Mail
+    - send mail with name "openchain.exchange"
