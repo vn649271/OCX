@@ -1,13 +1,7 @@
 import mainLogo from './assets/images/logo/logo.png';
 import { Link } from "react-router-dom";
 import React from 'react';
-
-
-async function handleLogout() {
-    window.localStorage.clear();
-    window.location.href = "/";
-}
-
+import LogoutButton from './LogoutButton'
 
 export default function Header(props) {
     return (
@@ -43,7 +37,7 @@ export default function Header(props) {
                             <ul className="dropdown-menu absolute hidden pt-1 border-2 blue-border rounded-lg">
                                 <li className="mt-3"> <Link to="#">   <p className="profile-dropdown-item border-b-2 rounded-none capitalize main-font font-14 hover-bg-blue hover:text-white cursor-pointer m-0  px-5  main-color-blue ">Account Setting</p></Link></li>
                                 <li className="mt-3"> <Link to="#">   <p className="profile-dropdown-item border-b-2 rounded-none capitalize main-font font-14 hover-bg-blue hover:text-white cursor-pointer m-0  px-5  main-color-blue ">Profile</p></Link></li>
-                                <li className="mt-3"> <button type="button" className="profile-dropdown-item border-b-2 rounded-none w-full text-left block capitalize main-font font-14 hover-bg-blue hover:text-white cursor-pointer m-0  px-5  main-color-blue" onClick={handleLogout} >Log Out</button> </li>
+                                <li className="mt-3"> <LogoutButton /></li>
                             </ul>
                         </div>
                     </div>

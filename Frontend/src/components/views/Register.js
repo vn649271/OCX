@@ -3,16 +3,13 @@ import { Link } from "react-router-dom";
 import { register } from "./UserFunction";
 import Header from "../common/Header";
 import Footer from "../common/Footer";
-import FormValidator from '../common/FormValidator';
-// import PasswordChecklist from "react-password-checklist"
 import Alert from "../common/Alert"
 import signimg from '../common/assets/images/img/main-img.png';
 import RecaptchaComponent from "../common/Recaptcha";
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
-// import { Button, Spinner } from 'react-bootstrap'
-// import 'bootstrap/dist/css/bootstrap.min.css';
 import { GoogleLogin } from 'react-google-login';
+import zxcvbn from 'zxcvbn';
 
 const GOOGLE_LOGIN_CLIENT_ID = '533897933750-s85rovfjr2p6tg1pes1qdi89l8vo829g.apps.googleusercontent.com';
 
@@ -28,11 +25,22 @@ export default class Register extends Component {
     super(props);
     me = this;
 
+    const { minStrength = 4, thresholdLength = 7 } = props;
+
+    this.minStrength = typeof minStrength === 'number'
+      ? Math.max(Math.min(minStrength, 4), 0)
+      : 3;
+
+    this.thresholdLength = typeof thresholdLength === 'number'
+      ? Math.max(thresholdLength, 7)
+      : 7;
+
     this.state = {
       input: {},
       errors: {
         register_result: ''
       },
+      password_strength: 0,
       loading: false
     }
     this.recaptchaComponent = new RecaptchaComponent();
@@ -61,6 +69,8 @@ export default class Register extends Component {
   componentDidMount() {
     document.getElementsByClassName('profile-dropdown-menu')[0].classList.add('hidden');
   }
+
+  // fieldStateChanged = field => state => this.setState({ [field]: state.errors.length === 0 });
 
   validate = (fieldName = null) => {
     let validationMode = BATCHED_VALIDATION;
@@ -151,15 +161,21 @@ export default class Register extends Component {
 
       errors.password = "";
       errors.register_result = "";
-
-      if (!input["password"]) {
+      let value = input["password"] || null;
+      if (!value) {
         isValid = false;
         errors["password"] = "Please enter your password.";
       }
-      if (typeof input["password"] !== "undefined") {
-        if (input["password"].length < 6) {
-          isValid = false;
-          errors["password"] = "Please add at least 6 charachter.";
+      if (typeof value !== "undefined") {
+        console.log("Password validation: ", value);
+        if (value) {
+          if (value.length < this.thresholdLength) {
+            isValid = false;
+            errors["password"] = "Please add at least 6 charachter.";
+          } else if (zxcvbn(value).score < this.minStrength) {
+            isValid = false;
+            errors["password"] = "Password is weak";
+          }
         }
       }
       break;
@@ -203,7 +219,7 @@ export default class Register extends Component {
     this.setState({
       errors: errors
     });
-    
+
     if (validationMode == INDIVIDUAL_VALIDATION) {
       isValid = false;
     }
@@ -221,6 +237,12 @@ export default class Register extends Component {
     this.setState({
       input
     });
+    let password = input['password'] || "";
+    if (password === null) {
+      password = "";
+    }
+    console.log("----------------", password);
+    this.setState({ strength: zxcvbn(password).score });
     this.validate(event.target.name);
   }
 
@@ -375,7 +397,6 @@ export default class Register extends Component {
                       value={this.state.phone_for_email}
                       onChange={this.onPhone4EmailChange}
                       className="phone-for-email block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded" />
-
                     <span className="help-block main-font text-red-400 font-14">{this.state.errors.phone_for_email}</span>
                   </div>
                   <div className="mb-10">
@@ -386,6 +407,14 @@ export default class Register extends Component {
                       value={this.state.password}
                       onChange={this.handleInputChange}
                       placeholder="Password" autoComplete="off" />
+                    {/* <PasswordStrengthMeter
+                      fieldId="password"
+                      label="Password"
+                      placeholder="Enter Password"
+                      onStateChanged={this.passwordChanged}
+                      onChange={this.handleInputChange}
+                      thresholdLength={7} minStrength={3} required
+                    /> */}
                     <span className="help-block main-font text-red-400 font-14">{this.state.errors.password}</span>
                   </div>
                   <div className="mb-10">
