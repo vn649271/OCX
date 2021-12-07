@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { register } from "./UserFunction";
+import { register, requestSmsCode, verifySmsCode } from "./UserFunction";
 import Header from "../common/Header";
 import Footer from "../common/Footer";
 import Alert from "../common/Alert"
@@ -25,7 +25,7 @@ export default class Register extends Component {
     super(props);
     me = this;
 
-    const { minStrength = 4, thresholdLength = 7 } = props;
+    const { minStrength = 3, thresholdLength = 7 } = props;
 
     this.minStrength = typeof minStrength === 'number'
       ? Math.max(Math.min(minStrength, 4), 0)
@@ -41,6 +41,10 @@ export default class Register extends Component {
         register_result: ''
       },
       password_strength: 0,
+      phone_for_gmail: '',
+      notify: {
+        phone_for_gmail: ''
+      },
       loading: false
     }
     this.recaptchaComponent = new RecaptchaComponent();
@@ -53,6 +57,7 @@ export default class Register extends Component {
     this.handleInputChange = this.handleInputChange.bind(this)
     this.onPhone4EmailChange = this.onPhone4EmailChange.bind(this)
     this.onConnectionTimeout = this.onConnectionTimeout.bind(this)
+    this.onRequestSmsCode = this.onRequestSmsCode.bind(this)
 
     /*
     this.validator = new FormValidator([{
@@ -231,18 +236,76 @@ export default class Register extends Component {
     Alert("Connection timed out. Please check your internet connection");
   }
 
+  onRequestSmsCode = ev => {
+    this.setState({
+      notify: {
+        phone_for_gmail: ""
+      }
+    })
+    this.setState({ loading: true });
+    requestSmsCode(this.state.input.phone_for_gmail, resp => {
+      this.setState({ loading: false });
+      if (!resp.error) {
+        this.setState({
+          notify: {
+            phone_for_gmail: "Success to send verification code to your phone.\n" +
+              "Please check code in your phone to verify"
+          }
+        })
+      } else {
+        this.setState({
+          notify: {
+            phone_for_gmail: resp.message
+          }
+        })
+      }
+    })
+  }
+
   handleInputChange = event => {
     let input = this.state.input;
     input[event.target.name] = event.target.value;
     this.setState({
       input
     });
-    let password = input['password'] || "";
-    if (password === null) {
-      password = "";
+    if (event.target.name == 'password') {
+      let password = input['password'] || "";
+      if (password === null) {
+        password = "";
+      }
+      this.setState({ strength: zxcvbn(password).score });
+    } else if (event.target.name == 'sms_code_for_gmail') {
+      // Perform phone verification
+      if (this.state.input.phone_for_gmail && this.state.input.sms_code_for_gmail) {
+        this.setState({
+          notify: {
+            phone_for_gmail: ""
+          }
+        })
+        console.log(this.state.input.phone_for_gmail, this.state.input.sms_code_for_gmail);
+        verifySmsCode(this.state.input.phone_for_gmail, this.state.input.sms_code_for_gmail, resp => {
+          console.log("SignUp.handleInputChange(): ", resp);
+          if (resp !== undefined && resp !== null &&
+            resp.error !== undefined && resp.error !== null && resp.error == 0 &&
+            resp.message !== undefined && resp.message !== null) {
+            this.state.phoneId = resp.message;
+            this.setState({
+              notify: {
+                phone_for_gmail: "Success to phone verfication"
+              }
+            })
+          } else {
+            this.setState({
+              notify: {
+                phone_for_gmail: (resp.message ? resp.message : "Failed to phone verfication")
+              }
+            })
+          }
+          console.log(this.state.notify.phone_for_gmail);
+        })
+      }
     }
-    console.log("----------------", password);
-    this.setState({ strength: zxcvbn(password).score });
+
     this.validate(event.target.name);
   }
 
@@ -252,7 +315,14 @@ export default class Register extends Component {
   }
 
   onPhone4GmailChange = val => {
+    console.log(val);
     this.state.input.phone_for_gmail = val;
+    this.setState({
+      notify: {
+        phone_for_gmail: ""
+      }
+    })
+    // this.validate('phone_for_email');
   }
 
   onChange = e => {
@@ -266,13 +336,23 @@ export default class Register extends Component {
       // alert("Invalid Google Acount Information");
       return;
     }
+    if (this.state.phoneId === undefined || this.state.phoneId === null ||
+    this.state.phoneId === "") {
+      this.setState({
+        notify: {
+          phone_for_gmail: "Please verify with your phone and try again."
+        }
+      });
+      return;
+    }
     let profile = response.profileObj;
     const newUser = {
       first_name: profile.familyName,
       last_name: profile.givenName,
       email: profile.email,
       password: profile.googleId,
-      email_type: 1
+      phoneId: this.state.phoneId,
+      email_type: 1 // Gmail Sign Up
     }
     register(newUser, res => {
       if (res !== undefined && res !== null &&
@@ -329,18 +409,37 @@ export default class Register extends Component {
                     <PhoneInput
                       placeholder="Enter phone number"
                       name="phone_for_gmail"
-                      value={this.state.phone_for_email}
+                      value={this.state.phone_for_gmail}
                       onChange={this.onPhone4GmailChange}
                       className="phone-for-gmail block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded" />
-                    <button className="absolute border border-grey-light button-bg p-5 font-16 main-font focus:outline-none rounded text-white verify-button">Send Code</button>
+                    {/* <button
+                      className="absolute border border-grey-light button-bg p-5 font-16 main-font focus:outline-none rounded text-white verify-button"
+                      onClick={this.onRequestSmsCode}
+                      disabled={this.state.loading}>
+                      {this.state.loading && (
+                        <i
+                          className="fa od-spinner"
+                          style={{ marginRight: "15px" }}
+                        >( )</i>
+                      )}
+                      {this.state.loading && <span>Sending Code</span>}
+                      {!this.state.loading && <span>Send Code</span>}
+                    </button> */}
+                    <button
+                      className="absolute border border-grey-light button-bg p-5 font-16 main-font focus:outline-none rounded text-white verify-button"
+                      onClick={this.onRequestSmsCode}
+                    >
+                      Send Code
+                    </button>
                   </div>
                   <input
                     type="text"
                     className="block border border-grey-light bg-gray-100  w-full p-5 mb-10 font-16 main-font focus:outline-none rounded "
-                    name="verification-code"
-                    // value={this.state.phone_for_email}
+                    name="sms_code_for_gmail"
+                    value={this.state.sms_code_for_gmail}
                     onChange={this.handleInputChange}
                     placeholder="Verification Code" autoComplete="off" />
+                  <span className="help-block main-font text-red-400 mb-10 font-16 visible">{this.state.notify.phone_for_gmail}</span>
                   <GoogleLogin
                     clientId={GOOGLE_LOGIN_CLIENT_ID}
                     buttonText="Google Sign Up"

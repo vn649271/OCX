@@ -30,9 +30,9 @@ export default class Login extends Component {
       loading: false
     }
     if (props !== undefined && props !== null &&
-    props.location !== undefined && props.location !== null &&
-    props.location.state !== undefined && props.location.state !== null &&
-    props.location.state.email !== undefined && props.location.state.email !== null) {
+      props.location !== undefined && props.location !== null &&
+      props.location.state !== undefined && props.location.state !== null &&
+      props.location.state.email !== undefined && props.location.state.email !== null) {
       localStorage.email = props.location.state.email;
     }
 
@@ -93,15 +93,14 @@ export default class Login extends Component {
       email: this.state.email,
       password: this.state.password
     }
-    login(user).then(res => {
+    login(user, res => {
       me.setState({ loading: false });
-      console.log(res);
       if (!res.error) {
-        localStorage.userToken = res.message;
-        localStorage.email = this.state.email;
+        localStorage.setItem("usertoken", res.message)
+        localStorage.setItem("email", this.state.email)
         me.props.history.push('/dashboard')
       } else {
-        this.setState( {notify: res.message });
+        this.setState({ notify: res.message });
       }
     })
   }
@@ -109,11 +108,11 @@ export default class Login extends Component {
   onSubmit(e) {
     e.preventDefault();
     if (this.state.email.trim() === "") {
-      this.setState({ errors: {email: "Please input your Email"} });
+      this.setState({ errors: { email: "Please input your Email" } });
       return;
     }
     if (this.state.password.trim() === "") {
-      this.setState({ errors: {password: "Please input password for your Email"} });
+      this.setState({ errors: { password: "Please input password for your Email" } });
       return;
     }
     if (this.rmCheck.checked && this.emailInput.value !== "") {
