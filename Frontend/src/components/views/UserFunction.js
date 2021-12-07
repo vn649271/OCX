@@ -4,24 +4,17 @@ import Alert from "../common/Alert";
 // var BACKEND_BASE_URL = "https://openchaindexbackend.dt.r.appspot.com";
 var BACKEND_BASE_URL = "http://localhost:5000";
 
-export const register = (newUser, onSuccessCallback) => {
+export const register = (newUser, onFinishRegister) => {
     return axios
-        .post(BACKEND_BASE_URL + "/users/register", {
-            first_name: newUser.first_name,
-            last_name: newUser.last_name,
-            email: newUser.email,
-            password: newUser.password,
-            country: newUser.country
-        })
+        .post(BACKEND_BASE_URL + "/users/register",newUser)
         .then(response => {
-            if (response !== undefined && response !== null &&
-                response.data !== undefined && response.data !== null &&
-                response.data.error !== undefined && response.data.error !== null &&
-                response.data.error > 0) {
-                Alert("Failed to register: " + response.data.message);
+            if (response === undefined || response === null ||
+            response.data === undefined || response.data === null ||
+            response.data.error === undefined || response.data.error === null) {
+                onFinishRegister({error: 10, message: "Unknown server error"});
                 return;
             }
-            onSuccessCallback(response.data);
+            onFinishRegister(response.data);
         });
 };
 
@@ -68,13 +61,12 @@ export const requestPinCodeAgain = (email, onResponse) => {
         .then(response => {
             if (response === undefined || response === null ||
             response.data === undefined || response.data === null ||
-            response.data.error === undefined || response.data.error === null ||
-            response.data.error - 0 > 0) {
-                Alert("Failed to verify code: ", response.data.message);
+            response.data.error === undefined || response.data.error === null) {
+                onResponse({error: 10, message: "Unknown server error"});
                 return;
             }
             if (onResponse) {
-                onResponse(response.data.error);
+                onResponse(response.data);
             }
         })
         .catch(err => {

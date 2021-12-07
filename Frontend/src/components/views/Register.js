@@ -18,6 +18,7 @@ const GOOGLE_LOGIN_CLIENT_ID = '533897933750-s85rovfjr2p6tg1pes1qdi89l8vo829g.ap
 
 const BATCHED_VALIDATION = 0; // Validation mode
 const INDIVIDUAL_VALIDATION = 1; // Validation mode
+const MAX_TIMEOUT = process.env.MAX_TIMEOUT || 30000;
 
 var me;
 
@@ -29,101 +30,36 @@ export default class Register extends Component {
 
     this.state = {
       input: {},
-      errors: {},
+      errors: {
+        register_result: ''
+      },
       loading: false
     }
     this.recaptchaComponent = new RecaptchaComponent();
 
-    // this.setLoading = this.setLoading.bind(this)
-    // this.setResponse = this.setResponse.bind(this)
+    this.validate = this.validate.bind(this)
     this.onChange = this.onChange.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
     this.submitData = this.submitData.bind(this)
     this.responseGoogle = this.responseGoogle.bind(this)
-    this.passwordMatch = this.passwordMatch.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
-    this.setPassword = this.setPassword.bind(this)
-    this.setPasswordConfirm = this.setPasswordConfirm.bind(this)
-    this.validate = this.validate.bind(this)
     this.onPhone4EmailChange = this.onPhone4EmailChange.bind(this)
+    this.onConnectionTimeout = this.onConnectionTimeout.bind(this)
 
     /*
     this.validator = new FormValidator([{
-      field: 'first_name',
-      method: 'isEmpty',
-      validWhen: false,
-      message: 'Enter first name.'
-    },
-    {
-      field: 'last_name',
-      method: 'isEmpty',
-      validWhen: false,
-      message: 'Enter last name.'
-    }, {
-      field: 'email',
-      method: 'isEmpty',
-      validWhen: false,
-      message: 'Enter your email address.'
-    }, {
       field: 'email',
       method: 'isEmail',
       validWhen: true,
       args: [/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/],
       message: 'Enter valid email address (like "victor@gmail.com").'
-    }, {
-      field: 'phone_for_email',
-      method: 'isEmpty',
-      validWhen: false,
-      message: 'Enter a phone_for_email number.'
-    }, {
-      field: 'phone_for_email',
-      method: 'matches',
-      args: [/^\(?\d\d\d\)? ?\d\d\d-?\d\d\d\d$/],
-      validWhen: true,
-      message: 'Enter valid phone number (10 digits).'
-    }, {
-      field: 'password',
-      method: 'isEmpty',
-      validWhen: false,
-      message: 'Enter password.'
-    }, {
-      field: 'password_confirmation',
-      method: 'isEmpty',
-      validWhen: false,
-      message: 'Enter Password confirmation.'
-    }, {
-      field: 'password_confirmation',
-      method: this.passwordMatch, // notice that we are passing a custom function here
-      validWhen: true,
-      message: 'Password and password confirmation do not match.'
     }]);
     */
     // this.submitted = false;
   }
 
-  passwordMatch = (confirmation, state) => (state.password === confirmation)
-
   componentDidMount() {
     document.getElementsByClassName('profile-dropdown-menu')[0].classList.add('hidden');
-  }
-
-  handleInputChange = event => {
-    console.log("Register.handleInputChange(): ", event.target.name, event.target.value)
-    let input = this.state.input;
-    input[event.target.name] = event.target.value;
-    this.setState({
-      input
-    });
-    this.validate(event.target.name);
-  }
-
-  onPhone4EmailChange = val => {
-    this.state.input.phone_for_email = val;
-    this.validate('phone_for_email');
-  }
-
-  onPhone4GmailChange = val => {
-    this.state.input.phone_for_gmail = val;
   }
 
   validate = (fieldName = null) => {
@@ -139,6 +75,7 @@ export default class Register extends Component {
       phone_for_email: this.state.errors.phone_for_email,
       password: this.state.errors.password,
       confirm_password: this.state.errors.confirm_password,
+      register_result: this.state.errors.register_result,
     };
     this.setState({ errors: errors });
 
@@ -148,8 +85,10 @@ export default class Register extends Component {
     while (1) {
       if (validationMode === INDIVIDUAL_VALIDATION && fieldName !== 'first_name')
         break;
-      console.log('validation of first_name');
-      errors["first_name"] = "";
+
+      errors.first_name = "";
+      errors.register_result = "";
+
       if (!input["first_name"]) {
         isValid = false;
         errors["first_name"] = "Please enter your first name.";
@@ -167,7 +106,10 @@ export default class Register extends Component {
     while (1) {
       if (validationMode === INDIVIDUAL_VALIDATION && fieldName !== 'last_name')
         break;
-      errors["last_name"] = "";
+
+      errors.last_name = "";
+      errors.register_result = "";
+
       console.log('validation of last_name');
       if (!input["last_name"]) {
         isValid = false;
@@ -186,7 +128,10 @@ export default class Register extends Component {
     while (1) {
       if (validationMode === INDIVIDUAL_VALIDATION && fieldName !== 'email')
         break;
-      errors["email"] = "";
+
+      errors.email = "";
+      errors.register_result = "";
+
       if (!input["email"]) {
         isValid = false;
         errors["email"] = "Please enter your email Address.";
@@ -204,7 +149,10 @@ export default class Register extends Component {
     while (1) {
       if (validationMode === INDIVIDUAL_VALIDATION && fieldName !== 'password')
         break;
-      errors["password"] = "";
+
+      errors.password = "";
+      errors.register_result = "";
+
       if (!input["password"]) {
         isValid = false;
         errors["password"] = "Please enter your password.";
@@ -221,7 +169,10 @@ export default class Register extends Component {
     while (1) {
       if (validationMode === INDIVIDUAL_VALIDATION && fieldName !== 'confirm_password')
         break;
-      errors["confirm_password"] = "";
+
+      errors.confirm_password = "";
+      errors.register_result = "";
+
       if (!input["confirm_password"]) {
         isValid = false;
         errors["confirm_password"] = "Please enter your confirm password.";
@@ -239,26 +190,52 @@ export default class Register extends Component {
     while (1) {
       if (validationMode === INDIVIDUAL_VALIDATION && fieldName !== 'phone_for_email')
         break;
-      errors["phone_for_email"] = "";
+
+      errors.phone_for_email = "";
+      errors.register_result = "";
+
       if (!input["phone_for_email"]) {
         isValid = false;
         errors["phone_for_email"] = 'Please enter phone number';
       }
       break;
     }
+
     this.setState({
       errors: errors
     });
+    
     if (validationMode == INDIVIDUAL_VALIDATION) {
       isValid = false;
     }
     return isValid;
   }
 
-  setPassword = value => { this.setState({ password: value }) }
-  setPasswordConfirm = value => { this.setState({ confirm_password: value }) }
+  onConnectionTimeout = () => {
+    this.setState({ loading: false });
+    Alert("Connection timed out. Please check your internet connection");
+  }
 
-  onChange(e) {
+  handleInputChange = event => {
+    let input = this.state.input;
+    input[event.target.name] = event.target.value;
+    this.setState({
+      input
+    });
+    console.log(input);
+    this.validate(event.target.name);
+  }
+
+  onPhone4EmailChange = val => {
+    this.state.input.phone_for_email = val;
+    this.validate('phone_for_email');
+  }
+
+  onPhone4GmailChange = val => {
+    this.state.input.phone_for_gmail = val;
+  }
+
+  onChange = e => {
     this.setState({ [e.target.name]: e.target.value })
   }
 
@@ -294,15 +271,22 @@ export default class Register extends Component {
       password: me.state.input.password,
       phone_for_email: me.state.input.phone_for_email
     }
-    register(newUser, () => {
+    register(newUser, (ret) => {
       me.setState({ loading: false });
-      me.props.history.push(`/confirm`, { email: me.state.input.email })
+      if (!ret.error) {
+        me.props.history.push(`/confirm`, { email: me.state.input.email });
+        return;
+      }
+      let errors = this.state.errors;
+      errors.register_result = ret.message;
+      this.setState({ errors: errors });
     })
   }
 
   onSubmit = (e) => {
     e.preventDefault();
     this.setState({ loading: true });
+    setTimeout(MAX_TIMEOUT, this.onConnectionTimeout);
     if (this.validate()) {
       this.recaptchaComponent.run(this.submitData);
     } else {
@@ -311,7 +295,6 @@ export default class Register extends Component {
   }
 
   render() {
-    // let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation
     return (
       <div>
         <Header />
@@ -331,17 +314,6 @@ export default class Register extends Component {
                       className="phone-for-gmail block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded" />
                     <button className="absolute border border-grey-light button-bg p-5 font-16 main-font focus:outline-none rounded text-white verify-button">Send Code</button>
                   </div>
-                  {/* <div className="phone-verify-notification mb-10">
-                    <input
-                      type="phone"
-                      className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded "
-                      name="phone_for_email"
-                      // value={this.state.phone_for_email}
-                      onChange={this.handleInputChange}
-                      placeholder="Phone Number" autoComplete="off" />
-                    <button className="absolute border border-grey-light button-bg p-5 font-16 main-font focus:outline-none rounded text-white verify-button">Send Code</button>
-                    <span className="help-block main-font text-red-400 font-16">{this.state.errors.phone_for_email}</span>
-                  </div> */}
                   <input
                     type="text"
                     className="block border border-grey-light bg-gray-100  w-full p-5 mb-10 font-16 main-font focus:outline-none rounded "
@@ -361,6 +333,7 @@ export default class Register extends Component {
               </div>
               <div className="w-1/2 signup-content border-l border-gray-300 pl-20 md:pl-10 pr-20">
                 {/* <form id="reg-form" className="form" onSubmit={this.onSubmit} autoComplete="off"> */}
+                <span className="help-block main-font text-red-400 font-16">{this.state.errors.register_result}</span>
                 <div className="text-black">
                   <div className="flex w-full">
                     <div className="mb-10 w-full md:w-1/2">

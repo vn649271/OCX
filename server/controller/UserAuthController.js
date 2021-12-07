@@ -38,7 +38,8 @@ class UserAuthController {
             last_name: req.body.last_name,
             email: req.body.email,
             password: req.body.password,
-            phone: req.body.phone,
+            phone: req.body.phone_for_email,
+            email_type: req.body.email_type,
             token: "",
             pin_code: "",
             status: 0,
@@ -108,7 +109,7 @@ class UserAuthController {
             }
         }).then(user => {
             if (!user) {
-                res.json({ error: 1, message: 'Failed to verify with code from Email' });
+                res.json({ error: 1, message: 'Failed to verify code' });
                 return;
             }
             if (user.status > 0) {

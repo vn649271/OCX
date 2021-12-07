@@ -11,10 +11,12 @@
 2021-12-07
   + Sign Up
     - Password strength
-    - Validation of data whenever input
+    - [FIXED] Validation of data whenever input
+    - [FIXED*] Error message when user exists
+    - [FIXED] Not inputted once failed user registration
   + Confirm
-    - When wrong verification code
-    - Erase old verification code input when resend
+    - [FIXED] When wrong verification code
+    - [FIXED] Erase old verification code input when resend
   + Login
     - Update email input when remember me checked
     - When wrong password and empty one
