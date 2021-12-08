@@ -2,14 +2,9 @@ var express = require("express");
 var cors = require("cors");
 var bodyParser = require("body-parser");
 var app = express();
-var session = require('express-session');
-var flash = require('express-flash');
-const cookieSession = require('cookie-session');
 require('dotenv').config();
-var randtoken = require('rand-token');
 
 var port = process.env.PORT;
-
 
 app.use(bodyParser.json());
 app.use(cors());
