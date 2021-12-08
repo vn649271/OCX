@@ -98,7 +98,7 @@ class PhoneVerifyController {
                         res.json({ error: 3, message: "Failed to request code for phone verification. Please try to again later" });
                     });
             } else {
-                res.json({ error: 10, message: "The phone is registered already" });
+                res.json({ error: 10, message: "The phone is used for verification already" });
             }
         })
     }
