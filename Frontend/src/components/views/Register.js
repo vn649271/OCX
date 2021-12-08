@@ -55,7 +55,6 @@ export default class Register extends Component {
     this.recaptchaComponent = new RecaptchaComponent();
 
     this.validate = this.validate.bind(this)
-    this.onChange = this.onChange.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
     this.submitData = this.submitData.bind(this)
     this.responseGoogle = this.responseGoogle.bind(this)
@@ -305,11 +304,9 @@ export default class Register extends Component {
   }
 
   onPhone4EmailChange = val => {
-    this.setState({
-      input: {
-        phone_for_email: val
-      }
-    });
+    let input = this.state.input;
+    input.phone_for_email = val;
+    this.setState({ input });
     // this.state.input.phone_for_email = val;
     this.validate('phone_for_email');
   }
@@ -344,16 +341,9 @@ export default class Register extends Component {
     if (val === undefined || val === null || val.trim() === '') {
       return;
     }
-    this.setState({
-      input: {
-        phone_for_gmail: val
-      }
-    });
-    // this.state.input.phone_for_gmail = val;
-  }
-
-  onChange = e => {
-    this.setState({ [e.target.name]: e.target.value })
+    let input = this.state.input;
+    input.phone_for_email = val;
+    this.setState({ input });
   }
 
   responseGoogle = (response) => {
