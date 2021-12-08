@@ -32,45 +32,57 @@ class UserAuthController {
         });
     }
 
-    registerWithGmail = (req, res) => {
-        // First get phone info with phoneId
-        var phoneModel = new Phone();
-        if (req.body.email_type !== undefined && req.body.email_type) {
-            var phoneInfo = phoneModel.getById(req.body.phoneId);
-            if (phoneInfo === undefined || phoneInfo === null) {
-                res.json({ error: 1, message: "Failed to get phone information." });
-                return;
-            }
+    _registerWithGmail = (phoneInfo, params) => {
+        if (phoneInfo === undefined || phoneInfo === null) {
+            params.resp.json({ error: 1, message: "Failed to get phone information." });
+            return;
         }
         const userData = {
-            first_name: req.body.first_name,
-            last_name: req.body.last_name,
-            email: req.body.email,
-            password: req.body.password,
+            first_name: params.req.body.first_name,
+            last_name: params.req.body.last_name,
+            email: params.req.body.email,
+            password: params.req.body.password,
             phone: phoneInfo.number,
-            email_type: req.body.email_type,
+            email_type: params.req.body.email_type,
             token: "",
             pin_code: "",
             status: 0
         };
         new User().findOne({
             where: {
-                email: req.body.email
+                email: params.req.body.email
             }
         }).then(user => {
             if (!user) {
-                bcrypt.hash(req.body.password, 10, (err, hash) => {
+                bcrypt.hash(params.req.body.password, 10, (err, hash) => {
                     userData.password = hash;
                     new User().create(userData).then(newUserId => {
                         if (newUserId === null) {
-                            res.json({ error: 2, message: "Failed to add new user." });
+                            params.resp.json({ error: 2, message: "Failed to add new user." });
                             return;
                         }
-                        res.json({ error: 0 });
+                        params.resp.json({ error: 0 });
                     });
                 });
+            } else {
+                params.resp.json({ error: 1, message: "The Gmail account is registered already" });
             }
         });
+    }
+
+    registerWithGmail = (req, res) => {
+        // First get phone info with phoneId
+        var phoneModel = new Phone();
+        if (req.body.email_type !== undefined && req.body.email_type) {
+            phoneModel.getById(
+                req.body.phoneId,
+                this._registerWithGmail,
+                {
+                    req: req,
+                    resp: res
+                }
+            );
+        }
     }
 
     register = (req, res) => {

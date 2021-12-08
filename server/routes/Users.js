@@ -15,5 +15,6 @@ users.post("/requestPinCodeAgain", userAuthController.requestPinCodeAgain);
 
 users.get('/phoneGetCode', phoneVerifyController.getCode);
 users.get('/phoneVerifyCode', phoneVerifyController.verifyCode);
+users.post('/phoneVerifyStatus', phoneVerifyController.getStatus);
 
 module.exports = users;

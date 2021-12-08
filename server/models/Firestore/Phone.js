@@ -5,9 +5,14 @@ const cllctn = 'phones';
 
 function Phone() {
 
-    this.getById = function(phoneId) {
+    this.getById = function (phoneId, onGet, params) {
         const phoneRef = db.collection(cllctn).doc(phoneId);
-        return phoneRef.data();
+        const doc = phoneRef.get().then(res => {
+            if (!res.exists) {
+                return null;
+            }
+            onGet(res.data(), params);
+        });
     }
 
     this.findOne = async function (jsonWhere) {

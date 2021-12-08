@@ -248,7 +248,7 @@ export default class Register extends Component {
       if (!resp.error) {
         this.setState({
           notify: {
-            phone_for_gmail: "Success to send verification code to your phone.\n" +
+            phone_for_gmail: "Verification code was sent  to your phone.\n" +
               "Please check code in your phone to verify"
           }
         })
@@ -315,14 +315,18 @@ export default class Register extends Component {
   }
 
   onPhone4GmailChange = val => {
-    console.log(val);
-    this.state.input.phone_for_gmail = val;
+    // Clear verify code input
+    // this.setState({sms_code_for_gmail: ''})
+    // Clear notify box
     this.setState({
       notify: {
         phone_for_gmail: ""
       }
-    })
-    // this.validate('phone_for_email');
+    });
+    if (val === undefined || val === null || val == '') {
+      return;
+    }
+    this.state.input.phone_for_gmail = val;
   }
 
   onChange = e => {
@@ -358,6 +362,14 @@ export default class Register extends Component {
       if (res !== undefined && res !== null &&
         res.error !== undefined && res.error === 0) {
         me.props.history.push('/login', { email: me.state.input.email })
+      } else {
+        if (res.error !== undefined && res.error != 0) {
+          this.setState({
+            notify: {
+              phone_for_gmail: res.message
+            }
+          });          
+        }
       }
     })
   }
@@ -439,7 +451,7 @@ export default class Register extends Component {
                     value={this.state.sms_code_for_gmail}
                     onChange={this.handleInputChange}
                     placeholder="Verification Code" autoComplete="off" />
-                  <span className="help-block main-font text-red-400 mb-10 font-16 visible">{this.state.notify.phone_for_gmail}</span>
+                  <span className="block help-block main-font text-red-400 mb-10 font-16 visible">{this.state.notify.phone_for_gmail}</span>
                   <GoogleLogin
                     clientId={GOOGLE_LOGIN_CLIENT_ID}
                     buttonText="Google Sign Up"
