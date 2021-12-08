@@ -65,7 +65,6 @@ export default class Register extends Component {
     this.onPhone4EmailChange = this.onPhone4EmailChange.bind(this)
     this.onConnectionTimeout = this.onConnectionTimeout.bind(this)
     this.onRequestSmsCode = this.onRequestSmsCode.bind(this)
-    this.onClickGmailSingupButton = this.onClickGmailSingupButton.bind(this)
     this.printSMSVerificationNotify = this.printSMSVerificationNotify.bind(this)
 
     /*
@@ -245,10 +244,6 @@ export default class Register extends Component {
     Alert("Connection timed out. Please check your internet connection");
   }
 
-  onClickGmailSingupButton = ev => {
-    console.log(ev.target)
-  }
-
   onRequestSmsCode = ev => {
     if (this.state.input.phone_for_gmail == undefined ||
       this.state.input.phone_for_gmail === null ||
@@ -293,9 +288,9 @@ export default class Register extends Component {
       // Perform phone verification
       if (this.state.input.phone_for_gmail && this.state.input.sms_code_for_gmail) {
         this.printSMSVerificationNotify("");
-        console.log(this.state.input.phone_for_gmail, this.state.input.sms_code_for_gmail);
+        this.setState({ loading: true });
         verifySmsCode(this.state.input.phone_for_gmail, this.state.input.sms_code_for_gmail, resp => {
-          console.log("SignUp.handleInputChange(): ", resp);
+          this.setState({ loading: false });
           if (resp !== undefined && resp !== null &&
             resp.error !== undefined && resp.error !== null && resp.error == 0 &&
             resp.message !== undefined && resp.message !== null) {
@@ -463,7 +458,6 @@ export default class Register extends Component {
                   <GoogleLogin
                     clientId={GOOGLE_LOGIN_CLIENT_ID}
                     buttonText="Google Sign Up"
-                    onClick={this.onClickGmailSingupButton}
                     onSuccess={this.responseGoogle}
                     onFailure={this.responseGoogle}
                     className="google-signup-button hover-transition disabled"

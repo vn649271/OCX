@@ -25,7 +25,7 @@ export const login = (user, onResponse) => {
             password: user.password
         })
         .then(response => {
-            onResponse({ error: 0, message: response.data })
+            onResponse(response.data)
         })
         .catch(err => {
             onResponse({ error: 20, message: "Server internal error: " + err });

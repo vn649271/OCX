@@ -377,7 +377,7 @@ i.od-spinner {
     background-color: #01c1cc !important;
     padding: 2px 5px !important;
     margin-left: 0px !important;
-    margin-bottom: 30px !important;
+    /* margin-bottom: 30px !important; */
     font-family: Qualy-Light !important;
     color: white !important;
     font-weight: bold !important;
