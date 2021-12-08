@@ -202,8 +202,8 @@ class UserAuthController {
             subject: 'Email verification - openchain.exchange',
             html: mailContent
         };
-        response.json({ error: 0 });
-        return;
+        // response.json({ error: 0 });
+        // return;
         transporter.sendMail(mailOptions, function (error) {
 
             if (error) {
