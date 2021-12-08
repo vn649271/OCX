@@ -73,7 +73,7 @@ export default class Login extends Component {
       });
       return;
     }
-    let profile = response.profileObj;
+    var profile = response.profileObj;
     const user = {
       email: profile.email,
       password: profile.googleId
@@ -81,6 +81,8 @@ export default class Login extends Component {
     login(user, res => {
       if (res !== undefined && res !== null &&
         res.error !== undefined && res.error == 0) {
+        localStorage.setItem("userToken", res.message)
+        localStorage.setItem("email", profile.email)
         me.props.history.push('/dashboard')
       } else {
         this.setState({

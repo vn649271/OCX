@@ -260,7 +260,7 @@ export default class Register extends Component {
         requestSmsCode(me.state.input.phone_for_gmail, resp => {
           me.setState({ loading: false });
           if (!resp.error) {
-            me.printSMSVerificationNotify("Verification code was sent  to your phone.\n" +
+            me.printSMSVerificationNotify("Verification code was sent to your phone.\n" +
               "Please check code in your phone to verify", NOTIFY_INFORMATION);
           } else {
             me.printSMSVerificationNotify(resp.message)
