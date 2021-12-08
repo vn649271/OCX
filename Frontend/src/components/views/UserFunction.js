@@ -1,8 +1,6 @@
 import axios from "axios";
 import Alert from "../common/Alert";
-
-// var BACKEND_BASE_URL = "https://openchaindexbackend.dt.r.appspot.com";
-var BACKEND_BASE_URL = "http://localhost:5000";
+import { BACKEND_BASE_URL } from "../../Contant";
 
 export const register = (newUser, onFinishRegister) => {
     return axios
