@@ -6,9 +6,7 @@ import Footer from "../common/Footer";
 import RecaptchaComponent from "../common/Recaptcha";
 import { GoogleLogin } from 'react-google-login';
 import Alert from "../common/Alert";
-
-const GOOGLE_LOGIN_CLIENT_ID = '533897933750-s85rovfjr2p6tg1pes1qdi89l8vo829g.apps.googleusercontent.com';
-
+import { GOOGLE_LOGIN_CLIENT_ID } from "../../Contant";
 
 var me;
 
@@ -112,7 +110,7 @@ export default class Login extends Component {
     login(user, res => {
       me.setState({ loading: false });
       if (!res.error) {
-        localStorage.setItem("usertoken", res.message)
+        localStorage.setItem("userToken", res.message)
         localStorage.setItem("email", this.state.email)
         me.props.history.push('/dashboard')
       } else {
