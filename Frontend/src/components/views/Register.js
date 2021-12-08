@@ -231,7 +231,7 @@ export default class Register extends Component {
       errors: errors
     });
 
-    if (validationMode == INDIVIDUAL_VALIDATION) {
+    if (validationMode === INDIVIDUAL_VALIDATION) {
       isValid = false;
     }
     return isValid;
@@ -243,9 +243,9 @@ export default class Register extends Component {
   }
 
   onRequestSmsCode = ev => {
-    if (this.state.input.phone_for_gmail == undefined ||
+    if (this.state.input.phone_for_gmail === undefined ||
       this.state.input.phone_for_gmail === null ||
-      this.state.input.phone_for_gmail == "") {
+      this.state.input.phone_for_gmail === "") {
       this.printSMSVerificationNotify("Please input phone number");
       return;
     }
@@ -276,13 +276,13 @@ export default class Register extends Component {
     this.setState({
       input
     });
-    if (event.target.name == 'password') {
+    if (event.target.name === 'password') {
       let password = input['password'] || "";
       if (password === null) {
         password = "";
       }
       this.setState({ strength: zxcvbn(password).score });
-    } else if (event.target.name == 'sms_code_for_gmail') {
+    } else if (event.target.name === 'sms_code_for_gmail') {
       // Perform phone verification
       if (this.state.input.phone_for_gmail && this.state.input.sms_code_for_gmail) {
         this.printSMSVerificationNotify("");
@@ -290,7 +290,7 @@ export default class Register extends Component {
         verifySmsCode(this.state.input.phone_for_gmail, this.state.input.sms_code_for_gmail, resp => {
           this.setState({ loading: false });
           if (resp !== undefined && resp !== null &&
-            resp.error !== undefined && resp.error !== null && resp.error == 0 &&
+            resp.error !== undefined && resp.error !== null && resp.error === 0 &&
             resp.message !== undefined && resp.message !== null) {
             me.state.phoneId = resp.message;
             me.printSMSVerificationNotify("Success to phone verfication", NOTIFY_INFORMATION);
@@ -305,18 +305,23 @@ export default class Register extends Component {
   }
 
   onPhone4EmailChange = val => {
-    this.state.input.phone_for_email = val;
+    this.setState({
+      input: {
+        phone_for_email: val
+      }
+    });
+    // this.state.input.phone_for_email = val;
     this.validate('phone_for_email');
   }
 
   printSMSVerificationNotify = (msg, type = NOTIFY_WARNING) => {
-    if (type == NOTIFY_WARNING) {
+    if (type === NOTIFY_WARNING) {
       this.setState({
         warning: {
           phone_for_gmail: msg
         }
       });
-    } else if (type == NOTIFY_INFORMATION) {
+    } else if (type === NOTIFY_INFORMATION) {
       this.setState({
         message: {
           phone_for_gmail: msg
@@ -336,10 +341,15 @@ export default class Register extends Component {
     // this.setState({sms_code_for_gmail: ''})
     // Clear warning box
     this.printSMSVerificationNotify(" ");
-    if (val === undefined || val === null || val == '') {
+    if (val === undefined || val === null || val.trim() === '') {
       return;
     }
-    this.state.input.phone_for_gmail = val;
+    this.setState({
+      input: {
+        phone_for_gmail: val
+      }
+    });
+    // this.state.input.phone_for_gmail = val;
   }
 
   onChange = e => {
@@ -373,7 +383,7 @@ export default class Register extends Component {
         res.error !== undefined && res.error === 0) {
         me.props.history.push('/login', { email: me.state.input.email })
       } else {
-        if (res.error !== undefined && res.error != 0) {
+        if (res.error !== undefined && res.error !== 0) {
           this.printSMSVerificationNotify(res.message);
         }
       }
@@ -519,14 +529,6 @@ export default class Register extends Component {
                       value={this.state.password}
                       onChange={this.handleInputChange}
                       placeholder="Password" autoComplete="off" />
-                    {/* <PasswordStrengthMeter
-                      fieldId="password"
-                      label="Password"
-                      placeholder="Enter Password"
-                      onStateChanged={this.passwordChanged}
-                      onChange={this.handleInputChange}
-                      thresholdLength={7} minStrength={3} required
-                    /> */}
                     <span className="help-block main-font text-red-400 font-14">{this.state.errors.password}</span>
                   </div>
                   <div className="mb-10">
@@ -540,11 +542,6 @@ export default class Register extends Component {
                       placeholder="Confirm Password" autoComplete="off" />
                     <span className="help-block main-font text-red-400 font-14">{this.state.errors.confirm_password}</span>
                   </div>
-                  {/* <input
-                      type="submit"
-                      className="w-full text-center py-5 rounded button-bg text-white hover-transition font-16 main-font focus:outline-none my-1"
-                      value="Submit" autoComplete="off"
-                    /> */}
                   <button
                     className="spinner-button w-full text-center py-5 rounded button-bg text-white hover-transition font-16 main-font focus:outline-none my-1"
                     onClick={this.onSubmit}

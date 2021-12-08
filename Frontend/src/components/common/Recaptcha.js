@@ -1,7 +1,5 @@
 import { verifyRecaptcha } from "../views/UserFunction";
-import Alert from "./Alert";
-
-const SITE_KEY = "6LdoC28dAAAAACQ6Wbl7YPpOZVGHr9H-YQBKUkAA";
+import { RECAPTCHA_SITE_KEY } from "../../Contant";
 
 export default class RecaptchaComponent {
 
@@ -24,7 +22,7 @@ export default class RecaptchaComponent {
             if (isScriptExist && callback) callback();
         }
         // load the script by passing the URL
-        loadScriptByURL("recaptcha-key", `https://www.google.com/recaptcha/api.js?render=${SITE_KEY}`, function () {
+        loadScriptByURL("recaptcha-key", `https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}`, function () {
             console.log("Script loaded!");
         });
         /***** End of initialization for reCAPTCHA ******/
@@ -38,7 +36,7 @@ export default class RecaptchaComponent {
             return;
         }
         window.grecaptcha.ready(() => {
-            window.grecaptcha.execute(SITE_KEY, { action: "submit" }).then(recaptchaToken => {
+            window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: "submit" }).then(recaptchaToken => {
                 verifyRecaptcha(recaptchaToken, resp => {
                     onFinishCallback(params, recaptchaToken)
                 });

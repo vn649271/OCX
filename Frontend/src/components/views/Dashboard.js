@@ -5,13 +5,13 @@ import Footer from "../common/Footer";
 
 import MobileNav from "../common/MobileNav";
 
-var me = null;
+// var me = null;
 
 export default class Dashboard extends Component {
 
     constructor(props) {
         super(props);
-        me = this;
+        // me = this;
 
         this.state = {
             redirect: null,

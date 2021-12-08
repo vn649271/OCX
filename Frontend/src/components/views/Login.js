@@ -78,7 +78,7 @@ export default class Login extends Component {
     }
     login(user, res => {
       if (res !== undefined && res !== null &&
-        res.error !== undefined && res.error == 0) {
+        res.error !== undefined && res.error === 0) {
         localStorage.setItem("userToken", res.message)
         localStorage.setItem("email", profile.email)
         me.props.history.push('/dashboard')
