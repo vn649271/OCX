@@ -27,6 +27,9 @@ export default class Login extends Component {
         password: ''
       },
       notify: '',
+      warning: {
+        google_login: ''
+      },
       loading: false
     }
     if (props !== undefined && props !== null &&
@@ -63,7 +66,11 @@ export default class Login extends Component {
     if (response === undefined || response === null ||
       response.profileObj === undefined || response.profileObj === null ||
       response.profileObj.email === undefined || response.profileObj.email === null) {
-      Alert("Invalid Google Acount Information");
+      this.setState({
+        warning: {
+          google_login: "Invalid Google Acount Information"
+        }
+      });
       return;
     }
     let profile = response.profileObj;
@@ -71,9 +78,16 @@ export default class Login extends Component {
       email: profile.email,
       password: profile.googleId
     }
-    login(user).then(res => {
-      if (res) {
+    login(user, res => {
+      if (res !== undefined && res !== null &&
+        res.error !== undefined && res.error == 0) {
         me.props.history.push('/dashboard')
+      } else {
+        this.setState({
+          warning: {
+            google_login: res.message
+          }
+        });
       }
     })
   }
@@ -142,7 +156,7 @@ export default class Login extends Component {
               className="google-login-button"
               cookiePolicy={'single_host_origin'}
             />
-            <span className="help-block main-font text-red-400 font-16">{this.state.notify}</span>
+            <span className="block help-block main-font text-red-400 mt-5 mb-10 font-16">{this.state.warning.google_login}</span>
             <input
               type="email"
               className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded mb-10"
@@ -171,6 +185,7 @@ export default class Login extends Component {
                 htmlFor="rememberMe" className="main-font main-color ml-3 font-14">
                 Remember me
               </label>
+              <span className="help-block main-font text-red-400 font-16">{this.state.notify}</span>
             </div>
             {/* <input
                 type="submit"
