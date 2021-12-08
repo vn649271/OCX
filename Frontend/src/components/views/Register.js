@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { register, requestSmsCode, verifySmsCode } from "./UserFunction";
+import { register, requestSmsCode, verifySmsCode, validatePhoneNumber } from "./UserFunction";
 import Header from "../common/Header";
 import Footer from "../common/Footer";
 import Alert from "../common/Alert"
@@ -58,6 +58,8 @@ export default class Register extends Component {
     this.onPhone4EmailChange = this.onPhone4EmailChange.bind(this)
     this.onConnectionTimeout = this.onConnectionTimeout.bind(this)
     this.onRequestSmsCode = this.onRequestSmsCode.bind(this)
+    this.onClickGmailSingupButton = this.onClickGmailSingupButton.bind(this)
+    this.notifySMSVerification = this.notifySMSVerification.bind(this)
 
     /*
     this.validator = new FormValidator([{
@@ -236,30 +238,36 @@ export default class Register extends Component {
     Alert("Connection timed out. Please check your internet connection");
   }
 
+  onClickGmailSingupButton = ev => {
+    console.log(ev.target)
+  }
+
   onRequestSmsCode = ev => {
-    this.setState({
-      notify: {
-        phone_for_gmail: ""
-      }
-    })
+    if (this.state.input.phone_for_gmail == undefined || 
+    this.state.input.phone_for_gmail === null ||
+    this.state.input.phone_for_gmail == "") {
+      this.notifySMSVerification("Please input phone number");
+      return;
+    }
+    this.notifySMSVerification("");
     this.setState({ loading: true });
-    requestSmsCode(this.state.input.phone_for_gmail, resp => {
-      this.setState({ loading: false });
+    validatePhoneNumber(this.state.input.phone_for_gmail, resp => {
+      me.setState({ loading: false });
       if (!resp.error) {
-        this.setState({
-          notify: {
-            phone_for_gmail: "Verification code was sent  to your phone.\n" +
-              "Please check code in your phone to verify"
+        me.setState({ loading: true });
+        requestSmsCode(me.state.input.phone_for_gmail, resp => {
+          me.setState({ loading: false });
+          if (!resp.error) {
+            me.notifySMSVerification("Verification code was sent  to your phone.\n" +
+              "Please check code in your phone to verify");
+          } else {
+            me.notifySMSVerification(resp.message)
           }
-        })
+        })    
       } else {
-        this.setState({
-          notify: {
-            phone_for_gmail: resp.message
-          }
-        })
+        me.notifySMSVerification(resp.message);
       }
-    })
+    });
   }
 
   handleInputChange = event => {
@@ -277,31 +285,18 @@ export default class Register extends Component {
     } else if (event.target.name == 'sms_code_for_gmail') {
       // Perform phone verification
       if (this.state.input.phone_for_gmail && this.state.input.sms_code_for_gmail) {
-        this.setState({
-          notify: {
-            phone_for_gmail: ""
-          }
-        })
+        this.notifySMSVerification(" ");
         console.log(this.state.input.phone_for_gmail, this.state.input.sms_code_for_gmail);
         verifySmsCode(this.state.input.phone_for_gmail, this.state.input.sms_code_for_gmail, resp => {
           console.log("SignUp.handleInputChange(): ", resp);
           if (resp !== undefined && resp !== null &&
             resp.error !== undefined && resp.error !== null && resp.error == 0 &&
             resp.message !== undefined && resp.message !== null) {
-            this.state.phoneId = resp.message;
-            this.setState({
-              notify: {
-                phone_for_gmail: "Success to phone verfication"
-              }
-            })
+            me.state.phoneId = resp.message;
+            me.notifySMSVerification("Success to phone verfication");
           } else {
-            this.setState({
-              notify: {
-                phone_for_gmail: (resp.message ? resp.message : "Failed to phone verfication")
-              }
-            })
+            me.notifySMSVerification((resp.message ? resp.message : "Failed to phone verfication"));
           }
-          console.log(this.state.notify.phone_for_gmail);
         })
       }
     }
@@ -314,15 +309,19 @@ export default class Register extends Component {
     this.validate('phone_for_email');
   }
 
+  notifySMSVerification = msg => {
+    this.setState({
+      notify: {
+        phone_for_gmail: msg
+      }
+    });
+  }
+
   onPhone4GmailChange = val => {
     // Clear verify code input
     // this.setState({sms_code_for_gmail: ''})
     // Clear notify box
-    this.setState({
-      notify: {
-        phone_for_gmail: ""
-      }
-    });
+    this.notifySMSVerification(" ");
     if (val === undefined || val === null || val == '') {
       return;
     }
@@ -334,6 +333,7 @@ export default class Register extends Component {
   }
 
   responseGoogle = (response) => {
+    console.log("Reigster.resonseGoogle(): ", response)
     if (response === undefined || response === null ||
       response.profileObj === undefined || response.profileObj === null ||
       response.profileObj.email === undefined || response.profileObj.email === null) {
@@ -341,12 +341,8 @@ export default class Register extends Component {
       return;
     }
     if (this.state.phoneId === undefined || this.state.phoneId === null ||
-    this.state.phoneId === "") {
-      this.setState({
-        notify: {
-          phone_for_gmail: "Please verify with your phone and try again."
-        }
-      });
+      this.state.phoneId === "") {
+      this.notifySMSVerification("Please verify with your phone and try again.");
       return;
     }
     let profile = response.profileObj;
@@ -364,11 +360,7 @@ export default class Register extends Component {
         me.props.history.push('/login', { email: me.state.input.email })
       } else {
         if (res.error !== undefined && res.error != 0) {
-          this.setState({
-            notify: {
-              phone_for_gmail: res.message
-            }
-          });          
+          this.notifySMSVerification(res.message);
         }
       }
     })
@@ -424,8 +416,8 @@ export default class Register extends Component {
                       value={this.state.phone_for_gmail}
                       onChange={this.onPhone4GmailChange}
                       className="phone-for-gmail block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded" />
-                    {/* <button
-                      className="absolute border border-grey-light button-bg p-5 font-16 main-font focus:outline-none rounded text-white verify-button"
+                    <button
+                      className="spinner-button absolute border border-grey-light button-bg p-5 font-16 main-font focus:outline-none rounded text-white verify-button"
                       onClick={this.onRequestSmsCode}
                       disabled={this.state.loading}>
                       {this.state.loading && (
@@ -434,15 +426,15 @@ export default class Register extends Component {
                           style={{ marginRight: "15px" }}
                         >( )</i>
                       )}
-                      {this.state.loading && <span>Sending Code</span>}
+                      {this.state.loading && <span>Send Code</span>}
                       {!this.state.loading && <span>Send Code</span>}
-                    </button> */}
-                    <button
+                    </button>
+                    {/* <button
                       className="absolute border border-grey-light button-bg p-5 font-16 main-font focus:outline-none rounded text-white verify-button"
                       onClick={this.onRequestSmsCode}
                     >
                       Send Code
-                    </button>
+                    </button> */}
                   </div>
                   <input
                     type="text"
@@ -455,9 +447,10 @@ export default class Register extends Component {
                   <GoogleLogin
                     clientId={GOOGLE_LOGIN_CLIENT_ID}
                     buttonText="Google Sign Up"
+                    onClick={this.onClickGmailSingupButton}
                     onSuccess={this.responseGoogle}
                     onFailure={this.responseGoogle}
-                    className="google-signup-button hover-transition"
+                    className="google-signup-button hover-transition disabled"
                     cookiePolicy={'single_host_origin'}
                   />
                 </div>

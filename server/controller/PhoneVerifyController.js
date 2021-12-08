@@ -1,3 +1,6 @@
+var util = require('util');
+var exec = require('child_process').exec;
+
 const Phone = require("../models/Firestore/Phone");
 require('dotenv').config();
 
@@ -17,6 +20,28 @@ class PhoneVerifyController {
 
     getStatus = (req, resp) => {
         console.log("PhoneVerifyController.getStatus():    ", req.body);
+    }
+
+    validatePhoneNumber(req, res) {
+        var phoneNumber = req.body.phone.trim();
+        let command = 'curl -G https://lookups.twilio.com/v2/PhoneNumbers/' + phoneNumber +
+                    ' -u "' + process.env.ACCOUNT_SID + ":" + process.env.AUTH_TOKEN + '"';
+        exec(command, function (error, stdout, stderr) {
+            const obj = JSON.parse(stdout);
+            if (!obj.valid) {
+                let errorText = obj.validation_errors[0];
+                if (errorText == "TOO_SHORT") {
+                    errorText = "The phone number is too short";
+                } else if (errorText == "TOO_LONG") {
+                    errorText = "The phone number is too long";
+                } else if (errorText == "INVALID_BUT_POSSIBLE") {
+                    errorText = "The phone number is invalid but possible";
+                }
+                res.json({ error: 1, message: errorText });
+                return;
+            }
+            res.json({ error: 0 });
+        });
     }
 
     monitor = (from, to) => {
@@ -109,7 +134,7 @@ class PhoneVerifyController {
                                 return;
                             }
                             res.json({ error: 3, message: "Phone verify status is invalid" });
-                            return;                        
+                            return;
                         }
                         res.json({ error: 4, message: "Failed to verify phone" });
                     });
