@@ -2,7 +2,7 @@ runtime: nodejs16
 
 handlers:
 - url: /.*
-  static_files: build/index.html
-  upload: build/index.html
+  static_files: public/index.html
+  upload: public/index.html
 - url: /
-  static_dir: build
+  static_dir: public
