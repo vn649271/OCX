@@ -50,8 +50,6 @@ For command prompt:
     set GOOGLE_APPLICATION_CREDENTIALS=KEY_PATH
 Replace KEY_PATH with the path of the JSON file that contains your service account key.
 
-#### After run "npm run build"
-sed 's/<script\ src/<script\ type="text\/javascript"\ src/g' build/index.html > index.1.html
-sed 's/<script>!/<script\ type="text\/javascript">!/g' build/index.1.html > index.html
+
 
 
