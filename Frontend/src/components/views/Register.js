@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { register, requestSmsCode, verifySmsCode, validatePhoneNumber } from "./UserFunction";
+import { register, requestSmsCode, verifySmsCode, validatePhoneNumber } from "../../service/UserAuth";
 import Header from "../common/Header";
 import Footer from "../common/Footer";
 import Alert from "../common/Alert"
@@ -17,7 +17,7 @@ import {
   MAX_TIMEOUT,
   NOTIFY_WARNING,
   NOTIFY_INFORMATION
-} from "../../Contant";
+} from "../../Contants";
 
 var me;
 

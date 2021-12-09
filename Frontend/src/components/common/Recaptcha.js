@@ -1,5 +1,5 @@
-import { verifyRecaptcha } from "../views/UserFunction";
-import { RECAPTCHA_SITE_KEY } from "../../Contant";
+import { verifyRecaptcha } from "../../service/UserAuth";
+import { RECAPTCHA_SITE_KEY } from "../../Contants";
 
 export default class RecaptchaComponent {
 

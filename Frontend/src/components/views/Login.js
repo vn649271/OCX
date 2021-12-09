@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { login } from "./UserFunction";
+import { login } from "../../service/UserAuth";
 import Header from "../common/Header";
 import Footer from "../common/Footer";
 import RecaptchaComponent from "../common/Recaptcha";
 import { GoogleLogin } from 'react-google-login';
 import Alert from "../common/Alert";
-import { GOOGLE_LOGIN_CLIENT_ID } from "../../Contant";
+import { GOOGLE_LOGIN_CLIENT_ID } from "../../Contants";
 
 var me;
 
