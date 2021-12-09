@@ -60,7 +60,7 @@
     "twilio": "^3.71.3"
   },
   "scripts": {
-    "start": "concurrently --kill-others-on-fail \"node run start-backend\" \"node run start-frontend\"",
+    "start": "concurrently --kill-others-on-fail \"npm run start-backend\" \"npm run start-frontend\"",
     "start-backend": "node backend.js",
     "start-frontend": "serve -s build -l 8080",
     "dev-backend": "nodemon backend.js",
