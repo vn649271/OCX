@@ -13,3 +13,10 @@ I was using Tailwind with react a lot and felt the whole process of setting up t
 Create React App doesn't support PostCSS 8 yet so you need to install the Tailwind CSS v2.0 PostCSS 7. Also since Create React App doesn't let you override the PostCSS configuration natively, CRACO is used.
 
 #### PS: Star the repo if it helped you ⭐
+
+#### Run concurrently ⭐
+    "start": "concurrently --kill-others-on-fail \"nodemon server.js\" \"serve -s build -l 8080\"",
+    "dev": "concurrently --kill-others-on-fail \"npm run server-dev\" \"craco start\"",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "react-scripts eject"    

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Header from "../common/Header";
 import Footer from "../common/Footer";
 // import Alert from "../common/Alert";
-import { verifyPinCode, requestPinCodeAgain } from "./UserFunction";
+import { verifyPinCode, requestPinCodeAgain } from "../../service/UserAuth";
 
 const DEFAULT_NOTIFY_TEXT = "We want to make sure it's really you." +
                       "In order to further verify your identity." +
