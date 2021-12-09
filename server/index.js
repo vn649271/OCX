@@ -14,14 +14,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 /**
  * Router for user login and register
  */
-var Users = require("./routes/Users");
-app.use("/users", Users);
+var Users = require("./app/routes/Users");
+app.use("/api/users", Users);
 
 /**
  * Router for recaptcha
  */
-var recaptchaRouter = require('./routes/Recaptcha');
-app.use('/recaptcha', recaptchaRouter);
+var recaptchaRouter = require('./app/routes/Recaptcha');
+app.use('/api/recaptcha', recaptchaRouter);
 
 app.listen(port, () => {
   console.log("server running at ", port);
