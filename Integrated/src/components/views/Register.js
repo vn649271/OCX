@@ -242,6 +242,7 @@ export default class Register extends Component {
   }
 
   onRequestSmsCode = ev => {
+    console.log("Request SMS verification code");
     if (this.state.input.phone_for_gmail === undefined ||
       this.state.input.phone_for_gmail === null ||
       this.state.input.phone_for_gmail === "") {
@@ -270,6 +271,7 @@ export default class Register extends Component {
   }
 
   handleInputChange = event => {
+    console.log("Register.handleInputChange(): event = ", event);
     let input = this.state.input;
     input[event.target.name] = event.target.value;
     this.setState({
@@ -334,6 +336,7 @@ export default class Register extends Component {
   }
 
   onPhone4GmailChange = val => {
+    console.log("Register.onPhone4GmailChange(): phone = ", val);
     // Clear verify code input
     // this.setState({sms_code_for_gmail: ''})
     // Clear warning box
@@ -342,7 +345,7 @@ export default class Register extends Component {
       return;
     }
     let input = this.state.input;
-    input.phone_for_email = val;
+    input.phone_for_gmail = val;
     this.setState({ input });
   }
 

@@ -1,8 +1,11 @@
 var util = require('util');
 var exec = require('child_process').exec;
-
 const Phone = require("../models/Firestore/Phone");
 require('dotenv').config();
+
+const TWILIO_STATUS_CALLBACK_URL = process.env.TWILIO_STATUS_CALLBACK_URL || 'http://localhost:5000/users/phoneVerifyStatus'
+const TWILIO_VOICE_CALL_TEST_DATA_URL = process.env.TWILIO_VOICE_CALL_TEST_DATA_URL || 'http://demo.twilio.com/docs/voice.xml';
+const PHONE_VALIDATE_URL = process.env.PHONE_VALIDATE_URL || 'curl -G https://lookups.twilio.com/v2/PhoneNumbers/########## -u "@@@@@@@@@@:&&&&&&&&&&"';
 
 const client = require('twilio')(process.env.ACCOUNT_SID, process.env.AUTH_TOKEN);
 
@@ -15,7 +18,7 @@ class PhoneVerifyController {
     constructor() {
         me = this;
         this.phoneModel = new Phone();
-        this.urlForTwilioStatusCallback = 'http://localhost:5000/users/phoneVerifyStatus';
+        this.urlForTwilioStatusCallback = TWILIO_STATUS_CALLBACK_URL;
     }
 
     getStatus = (req, resp) => {
@@ -24,8 +27,9 @@ class PhoneVerifyController {
 
     validatePhoneNumber(req, res) {
         var phoneNumber = req.body.phone.trim();
-        let command = 'curl -G https://lookups.twilio.com/v2/PhoneNumbers/' + phoneNumber +
-                    ' -u "' + process.env.ACCOUNT_SID + ":" + process.env.AUTH_TOKEN + '"';
+        let command = PHONE_VALIDATE_URL.replace('##########', phoneNumber);
+        command = command.replace('@@@@@@@@@@', process.env.ACCOUNT_SID);
+        command = command.replace('&&&&&&&&&&', process.env.AUTH_TOKEN);
         exec(command, function (error, stdout, stderr) {
             const obj = JSON.parse(stdout);
             if (!obj.valid) {
@@ -51,7 +55,7 @@ class PhoneVerifyController {
                 statusCallback: this.urlForTwilioStatusCallback,
                 statusCallbackEvent: ['initiated', 'answered'],
                 statusCallbackMethod: 'POST',
-                url: 'http://demo.twilio.com/docs/voice.xml',
+                url: TWILIO_VOICE_CALL_TEST_DATA_URL,
                 to: to,
                 from: from
             })
