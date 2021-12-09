@@ -63,6 +63,7 @@
     "start": "concurrently --kill-others-on-fail \"npm run start-backend\" \"npm run start-frontend\"",
     "start-backend": "node backend.js",
     "start-frontend": "serve -s build -l 8080",
+    "dev": "concurrently --kill-others-on-fail \"npm run dev-backend\" \"npm run dev-frontend\"",
     "dev-backend": "nodemon backend.js",
     "dev-frontend": "craco start",
     "build": "craco build",
