@@ -4,7 +4,7 @@ import { BACKEND_BASE_URL } from "../Contants";
 
 export const register = (newUser, onFinishRegister) => {
     return axios
-        .post(BACKEND_BASE_URL + "/api/users/register", newUser)
+        .post(BACKEND_BASE_URL + "/users/register", newUser)
         .then(response => {
             if (response === undefined || response === null ||
                 response.data === undefined || response.data === null ||
@@ -18,7 +18,7 @@ export const register = (newUser, onFinishRegister) => {
 
 export const login = (user, onResponse) => {
     return axios
-        .post(BACKEND_BASE_URL + "/api/users/login", {
+        .post(BACKEND_BASE_URL + "/users/login", {
             email: user.email,
             password: user.password
         })
@@ -32,7 +32,7 @@ export const login = (user, onResponse) => {
 
 export const verifyPinCode = (pinCode, onResponse) => {
     return axios
-        .post(BACKEND_BASE_URL + "/api/users/verifyPinCode", {
+        .post(BACKEND_BASE_URL + "/users/verifyPinCode", {
             pinCode: pinCode
         })
         .then(response => {
@@ -52,7 +52,7 @@ export const verifyPinCode = (pinCode, onResponse) => {
 
 export const requestPinCodeAgain = (email, onResponse) => {
     return axios
-        .post(BACKEND_BASE_URL + "/api/users/requestPinCodeAgain", {
+        .post(BACKEND_BASE_URL + "/users/requestPinCodeAgain", {
             email: email
         })
         .then(response => {
@@ -68,6 +68,65 @@ export const requestPinCodeAgain = (email, onResponse) => {
         })
         .catch(err => {
             onResponse({ error: 20, message: "Server internal error: " + err });
+        })
+}
+
+export const requestSmsCode = (phone, onResponse) => {
+    return axios
+        .get(BACKEND_BASE_URL + "/users/phoneGetCode?phone=" + phone + "&channel=sms")
+        .then(response => {
+            if (response === undefined || response === null ||
+                response.data === undefined || response.data === null ||
+                response.data.error === undefined || response.data.error === null) {
+                onResponse({ error: 10, message: "Unknown server error" });
+                return;
+            }
+            if (onResponse) {
+                onResponse(response.data);
+            }
+        })
+        .catch(err => {
+            onResponse({ error: 20, message: "Server internal error" + err });
+        })
+}
+
+export const verifySmsCode = (phone, code, onResponse) => {
+    return axios
+        .get(BACKEND_BASE_URL + "/users/phoneVerifyCode?phone=" + phone + "&code=" + code)
+        .then(response => {
+            if (response === undefined || response === null ||
+                response.data === undefined || response.data === null ||
+                response.data.error === undefined || response.data.error === null) {
+                onResponse({ error: 10, message: "Unknown server error" });
+                return;
+            }
+            if (onResponse) {
+                onResponse(response.data);
+            }
+        })
+        .catch(err => {
+            onResponse({ error: 20, message: "Server internal error" + err });
+        })
+}
+
+export const validatePhoneNumber = (phone, onResponse) => {
+    return axios
+        .post(BACKEND_BASE_URL + "/users/phoneValidate", {
+            phone: phone
+        })
+        .then(response => {
+            if (response === undefined || response === null ||
+                response.data === undefined || response.data === null ||
+                response.data.error === undefined || response.data.error === null) {
+                onResponse({ error: 10, message: "Unknown server error" });
+                return;
+            }
+            if (onResponse) {
+                onResponse(response.data);
+            }
+        })
+        .catch(err => {
+            onResponse({ error: 20, message: "Server internal error" + err });
         })
 }
 
@@ -88,64 +147,5 @@ export const verifyRecaptcha = (token, onResponse) => {
         })
         .catch(err => {
             onResponse({ error: 20, message: "Server internal error: " + err });
-        })
-}
-
-export const requestSmsCode = (phone, onResponse) => {
-    return axios
-        .get(BACKEND_BASE_URL + "/api/users/phoneGetCode?phone=" + phone + "&channel=sms")
-        .then(response => {
-            if (response === undefined || response === null ||
-                response.data === undefined || response.data === null ||
-                response.data.error === undefined || response.data.error === null) {
-                onResponse({ error: 10, message: "Unknown server error" });
-                return;
-            }
-            if (onResponse) {
-                onResponse(response.data);
-            }
-        })
-        .catch(err => {
-            onResponse({ error: 20, message: "Server internal error" + err });
-        })
-}
-
-export const verifySmsCode = (phone, code, onResponse) => {
-    return axios
-        .get(BACKEND_BASE_URL + "/api/users/phoneVerifyCode?phone=" + phone + "&code=" + code)
-        .then(response => {
-            if (response === undefined || response === null ||
-                response.data === undefined || response.data === null ||
-                response.data.error === undefined || response.data.error === null) {
-                onResponse({ error: 10, message: "Unknown server error" });
-                return;
-            }
-            if (onResponse) {
-                onResponse(response.data);
-            }
-        })
-        .catch(err => {
-            onResponse({ error: 20, message: "Server internal error" + err });
-        })
-}
-
-export const validatePhoneNumber = (phone, onResponse) => {
-    return axios
-        .post(BACKEND_BASE_URL + "/api/users/phoneValidate", {
-            phone: phone
-        })
-        .then(response => {
-            if (response === undefined || response === null ||
-                response.data === undefined || response.data === null ||
-                response.data.error === undefined || response.data.error === null) {
-                onResponse({ error: 10, message: "Unknown server error" });
-                return;
-            }
-            if (onResponse) {
-                onResponse(response.data);
-            }
-        })
-        .catch(err => {
-            onResponse({ error: 20, message: "Server internal error" + err });
         })
 }
