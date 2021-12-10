@@ -2,10 +2,8 @@ import { useHistory } from "react-router-dom";
 
 export default function LogoutButton(props) {
     let history = useHistory();
-    // console.log(props);
 
     function handleLogOut() {
-        console.log(sessionStorage);
         sessionStorage.setItem("userToken", '');
         sessionStorage.clear();
         history.push("/"); // whichever component you want it to route to

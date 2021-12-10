@@ -6,7 +6,6 @@ var userAuthController = new UserAuthController();
 const PhoneVerifyController = require('../controller/PhoneVerifyController');
 var phoneVerifyController = new PhoneVerifyController();
 
-// users.use(cors());
 users.post("/register", userAuthController.register);
 users.post("/login", userAuthController.login);
 users.post("/verifyPinCode", userAuthController.verifyPinCode);
