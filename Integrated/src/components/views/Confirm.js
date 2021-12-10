@@ -18,9 +18,18 @@ export default class Confirm extends Component {
     this.onCompleteResending = this.onCompleteResending.bind(this);
     this.onChangeVerificationCode = this.onChangeVerificationCode.bind(this);
 
+    let email = null;
+    if (props !== undefined && props !== null &&
+    props.location !== undefined && props.location !== null &&
+    props.location.state !== undefined && props.location.state !== null &&
+    props.location.state.email !== undefined && props.location.state.email !== null) {
+      email = props.location.state.email;
+    } else {
+      this.props.history.push(`/register`)
+    }
     this.state = {
       verifyCode: '',
-      email: props.location.state.email,
+      email: email,
       loading: false,
       resending: false,
       errors: {
@@ -58,7 +67,6 @@ export default class Confirm extends Component {
 
   onCompleteResending = (ret) => {
     this.setState({ resending: false });
-    console.log("Register.onCompleteResending(): ret=", ret);
     this.setState({ notify: "Sent new verification code again. Please check your Email inbox." });
   }
 

@@ -185,8 +185,8 @@ export default class Login extends Component {
                 htmlFor="rememberMe" className="main-font main-color ml-3 font-14">
                 Remember me
               </label>
-              <span className="help-block main-font text-red-400 font-16">{this.state.notify}</span>
             </div>
+            <span className="help-block main-font text-red-400 font-16">{this.state.notify}</span>
             {/* <input
                 type="submit"
                 className="w-full text-center py-3 rounded button-bg text-white hover-transition font-14 main-font focus:outline-none m"

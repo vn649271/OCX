@@ -7,16 +7,26 @@ var randtoken = require('rand-token');
 require('dotenv').config();
 
 var TOKEN_GENERATION_SECRET_KEY = process.env.SECRET_KEY;
+var NUM_OF_CHARS_FOR_PIN_CODE = process.env.NUM_OF_CHARS_FOR_PIN_CODE || 5;
 
 var me;
+var userModel = new User();
 
+/**
+ * Controller for user authentication
+ */
 class UserAuthController {
     constructor() {
         me = this;
     }
 
+    /**
+     * Handle the request to resend the pin-code from client
+     * @param {object} req request object from the client 
+     * @param {object} res response object to the client
+     */
     requestPinCodeAgain = (req, res) => {
-        new User().findOne({
+        userModel.findOne({
             where: {
                 email: req.body.email
             }
@@ -25,16 +35,21 @@ class UserAuthController {
                 me.sendEmail(user.id, user, res);
                 return;
             } else {
-                res.json({ error: 1, message: "User already exists." });
+                res.json({ error: -1, message: "User already exists." });
             }
         }).catch(err => {
-            res.json({ error: 3, message: err + " --> " + req.body.password + " ++error" });
+            res.json({ error: -3, message: err + " --> " + req.body.password + " ++error" });
         });
     }
 
+    /**
+     * Register a user with Gmail account + Phone number
+     * @param {object} req request object from the client 
+     * @param {object} res response object to the client
+     */
     _registerWithGmail = (phoneInfo, params) => {
         if (phoneInfo === undefined || phoneInfo === null) {
-            params.resp.json({ error: 1, message: "Failed to get phone information." });
+            params.resp.json({ error: -1, message: "Failed to get phone information." });
             return;
         }
         const userData = {
@@ -48,7 +63,7 @@ class UserAuthController {
             pin_code: "",
             status: 0
         };
-        new User().findOne({
+        userModel.findOne({
             where: {
                 email: params.req.body.email
             }
@@ -56,20 +71,25 @@ class UserAuthController {
             if (!user) {
                 bcrypt.hash(params.req.body.password, 10, (err, hash) => {
                     userData.password = hash;
-                    new User().create(userData).then(newUserId => {
+                    userModel.create(userData).then(newUserId => {
                         if (newUserId === null) {
-                            params.resp.json({ error: 2, message: "Failed to add new user." });
+                            params.resp.json({ error: -2, message: "Failed to add new user." });
                             return;
                         }
                         params.resp.json({ error: 0 });
                     });
                 });
             } else {
-                params.resp.json({ error: 1, message: "The Gmail account is registered already" });
+                params.resp.json({ error: -1, message: "The Gmail account is registered already" });
             }
         });
     }
 
+    /**
+     * Handle request to register user with Gmail + Phone number
+     * @param {object} req request object from the client 
+     * @param {object} res response object to the client
+     */
     registerWithGmail = (req, res) => {
         // First get phone info with phoneId
         var phoneModel = new Phone();
@@ -85,6 +105,11 @@ class UserAuthController {
         }
     }
 
+    /**
+     * Register user with email + phone number
+     * @param {object} req request object from the client 
+     * @param {object} res response object to the client
+     */
     register = (req, res) => {
         if (req.body.email_type) {
             this.registerWithGmail(req, res);
@@ -101,7 +126,7 @@ class UserAuthController {
             pin_code: "",
             status: 0
         };
-        new User().findOne({
+        userModel.findOne({
             where: {
                 email: req.body.email
             }
@@ -109,28 +134,35 @@ class UserAuthController {
             if (!user) {
                 bcrypt.hash(req.body.password, 10, (err, hash) => {
                     userData.password = hash;
-                    new User().create(userData).then(newUserId => {
+                    userModel.create(userData).then(newUserId => {
                         if (newUserId === null) {
-                            res.json({ error: 2, message: "Failed to add new user." });
+                            res.json({ error: -2, message: "Failed to add new user." });
                             return;
                         }
                         me.sendEmail(newUserId, userData, res);
                         return;
                         // res.json({ status: user.email + " Registered" });
                     }).catch(err => {
-                        res.json({ error: 3, message: err + " ==error" });
+                        res.json({ error: -3, message: err + " ==error" });
                     });
                 });
+            } else if (user.status == 0) {
+                res.json({ error: 1, message: "User already exists, but not confirmed." });
             } else {
-                res.json({ error: 4, message: "User already exists." });
+                res.json({ error: -4, message: "User already exists." });
             }
         }).catch(err => {
-            res.json({ error: 5, message: err + " --> " + req.body.password + " ++error" });
+            res.json({ error: -5, message: err + " --> " + req.body.password + " ++error" });
         });
     }
 
+    /**
+     * Handle request to login user with email address
+     * @param {object} req request object from the client 
+     * @param {object} res response object to the client
+     */
     login = (req, res) => {
-        new User().findOne({
+        userModel.findOne({
             where: {
                 email: req.body.email
             }
@@ -144,38 +176,48 @@ class UserAuthController {
                     let token = jwt.sign({ token: lastToken }, TOKEN_GENERATION_SECRET_KEY, {
                         expiresIn: 1440
                     });
-                    let ret = new User().setToken(user.id, token);
+                    let ret = userModel.setToken(user.id, token);
                     res.json({ error: 0, message: token });
                 } else {
-                    res.json({ error: 1, message: 'Wrong Email or password. Please check again.' })
+                    res.json({ error: -1, message: 'Wrong Email or password. Please check again.' })
                 }
             } else {
-                res.json({ error: 2, message: 'User does not exists.' })
+                res.json({ error: -2, message: 'User does not exists.' })
             }
         }).catch(err => {
-            res.json({ error: 3, message: err.message })
+            res.json({ error: -3, message: err.message })
         })
     }
 
+    /**
+     * Handle request to verify pin code from client
+     * @param {object} req request object from the client 
+     * @param {object} res response object to the client
+     */
     verifyPinCode = (req, res) => {
-        new User().findOne({
+        userModel.findOne({
             where: {
                 pin_code: req.body.pinCode
             }
         }).then(user => {
             if (!user) {
-                res.json({ error: 1, message: 'Failed to verify code.' });
+                res.json({ error: -1, message: 'Failed to verify code.' });
                 return;
             }
             if (user.status > 0) {
-                res.json({ error: 2, message: 'The verification code was used already.' });
+                res.json({ error: -2, message: 'The verification code was used already.' });
                 return;
             }
+            let ret = userModel.setStatus(user.id, 1);
             res.json({ error: 0 });
         });
     }
 
-    //send email
+    /**
+     * Send a mail with generated pin code to the email address for the user
+     * @param {object} req request object from the client 
+     * @param {object} res response object to the client
+     */
     sendEmail = (newUserId, userInfo, response) => {
         var toAddress = userInfo.email;
         var smtpConfig = {
@@ -188,27 +230,27 @@ class UserAuthController {
             }
         };
         var transporter = nodemailer.createTransport(smtpConfig);
-        var pinCode = randtoken.generate(5);
+        var pinCode = randtoken.generate(NUM_OF_CHARS_FOR_PIN_CODE);
         let mailContent =
             '<p>You requested for email verification, ' +
             'kindly use this pin code <br><b>' +
             `${pinCode}` +
             '</b><br> to verify your email address' +
             '</p>';
-        let ret = new User().setPinCode(newUserId, pinCode);
+        let ret = userModel.setPinCode(newUserId, pinCode);
         var mailOptions = {
             from: process.env.ADMIN_GMAIL_ADDRESS,
             to: toAddress,
             subject: 'Email verification - openchain.exchange',
             html: mailContent
         };
-        response.json({ error: 0 });
-        return;
+        if (process.env.RUN_MODE == 0) { // in local machine
+            response.json({ error: 0 });
+            return;
+        }
         transporter.sendMail(mailOptions, function (error) {
-
             if (error) {
-                console.log("####### Failed to send mail: ", error);
-                response.json({ error: 1, message: error.message });
+                response.json({ error: -1, message: error.message });
             } else {
                 response.json({ error: 0 });
             }

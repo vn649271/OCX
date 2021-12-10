@@ -177,7 +177,6 @@ export default class Register extends Component {
         errors["password"] = "Please enter your password.";
       }
       if (typeof value !== "undefined") {
-        console.log("Password validation: ", value);
         if (value) {
           if (value.length < this.thresholdLength) {
             isValid = false;
@@ -242,7 +241,6 @@ export default class Register extends Component {
   }
 
   onRequestSmsCode = ev => {
-    console.log("Request SMS verification code");
     if (this.state.input.phone_for_gmail === undefined ||
       this.state.input.phone_for_gmail === null ||
       this.state.input.phone_for_gmail === "") {
@@ -271,7 +269,6 @@ export default class Register extends Component {
   }
 
   handleInputChange = event => {
-    console.log("Register.handleInputChange(): event = ", event);
     let input = this.state.input;
     input[event.target.name] = event.target.value;
     this.setState({
@@ -336,7 +333,6 @@ export default class Register extends Component {
   }
 
   onPhone4GmailChange = val => {
-    console.log("Register.onPhone4GmailChange(): phone = ", val);
     // Clear verify code input
     // this.setState({sms_code_for_gmail: ''})
     // Clear warning box
@@ -350,7 +346,6 @@ export default class Register extends Component {
   }
 
   responseGoogle = (response) => {
-    console.log("Reigster.resonseGoogle(): ", response)
     if (response === undefined || response === null ||
       response.profileObj === undefined || response.profileObj === null ||
       response.profileObj.email === undefined || response.profileObj.email === null) {
@@ -394,7 +389,7 @@ export default class Register extends Component {
     }
     register(newUser, (ret) => {
       me.setState({ loading: false });
-      if (!ret.error) {
+      if (!ret.error || ret.error == 1) {
         me.props.history.push(`/confirm`, { email: me.state.input.email });
         return;
       }
