@@ -402,7 +402,7 @@ export default class Register extends Component {
   onSubmit = (e) => {
     e.preventDefault();
     this.setState({ loading: true });
-    setTimeout(MAX_TIMEOUT, this.onConnectionTimeout);
+    // setTimeout(MAX_TIMEOUT, this.onConnectionTimeout);
     if (this.validate()) {
       this.recaptchaComponent.run(this.submitData);
     } else {
