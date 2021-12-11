@@ -46,8 +46,7 @@
     "zxcvbn": "4.4.2"
   },
   "scripts": {
-    "start": "serve -s build -l 8080",
-    "dev": "craco start",
+    "start": "craco start",
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject"
