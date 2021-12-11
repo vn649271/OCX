@@ -126,6 +126,9 @@ class UserAuthController {
             pin_code: "",
             status: 0
         };
+        if (userModel === null) {
+            res.json({ error: -1, message: "Failed to create User model" });
+        }
         userModel.findOne({
             where: {
                 email: req.body.email
@@ -136,8 +139,7 @@ class UserAuthController {
                     userData.password = hash;
                     userModel.create(userData).then(newUserId => {
                         if (newUserId === null) {
-                            res.json({ error: -2, message: "Failed to add new user." });
-                            return;
+                            return res.json({ error: -2, message: "Failed to add new user." });
                         }
                         me.sendEmail(newUserId, userData, res);
                         return;
