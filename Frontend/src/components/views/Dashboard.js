@@ -23,7 +23,7 @@ export default class Dashboard extends Component {
     }
 
     validateUser = token => {
-        console.log("Dashboard.validateUser(): token=", token);
+        console.info("Dashboard.validateUser(): token=", token);
         if (!token)
             return false;
         return true;

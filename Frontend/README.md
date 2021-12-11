@@ -2,9 +2,11 @@
 Use until create-react-app doesn't support PostCSS 8.
 
 ## How to use?
-1. Do `git clone https://github.com/tanmayhinge/react-tailwind-template.git` or easily [ Generate template](https://github.com/tanmayhinge/react-tailwind-template/generate)
-2. In the command line, do `npm install` to install all the dependencies. 
-3. `npm start` ⚙️
+$git clone https://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@github.com/openchain123/OpenchainTestVersion.git`
+$yarn install
+    If you have not yarn installed, please run 'npm install yarn' before run 'yarn install'
+$npm run build
+$npm start
 
 ## Why did I make this?
 I was using Tailwind with react a lot and felt the whole process of setting up tailwind every time quite the fuss.  
@@ -20,3 +22,34 @@ Create React App doesn't support PostCSS 8 yet so you need to install the Tailwi
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject"    
+
+#### Backend
+## Dependencies
+    express
+    express-flash
+    express-session
+    dotenv
+    http-errors
+    cookie-parser
+    morgan
+    passport
+    cookie-session
+    mysql
+    nodemailer
+    rand-token
+    request
+    passport-google-oauth2
+
+## Server Port requirement
+Port must be 5000. This value was registered with OAuth2.
+
+## Before run start backend
+You must set project client id for Google Cloud Platform.
+    https://cloud.google.com/docs/authentication/getting-started#windows
+For command prompt:
+    set GOOGLE_APPLICATION_CREDENTIALS=KEY_PATH
+Replace KEY_PATH with the path of the JSON file that contains your service account key.
+
+
+
+

@@ -9,7 +9,7 @@ export const register = (newUser, onFinishRegister) => {
             if (response === undefined || response === null ||
                 response.data === undefined || response.data === null ||
                 response.data.error === undefined || response.data.error === null) {
-                onFinishRegister({ error: 10, message: "Unknown server error" });
+                onFinishRegister({ error: -10, message: "Unknown server error" });
                 return;
             }
             onFinishRegister(response.data);
@@ -26,7 +26,7 @@ export const login = (user, onResponse) => {
             onResponse(response.data)
         })
         .catch(err => {
-            onResponse({ error: 20, message: "Server internal error: " + err });
+            onResponse({ error: -20, message: "Server internal error: " + err });
         })
 }
 
@@ -46,7 +46,7 @@ export const verifyPinCode = (pinCode, onResponse) => {
             onResponse(response.data);
         })
         .catch(err => {
-            onResponse({ error: 20, message: "Server internal error: " + err });
+            onResponse({ error: -20, message: "Server internal error: " + err });
         })
 }
 
@@ -59,7 +59,7 @@ export const requestPinCodeAgain = (email, onResponse) => {
             if (response === undefined || response === null ||
                 response.data === undefined || response.data === null ||
                 response.data.error === undefined || response.data.error === null) {
-                onResponse({ error: 10, message: "Unknown server error" });
+                onResponse({ error: -10, message: "Unknown server error" });
                 return;
             }
             if (onResponse) {
@@ -67,7 +67,7 @@ export const requestPinCodeAgain = (email, onResponse) => {
             }
         })
         .catch(err => {
-            onResponse({ error: 20, message: "Server internal error: " + err });
+            onResponse({ error: -20, message: "Server internal error: " + err });
         })
 }
 
@@ -78,7 +78,7 @@ export const requestSmsCode = (phone, onResponse) => {
             if (response === undefined || response === null ||
                 response.data === undefined || response.data === null ||
                 response.data.error === undefined || response.data.error === null) {
-                onResponse({ error: 10, message: "Unknown server error" });
+                onResponse({ error: -10, message: "Unknown server error" });
                 return;
             }
             if (onResponse) {
@@ -86,7 +86,7 @@ export const requestSmsCode = (phone, onResponse) => {
             }
         })
         .catch(err => {
-            onResponse({ error: 20, message: "Server internal error" + err });
+            onResponse({ error: -20, message: "Server internal error" + err });
         })
 }
 
@@ -97,7 +97,7 @@ export const verifySmsCode = (phone, code, onResponse) => {
             if (response === undefined || response === null ||
                 response.data === undefined || response.data === null ||
                 response.data.error === undefined || response.data.error === null) {
-                onResponse({ error: 10, message: "Unknown server error" });
+                onResponse({ error: -10, message: "Unknown server error" });
                 return;
             }
             if (onResponse) {
@@ -105,7 +105,7 @@ export const verifySmsCode = (phone, code, onResponse) => {
             }
         })
         .catch(err => {
-            onResponse({ error: 20, message: "Server internal error" + err });
+            onResponse({ error: -20, message: "Server internal error" + err });
         })
 }
 
@@ -118,7 +118,7 @@ export const validatePhoneNumber = (phone, onResponse) => {
             if (response === undefined || response === null ||
                 response.data === undefined || response.data === null ||
                 response.data.error === undefined || response.data.error === null) {
-                onResponse({ error: 10, message: "Unknown server error" });
+                onResponse({ error: -10, message: "Unknown server error" });
                 return;
             }
             if (onResponse) {
@@ -126,7 +126,7 @@ export const validatePhoneNumber = (phone, onResponse) => {
             }
         })
         .catch(err => {
-            onResponse({ error: 20, message: "Server internal error" + err });
+            onResponse({ error: -20, message: "Server internal error" + err });
         })
 }
 
@@ -146,6 +146,6 @@ export const verifyRecaptcha = (token, onResponse) => {
             onResponse(response.data.error);
         })
         .catch(err => {
-            onResponse({ error: 20, message: "Server internal error: " + err });
+            onResponse({ error: -20, message: "Server internal error: " + err });
         })
 }

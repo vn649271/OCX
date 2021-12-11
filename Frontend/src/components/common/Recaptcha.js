@@ -1,6 +1,8 @@
 import { verifyRecaptcha } from "../../service/UserAuth";
 import { RECAPTCHA_SITE_KEY } from "../../Contants";
 
+const RECAPTCHA_LOAD_URL = "https://www.google.com/recaptcha/api.js?render=@@@";
+
 export default class RecaptchaComponent {
 
     constructor() {
@@ -22,8 +24,9 @@ export default class RecaptchaComponent {
             if (isScriptExist && callback) callback();
         }
         // load the script by passing the URL
-        loadScriptByURL("recaptcha-key", `https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}`, function () {
-            console.log("Script loaded!");
+        let recaptchaLoadURL = RECAPTCHA_LOAD_URL.replace("@@@", RECAPTCHA_SITE_KEY);
+        loadScriptByURL("recaptcha-key", recaptchaLoadURL, function () {
+            console.info("Script loaded!");
         });
         /***** End of initialization for reCAPTCHA ******/
     }
@@ -36,7 +39,10 @@ export default class RecaptchaComponent {
             return;
         }
         window.grecaptcha.ready(() => {
-            window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: "submit" }).then(recaptchaToken => {
+            window.grecaptcha.execute(
+                RECAPTCHA_SITE_KEY, 
+                { action: "submit" }
+            ).then(recaptchaToken => {
                 verifyRecaptcha(recaptchaToken, resp => {
                     onFinishCallback(params, recaptchaToken)
                 });

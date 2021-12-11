@@ -1,5 +1,5 @@
-const BACKEND_BASE_URL = "http://localhost:5000/api";
-// const BACKEND_BASE_URL = "https://openchaindexbackend.dt.r.appspot.com";
+// const BACKEND_BASE_URL = "http://localhost:5000/api";
+const BACKEND_BASE_URL = "https://openchaindex-24vrnd2yra-uc.a.run.app:5000/api";
 const GOOGLE_LOGIN_CLIENT_ID = '533897933750-s85rovfjr2p6tg1pes1qdi89l8vo829g.apps.googleusercontent.com';
 const RECAPTCHA_SITE_KEY = "6LdoC28dAAAAACQ6Wbl7YPpOZVGHr9H-YQBKUkAA";
 const BATCHED_VALIDATION = 0; // Validation mode
