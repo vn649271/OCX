@@ -177,7 +177,6 @@ export default class Register extends Component {
         errors["password"] = "Please enter your password.";
       }
       if (typeof value !== "undefined") {
-        console.log("Password validation: ", value);
         if (value) {
           if (value.length < this.thresholdLength) {
             isValid = false;
@@ -342,12 +341,11 @@ export default class Register extends Component {
       return;
     }
     let input = this.state.input;
-    input.phone_for_email = val;
+    input.phone_for_gmail = val;
     this.setState({ input });
   }
 
   responseGoogle = (response) => {
-    console.log("Reigster.resonseGoogle(): ", response)
     if (response === undefined || response === null ||
       response.profileObj === undefined || response.profileObj === null ||
       response.profileObj.email === undefined || response.profileObj.email === null) {
@@ -391,7 +389,7 @@ export default class Register extends Component {
     }
     register(newUser, (ret) => {
       me.setState({ loading: false });
-      if (!ret.error) {
+      if (!ret.error || ret.error == 1) {
         me.props.history.push(`/confirm`, { email: me.state.input.email });
         return;
       }
@@ -404,7 +402,7 @@ export default class Register extends Component {
   onSubmit = (e) => {
     e.preventDefault();
     this.setState({ loading: true });
-    setTimeout(MAX_TIMEOUT, this.onConnectionTimeout);
+    // setTimeout(MAX_TIMEOUT, this.onConnectionTimeout);
     if (this.validate()) {
       this.recaptchaComponent.run(this.submitData);
     } else {
