@@ -2,7 +2,7 @@
   "name": "react-tailwind-template",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://127.0.0.1:5000",
+  "proxy": "http://openchaindex-24vrnd2yra-uc.a.run.app:5000",
   "dependencies": {
     "@craco/craco": "^6.0.0",
     "@headlessui/react": "^1.4.2",
