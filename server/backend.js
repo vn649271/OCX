@@ -30,9 +30,9 @@ if (process.argv.length < 3 || process.argv[2] != 'dev') {
   process.env.RUN_MODE = 1; // It is from "npm start"
 }
 
-if (process.env.RUN_MODE == 1) { // run in dedicated server, but not in local one
-  process.env.GOOGLE_APPLICATION_CREDENTIALS = null;
-}
+// if (process.env.RUN_MODE == 1) { // run in dedicated server, but not in local one
+//   process.env.GOOGLE_APPLICATION_CREDENTIALS = null;
+// }
 
 app.listen(port, () => {
   console.info("server running at ", port);
