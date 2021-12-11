@@ -2,7 +2,7 @@
   "name": "react-tailwind-template",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://openchaindex-24vrnd2yra-uc.a.run.app:5000",
+  "proxy": "https://openchaindex-backend-6apegx3ocq-uc.a.run.app/",
   "dependencies": {
     "@craco/craco": "^6.0.0",
     "@headlessui/react": "^1.4.2",
@@ -62,12 +62,8 @@
     "zxcvbn": "4.4.2"
   },
   "scripts": {
-    "start": "concurrently --kill-others-on-fail \"npm run start-backend\" \"npm run start-frontend\"",
-    "start-backend": "node backend.js",
-    "start-frontend": "serve -s build -l 8080",
-    "dev": "concurrently --kill-others-on-fail \"npm run dev-backend\" \"npm run dev-frontend\"",
-    "dev-backend": "nodemon backend.js dev",
-    "dev-frontend": "craco start",
+    "start": "serve -s build -l 8080",
+    "dev": "craco start",
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject"
