@@ -9,6 +9,7 @@ const client = require('twilio')(process.env.ACCOUNT_SID, process.env.AUTH_TOKEN
 const PHONE_VERIFY_PENDING = 0;
 const PHONE_VERIFY_APPROVED = 1;
 const TWILIO_STATUS_CALLBACK_URL = process.env.TWILIO_STATUS_CALLBACK_URL;
+const PHONE_VALIDATE_URL = process.env.PHONE_VALIDATE_URL;
 
 var me;
 
