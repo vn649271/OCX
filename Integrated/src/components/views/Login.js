@@ -62,13 +62,16 @@ export default class Login extends Component {
 
   responseGoogle = (response) => {
     if (response === undefined || response === null ||
-      response.profileObj === undefined || response.profileObj === null ||
-      response.profileObj.email === undefined || response.profileObj.email === null) {
-      this.setState({
-        warning: {
-          google_login: "Invalid Google Acount Information"
-        }
-      });
+    response.profileObj === undefined || response.profileObj === null ||
+    response.profileObj.email === undefined || response.profileObj.email === null) {
+      console.log("Login.responseGoogle(): this.rmCheck=", this.rmCheck);
+      if (this.rmCheck) {
+        this.setState({
+          warning: {
+            google_login: "Invalid Google Acount Information"
+          }
+        });
+      }
       return;
     }
     var profile = response.profileObj;
