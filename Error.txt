@@ -25,3 +25,13 @@
     - [FIXED] send mail with name "openchain.exchange"
   + Dashboard
     - [FIXED] Prevent Login email from erasing when log out
+2021-12-11
+  + Sign Up
+    - Google account sign up stacked
+    - Did not validate mobile phone digits
+    - Need more rules for passwords
+    - mobile phone section need to improve. 
+        Need to separate county code section to phone number section more obviously.
+        Also need to change the input font colour 
+  + Login
+    - Google account login did work stacked
