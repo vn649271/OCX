@@ -40,17 +40,17 @@ export default class Register extends Component {
     this.state = {
       input: {},
       errors: {
-        register_result: ''
+        register_result: '',
+        phone_for_email: ''
       },
       password_strength: 0,
       phone_for_gmail: '',
+      phone_for_email: '',
       warning: {
-        phone_for_gmail: '',
-        phone_for_email: ''
+        phone_for_gmail: ''
       },
       message: {
-        phone_for_gmail: '',
-        phone_for_email: '',
+        phone_for_gmail: ''
       },
       loading: false
     }
@@ -182,7 +182,7 @@ export default class Register extends Component {
         if (value) {
           if (value.length < this.thresholdLength) {
             isValid = false;
-            errors["password"] = "Please add at least 6 charachter.";
+            errors["password"] = "Please add at least 8 charachter.";
           } else if (zxcvbn(value).score < this.minStrength) {
             isValid = false;
             errors["password"] = "Password is weak";
@@ -223,12 +223,6 @@ export default class Register extends Component {
         isValid = false;
         errors["phone_for_email"] = 'Please enter phone number';
       }
-      this.setState({ loading: true });
-      validatePhoneNumber(input["phone_for_email"], resp => {
-        me.setState({ loading: false });
-        if (!resp.error) {
-        }
-      });
       break;
     }
 
@@ -332,25 +326,11 @@ export default class Register extends Component {
   }
 
   showMessageForEmailPhone = (msg, type = NOTIFY_WARNING) => {
-    if (type === NOTIFY_WARNING) {
-      this.setState({
-        warning: {
-          phone_for_email: msg
-        }
-      });
-    } else if (type === NOTIFY_INFORMATION) {
-      this.setState({
-        message: {
-          phone_for_email: msg
-        }
-      });
-    } else {
-      this.setState({
-        warning: {
-          phone_for_email: msg
-        }
-      });
-    }
+    let errors = this.state.errors;
+    errors.phone_for_email = msg;
+    this.setState({
+      errors: errors
+    });
   }
 
   onPhone4GmailChange = val => {
@@ -418,7 +398,7 @@ export default class Register extends Component {
     }
     register(newUser, (ret) => {
       me.setState({ loading: false });
-      if (!ret.error || ret.error == 1) {
+      if (!ret.error || ret.error === 1) {
         me.props.history.push(`/confirm`, { email: me.state.input.email });
         return;
       }
@@ -428,12 +408,20 @@ export default class Register extends Component {
     })
   }
 
-  onSubmit = (e) => {
-    e.preventDefault();
+  onSubmit = (ev) => {
+    ev.preventDefault();
     this.setState({ loading: true });
     // setTimeout(MAX_TIMEOUT, this.onConnectionTimeout);
     if (this.validate()) {
-      this.recaptchaComponent.run(this.submitData);
+      // Perform additional validation for email-phone
+      this.setState({ loading: true });
+      validatePhoneNumber(this.state.input.phone_for_email, resp => {
+        me.setState({ loading: false });
+        if (!resp.error) { // If no error
+          return this.recaptchaComponent.run(this.submitData);
+        }
+        this.showMessageForEmailPhone(resp.message);
+      });
     } else {
       this.setState({ loading: false });
     }

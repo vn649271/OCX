@@ -40,6 +40,9 @@ class PhoneVerifyController {
      */
     validatePhoneNumber(req, res) {
         var phoneNumber = req.body.phone.trim();
+        if (phoneNumber == "") {
+            return res.json({ error: -1, message: "Not allowed empty phone number." });
+        }
         let command = PHONE_VALIDATE_URL.replace('###', phoneNumber);
         command = command.replace('@@@', process.env.ACCOUNT_SID);
         command = command.replace('&&&', process.env.AUTH_TOKEN);
@@ -54,10 +57,9 @@ class PhoneVerifyController {
                 } else if (errorText == "INVALID_BUT_POSSIBLE") {
                     errorText = "The phone number is invalid but possible";
                 }
-                res.json({ error: -1, message: errorText });
-                return;
+                return res.json({ error: -2, message: errorText });
             }
-            res.json({ error: 0 });
+            return res.json({ error: 0 });
         });
     }
 
