@@ -45,10 +45,12 @@ export default class Register extends Component {
       password_strength: 0,
       phone_for_gmail: '',
       warning: {
-        phone_for_gmail: ''
+        phone_for_gmail: '',
+        phone_for_email: ''
       },
       message: {
-        phone_for_gmail: ''
+        phone_for_gmail: '',
+        phone_for_email: '',
       },
       loading: false
     }
@@ -62,7 +64,7 @@ export default class Register extends Component {
     this.onPhone4EmailChange = this.onPhone4EmailChange.bind(this)
     this.onConnectionTimeout = this.onConnectionTimeout.bind(this)
     this.onRequestSmsCode = this.onRequestSmsCode.bind(this)
-    this.printSMSVerificationNotify = this.printSMSVerificationNotify.bind(this)
+    this.showMessageForGmailPhone = this.showMessageForGmailPhone.bind(this)
 
     /*
     this.validator = new FormValidator([{
@@ -214,7 +216,6 @@ export default class Register extends Component {
     while (1) {
       if (validationMode === INDIVIDUAL_VALIDATION && fieldName !== 'phone_for_email')
         break;
-
       errors.phone_for_email = "";
       errors.register_result = "";
 
@@ -222,6 +223,12 @@ export default class Register extends Component {
         isValid = false;
         errors["phone_for_email"] = 'Please enter phone number';
       }
+      this.setState({ loading: true });
+      validatePhoneNumber(input["phone_for_email"], resp => {
+        me.setState({ loading: false });
+        if (!resp.error) {
+        }
+      });
       break;
     }
 
@@ -244,10 +251,10 @@ export default class Register extends Component {
     if (this.state.input.phone_for_gmail === undefined ||
       this.state.input.phone_for_gmail === null ||
       this.state.input.phone_for_gmail === "") {
-      this.printSMSVerificationNotify("Please input phone number");
+      this.showMessageForGmailPhone("Please input phone number");
       return;
     }
-    this.printSMSVerificationNotify("");
+    this.showMessageForGmailPhone("");
     this.setState({ loading: true });
     validatePhoneNumber(this.state.input.phone_for_gmail, resp => {
       me.setState({ loading: false });
@@ -256,14 +263,14 @@ export default class Register extends Component {
         requestSmsCode(me.state.input.phone_for_gmail, resp => {
           me.setState({ loading: false });
           if (!resp.error) {
-            me.printSMSVerificationNotify("Verification code was sent to your phone.\n" +
+            me.showMessageForGmailPhone("Verification code was sent to your phone.\n" +
               "Please check code in your phone to verify", NOTIFY_INFORMATION);
           } else {
-            me.printSMSVerificationNotify(resp.message)
+            me.showMessageForGmailPhone(resp.message)
           }
         })
       } else {
-        me.printSMSVerificationNotify(resp.message);
+        me.showMessageForGmailPhone(resp.message);
       }
     });
   }
@@ -283,7 +290,7 @@ export default class Register extends Component {
     } else if (event.target.name === 'sms_code_for_gmail') {
       // Perform phone verification
       if (this.state.input.phone_for_gmail && this.state.input.sms_code_for_gmail) {
-        this.printSMSVerificationNotify("");
+        this.showMessageForGmailPhone("");
         this.setState({ loading: true });
         verifySmsCode(this.state.input.phone_for_gmail, this.state.input.sms_code_for_gmail, resp => {
           this.setState({ loading: false });
@@ -291,9 +298,9 @@ export default class Register extends Component {
             resp.error !== undefined && resp.error !== null && resp.error === 0 &&
             resp.message !== undefined && resp.message !== null) {
             me.state.phoneId = resp.message;
-            me.printSMSVerificationNotify("Success to phone verfication", NOTIFY_INFORMATION);
+            me.showMessageForGmailPhone("Success to phone verfication", NOTIFY_INFORMATION);
           } else {
-            me.printSMSVerificationNotify((resp.message ? resp.message : "Failed to phone verfication"));
+            me.showMessageForGmailPhone((resp.message ? resp.message : "Failed to phone verfication"));
           }
         })
       }
@@ -302,15 +309,7 @@ export default class Register extends Component {
     this.validate(event.target.name);
   }
 
-  onPhone4EmailChange = val => {
-    let input = this.state.input;
-    input.phone_for_email = val;
-    this.setState({ input });
-    // this.state.input.phone_for_email = val;
-    this.validate('phone_for_email');
-  }
-
-  printSMSVerificationNotify = (msg, type = NOTIFY_WARNING) => {
+  showMessageForGmailPhone = (msg, type = NOTIFY_WARNING) => {
     if (type === NOTIFY_WARNING) {
       this.setState({
         warning: {
@@ -332,17 +331,47 @@ export default class Register extends Component {
     }
   }
 
+  showMessageForEmailPhone = (msg, type = NOTIFY_WARNING) => {
+    if (type === NOTIFY_WARNING) {
+      this.setState({
+        warning: {
+          phone_for_email: msg
+        }
+      });
+    } else if (type === NOTIFY_INFORMATION) {
+      this.setState({
+        message: {
+          phone_for_email: msg
+        }
+      });
+    } else {
+      this.setState({
+        warning: {
+          phone_for_email: msg
+        }
+      });
+    }
+  }
+
   onPhone4GmailChange = val => {
     // Clear verify code input
     // this.setState({sms_code_for_gmail: ''})
     // Clear warning box
-    this.printSMSVerificationNotify(" ");
+    this.showMessageForGmailPhone(" ");
     if (val === undefined || val === null || val.trim() === '') {
       return;
     }
     let input = this.state.input;
     input.phone_for_gmail = val;
     this.setState({ input });
+  }
+
+  onPhone4EmailChange = val => {
+    let input = this.state.input;
+    input.phone_for_email = val;
+    this.setState({ input });
+    // this.state.input.phone_for_email = val;
+    this.validate('phone_for_email');
   }
 
   responseGoogle = (response) => {
@@ -354,7 +383,7 @@ export default class Register extends Component {
     }
     if (this.state.phoneId === undefined || this.state.phoneId === null ||
       this.state.phoneId === "") {
-      this.printSMSVerificationNotify("Please verify with your phone and try again.");
+      this.showMessageForGmailPhone("Please verify with your phone and try again.");
       return;
     }
     let profile = response.profileObj;
@@ -372,7 +401,7 @@ export default class Register extends Component {
         me.props.history.push('/login', { email: me.state.input.email })
       } else {
         if (res.error !== undefined && res.error !== 0) {
-          this.printSMSVerificationNotify(res.message);
+          this.showMessageForGmailPhone(res.message);
         }
       }
     })

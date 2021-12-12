@@ -184,7 +184,7 @@ class UserAuthController {
                     res.json({ error: -1, message: 'Wrong Email or password. Please check again.' })
                 }
             } else {
-                res.json({ error: -2, message: 'User does not exists.' })
+                res.json({ error: -2, message: 'User dose not exist. Do you <u>Sign Up Here<u>' })
             }
         }).catch(err => {
             res.json({ error: -3, message: err.message })
