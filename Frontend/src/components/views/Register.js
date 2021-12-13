@@ -523,6 +523,7 @@ export default class Register extends Component {
       validatePhoneNumber(this.state.input.phone_for_email, resp => {
         me.setState({ loading: false });
         if (!resp.error) { // If no error
+          me.setState({ loading: true });
           return this.recaptchaComponent.run(this.submitData);
         }
         this.showMessageForEmailPhone(resp.message);

@@ -35,7 +35,7 @@
         [FIXED] Also need to change the input font colour 
     - [FIXED] Add the counting functionality to Send button(interval:30s)
     - [FIXED] Disable <Google Sign Up> button first, enable it after SMS verification
-    - Fixed font for placeholder in phone number inputbox
+    - [FIXED] Fixed font for placeholder in phone number inputbox
   + Login
     - [FIXED] Google account login did work stacked
-    - Change action of <Google Login> button
+    - [FIXED] Change action of <Google Login> button
