@@ -47,6 +47,9 @@ class PhoneVerifyController {
         command = command.replace('@@@', process.env.ACCOUNT_SID);
         command = command.replace('&&&', process.env.AUTH_TOKEN);
         exec(command, function (error, stdout, stderr) {
+			if (stdout.length < 1) {
+                return res.json({ error: -2, message: "Failed to validate the phone number as connection failure." });
+			}
             const obj = JSON.parse(stdout);
             if (!obj.valid) {
                 let errorText = obj.validation_errors[0];
@@ -57,7 +60,7 @@ class PhoneVerifyController {
                 } else if (errorText == "INVALID_BUT_POSSIBLE") {
                     errorText = "The phone number is invalid but possible";
                 }
-                return res.json({ error: -2, message: errorText });
+                return res.json({ error: -3, message: errorText });
             }
             return res.json({ error: 0 });
         });

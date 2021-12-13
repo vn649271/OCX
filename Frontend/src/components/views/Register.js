@@ -52,8 +52,12 @@ export default class Register extends Component {
         phone_for_gmail: ''
       },
       disableGoogleButton: false,
-      loading: false
+      loading: false,
+	  loading_sms_verify_interval: 30
     }
+
+    this.smsVerifyTimer = null;
+
     this.recaptchaComponent = new RecaptchaComponent();
 
     this.validate = this.validate.bind(this)
@@ -288,20 +292,44 @@ export default class Register extends Component {
   }
 
   onRequestSmsCode = ev => {
+    console.log("Register.onRequestSmsCode()");
+	if (this.state.loading && this.state.loading_sms_verify_interval > 0) {
+	    return;
+	}
+
     if (this.state.input.phone_for_gmail === undefined ||
-      this.state.input.phone_for_gmail === null ||
-      this.state.input.phone_for_gmail === "") {
-      this.showMessageForGmailPhone("Please input phone number");
-      return;
+    this.state.input.phone_for_gmail === null ||
+    this.state.input.phone_for_gmail === "") {
+        this.showMessageForGmailPhone("Please input phone number");
+        return;
     }
     this.showMessageForGmailPhone("");
     this.setState({ loading: true });
+
+    /* Start counting for requesting SMS verify code */
+    this.smsVerifyTimer = setInterval(function() {
+	  let smsVerifyInterval = me.state.loading_sms_verify_interval;
+      smsVerifyInterval--;
+      if (smsVerifyInterval <= 0) {
+        me.setState({ loading: false });
+        me.setState({ loading_sms_verify_interval: 30 });
+        clearTimeout(me.smsVerifyTimer); 
+	  }
+      me.setState({ loading_sms_verify_interval: smsVerifyInterval });
+	}, 1000);
+
+    /* Send request to validate phone number */
     validatePhoneNumber(this.state.input.phone_for_gmail, resp => {
       me.setState({ loading: false });
       if (!resp.error) {
         me.setState({ loading: true });
+        /* Send verify code to the user Gmail */
         requestSmsCode(me.state.input.phone_for_gmail, resp => {
           me.setState({ loading: false });
+          if (me.smsVerifyTimer) {
+            clearTimeout(me.smsVerifyTimer);
+            me.setState({ loading_sms_verify_interval: 30 });
+		  }
           if (!resp.error) {
             me.showMessageForGmailPhone("Verification code was sent to your phone.\n" +
               "Please check code in your phone to verify", NOTIFY_INFORMATION);
@@ -310,6 +338,10 @@ export default class Register extends Component {
           }
         })
       } else {
+        if (me.smsVerifyTimer) {
+          clearTimeout(me.smsVerifyTimer);
+          me.setState({ loading_sms_verify_interval: 30 });
+        }
         me.showMessageForGmailPhone(resp.message);
       }
     });
@@ -522,7 +554,7 @@ export default class Register extends Component {
                           style={{ marginRight: "15px" }}
                         >( )</i>
                       )}
-                      {this.state.loading && <span>Send Code</span>}
+                      {this.state.loading && <span>Sending({this.state.loading_sms_verify_interval})</span>}
                       {!this.state.loading && <span>Send Code</span>}
                     </button>
                   </div>

@@ -33,7 +33,7 @@
     - [FIXED] mobile phone section need to improve. 
         [FIXED] Need to separate county code section to phone number section more obviously.
         [FIXED] Also need to change the input font colour 
-    - Add the counting functionality to Send button(interval:30s)
+    - [FIXED] Add the counting functionality to Send button(interval:30s)
     - Disable <Google Sign Up> button first, enable it after SMS verification
   + Login
     - [FIXED] Google account login did work stacked
