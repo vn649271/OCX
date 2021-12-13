@@ -326,7 +326,6 @@ export default class Register extends Component {
       if (password === null) {
         password = "";
       }
-      this.setState({ strength: zxcvbn(password).score });
     } else if (event.target.name === 'sms_code_for_gmail') {
       // Perform phone verification
       if (this.state.input.phone_for_gmail && this.state.input.sms_code_for_gmail) {
