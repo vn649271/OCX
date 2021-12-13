@@ -51,7 +51,7 @@ export default class Register extends Component {
       message: {
         phone_for_gmail: ''
       },
-      disableGoogleButton: false,
+      disableGoogleButton: true,
       loading: false,
 	  loading_sms_verify_interval: 30
     }
@@ -364,7 +364,12 @@ export default class Register extends Component {
         this.showMessageForGmailPhone("");
         this.setState({ loading: true });
         verifySmsCode(this.state.input.phone_for_gmail, this.state.input.sms_code_for_gmail, resp => {
-          this.setState({ loading: false });
+          me.setState({ loading: false });
+          /***************************************/
+          /******** Enable Google button *********/
+          if (me.state.disableGoogleButton) {
+            me.setState({disableGoogleButton: false});
+          }	
           if (resp !== undefined && resp !== null &&
             resp.error !== undefined && resp.error !== null && resp.error === 0 &&
             resp.message !== undefined && resp.message !== null) {
@@ -432,11 +437,12 @@ export default class Register extends Component {
   }
 
   responseGoogleFailed = (failure) => {
+    console.log("responseGoogleFailed()");
+
     /******************************************************************************************/
     /********************** Unlock Google button disabled *************************************/
     if (this.state.disableGoogleButton) {
       this.setState({disableGoogleButton: false});
-      clearTimeout(this.googleButtonTimer);
     }
     /******************************************************************************************/
     this.setState({
@@ -447,13 +453,7 @@ export default class Register extends Component {
   }
 
   responseGoogle = (response) => {
-    /******************************************************************************************/
-    /********************** Unlock Google button disabled ***************************************/
-    if (this.state.disableGoogleButton) {
-      this.setState({disableGoogleButton: false});
-      clearTimeout(this.googleButtonTimer);
-    }
-    /******************************************************************************************/
+    console.log("responseGoogle()");
     if (response === undefined || response === null ||
       response.profileObj === undefined || response.profileObj === null ||
       response.profileObj.email === undefined || response.profileObj.email === null) {
@@ -475,6 +475,12 @@ export default class Register extends Component {
       email_type: 1 // Gmail Sign Up
     }
     register(newUser, res => {
+      /******************************************************************************************/
+      /********************** Unlock Google button disabled ***************************************/
+      if (this.state.disableGoogleButton) {
+        this.setState({disableGoogleButton: false});
+      }
+      /******************************************************************************************/
       if (res !== undefined && res !== null &&
         res.error !== undefined && res.error === 0) {
         me.props.history.push('/login', { email: me.state.input.email })
