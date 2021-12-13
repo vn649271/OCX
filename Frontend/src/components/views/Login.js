@@ -28,7 +28,8 @@ export default class Login extends Component {
       warning: {
         google_login: ''
       },
-      loading: false
+      loading: false,
+      disableGoogleButton: false
     }
     if (props !== undefined && props !== null &&
       props.location !== undefined && props.location !== null &&
@@ -43,6 +44,7 @@ export default class Login extends Component {
     this.onSubmit = this.onSubmit.bind(this);
     this.submitData = this.submitData.bind(this);
     this.responseGoogle = this.responseGoogle.bind(this);
+    this.responseGoogleFailed = this.responseGoogleFailed.bind(this);
   }
 
   componentDidMount() {
@@ -58,9 +60,45 @@ export default class Login extends Component {
       this.emailInput.value = "";
     }
     document.getElementsByClassName('profile-dropdown-menu')[0].classList.add('hidden');
+    /******************************************************************************************/
+    /********************** Lock Google button disabled ***************************************/
+    let googleButton = document.getElementsByClassName('google-login-button')[0];
+    googleButton.onclick = function(ev) {
+      me.setState({
+        warning: {
+          google_login: ""
+        }
+      });
+      me.googleButtonTimer = setTimeout(() => {
+        me.setState({disableGoogleButton: true});
+      }, 100);
+    }
+    /******************************************************************************************/
+  }
+
+  responseGoogleFailed = (failure) => {
+    /******************************************************************************************/
+    /********************** Unlock Google button disabled *************************************/
+    if (this.state.disableGoogleButton) {
+      this.setState({disableGoogleButton: false});
+      clearTimeout(this.googleButtonTimer);
+    }
+    /******************************************************************************************/
+    this.setState({
+      warning: {
+        google_login: "Invalid Google Acount Information"
+      }
+    });
   }
 
   responseGoogle = (response) => {
+    /******************************************************************************************/
+    /********************** Unlock Google button disabled ***************************************/
+    if (this.state.disableGoogleButton) {
+      this.setState({disableGoogleButton: false});
+      clearTimeout(this.googleButtonTimer);
+    }
+    /******************************************************************************************/
     if (response === undefined || response === null ||
     response.profileObj === undefined || response.profileObj === null ||
     response.profileObj.email === undefined || response.profileObj.email === null) {
@@ -68,7 +106,7 @@ export default class Login extends Component {
       if (this.rmCheck) {
         this.setState({
           warning: {
-            google_login: "Invalid Google Acount Information"
+            google_login: "Unknown error in Google Login."
           }
         });
       }
@@ -155,8 +193,9 @@ export default class Login extends Component {
               clientId={GOOGLE_LOGIN_CLIENT_ID}
               buttonText="Google Login"
               onSuccess={this.responseGoogle}
-              onFailure={this.responseGoogle}
-              className="google-login-button"
+              onFailure={this.responseGoogleFailed}
+              className="google-login-button hover-transition"
+              disabled={this.state.disableGoogleButton}
               cookiePolicy={'single_host_origin'}
             />
             <span className="block help-block main-font text-red-400 mt-5 mb-10 font-16">{this.state.warning.google_login}</span>
