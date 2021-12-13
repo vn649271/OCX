@@ -227,6 +227,7 @@ export default class Register extends Component {
                   break;
                 case -5:
                   errors["password"] = "The password must be eight characters or longer";
+                  break;
                 default:
                   break;
                 }
