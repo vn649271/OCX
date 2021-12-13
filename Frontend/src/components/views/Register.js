@@ -94,7 +94,7 @@ export default class Register extends Component {
       'lowercase' : /(?=.*[a-z])/,
       'uppercase' : /(?=.*[A-Z])/,
       'numeric_char'  : /(?=.*[0-9])/,
-      'special_char'    : /(?=.[!@#\$%\^&\<\>\?\(\)\-\+\*=|\{\}\[\]:\";\'])/,
+      'special_char'    : /(?=.[!@#$%^&<>?()\-+*=|{}[\]:";'])/,
       'atleast_8' : /(?=.{8,})/
     };
     if (!re.lowercase.test(password))
