@@ -29,7 +29,7 @@
   + Sign Up
     - [FIXED] Google account sign up stacked
     - [FIXED] Did not validate mobile phone digits
-    - Need more rules for passwords
+    - [FIXED] Need more rules for passwords
     - mobile phone section need to improve. 
         Need to separate county code section to phone number section more obviously.
         Also need to change the input font colour 

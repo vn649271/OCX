@@ -67,6 +67,7 @@ export default class Register extends Component {
     this.onConnectionTimeout = this.onConnectionTimeout.bind(this)
     this.onRequestSmsCode = this.onRequestSmsCode.bind(this)
     this.showMessageForGmailPhone = this.showMessageForGmailPhone.bind(this)
+    this.passwordValidate = this.passwordValidate.bind(this)
   }
 
   componentDidMount() {
@@ -88,6 +89,26 @@ export default class Register extends Component {
   }
 
   // fieldStateChanged = field => state => this.setState({ [field]: state.errors.length === 0 });
+  passwordValidate = (password) => {
+    var re = {
+      'lowercase' : /(?=.*[a-z])/,
+      'uppercase' : /(?=.*[A-Z])/,
+      'numeric_char'  : /(?=.*[0-9])/,
+      'special_char'    : /(?=.[!@#\$%\^&\<\>\?\(\)\-\+\*=|\{\}\[\]:\";\'])/,
+      'atleast_8' : /(?=.{8,})/
+    };
+    if (!re.lowercase.test(password))
+        return -1;
+    if (!re.uppercase.test(password))
+        return -2;
+    if (!re.numeric_char.test(password))
+        return -3;
+    if (!re.special_char.test(password))
+        return -4;
+    if (!re.atleast_8.test(password))
+        return -5;
+    return 0;
+  }
 
   validate = (fieldName = null) => {
     let validationMode = BATCHED_VALIDATION;
@@ -188,9 +209,32 @@ export default class Register extends Component {
           if (value.length < this.thresholdLength) {
             isValid = false;
             errors["password"] = "Please add at least 8 charachter.";
-          } else if (zxcvbn(value).score < this.minStrength) {
-            isValid = false;
-            errors["password"] = "Password is weak";
+          } else {
+              let passwordStrength = this.passwordValidate(value);
+              if (passwordStrength < 0) {
+                switch (passwordStrength) {
+                case -1:
+                  errors["password"] = "The password must contain at least 1 lowercase alphabetical character";
+                  break;
+                case -2:
+                  errors["password"] = "The password must contain at least 1 uppercase alphabetical character";
+                  break;
+                case -3:
+                  errors["password"] = "The password must contain at least 1 numeric character";
+                  break;
+                case -4:
+                  errors["password"] = "The password must contain at least one special character";
+                  break;
+                case -5:
+                  errors["password"] = "The password must be eight characters or longer";
+                default:
+                  break;
+                }
+		        isValid = false;
+			  }
+          //} else if (zxcvbn(value).score < this.minStrength) {
+          //  isValid = false;
+          //  errors["password"] = "Password is weak";
           }
         }
       }
