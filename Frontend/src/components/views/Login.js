@@ -18,24 +18,25 @@ export default class Login extends Component {
     me = this;
 
     this.state = {
-      email: '',
-      password: '',
-      errors: {
-        email: '',
-        password: ''
-      },
-      notify: '',
-      warning: {
-        google_login: ''
-      },
-      loading: false,
-      disableGoogleButton: false
+	    email: '',
+    	password: '',
+	    errors: {
+			email: '',
+        	password: ''
+		},
+		notify: '',
+		warning: {
+			google_login: ''
+		},
+		loading: false,
+		disableGoogleButton: false,
+		hide_link_to_signup: true
     }
     if (props !== undefined && props !== null &&
-      props.location !== undefined && props.location !== null &&
-      props.location.state !== undefined && props.location.state !== null &&
-      props.location.state.email !== undefined && props.location.state.email !== null) {
-      localStorage.email = props.location.state.email;
+    	props.location !== undefined && props.location !== null &&
+    	props.location.state !== undefined && props.location.state !== null &&
+	    props.location.state.email !== undefined && props.location.state.email !== null) {
+	    localStorage.email = props.location.state.email;
     }
 
     this.recaptchaComponent = new RecaptchaComponent();
@@ -71,6 +72,7 @@ export default class Login extends Component {
       });
       me.googleButtonTimer = setTimeout(() => {
         me.setState({disableGoogleButton: true});
+		me.setState({hide_link_to_signup: true});
       }, 100);
     }
     /******************************************************************************************/
@@ -117,19 +119,25 @@ export default class Login extends Component {
       email: profile.email,
       password: profile.googleId
     }
+	me.setState({loading: true})
     login(user, res => {
-      if (res !== undefined && res !== null &&
-        res.error !== undefined && res.error === 0) {
-        localStorage.setItem("userToken", res.message)
-        localStorage.setItem("email", profile.email)
-        me.props.history.push('/dashboard')
-      } else {
-        this.setState({
-          warning: {
-            google_login: res.message
-          }
-        });
-      }
+		me.setState({loading: false})
+
+	    if (res !== undefined && res !== null &&
+    	res.error !== undefined && res.error === 0) {
+        	localStorage.setItem("userToken", res.message)
+	        localStorage.setItem("email", profile.email)
+    	    me.props.history.push('/dashboard')
+	    } else {
+    	    me.setState({
+        		warning: {
+			        google_login: res.message
+		        }
+        	});
+		    if (res.error == -2) {
+				me.setState({hide_link_to_signup: false})
+			}
+        }
     })
   }
 
@@ -198,7 +206,10 @@ export default class Login extends Component {
               disabled={this.state.disableGoogleButton}
               cookiePolicy={'single_host_origin'}
             />
-            <span className="block help-block main-font text-red-400 mt-5 mb-10 font-16">{this.state.warning.google_login}</span>
+			<div>
+	            <span id="warning-message-box-for-google-login-failure" className="block help-block main-font text-red-400 mt-5 mb-10 font-16">{this.state.warning.google_login}</span>
+				<Link id='link-to-signup-popup' className="border-b border-gray-400 main-color-blue ml-5" hidden={this.state.hide_link_to_signup} to="/register">Sign Up Here</Link>
+			</div>
             <input
               type="email"
               className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded mb-10"
