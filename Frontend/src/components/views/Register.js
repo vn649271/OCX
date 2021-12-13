@@ -52,6 +52,7 @@ export default class Register extends Component {
       message: {
         phone_for_gmail: ''
       },
+      disableGoogleButton: false,
       loading: false
     }
     this.recaptchaComponent = new RecaptchaComponent();
@@ -60,26 +61,30 @@ export default class Register extends Component {
     this.onSubmit = this.onSubmit.bind(this)
     this.submitData = this.submitData.bind(this)
     this.responseGoogle = this.responseGoogle.bind(this)
+    this.responseGoogleFailed = this.responseGoogleFailed.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
     this.onPhone4EmailChange = this.onPhone4EmailChange.bind(this)
     this.onConnectionTimeout = this.onConnectionTimeout.bind(this)
     this.onRequestSmsCode = this.onRequestSmsCode.bind(this)
     this.showMessageForGmailPhone = this.showMessageForGmailPhone.bind(this)
-
-    /*
-    this.validator = new FormValidator([{
-      field: 'email',
-      method: 'isEmail',
-      validWhen: true,
-      args: [/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/],
-      message: 'Enter valid email address (like "victor@gmail.com").'
-    }]);
-    */
-    // this.submitted = false;
   }
 
   componentDidMount() {
     document.getElementsByClassName('profile-dropdown-menu')[0].classList.add('hidden');
+    /******************************************************************************************/
+    /********************** Lock Google button disabled ***************************************/
+    let googleButton = document.getElementsByClassName('google-signup-button')[0];
+    googleButton.onclick = function(ev) {
+      me.setState({
+        warning: {
+          google_login: ""
+        }
+      });
+      me.googleButtonTimer = setTimeout(() => {
+        me.setState({disableGoogleButton: true});
+      }, 100);
+    }
+    /******************************************************************************************/
   }
 
   // fieldStateChanged = field => state => this.setState({ [field]: state.errors.length === 0 });
@@ -354,7 +359,29 @@ export default class Register extends Component {
     this.validate('phone_for_email');
   }
 
+  responseGoogleFailed = (failure) => {
+    /******************************************************************************************/
+    /********************** Unlock Google button disabled *************************************/
+    if (this.state.disableGoogleButton) {
+      this.setState({disableGoogleButton: false});
+      clearTimeout(this.googleButtonTimer);
+    }
+    /******************************************************************************************/
+    this.setState({
+      warning: {
+        google_login: "Invalid Google Acount Information"
+      }
+    });
+  }
+
   responseGoogle = (response) => {
+    /******************************************************************************************/
+    /********************** Unlock Google button disabled ***************************************/
+    if (this.state.disableGoogleButton) {
+      this.setState({disableGoogleButton: false});
+      clearTimeout(this.googleButtonTimer);
+    }
+    /******************************************************************************************/
     if (response === undefined || response === null ||
       response.profileObj === undefined || response.profileObj === null ||
       response.profileObj.email === undefined || response.profileObj.email === null) {
@@ -473,7 +500,8 @@ export default class Register extends Component {
                     buttonText="Google Sign Up"
                     onSuccess={this.responseGoogle}
                     onFailure={this.responseGoogle}
-                    className="google-signup-button hover-transition disabled"
+                    className="google-signup-button hover-transition"
+                    disabled={this.state.disableGoogleButton}
                     cookiePolicy={'single_host_origin'}
                   />
                 </div>
