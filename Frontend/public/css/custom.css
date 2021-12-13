@@ -401,9 +401,10 @@ button:focus {
     outline: none !important;
 }
 .PhoneInputInput {
-   font-family: 'monospace';
-   padding-left: 5px;
-   background-color: #f3f4f6 !important;
+    color: #222;
+    font-family: 'monospace';
+    padding-left: 5px;
+    background-color: #f3f4f6 !important;
 }
 
 .header-dropdown {
