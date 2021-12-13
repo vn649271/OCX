@@ -9,7 +9,6 @@ import RecaptchaComponent from "../common/Recaptcha";
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
 import { GoogleLogin } from 'react-google-login';
-import zxcvbn from 'zxcvbn';
 import {
   GOOGLE_LOGIN_CLIENT_ID,
   BATCHED_VALIDATION,
@@ -210,9 +209,9 @@ export default class Register extends Component {
             isValid = false;
             errors["password"] = "Please add at least 8 charachter.";
           } else {
-              let passwordStrength = this.passwordValidate(value);
-              if (passwordStrength < 0) {
-                switch (passwordStrength) {
+            let passwordStrength = this.passwordValidate(value);
+            if (passwordStrength < 0) {
+              switch (passwordStrength) {
                 case -1:
                   errors["password"] = "The password must contain at least 1 lowercase alphabetical character";
                   break;
@@ -230,12 +229,9 @@ export default class Register extends Component {
                   break;
                 default:
                   break;
-                }
-		        isValid = false;
-			  }
-          //} else if (zxcvbn(value).score < this.minStrength) {
-          //  isValid = false;
-          //  errors["password"] = "Password is weak";
+              }
+		      isValid = false;
+			}
           }
         }
       }
