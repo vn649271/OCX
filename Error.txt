@@ -31,7 +31,7 @@
     - [FIXED] Did not validate mobile phone digits
     - [FIXED] Need more rules for passwords
     - mobile phone section need to improve. 
-        Need to separate county code section to phone number section more obviously.
+        [FIXED] Need to separate county code section to phone number section more obviously.
         Also need to change the input font colour 
   + Login
     - [FIXED] Google account login did work stacked
