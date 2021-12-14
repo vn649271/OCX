@@ -212,7 +212,7 @@ export default class Register extends Component {
 
       errors.password = "";
       errors.register_result = "";
-      this.setState({ hidePasswordCheckList: false });
+
       let value = input["password"] || null;
       if (!value) {
         isValid = false;
@@ -376,6 +376,7 @@ export default class Register extends Component {
       input
     });
     if (event.target.name === 'password') {
+      this.setState({ hidePasswordCheckList: false });
       let password = input['password'] || "";
       if (password === null) {
         password = "";
