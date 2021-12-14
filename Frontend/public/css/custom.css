@@ -159,6 +159,10 @@ a {
     background-color: #01c1cc !important;
 }
 
+.bg-main-dark {
+    background: #30373f
+}
+
 .main-color {
     color: #30373f;
 }

@@ -1,0 +1,22 @@
+.dashboard-sidebar {
+    border-top-right-radius: 100px;
+}
+
+.sidebar-items-rounded {
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+}
+
+.sidebar-items-rounded:hover {
+    background: #d7e1ed;
+}
+
+.sidebar-items-rounded:hover * {
+    color: #30373f;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
