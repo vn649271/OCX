@@ -41,6 +41,7 @@
     - [FIXED] Not allowed both warning and success messages on SMS verification at the same time
     - Separate between Google Sign Up and Email Sign Up
     - Refine error message "Server internal error: Error: Request failed with status code 404"
+    - Add password hint
   + Login
     - [FIXED] Google account login did work stacked
     - [FIXED] Change action of <Google Login> button

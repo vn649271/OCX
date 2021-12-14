@@ -617,6 +617,11 @@ export default class Register extends Component {
                   />
                 </div>
               </div>
+              <div className="middle-line-container flex items-center justify-between">
+                <hr className="middle-line" />
+                <p className="main-font main-color font-16 px-5">OR</p>
+                <hr className="middle-line" />
+              </div>
               <div className="w-1/2 signup-content border-l border-gray-300 pl-20 md:pl-10 pr-20">
                 {/* <form id="reg-form" className="form" onSubmit={this.onSubmit} autoComplete="off"> */}
                 <span className="help-block main-font text-red-400 font-16">{this.state.errors.register_result}</span>
