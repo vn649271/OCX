@@ -12,7 +12,8 @@ function App() {
   return (
     <Router>
       <Route exact path="/">
-        <Homepage />
+        <Dashboard />
+        {/* <Homepage /> */}
       </Route>
       <Route exact path="/home">
         <Homepage />

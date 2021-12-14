@@ -5,7 +5,7 @@ export default function Cake() {
         <div className="main-introduction py-20">
             <div className="small-container flex items-center responsive-col">
                 <div className="introduction-left w-1/2 responsive-flex-order1 responsive-w-90">
-                    <h1 className="intro-title main-color font-40 main-font capitalize">CAKE makes our world go round.</h1>
+                    <h1 className="intro-title main-color font-40 main-font capitalize">A Anchor point to Australian Dollar.</h1>
                     <p className="intro-description main-color font-24 main-font py-16 main-lineheight">
                         We are going to introduce our stable coin OCX.
                     </p>
@@ -22,46 +22,46 @@ export default function Cake() {
                 <div className="flex justify-between">
                     <div className="coin-kind border-r-2 border-gray-400 w-1/4 mr-5">
                         <p className="coin-kind_title font-18 main-font main-color">
-                            BICOIN-BUSD
+                            ETH - OCX
                         </p>
                         <p className="coin-percent font-18 main-font main-color-blue">
                             xxx.xxx%
                         </p>
                         <p className="coin-APR font-16 main-font main-color">
-                            APR
+                            EXCDANGE RATE
                         </p>
                     </div>
                     <div className="coin-kind border-r-2 border-gray-400 w-1/4 mr-5">
                         <p className="coin-kind_title font-18 main-font main-color">
-                            BICOIN-BUSD
+                            BITCOIN - OCX
                         </p>
                         <p className="coin-percent font-18 main-font main-color-blue">
                             xxx.xxx%
                         </p>
                         <p className="coin-APR font-16 main-font main-color">
-                            APR
+                            EXCDANGE RATE
                         </p>
                     </div>
                     <div className="coin-kind border-r-2 border-gray-400 w-1/4 mr-5">
                         <p className="coin-kind_title font-18 main-font main-color">
-                            BICOIN-BUSD
+                            OCX - DAI
                         </p>
                         <p className="coin-percent font-18 main-font main-color-blue">
                             xxx.xxx%
                         </p>
                         <p className="coin-APR font-16 main-font main-color">
-                            APR
+                            EXCDANGE RATE
                         </p>
                     </div>
                     <div className="coin-kind w-1/4 mr-5">
                         <p className="coin-kind_title font-18 main-font main-color">
-                            BICOIN-BUSD
+                            USDC-OCX
                         </p>
                         <p className="coin-percent font-18 main-font main-color-blue">
                             xxx.xxx%
                         </p>
                         <p className="coin-APR font-16 main-font main-color">
-                            APR
+                            EXCDANGE RATE
                         </p>
                     </div>
                 </div>
