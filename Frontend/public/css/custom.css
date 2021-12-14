@@ -409,6 +409,19 @@ button:focus {
     padding-left: 5px;
 }
 
+.PhoneInputCountry {
+    display: inline-block;
+    margin-bottom: -0.4em;
+}
+
+.ShowPasswordIcon {
+    margin-left: -4em;
+}
+
+input.password-input {
+    padding-right: 4em;
+}
+
 #warning-message-box-for-google-login-failure {
 	padding-left: 5px;
 	display: inline-block;
