@@ -38,11 +38,12 @@
     - [FIXED] Add the counting functionality to Send button(interval:30s)
     - [FIXED] Disable <Google Sign Up> button first, enable it after SMS verification
     - [FIXED] Fixed font for placeholder in phone number inputbox
-    - Not allowed both warning and success messages on SMS verification at the same time
+    - [FIXED] Not allowed both warning and success messages on SMS verification at the same time
     - Separate between Google Sign Up and Email Sign Up
     - Refine error message "Server internal error: Error: Request failed with status code 404"
   + Login
     - [FIXED] Google account login did work stacked
     - [FIXED] Change action of <Google Login> button
+    - [FIXED] Separate between Google Login and Email Login
     - Add "forgot password" functionality
     - Refine error message "Server internal error: Error: Request failed with status code 404"
