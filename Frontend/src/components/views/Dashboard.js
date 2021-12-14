@@ -31,12 +31,12 @@ export default class Dashboard extends Component {
 
     componentDidMount() {
         if (!this.validateUser(this.state.token)) {
-            // this.setState({ redirect: '/login' });
+            this.setState({ redirect: '/login' });
         } else {
             document.getElementsByClassName('auth-btn_group')[0].classList.add('hidden');
             document.getElementsByClassName('header-navgation')[0].classList.add('hidden');
             document.getElementsByClassName('dashboard_name')[0].classList.remove('hidden');
-            document.getElementsByClassName('profile-dropdown-menu')[0].classList.remove('hidden');
+            document.getElementsByClassName('user-logo')[0].classList.remove('hidden');
             localStorage.setItem("userToken", "");
         }
     }

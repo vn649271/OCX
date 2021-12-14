@@ -184,7 +184,7 @@ class UserAuthController {
                     res.json({ error: -1, message: 'Wrong Email or password. Please check again.' })
                 }
             } else {
-                res.json({ error: -2, message: 'User is not registered. Do you <u>Sign Up Here<u>' })
+                res.json({ error: -2, message: 'User is not registered.' })
             }
         }).catch(err => {
             res.json({ error: -3, message: err.message })
@@ -252,6 +252,7 @@ class UserAuthController {
         }
         transporter.sendMail(mailOptions, function (error) {
             if (error) {
+                console.log("Failed to send mail: ", error);
                 response.json({ error: -1, message: error.message });
             } else {
                 response.json({ error: 0 });

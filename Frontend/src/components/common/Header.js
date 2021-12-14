@@ -2,7 +2,6 @@ import mainLogo from './assets/images/logo/logo.png';
 import userLogo from './assets/images/img/user-avatar.png';
 import { Link } from "react-router-dom";
 import React from 'react';
-// import LogoutButton from './LogoutButton'
 
 export default function Header(props) {
     return (
@@ -19,12 +18,10 @@ export default function Header(props) {
                             </span>
                         </div>
                     </Link>
-                    {/* <div className='dashboard_name hidden main-font main-color font-30 pl-40 py-0'> */}
-                    <div className='dashboard_name main-font main-color font-30 pl-40 py-0'>
+                    <div className='dashboard_name hidden main-font main-color font-30 pl-40 py-0'>
                         Dashboard
                     </div>
-                    {/* <div className="header-navgation flex items-center font-16 main-color main-font ml-20"> */}
-                    <div className="header-navgation flex items-center font-16 main-color main-font ml-20 hidden">
+                    <div className="header-navgation flex items-center font-16 main-color main-font ml-20">
                         <Link to="/exchange"> <span className="header-nav_items main-color px-5 py-2">Exchange</span></Link>
                         <Link to="#"> <span className="header-nav_items main-color px-5 py-2">News</span></Link>
                         <Link to="#"> <span className="header-nav_items main-color px-5 py-2">About Us</span></Link>
@@ -34,8 +31,7 @@ export default function Header(props) {
                 </div>
 
                 <div className="header-right flex items-center">
-                    {/* <div className="profile-dropdown-menu  header-dropdown hidden"> */}
-                    <div className='user-logo flex items-center'>
+                    <div className='user-logo flex items-center hidden'>
                         <div className='user-avatar'>
                             <img src={userLogo} alt='user-avatar' className='user-avatar'  />
                         </div>
@@ -43,8 +39,7 @@ export default function Header(props) {
                             Big-Star
                         </div>
                     </div>
-                    <div className="auth-btn_group rounded-full hidden flex">
-                    {/* <div className="auth-btn_group rounded-full flex"> */}
+                    <div className="auth-btn_group rounded-full flex">
                         <Link to="/login">   <p className="login-btn capitalize main-font font-14 cursor-pointer m-0 hover-transition px-5  border-2 blue-border main-color-blue ">login</p></Link>
                         <Link to="/register">  <p className="signup-btn capitalize font-14 main-font cursor-pointer  m-0 hover-transition px-5   border-2 blue-border main-color-blue ">sign up</p></Link>
                     </div>
