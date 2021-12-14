@@ -10,4 +10,4 @@ gcloud auth configure-docker
 gcloud config set project openchaindexbackend
 echo "********************************** gcloud build *****************************************************"
 gcloud builds submit --tag gcr.io/openchaindexbackend/openchaindex-backend-image-1
-echo "Built registered your docker image successfully. It's time to register with service"
+echo "****************Built your docker image successfully. It's time to register with service **************"
