@@ -9,14 +9,20 @@ import RecaptchaComponent from "../common/Recaptcha";
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
 import { GoogleLogin } from 'react-google-login';
+import PasswordChecklistComponent from "../common/PasswordChecklistComponent"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye } from "@fortawesome/free-solid-svg-icons";
 import {
   GOOGLE_LOGIN_CLIENT_ID,
   BATCHED_VALIDATION,
   INDIVIDUAL_VALIDATION,
   MAX_TIMEOUT,
   NOTIFY_WARNING,
-  NOTIFY_INFORMATION
+  NOTIFY_INFORMATION,
+  MAX_SMS_DELAY_TIMEOUT
 } from "../../Contants";
+
+const eye = <FontAwesomeIcon icon={faEye} />;
 
 var me;
 
@@ -53,7 +59,9 @@ export default class Register extends Component {
       },
       disableGoogleButton: true,
       loading: false,
-	  loading_sms_verify_interval: 30
+      loading_sms_verify_interval: MAX_SMS_DELAY_TIMEOUT,
+      hidePasswordCheckList: true,
+      showPassword: false
     }
 
     this.smsVerifyTimer = null;
@@ -71,6 +79,24 @@ export default class Register extends Component {
     this.onRequestSmsCode = this.onRequestSmsCode.bind(this)
     this.showMessageForGmailPhone = this.showMessageForGmailPhone.bind(this)
     this.passwordValidate = this.passwordValidate.bind(this)
+    this.togglePasswordVisiblity = this.togglePasswordVisiblity.bind(this)
+  }
+
+  _handleEscKey = (event) => {
+    console.log(event);
+    // When pressed ESC or TAB
+    if(event.target.name == 'password' && (event.keyCode == 27 || event.keyCode == 9)){
+      this.setState({hidePasswordCheckList: true});
+    }
+  }
+
+  componentWillMount() {
+    document.addEventListener("keydown", this._handleEscKey, false);
+  }
+
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this._handleEscKey, false);
   }
 
   componentDidMount() {
@@ -202,6 +228,7 @@ export default class Register extends Component {
 
       errors.password = "";
       errors.register_result = "";
+      this.setState({hidePasswordCheckList: false});
       let value = input["password"] || null;
       if (!value) {
         isValid = false;
@@ -293,30 +320,32 @@ export default class Register extends Component {
 
   onRequestSmsCode = ev => {
     console.log("Register.onRequestSmsCode()");
-	if (this.state.loading && this.state.loading_sms_verify_interval > 0) {
-	    return;
-	}
+  	if (this.state.loading && this.state.loading_sms_verify_interval > 0) {
+  	    return;
+  	}
 
     if (this.state.input.phone_for_gmail === undefined ||
     this.state.input.phone_for_gmail === null ||
     this.state.input.phone_for_gmail === "") {
-        this.showMessageForGmailPhone("Please input phone number");
-        return;
+      this.showMessageForGmailPhone("Please input phone number");
+      return;
     }
     this.showMessageForGmailPhone("");
     this.setState({ loading: true });
 
     /* Start counting for requesting SMS verify code */
     this.smsVerifyTimer = setInterval(function() {
-	  let smsVerifyInterval = me.state.loading_sms_verify_interval;
-      smsVerifyInterval--;
-      if (smsVerifyInterval <= 0) {
-        me.setState({ loading: false });
-        me.setState({ loading_sms_verify_interval: 30 });
-        clearTimeout(me.smsVerifyTimer); 
-	  }
-      me.setState({ loading_sms_verify_interval: smsVerifyInterval });
-	}, 1000);
+  	  let smsVerifyInterval = me.state.loading_sms_verify_interval;
+        smsVerifyInterval--;
+        if (smsVerifyInterval <= 0) {
+          me.setState({ loading: false });
+          me.setState({ loading_sms_verify_interval: MAX_SMS_DELAY_TIMEOUT });
+          clearTimeout(me.smsVerifyTimer); 
+        }
+        me.setState({ loading_sms_verify_interval: smsVerifyInterval });
+      }, 
+      1000
+    );
 
     /* Send request to validate phone number */
     validatePhoneNumber(this.state.input.phone_for_gmail, resp => {
@@ -328,8 +357,8 @@ export default class Register extends Component {
           me.setState({ loading: false });
           if (me.smsVerifyTimer) {
             clearTimeout(me.smsVerifyTimer);
-            me.setState({ loading_sms_verify_interval: 30 });
-		  }
+            me.setState({ loading_sms_verify_interval: MAX_SMS_DELAY_TIMEOUT });
+		      }
           if (!resp.error) {
             me.showMessageForGmailPhone("Verification code was sent to your phone.\n" +
               "Please check code in your phone to verify", NOTIFY_INFORMATION);
@@ -340,11 +369,16 @@ export default class Register extends Component {
       } else {
         if (me.smsVerifyTimer) {
           clearTimeout(me.smsVerifyTimer);
-          me.setState({ loading_sms_verify_interval: 30 });
+          me.setState({ loading_sms_verify_interval: MAX_SMS_DELAY_TIMEOUT });
         }
         me.showMessageForGmailPhone(resp.message);
       }
     });
+  }
+
+  togglePasswordVisiblity = event => {
+    console.log("togglePasswordVisiblity()", event.target.value);
+    this.setState({showPassword: !this.state.showPassword});
   }
 
   handleInputChange = event => {
@@ -390,16 +424,25 @@ export default class Register extends Component {
       this.setState({
         warning: {
           phone_for_gmail: msg
+        },
+        message: {
+          phone_for_gmail: ''
         }
       });
     } else if (type === NOTIFY_INFORMATION) {
       this.setState({
         message: {
           phone_for_gmail: msg
+        },
+        warning: {
+          phone_for_gmail: ''
         }
       });
     } else {
       this.setState({
+        message: {
+          phone_for_gmail: ''
+        },
         warning: {
           phone_for_gmail: msg
         }
@@ -634,15 +677,24 @@ export default class Register extends Component {
                     <span className="help-block main-font text-red-400 font-14">{this.state.errors.phone_for_email}</span>
                   </div>
                   <div className="mb-10">
-                    <input
-                      type="password"
-                      className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded "
-                      name="password"
-                      value={this.state.password}
-                      onChange={this.handleInputChange}
-                      placeholder="Password" autoComplete="off" />
+                    <div classNmae="password-container block">
+                      <input
+                        type={this.state.showPassword? "text": "password"}
+                        className="password-input border border-grey-light bg-gray-100 w-full p-5 font-16 main-font focus:outline-none rounded "
+                        name="password"
+                        value={this.state.password}
+                        onChange={this.handleInputChange}
+                        placeholder="Password" autoComplete="off"
+                      />
+                      <i onClick={this.togglePasswordVisiblity}>{eye}</i>
+                    </div>
                     <span className="help-block main-font text-red-400 font-14">{this.state.errors.password}</span>
                   </div>
+                  <PasswordChecklistComponent
+                    password={this.state.input['password'] || ""}
+                    confirmPassword={this.state.input['confirm_password'] || ""}
+                    hidden={this.state.hidePasswordCheckList}
+                  />
                   <div className="mb-10">
                     <input
                       type="password"
@@ -651,7 +703,8 @@ export default class Register extends Component {
                       id="confirm_password"
                       value={this.state.confirm_password}
                       onChange={this.handleInputChange}
-                      placeholder="Confirm Password" autoComplete="off" />
+                      placeholder="Confirm Password" autoComplete="off" 
+                    />
                     <span className="help-block main-font text-red-400 font-14">{this.state.errors.confirm_password}</span>
                   </div>
                   <button
