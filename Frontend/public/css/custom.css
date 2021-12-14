@@ -406,13 +406,7 @@ button:focus {
     outline: none !important;
 }
 .PhoneInputInput {
-    color: #222;
-    font-family: 'monospace';
     padding-left: 5px;
-    background-color: #f3f4f6 !important;
-}
-.PhoneInputInput::placeholder {
-	font-family: Qualy-Light;
 }
 
 #warning-message-box-for-google-login-failure {
