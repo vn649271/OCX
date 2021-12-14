@@ -138,7 +138,7 @@ export default class Dashboard extends Component {
                                                 <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                             </svg>
                                         </span>
-                                        <span class="ml-3 main-font font-20 text-white">Account Profile</span>
+                                        <span class="ml-3 main-font font-20 text-white">Profile</span>
                                     </a>
                                 </li>
                                 <li class="my-px block mt-6 ">
