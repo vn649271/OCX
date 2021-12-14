@@ -9,7 +9,6 @@ import RecaptchaComponent from "../common/Recaptcha";
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
 import { GoogleLogin } from 'react-google-login';
-import zxcvbn from 'zxcvbn';
 import {
   GOOGLE_LOGIN_CLIENT_ID,
   BATCHED_VALIDATION,
@@ -52,37 +51,67 @@ export default class Register extends Component {
       message: {
         phone_for_gmail: ''
       },
-      loading: false
+      disableGoogleButton: true,
+      loading: false,
+	  loading_sms_verify_interval: 30
     }
+
+    this.smsVerifyTimer = null;
+
     this.recaptchaComponent = new RecaptchaComponent();
 
     this.validate = this.validate.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
     this.submitData = this.submitData.bind(this)
     this.responseGoogle = this.responseGoogle.bind(this)
+    this.responseGoogleFailed = this.responseGoogleFailed.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
     this.onPhone4EmailChange = this.onPhone4EmailChange.bind(this)
     this.onConnectionTimeout = this.onConnectionTimeout.bind(this)
     this.onRequestSmsCode = this.onRequestSmsCode.bind(this)
     this.showMessageForGmailPhone = this.showMessageForGmailPhone.bind(this)
-
-    /*
-    this.validator = new FormValidator([{
-      field: 'email',
-      method: 'isEmail',
-      validWhen: true,
-      args: [/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/],
-      message: 'Enter valid email address (like "victor@gmail.com").'
-    }]);
-    */
-    // this.submitted = false;
+    this.passwordValidate = this.passwordValidate.bind(this)
   }
 
   componentDidMount() {
     document.getElementsByClassName('profile-dropdown-menu')[0].classList.add('hidden');
+    /******************************************************************************************/
+    /********************** Lock Google button disabled ***************************************/
+    let googleButton = document.getElementsByClassName('google-signup-button')[0];
+    googleButton.onclick = function(ev) {
+      me.setState({
+        warning: {
+          google_login: ""
+        }
+      });
+      me.googleButtonTimer = setTimeout(() => {
+        me.setState({disableGoogleButton: true});
+      }, 100);
+    }
+    /******************************************************************************************/
   }
 
   // fieldStateChanged = field => state => this.setState({ [field]: state.errors.length === 0 });
+  passwordValidate = (password) => {
+    var re = {
+      'lowercase' : /(?=.*[a-z])/,
+      'uppercase' : /(?=.*[A-Z])/,
+      'numeric_char'  : /(?=.*[0-9])/,
+      'special_char'    : /(?=.[!@#$%^&<>?()\-+*=|{}[\]:";'])/,
+      'atleast_8' : /(?=.{8,})/
+    };
+    if (!re.lowercase.test(password))
+        return -1;
+    if (!re.uppercase.test(password))
+        return -2;
+    if (!re.numeric_char.test(password))
+        return -3;
+    if (!re.special_char.test(password))
+        return -4;
+    if (!re.atleast_8.test(password))
+        return -5;
+    return 0;
+  }
 
   validate = (fieldName = null) => {
     let validationMode = BATCHED_VALIDATION;
@@ -183,9 +212,30 @@ export default class Register extends Component {
           if (value.length < this.thresholdLength) {
             isValid = false;
             errors["password"] = "Please add at least 8 charachter.";
-          } else if (zxcvbn(value).score < this.minStrength) {
-            isValid = false;
-            errors["password"] = "Password is weak";
+          } else {
+            let passwordStrength = this.passwordValidate(value);
+            if (passwordStrength < 0) {
+              switch (passwordStrength) {
+                case -1:
+                  errors["password"] = "The password must contain at least 1 lowercase alphabetical character";
+                  break;
+                case -2:
+                  errors["password"] = "The password must contain at least 1 uppercase alphabetical character";
+                  break;
+                case -3:
+                  errors["password"] = "The password must contain at least 1 numeric character";
+                  break;
+                case -4:
+                  errors["password"] = "The password must contain at least one special character";
+                  break;
+                case -5:
+                  errors["password"] = "The password must be eight characters or longer";
+                  break;
+                default:
+                  break;
+              }
+		      isValid = false;
+			}
           }
         }
       }
@@ -242,20 +292,44 @@ export default class Register extends Component {
   }
 
   onRequestSmsCode = ev => {
+    console.log("Register.onRequestSmsCode()");
+	if (this.state.loading && this.state.loading_sms_verify_interval > 0) {
+	    return;
+	}
+
     if (this.state.input.phone_for_gmail === undefined ||
-      this.state.input.phone_for_gmail === null ||
-      this.state.input.phone_for_gmail === "") {
-      this.showMessageForGmailPhone("Please input phone number");
-      return;
+    this.state.input.phone_for_gmail === null ||
+    this.state.input.phone_for_gmail === "") {
+        this.showMessageForGmailPhone("Please input phone number");
+        return;
     }
     this.showMessageForGmailPhone("");
     this.setState({ loading: true });
+
+    /* Start counting for requesting SMS verify code */
+    this.smsVerifyTimer = setInterval(function() {
+	  let smsVerifyInterval = me.state.loading_sms_verify_interval;
+      smsVerifyInterval--;
+      if (smsVerifyInterval <= 0) {
+        me.setState({ loading: false });
+        me.setState({ loading_sms_verify_interval: 30 });
+        clearTimeout(me.smsVerifyTimer); 
+	  }
+      me.setState({ loading_sms_verify_interval: smsVerifyInterval });
+	}, 1000);
+
+    /* Send request to validate phone number */
     validatePhoneNumber(this.state.input.phone_for_gmail, resp => {
       me.setState({ loading: false });
       if (!resp.error) {
         me.setState({ loading: true });
+        /* Send verify code to the user Gmail */
         requestSmsCode(me.state.input.phone_for_gmail, resp => {
           me.setState({ loading: false });
+          if (me.smsVerifyTimer) {
+            clearTimeout(me.smsVerifyTimer);
+            me.setState({ loading_sms_verify_interval: 30 });
+		  }
           if (!resp.error) {
             me.showMessageForGmailPhone("Verification code was sent to your phone.\n" +
               "Please check code in your phone to verify", NOTIFY_INFORMATION);
@@ -264,6 +338,10 @@ export default class Register extends Component {
           }
         })
       } else {
+        if (me.smsVerifyTimer) {
+          clearTimeout(me.smsVerifyTimer);
+          me.setState({ loading_sms_verify_interval: 30 });
+        }
         me.showMessageForGmailPhone(resp.message);
       }
     });
@@ -280,14 +358,18 @@ export default class Register extends Component {
       if (password === null) {
         password = "";
       }
-      this.setState({ strength: zxcvbn(password).score });
     } else if (event.target.name === 'sms_code_for_gmail') {
       // Perform phone verification
       if (this.state.input.phone_for_gmail && this.state.input.sms_code_for_gmail) {
         this.showMessageForGmailPhone("");
         this.setState({ loading: true });
         verifySmsCode(this.state.input.phone_for_gmail, this.state.input.sms_code_for_gmail, resp => {
-          this.setState({ loading: false });
+          me.setState({ loading: false });
+          /***************************************/
+          /******** Enable Google button *********/
+          if (me.state.disableGoogleButton) {
+            me.setState({disableGoogleButton: false});
+          }	
           if (resp !== undefined && resp !== null &&
             resp.error !== undefined && resp.error !== null && resp.error === 0 &&
             resp.message !== undefined && resp.message !== null) {
@@ -354,7 +436,24 @@ export default class Register extends Component {
     this.validate('phone_for_email');
   }
 
+  responseGoogleFailed = (failure) => {
+    console.log("responseGoogleFailed()");
+
+    /******************************************************************************************/
+    /********************** Unlock Google button disabled *************************************/
+    if (this.state.disableGoogleButton) {
+      this.setState({disableGoogleButton: false});
+    }
+    /******************************************************************************************/
+    this.setState({
+      warning: {
+        google_login: "Invalid Google Acount Information"
+      }
+    });
+  }
+
   responseGoogle = (response) => {
+    console.log("responseGoogle()");
     if (response === undefined || response === null ||
       response.profileObj === undefined || response.profileObj === null ||
       response.profileObj.email === undefined || response.profileObj.email === null) {
@@ -376,6 +475,12 @@ export default class Register extends Component {
       email_type: 1 // Gmail Sign Up
     }
     register(newUser, res => {
+      /******************************************************************************************/
+      /********************** Unlock Google button disabled ***************************************/
+      if (this.state.disableGoogleButton) {
+        this.setState({disableGoogleButton: false});
+      }
+      /******************************************************************************************/
       if (res !== undefined && res !== null &&
         res.error !== undefined && res.error === 0) {
         me.props.history.push('/login', { email: me.state.input.email })
@@ -418,6 +523,7 @@ export default class Register extends Component {
       validatePhoneNumber(this.state.input.phone_for_email, resp => {
         me.setState({ loading: false });
         if (!resp.error) { // If no error
+          me.setState({ loading: true });
           return this.recaptchaComponent.run(this.submitData);
         }
         this.showMessageForEmailPhone(resp.message);
@@ -455,7 +561,7 @@ export default class Register extends Component {
                           style={{ marginRight: "15px" }}
                         >( )</i>
                       )}
-                      {this.state.loading && <span>Send Code</span>}
+                      {this.state.loading && <span>Sending({this.state.loading_sms_verify_interval})</span>}
                       {!this.state.loading && <span>Send Code</span>}
                     </button>
                   </div>
@@ -473,7 +579,8 @@ export default class Register extends Component {
                     buttonText="Google Sign Up"
                     onSuccess={this.responseGoogle}
                     onFailure={this.responseGoogle}
-                    className="google-signup-button hover-transition disabled"
+                    className="google-signup-button hover-transition"
+                    disabled={this.state.disableGoogleButton}
                     cookiePolicy={'single_host_origin'}
                   />
                 </div>

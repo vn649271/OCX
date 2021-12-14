@@ -405,22 +405,33 @@ button:focus {
     outline: none !important;
 }
 .PhoneInputInput {
-   padding-left: 5px;
-   background-color: #f3f4f6 !important;
+    color: #222;
+    font-family: 'monospace';
+    padding-left: 5px;
+    background-color: #f3f4f6 !important;
+}
+.PhoneInputInput::placeholder {
+	font-family: Qualy-Light;
+}
+
+#warning-message-box-for-google-login-failure {
+	padding-left: 5px;
+	display: inline-block;
+}
+
+#link-to-signup-popup {
+	font-size: 1.5em;
 }
 
 .header-dropdown {
     width: 200px;
 }
 
-
 /* responsive */
-
 @media (max-width: 1024px) {
     html, body {
         font-size: 8px;
     }
-
 }
 
 @media (max-width: 768px) {
