@@ -40,7 +40,9 @@
     - [FIXED] Fixed font for placeholder in phone number inputbox
     - Not allowed both warning and success messages on SMS verification at the same time
     - Separate between Google Sign Up and Email Sign Up
+    - Refine error message "Server internal error: Error: Request failed with status code 404"
   + Login
     - [FIXED] Google account login did work stacked
     - [FIXED] Change action of <Google Login> button
     - Add "forgot password" functionality
+    - Refine error message "Server internal error: Error: Request failed with status code 404"
