@@ -447,6 +447,11 @@ li.sc-gsDKAQ {
     width: 200px;
 }
 
+.middle-line {
+    border-top: black 1px solid !important;
+    width: 100%;
+}
+
 /* responsive */
 @media (max-width: 1024px) {
     html, body {
