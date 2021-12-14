@@ -46,6 +46,7 @@ export default class Login extends Component {
     this.submitData = this.submitData.bind(this);
     this.responseGoogle = this.responseGoogle.bind(this);
     this.responseGoogleFailed = this.responseGoogleFailed.bind(this);
+    this.clearAllWarnings = this.clearAllWarnings.bind(this);
   }
 
   componentDidMount() {
@@ -65,11 +66,7 @@ export default class Login extends Component {
     /********************** Lock Google button disabled ***************************************/
     let googleButton = document.getElementsByClassName('google-login-button')[0];
     googleButton.onclick = function (ev) {
-      me.setState({
-        warning: {
-          google_login: ""
-        }
-      });
+      me.clearAllWarnings();
       me.googleButtonTimer = setTimeout(() => {
         me.setState({ disableGoogleButton: true });
         me.setState({ hide_link_to_signup: true });
@@ -120,11 +117,11 @@ export default class Login extends Component {
       password: profile.googleId
     }
     me.setState({ loading: true })
-    this.setState({ disableGoogleButton: true });
-    
+    me.setState({ disableGoogleButton: true });
+
     login(user, res => {
       me.setState({ loading: false })
-      this.setState({ disableGoogleButton: false });
+      me.setState({ disableGoogleButton: false });
 
       if (res !== undefined && res !== null &&
         res.error !== undefined && res.error === 0) {
@@ -151,6 +148,7 @@ export default class Login extends Component {
   submitData = (params, token) => {
     if (token === null) {
       me.setState({ loading: false });
+      me.setState({ disableGoogleButton: false });
       Alert("Failed to init reCAPTCHA");
       return;
     }
@@ -159,8 +157,10 @@ export default class Login extends Component {
       email: this.state.email,
       password: this.state.password
     }
+
     login(user, res => {
       me.setState({ loading: false });
+      me.setState({ disableGoogleButton: false });
       if (!res.error) {
         localStorage.setItem("userToken", res.message)
         localStorage.setItem("email", this.state.email)
@@ -169,6 +169,20 @@ export default class Login extends Component {
         this.setState({ notify: res.message });
       }
     })
+  }
+
+  clearAllWarnings() {
+    this.setState({
+      warning: {
+        google_login: ""
+      }
+    });
+    this.setState({ notify: "" });
+    this.setState({ errors: {
+      email: '',
+      password: ''
+    }});
+    this.setState({ hide_link_to_signup: true });
   }
 
   onSubmit(e) {
@@ -188,7 +202,9 @@ export default class Login extends Component {
       localStorage.email = "";
       localStorage.checkbox = "";
     }
+    this.clearAllWarnings();
     this.setState({ loading: true });
+    me.setState({ disableGoogleButton: true });
     this.recaptchaComponent.run(this.submitData);
   }
 
