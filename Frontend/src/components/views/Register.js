@@ -676,7 +676,7 @@ export default class Register extends Component {
                         onBlur={this.onLeaveFromPasswordInput}
                         placeholder="Password" autoComplete="off"
                       />
-                      <i onClick={this.togglePasswordVisiblity}>{eye}</i>
+                      <i className="ShowPasswordIcon" onClick={this.togglePasswordVisiblity}>{eye}</i>
                     </div>
                     <span className="help-block main-font text-red-400 font-14">{this.state.errors.password}</span>
                   </div>
