@@ -60,7 +60,7 @@ export default class Login extends Component {
       this.rmCheck.removeAttribute("checked");
       this.emailInput.value = "";
     }
-    document.getElementsByClassName('profile-dropdown-menu')[0].classList.add('hidden');
+    // document.getElementsByClassName('profile-dropdown-menu')[0].classList.add('hidden');
     /******************************************************************************************/
     /********************** Lock Google button disabled ***************************************/
     let googleButton = document.getElementsByClassName('google-login-button')[0];

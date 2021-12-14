@@ -100,7 +100,7 @@ export default class Register extends Component {
   }
 
   componentDidMount() {
-    document.getElementsByClassName('profile-dropdown-menu')[0].classList.add('hidden');
+    // document.getElementsByClassName('profile-dropdown-menu')[0].classList.add('hidden');
     /******************************************************************************************/
     /********************** Lock Google button disabled ***************************************/
     let googleButton = document.getElementsByClassName('google-signup-button')[0];
