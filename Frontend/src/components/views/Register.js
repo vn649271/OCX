@@ -80,23 +80,7 @@ export default class Register extends Component {
     this.showMessageForGmailPhone = this.showMessageForGmailPhone.bind(this)
     this.passwordValidate = this.passwordValidate.bind(this)
     this.togglePasswordVisiblity = this.togglePasswordVisiblity.bind(this)
-  }
-
-  _handleEscKey = (event) => {
-    console.log(event);
-    // When pressed ESC or TAB
-    if(event.target.name == 'password' && (event.keyCode == 27 || event.keyCode == 9)){
-      this.setState({hidePasswordCheckList: true});
-    }
-  }
-
-  componentWillMount() {
-    document.addEventListener("keydown", this._handleEscKey, false);
-  }
-
-
-  componentWillUnmount() {
-    document.removeEventListener("keydown", this._handleEscKey, false);
+    this.onLeaveFromPasswordInput = this.onLeaveFromPasswordInput.bind(this)
   }
 
   componentDidMount() {
@@ -104,14 +88,14 @@ export default class Register extends Component {
     /******************************************************************************************/
     /********************** Lock Google button disabled ***************************************/
     let googleButton = document.getElementsByClassName('google-signup-button')[0];
-    googleButton.onclick = function(ev) {
+    googleButton.onclick = function (ev) {
       me.setState({
         warning: {
           google_login: ""
         }
       });
       me.googleButtonTimer = setTimeout(() => {
-        me.setState({disableGoogleButton: true});
+        me.setState({ disableGoogleButton: true });
       }, 100);
     }
     /******************************************************************************************/
@@ -120,22 +104,22 @@ export default class Register extends Component {
   // fieldStateChanged = field => state => this.setState({ [field]: state.errors.length === 0 });
   passwordValidate = (password) => {
     var re = {
-      'lowercase' : /(?=.*[a-z])/,
-      'uppercase' : /(?=.*[A-Z])/,
-      'numeric_char'  : /(?=.*[0-9])/,
-      'special_char'    : /(?=.[!@#$%^&<>?()\-+*=|{}[\]:";'])/,
-      'atleast_8' : /(?=.{8,})/
+      'lowercase': /(?=.*[a-z])/,
+      'uppercase': /(?=.*[A-Z])/,
+      'numeric_char': /(?=.*[0-9])/,
+      'special_char': /(?=.[!@#$%^&<>?()\-+*=|{}[\]:";'])/,
+      'atleast_8': /(?=.{8,})/
     };
     if (!re.lowercase.test(password))
-        return -1;
+      return -1;
     if (!re.uppercase.test(password))
-        return -2;
+      return -2;
     if (!re.numeric_char.test(password))
-        return -3;
+      return -3;
     if (!re.special_char.test(password))
-        return -4;
+      return -4;
     if (!re.atleast_8.test(password))
-        return -5;
+      return -5;
     return 0;
   }
 
@@ -228,7 +212,7 @@ export default class Register extends Component {
 
       errors.password = "";
       errors.register_result = "";
-      this.setState({hidePasswordCheckList: false});
+      this.setState({ hidePasswordCheckList: false });
       let value = input["password"] || null;
       if (!value) {
         isValid = false;
@@ -261,8 +245,8 @@ export default class Register extends Component {
                 default:
                   break;
               }
-		      isValid = false;
-			}
+              isValid = false;
+            }
           }
         }
       }
@@ -320,13 +304,13 @@ export default class Register extends Component {
 
   onRequestSmsCode = ev => {
     console.log("Register.onRequestSmsCode()");
-  	if (this.state.loading && this.state.loading_sms_verify_interval > 0) {
-  	    return;
-  	}
+    if (this.state.loading && this.state.loading_sms_verify_interval > 0) {
+      return;
+    }
 
     if (this.state.input.phone_for_gmail === undefined ||
-    this.state.input.phone_for_gmail === null ||
-    this.state.input.phone_for_gmail === "") {
+      this.state.input.phone_for_gmail === null ||
+      this.state.input.phone_for_gmail === "") {
       this.showMessageForGmailPhone("Please input phone number");
       return;
     }
@@ -334,16 +318,16 @@ export default class Register extends Component {
     this.setState({ loading: true });
 
     /* Start counting for requesting SMS verify code */
-    this.smsVerifyTimer = setInterval(function() {
-  	  let smsVerifyInterval = me.state.loading_sms_verify_interval;
-        smsVerifyInterval--;
-        if (smsVerifyInterval <= 0) {
-          me.setState({ loading: false });
-          me.setState({ loading_sms_verify_interval: MAX_SMS_DELAY_TIMEOUT });
-          clearTimeout(me.smsVerifyTimer); 
-        }
-        me.setState({ loading_sms_verify_interval: smsVerifyInterval });
-      }, 
+    this.smsVerifyTimer = setInterval(function () {
+      let smsVerifyInterval = me.state.loading_sms_verify_interval;
+      smsVerifyInterval--;
+      if (smsVerifyInterval <= 0) {
+        me.setState({ loading: false });
+        me.setState({ loading_sms_verify_interval: MAX_SMS_DELAY_TIMEOUT });
+        clearTimeout(me.smsVerifyTimer);
+      }
+      me.setState({ loading_sms_verify_interval: smsVerifyInterval });
+    },
       1000
     );
 
@@ -358,7 +342,7 @@ export default class Register extends Component {
           if (me.smsVerifyTimer) {
             clearTimeout(me.smsVerifyTimer);
             me.setState({ loading_sms_verify_interval: MAX_SMS_DELAY_TIMEOUT });
-		      }
+          }
           if (!resp.error) {
             me.showMessageForGmailPhone("Verification code was sent to your phone.\n" +
               "Please check code in your phone to verify", NOTIFY_INFORMATION);
@@ -378,7 +362,11 @@ export default class Register extends Component {
 
   togglePasswordVisiblity = event => {
     console.log("togglePasswordVisiblity()", event.target.value);
-    this.setState({showPassword: !this.state.showPassword});
+    this.setState({ showPassword: !this.state.showPassword });
+  }
+
+  onLeaveFromPasswordInput = event => {
+    this.setState({ hidePasswordCheckList: true });
   }
 
   handleInputChange = event => {
@@ -402,8 +390,8 @@ export default class Register extends Component {
           /***************************************/
           /******** Enable Google button *********/
           if (me.state.disableGoogleButton) {
-            me.setState({disableGoogleButton: false});
-          }	
+            me.setState({ disableGoogleButton: false });
+          }
           if (resp !== undefined && resp !== null &&
             resp.error !== undefined && resp.error !== null && resp.error === 0 &&
             resp.message !== undefined && resp.message !== null) {
@@ -485,7 +473,7 @@ export default class Register extends Component {
     /******************************************************************************************/
     /********************** Unlock Google button disabled *************************************/
     if (this.state.disableGoogleButton) {
-      this.setState({disableGoogleButton: false});
+      this.setState({ disableGoogleButton: false });
     }
     /******************************************************************************************/
     this.setState({
@@ -521,7 +509,7 @@ export default class Register extends Component {
       /******************************************************************************************/
       /********************** Unlock Google button disabled ***************************************/
       if (this.state.disableGoogleButton) {
-        this.setState({disableGoogleButton: false});
+        this.setState({ disableGoogleButton: false });
       }
       /******************************************************************************************/
       if (res !== undefined && res !== null &&
@@ -677,13 +665,14 @@ export default class Register extends Component {
                     <span className="help-block main-font text-red-400 font-14">{this.state.errors.phone_for_email}</span>
                   </div>
                   <div className="mb-10">
-                    <div classNmae="password-container block">
+                    <div className="password-container block">
                       <input
-                        type={this.state.showPassword? "text": "password"}
+                        type={this.state.showPassword ? "text" : "password"}
                         className="password-input border border-grey-light bg-gray-100 w-full p-5 font-16 main-font focus:outline-none rounded "
                         name="password"
                         value={this.state.password}
                         onChange={this.handleInputChange}
+                        onBlur={this.onLeaveFromPasswordInput}
                         placeholder="Password" autoComplete="off"
                       />
                       <i onClick={this.togglePasswordVisiblity}>{eye}</i>
@@ -703,7 +692,7 @@ export default class Register extends Component {
                       id="confirm_password"
                       value={this.state.confirm_password}
                       onChange={this.handleInputChange}
-                      placeholder="Confirm Password" autoComplete="off" 
+                      placeholder="Confirm Password" autoComplete="off"
                     />
                     <span className="help-block main-font text-red-400 font-14">{this.state.errors.confirm_password}</span>
                   </div>
