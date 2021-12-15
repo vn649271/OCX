@@ -1,3 +1,7 @@
+.sidebar-content {
+	padding-left: 15%;
+}
+
 .dashboard-sidebar {
     border-top-right-radius: 100px;
 }
@@ -8,8 +12,12 @@
 }
 
 .sidebar-items-rounded:hover {
-    background: #d7e1ed;
+	background-image: url(/images/SidebarItemBackground.png);
+    background-size: 15em 8em;
+    background-position-y: center;
+    background-repeat: no-repeat;
 }
+
 
 .sidebar-items-rounded:hover * {
     color: #30373f;

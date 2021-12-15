@@ -49,6 +49,12 @@ export default class Login extends Component {
     this.clearAllWarnings = this.clearAllWarnings.bind(this);
   }
 
+  /**
+   * Callback method after all components in the page are mounted
+   * Description: 
+   *     - Process "remember me" action
+   *     - Configure for Google login button to disable with a little delay once it pressed
+   */
   componentDidMount() {
     this.rmCheck = document.getElementById("rememberMe");
     this.emailInput = document.getElementById("username");
@@ -67,14 +73,29 @@ export default class Login extends Component {
     let googleButton = document.getElementsByClassName('google-login-button')[0];
     googleButton.onclick = function (ev) {
       me.clearAllWarnings();
+      /**
+       * Callback hook function when Google Login button pressed
+       *    We need to disable Google Login button once it is pressed
+       *    Here we can disable it, but when it disabled, it can't acts as Google button and 
+       *      Google login window would not be displayed.
+       *    We need to delay disabling while a moment and can use setTimeout to do so
+       */
       me.googleButtonTimer = setTimeout(() => {
+        // Disable Google login button. As delayed 100ms, we are here now after Google 
+        //     login window displayed 
         me.setState({ disableGoogleButton: true });
+        // Hide SignUp link to be showed when Google login failed
         me.setState({ hide_link_to_signup: true });
       }, 100);
     }
     /******************************************************************************************/
   }
 
+  /**
+   * Callback called after Google Login failed
+   * Description:
+   *    Enable Google Login button, release timer for  display failure message
+   */
   responseGoogleFailed = (failure) => {
     /******************************************************************************************/
     /********************** Unlock Google button disabled *************************************/
@@ -90,7 +111,10 @@ export default class Login extends Component {
     });
   }
 
-  responseGoogle = (response) => {
+  /**
+   * Callback called after Google Sign Up completes successfully
+   */
+   responseGoogle = (response) => {
     /******************************************************************************************/
     /********************** Unlock Google button disabled ***************************************/
     if (this.state.disableGoogleButton) {
@@ -171,6 +195,9 @@ export default class Login extends Component {
     })
   }
 
+  /**
+   * Clear all error and warning messages
+   */
   clearAllWarnings() {
     this.setState({
       warning: {
@@ -185,7 +212,10 @@ export default class Login extends Component {
     this.setState({ hide_link_to_signup: true });
   }
 
-  onSubmit(e) {
+  /**
+   * 
+   */
+   onSubmit(e) {
     e.preventDefault();
     if (this.state.email.trim() === "") {
       this.setState({ errors: { email: "Please input your Email" } });
