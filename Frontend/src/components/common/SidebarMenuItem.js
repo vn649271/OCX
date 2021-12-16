@@ -14,7 +14,6 @@ class SidebarMenuItem extends Component {
     }
 
     onSelect = ev => {
-        // console.log("------------------", ev.target)
         this.props.onClick(ev)
         ev.target.classList.add('active');
     }
@@ -24,10 +23,10 @@ class SidebarMenuItem extends Component {
         const { title, href } = this.props;
 
         return (
-            <li id={this.props.id} className="my-px block mt-6 sidebar-menu-item-container"  onClick={this.onSelect} >
+            <li id={this.props.id} className="my-px block sidebar-menu-item-container"  onClick={this.onSelect} >
                 <a
                     href={href}
-                    className="flex flex-row items-center h-10 px-20 py-20 sidebar-items-rounded"
+                    className="flex flex-row items-center h-10 px-10 py-16 sidebar-items-rounded"
                 >
                     <span className="flex items-center justify-center text-white">
                         <svg

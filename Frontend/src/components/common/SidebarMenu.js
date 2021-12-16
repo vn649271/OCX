@@ -30,7 +30,7 @@ class SidebarMenu extends Component {
                 <aside
                     class="dashboard-sidebar md:shadow transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in bg-main-dark"
                 >
-                    <div class="sidebar-content pt-40">
+                    <div class="sidebar-content pt-28">
                         <ul class="flex flex-col w-full">
                             <SidebarMenuItem id="assets" title="Assets" href="#" onClick={this.onClickItem} />
                             <SidebarMenuItem id="Wallet" title="Wallet" href="#"  onClick={this.onClickItem} />
