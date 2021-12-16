@@ -9,44 +9,44 @@ class DelayButton extends Component {
         super(props);
         me = this;
 
-        this.captionOnLoad = props.captionOnLoad;
+        this.captionInDelay = props.captionInDelay;
         this.caption = props.caption;
-        this.maxLoadingInterval = props.maxLoadingInterval;
+        this.maxDelayInterval = props.maxDelayInterval;
         this.onClickButton = props.onClickButton;
         this.onClickButtonParam = props.onClickButtonParam;
 
         this.state = {
             value: '',
-            is_loading: false,
-            loading_interval: this.maxLoadingInterval
+            in_delay: false,
+            delay_interval: this.maxDelayInterval
         }
 
-        this.onLoad = this.onLoad.bind(this);
+        this.onClicked = this.onClicked.bind(this);
         this.stopTimer = this.stopTimer.bind(this);
     }
 
     stopTimer() {
-        this.setState({ is_loading: false });
-        this.setState({ loading_interval: this.maxLoadingInterval });
-        clearTimeout(this.loadTimer);
+        this.setState({ in_delay: false });
+        this.setState({ delay_interval: this.maxDelayInterval });
+        clearTimeout(this.delayTimer);
     }
 
-    onLoad = (ev) => {
-        if (this.state.is_loading && this.state.loading_interval > 0) {
+    onClicked = (ev) => {
+        if (this.state.in_delay && this.state.delay_interval > 0) {
             return;
         }
 
-        this.setState({ is_loading: true });
+        this.setState({ in_delay: true });
 
         /* Start counting for loading data */
-        this.loadTimer = setInterval(
+        this.delayTimer = setInterval(
             function () {
-                let loadingInterval = me.state.loading_interval;
-                loadingInterval--;
-                if (loadingInterval <= 0) {
+                let delayInterval = me.state.delay_interval;
+                delayInterval--;
+                if (delayInterval <= 0) {
                     me.stopTimer();
                 } else {
-                    me.setState({ loading_interval: loadingInterval });
+                    me.setState({ delay_interval: delayInterval });
                 }
             },
             1000
@@ -63,16 +63,16 @@ class DelayButton extends Component {
         return (
             <button
                 className="spinner-button border border-grey-light button-bg p-5 hover-transition font-16 main-font focus:outline-none rounded text-white verify-button"
-                onClick={this.onLoad}
-                disabled={this.state.is_loading}>
-                {this.state.is_loading && (
+                onClick={this.onClicked}
+                disabled={this.state.in_delay}>
+                {this.state.in_delay && (
                     <i
                         className="fa od-spinner"
                         style={{ marginRight: "15px" }}
                     >( )</i>
                 )}
-                {this.state.is_loading && <span>{this.captionOnLoad}({this.state.loading_interval})</span>}
-                {!this.state.is_loading && <span>{this.caption}</span>}
+                {this.state.in_delay && <span>{this.captionInDelay}({this.state.delay_interval})</span>}
+                {!this.state.in_delay && <span>{this.caption}</span>}
             </button>
         );
     }
