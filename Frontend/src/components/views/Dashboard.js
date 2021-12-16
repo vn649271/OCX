@@ -50,14 +50,14 @@ export default class Dashboard extends Component {
                 <Header userToken={this.state.token} />
                 <div class="flex flex-row h-screen bg-gray-100 text-gray-800">
                     <aside
-                        class="dashboard-sidebar w-1/6 md:shadow transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in bg-main-dark"
+                        class="dashboard-sidebar md:shadow transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in bg-main-dark"
                     >
                         <div class="sidebar-content pt-40">
                             <ul class="flex flex-col w-full">
                                 <li class="my-px block mt-6 ">
                                     <a
                                         href="#"
-                                        class="flex flex-row items-center h-10 px-5 py-16 sidebar-items-rounded "
+                                        class="flex flex-row items-center h-10 px-20 py-20 sidebar-items-rounded "
                                     >
                                         <span class="flex items-center justify-center text-white">
                                             <svg
@@ -79,7 +79,7 @@ export default class Dashboard extends Component {
                                 <li class="my-px block mt-6 ">
                                     <a
                                         href="#"
-                                        class="flex flex-row items-center h-10 px-5 py-10 sidebar-items-rounded "
+                                        class="flex flex-row items-center h-10 px-20 py-20 sidebar-items-rounded "
                                     >
                                         <span class="flex items-center justify-center text-white">
                                             <svg
@@ -102,7 +102,7 @@ export default class Dashboard extends Component {
                                 <li class="my-px block mt-6 ">
                                     <a
                                         href="#"
-                                        class="flex flex-row items-center h-10 px-5 py-10 sidebar-items-rounded "
+                                        class="flex flex-row items-center h-10 px-20 py-20 sidebar-items-rounded "
                                     >
                                         <span class="flex items-center justify-center text-white">
                                             <svg
@@ -123,7 +123,7 @@ export default class Dashboard extends Component {
                                 <li class="my-px block mt-6 ">
                                     <a
                                         href="#"
-                                        class="flex flex-row items-center h-10 px-5 py-10 sidebar-items-rounded "
+                                        class="flex flex-row items-center h-10 px-20 py-20 sidebar-items-rounded "
                                     >
                                         <span class="flex items-center justify-center text-white">
                                             <svg
@@ -144,7 +144,7 @@ export default class Dashboard extends Component {
                                 <li class="my-px block mt-6 ">
                                     <a
                                         href="#"
-                                        class="flex flex-row items-center h-10 px-5 py-10 sidebar-items-rounded "
+                                        class="flex flex-row items-center h-10 px-20 py-20 sidebar-items-rounded "
                                     >
                                         <span class="flex items-center justify-center text-white">
                                             <svg

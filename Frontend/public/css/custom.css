@@ -98,6 +98,10 @@
     border-color: #080D32;
 }
 
+.middline-border {
+    border-color: gray
+}
+
 .bg-gradient {
     background: linear-gradient(92.31deg, #C908F9 3.37%, #01BCF8 100%);
 }
@@ -389,12 +393,16 @@ i.od-spinner {
 }
 
 .verify-button {
-    right: 0;
-    top: 0;
+    right: -1px;
+    top: -3px;
 }
 
 div.rememberme-container {
     margin: 20px 0 20px 10px;
+}
+
+.divide-text {
+    display: none;
 }
 
 button:focus {
@@ -407,6 +415,7 @@ button:focus {
 }
 .PhoneInputInput {
     padding-left: 5px;
+    background: #f3f4f6;
 }
 
 .PhoneInputCountry {
@@ -415,7 +424,7 @@ button:focus {
 }
 
 .ShowPasswordIcon {
-    margin-left: -4em;
+    margin-left: -3em;
 }
 
 input.password-input {
@@ -436,7 +445,7 @@ input.password-input {
 }
 
 .password-input {
-    width: 96% !important;
+    width: 100%;
 }
 
 /* Password checklist */
@@ -459,7 +468,7 @@ li.sc-gsDKAQ {
 }
 
 .middle-line {
-    border-top: black 1px solid !important;
+    border-top: rgb(167, 167, 167) 1px solid !important;
     width: 100%;
 }
 
@@ -584,5 +593,13 @@ li.sc-gsDKAQ {
 
     .main-lineheight {
         line-height: 25px;
+    }
+
+    .divide-text {
+        display: inline;
+    }
+
+    .middle-line-container {
+        padding: 20px 0;
     }
 }

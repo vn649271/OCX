@@ -259,7 +259,7 @@ export default class Login extends Component {
               <span id="warning-message-box-for-google-login-failure" className="block help-block main-font text-red-400 mt-5 mb-5 font-16">{this.state.warning.google_login}</span>
               <Link id='link-to-signup-popup' className="border-b border-gray-400 main-color-blue ml-5" hidden={this.state.hide_link_to_signup} to="/register">Sign Up Here</Link>
             </div>
-            <div className="middle-line-container flex items-center justify-between">
+            <div className="middle-line-container py-8 flex items-center justify-between">
               <hr className="middle-line" />
               <p className="main-font main-color font-16 px-5">OR</p>
               <hr className="middle-line" />
@@ -300,7 +300,7 @@ export default class Login extends Component {
                 value="Login"
               /> */}
             <button
-              className="spinner-button w-full text-center py-3 rounded button-bg text-white hover-transition font-14 main-font focus:outline-none m"
+              className="spinner-button w-full text-center m-0 py-3 rounded button-bg text-white hover-transition font-14 main-font focus:outline-none m"
               onClick={this.onSubmit}
               disabled={this.state.loading}>
               {this.state.loading && (
