@@ -102,7 +102,7 @@ export default class Dashboard extends Component {
                                 <li class="my-px block mt-6 ">
                                     <a
                                         href="#"
-                                        class="flex flex-row items-center h-10 px-20 py-20 sidebar-items-rounded "
+                                        class="flex flex-row items-center h-10 px-20 py-16 sidebar-items-rounded "
                                     >
                                         <span class="flex items-center justify-center text-white">
                                             <svg
