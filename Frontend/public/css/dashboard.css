@@ -19,6 +19,12 @@
     background-repeat: no-repeat;
 }
 
+.sidebar-items-rounded.active {
+    background-image: url(/images/SidebarItemBackground.png);
+    background-size: 350px 75px;
+    background-position-y: center;
+    background-repeat: no-repeat;
+}
 
 .sidebar-items-rounded:hover * {
     color: #30373f;

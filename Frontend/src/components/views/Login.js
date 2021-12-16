@@ -88,7 +88,6 @@ export default class Login extends Component {
         me.setState({ hide_link_to_signup: true });
       }, 100);
     }
-    /******************************************************************************************/
   }
 
   /**
@@ -97,13 +96,11 @@ export default class Login extends Component {
    *    Enable Google Login button, release timer for  display failure message
    */
   responseGoogleFailed = (failure) => {
-    /******************************************************************************************/
-    /********************** Unlock Google button disabled *************************************/
+    /********************** Unlock Google button disabled **********************************/
     if (this.state.disableGoogleButton) {
       this.setState({ disableGoogleButton: false });
       clearTimeout(this.googleButtonTimer);
     }
-    /******************************************************************************************/
     this.setState({
       warning: {
         google_login: "Invalid Google Acount Information"
@@ -115,8 +112,7 @@ export default class Login extends Component {
    * Callback called after Google Sign Up completes successfully
    */
    responseGoogle = (response) => {
-    /******************************************************************************************/
-    /********************** Unlock Google button disabled ***************************************/
+    /********************** Unlock Google button disabled ************************************/
     if (this.state.disableGoogleButton) {
       this.setState({ disableGoogleButton: false });
       clearTimeout(this.googleButtonTimer);
