@@ -6,7 +6,10 @@ import React from 'react';
 export default function Header(props) {
     return (
         <header className="bg-white main-header py-3">
-            <div className="flex justify-between items-center px-40 ">
+            <div className='message-part h-10 w-full hidden'>
+
+            </div>
+            <div className="flex justify-between main-header-content items-center px-40 ">
                 <div className="flex items-center">
                     <Link to="/home">
                         <div className="main-logo flex items-center hover-transition">
