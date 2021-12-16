@@ -26,6 +26,10 @@
     background-repeat: no-repeat;
 }
 
+.sidebar-items-rounded.active * {
+    color: #30373f;
+}
+
 .sidebar-items-rounded:hover * {
     color: #30373f;
 }

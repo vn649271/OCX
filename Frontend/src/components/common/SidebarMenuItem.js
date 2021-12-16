@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 class SidebarMenuItem extends Component {
 
     state = { 
-        value: ''
+        value: '',
     }
 
     constructor (props) {
@@ -16,7 +16,7 @@ class SidebarMenuItem extends Component {
     onSelect = ev => {
         // console.log("------------------", ev.target)
         this.props.onClick(ev)
-        document.getElementsByClassName('sidebar-items-rounded')[0].classList.add('active');
+        ev.target.classList.add('active');
     }
 
     render() {
@@ -24,11 +24,10 @@ class SidebarMenuItem extends Component {
         const { title, href } = this.props;
 
         return (
-            <li id={this.props.id} className="my-px block mt-6 sidebar-menu-item-container" onClick={this.onSelect} >
+            <li id={this.props.id} className="my-px block mt-6 sidebar-menu-item-container"  onClick={this.onSelect} >
                 <a
                     href={href}
-                    className="flex flex-row items-center h-10 px-20 py-20 sidebar-items-rounded "
-                    
+                    className="flex flex-row items-center h-10 px-20 py-20 sidebar-items-rounded"
                 >
                     <span className="flex items-center justify-center text-white">
                         <svg
