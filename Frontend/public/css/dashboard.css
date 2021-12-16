@@ -1,10 +1,10 @@
 .sidebar-content {
-	padding-left: 20px;
+	padding-left: 40px;
 }
 
 .dashboard-sidebar {
-    border-top-right-radius: 100px;
-    width: 300px;
+    border-top-right-radius: 80px;
+    width: 235px;
 }
 
 .sidebar-items-rounded {
@@ -14,14 +14,14 @@
 
 .sidebar-items-rounded:hover {
     background-image: url(/images/SidebarItemBackground.png);
-    background-size: 350px 75px;
+    background-size: 200px 75px;
     background-position-y: center;
     background-repeat: no-repeat;
 }
 
 .sidebar-items-rounded.active {
     background-image: url(/images/SidebarItemBackground.png);
-    background-size: 350px 75px;
+    background-size: 200px 75px;
     background-position-y: center;
     background-repeat: no-repeat;
 }
