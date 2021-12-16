@@ -573,7 +573,7 @@ export default class Register extends Component {
           <div className="home-card w-full">
             <p className="text-center main-font font-30 main-color-blue mb-10 capitalize">Create a new account</p>
             <div className="flex signup-form">
-              <div className="signup-content w-1/2 flex flex-col items-center justify-center p-20 md:pb-10 md:pt-0">
+              <div className="signup-content w-1/2 flex flex-col items-center justify-center md:pl-10 md:pr-20 md:pb-10 md:pt-0">
                 <img src={signimg} alt="sign-logo" width={150} className="sign-logo mb-14" />
                 <div className="signup-content_box w-full relative">
                   <div className="mb-10">
@@ -619,10 +619,10 @@ export default class Register extends Component {
               </div>
               <div className="middle-line-container flex items-center justify-between">
                 <hr className="middle-line" />
-                <p className="main-font main-color font-16 px-5">OR</p>
+                <p className="main-font main-color font-16 px-5 divide-text">OR</p>
                 <hr className="middle-line" />
               </div>
-              <div className="w-1/2 signup-content border-l border-gray-300 pl-20 md:pl-10 pr-20">
+              <div className="w-1/2 signup-content border-l border-gray-300  md:pl-20 md:pr-10">
                 {/* <form id="reg-form" className="form" onSubmit={this.onSubmit} autoComplete="off"> */}
                 <span className="help-block main-font text-red-400 font-16">{this.state.errors.register_result}</span>
                 <div className="text-black">
@@ -671,7 +671,7 @@ export default class Register extends Component {
                     <span className="help-block main-font text-red-400 font-14">{this.state.errors.phone_for_email}</span>
                   </div>
                   <div className="mb-10">
-                    <div className="password-container block">
+                    <div className="password-container block w-full">
                       <input
                         type={this.state.showPassword ? "text" : "password"}
                         className="password-input border border-grey-light bg-gray-100 w-full p-5 font-16 main-font focus:outline-none rounded "
@@ -681,7 +681,7 @@ export default class Register extends Component {
                         onBlur={this.onLeaveFromPasswordInput}
                         placeholder="Password" autoComplete="off"
                       />
-                      <i className="ShowPasswordIcon" onClick={this.togglePasswordVisiblity}>{eye}</i>
+                      <i className="ShowPasswordIcon font-16" onClick={this.togglePasswordVisiblity}>{eye}</i>
                     </div>
                     <span className="help-block main-font text-red-400 font-14">{this.state.errors.password}</span>
                   </div>
@@ -703,7 +703,7 @@ export default class Register extends Component {
                     <span className="help-block main-font text-red-400 font-14">{this.state.errors.confirm_password}</span>
                   </div>
                   <button
-                    className="spinner-button w-full text-center py-5 rounded button-bg text-white hover-transition font-16 main-font focus:outline-none my-1"
+                    className="spinner-button w-full text-center m-0 py-5 rounded button-bg text-white hover-transition font-16 main-font focus:outline-none"
                     onClick={this.onSubmit}
                     disabled={this.state.loading}>
                     {this.state.loading && (
