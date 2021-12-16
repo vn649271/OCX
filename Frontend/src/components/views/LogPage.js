@@ -13,13 +13,13 @@ class LogPage extends Component {
 
     componentDidUpdate(prevProps) {
         if (prevProps.target !== this.props.target) {
-        }        
+        }
     }
 
     render() {
         return (
-            <div className="my-log-page ml-100">
-                <h1> Log Page </h1>
+            <div className="log-page ml-100">
+                Log Page
             </div>
         );
     }
@@ -27,5 +27,3 @@ class LogPage extends Component {
 }
 
 export default LogPage;
-
-

@@ -55,8 +55,10 @@ export default class Dashboard extends Component {
         return (
             <div>
                 <Header userToken={this.state.token} />
-                <SidebarMenu onSelectItem={this.onSelectMenuItem} />
-                <PageContainer target={this.state.targetPageId} />
+                <div className="flex">
+                    <SidebarMenu onSelectItem={this.onSelectMenuItem} />
+                    <PageContainer target={this.state.targetPageId} />
+                </div>
                 <Footer />
                 <MobileNav />
             </div>

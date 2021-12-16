@@ -43,12 +43,11 @@ class PageContainer extends Component {
 
     render() {
         return (
-            <div className="page-container ml-100">
+            <div className="main-content-container">
                 {this.state.currentPageComponent}
             </div>
         );
     }
-
 }
 
 export default PageContainer;
