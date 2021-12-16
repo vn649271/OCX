@@ -3,19 +3,18 @@ import PropTypes from 'prop-types';
 
 class SidebarMenuItem extends Component {
 
-    state = { 
-        value: '',
-    }
-
-    constructor (props) {
+    constructor(props) {
         super(props);
-
+        
+        this.state = {
+            value: '',
+        }
         this.onSelect = this.onSelect.bind(this);
     }
 
     onSelect = ev => {
-        this.props.onClick(ev)
         ev.target.classList.add('active');
+        this.props.onClick(this.props.id);
     }
 
     render() {
@@ -23,7 +22,7 @@ class SidebarMenuItem extends Component {
         const { title, href } = this.props;
 
         return (
-            <li id={this.props.id} className="my-px block sidebar-menu-item-container"  onClick={this.onSelect} >
+            <li id={this.props.id} className="my-px block sidebar-menu-item-container" onClick={this.onSelect} >
                 <a
                     href={href}
                     className="flex flex-row items-center h-10 px-10 py-16 sidebar-items-rounded"
