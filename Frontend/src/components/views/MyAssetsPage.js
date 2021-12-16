@@ -18,7 +18,7 @@ class MyAssetsPage extends Component {
 
     render() {
         return (
-            <div className="my-assets-page ml-100">
+            <div className="my-assets-page">
                 My Assets Page
             </div>
         );

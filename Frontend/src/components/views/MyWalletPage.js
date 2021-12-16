@@ -40,7 +40,7 @@ class MyWalletPage extends Component {
 
     render() {
         return (
-            <div className="my-wallet-page pl-10 pt-10">
+            <div className="my-wallet-page">
                 {/* Create Account Button */}
                 <DelayButton
                     captionInDelay="Creating"
