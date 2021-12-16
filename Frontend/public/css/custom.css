@@ -472,6 +472,18 @@ li.sc-gsDKAQ {
     width: 100%;
 }
 
+.sidebar {
+    float: left;
+    width: 17%;
+}
+
+.page-container {
+    margin-left: 18%;
+    width: 81%;
+    height: 703px;
+    background: white;
+}
+
 /* responsive */
 @media (max-width: 1024px) {
     html, body {
