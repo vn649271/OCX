@@ -15,7 +15,10 @@ class SidebarMenu extends Component {
     }
 
     onClickItem = ev => {
-        console.log(ev.target)
+        let activedItems = document.getElementsByClassName('sidebar-items-rounded active');
+        if (activedItems.length > 0) {
+            activedItems[0].classList.remove('active');
+        }
     }
 
     render() {
