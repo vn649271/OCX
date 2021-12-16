@@ -484,6 +484,10 @@ li.sc-gsDKAQ {
     background: white;
 }
 
+.main-content-container {
+    background: white;
+}
+
 /* responsive */
 @media (max-width: 1024px) {
     html, body {

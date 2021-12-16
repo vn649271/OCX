@@ -43,7 +43,7 @@ class PageContainer extends Component {
 
     render() {
         return (
-            <div className="main-content-container">
+            <div className="main-content-container w-full pl-10 pt-10">
                 {this.state.currentPageComponent}
             </div>
         );

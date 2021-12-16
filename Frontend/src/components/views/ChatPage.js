@@ -18,7 +18,7 @@ class ChatPage extends Component {
 
     render() {
         return (
-            <div className="chat-page ml-100">
+            <div className="chat-page">
                 Chat Page
             </div>
         );

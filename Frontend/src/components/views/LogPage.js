@@ -18,7 +18,7 @@ class LogPage extends Component {
 
     render() {
         return (
-            <div className="log-page ml-100">
+            <div className="log-page">
                 Log Page
             </div>
         );
