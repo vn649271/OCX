@@ -43,9 +43,9 @@ class MyWalletPage extends Component {
             <div className="my-wallet-page pl-10 pt-10">
                 {/* Create Account Button */}
                 <DelayButton
-                    captionOnLoad="Creating"
+                    captionInDelay="Creating"
                     caption="Creat Account"
-                    maxLoadingInterval={30}
+                    maxDelayInterval={30}
                     onClickButton={this.onCreateAccont}
                     onClickButtonParam={null}
                 />
