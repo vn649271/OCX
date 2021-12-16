@@ -318,16 +318,17 @@ export default class Register extends Component {
     this.setState({ loading: true });
 
     /* Start counting for requesting SMS verify code */
-    this.smsVerifyTimer = setInterval(function () {
-      let smsVerifyInterval = me.state.loading_sms_verify_interval;
-      smsVerifyInterval--;
-      if (smsVerifyInterval <= 0) {
-        me.setState({ loading: false });
-        me.setState({ loading_sms_verify_interval: MAX_SMS_DELAY_TIMEOUT });
-        clearTimeout(me.smsVerifyTimer);
-      }
-      me.setState({ loading_sms_verify_interval: smsVerifyInterval });
-    },
+    this.smsVerifyTimer = setInterval(
+      function () {
+        let smsVerifyInterval = me.state.loading_sms_verify_interval;
+        smsVerifyInterval--;
+        if (smsVerifyInterval <= 0) {
+          me.setState({ loading: false });
+          me.setState({ loading_sms_verify_interval: MAX_SMS_DELAY_TIMEOUT });
+          clearTimeout(me.smsVerifyTimer);
+        }
+        me.setState({ loading_sms_verify_interval: smsVerifyInterval });
+      },
       1000
     );
 
@@ -584,7 +585,7 @@ export default class Register extends Component {
                       onChange={this.onPhone4GmailChange}
                       className="phone-for-gmail block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded" />
                     <button
-                      className="spinner-button absolute border border-grey-light button-bg p-5 font-16 main-font focus:outline-none rounded text-white verify-button"
+                      className="spinner-button absolute border border-grey-light button-bg p-5 hover-transition font-16 main-font focus:outline-none rounded text-white verify-button"
                       onClick={this.onRequestSmsCode}
                       disabled={this.state.loading}>
                       {this.state.loading && (

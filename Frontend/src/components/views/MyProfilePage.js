@@ -13,13 +13,13 @@ class MyProfilePage extends Component {
 
     componentDidUpdate(prevProps) {
         if (prevProps.target !== this.props.target) {
-        }        
+        }
     }
 
     render() {
         return (
             <div className="my-profile-page ml-100">
-                <h1> My Profile </h1>
+                My Profile Page
             </div>
         );
     }
