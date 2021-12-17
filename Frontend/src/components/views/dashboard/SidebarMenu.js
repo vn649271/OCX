@@ -28,11 +28,11 @@ class SidebarMenu extends Component {
         const { title, href } = this.props;
 
         return (
-            <div class="sidebar flex flex-row h-screen bg-white text-gray-800">
+            <div class="sidebar flex flex-row bg-white text-gray-800">
                 <aside
                     class="dashboard-sidebar md:shadow transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in bg-main-dark"
                 >
-                    <div class="sidebar-content pt-40">
+                    <div class="sidebar-content py-40">
                         <ul class="flex flex-col w-full">
                             <SidebarMenuItem id="dashboard-page" title="Dashboard" href="#" onClick={this.onClickItem} />
                             <SidebarMenuItem id="assets-page" title="Assets" href="#" onClick={this.onClickItem} />
