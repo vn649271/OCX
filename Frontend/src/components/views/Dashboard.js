@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import Header from "../common/Header";
 import Footer from "../common/Footer";
-import SidebarMenu from "./SidebarMenu";
+import SidebarMenu from "./dashboard/SidebarMenu";
 import MobileNav from "../common/MobileNav";
-import PageContainer from "./PageContainer";
+import PageContainer from "./dashboard/PageContainer";
 
 export default class Dashboard extends Component {
 

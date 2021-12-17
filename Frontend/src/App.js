@@ -1,11 +1,11 @@
 import React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Homepage from "./components/views/Homepage";
-import Exchange from "./components/views/Exchange";
-import Liquidity from "./components/views/Liquidity";
-import Login from './components/views/Login'
-import Register from './components/views/Register'
-import Confirm from "./components/views/Confirm";
+import Exchange from "./components/views/main/Exchange";
+import Liquidity from "./components/views/main/Liquidity";
+import Login from './components/views/authentication/Login'
+import Register from './components/views/authentication/Register'
+import Confirm from "./components/views/authentication/Confirm";
 import Dashboard from "./components/views/Dashboard";
 
 function App() {
