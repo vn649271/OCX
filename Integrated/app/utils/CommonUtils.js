@@ -1,4 +1,0 @@
-
-function debugLog(param1) {
-
-}

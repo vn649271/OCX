@@ -1,15 +1,15 @@
 .sidebar-content {
-	padding-left: 40px;
+    padding-left: 40px;
 }
 
 .dashboard-sidebar {
     border-top-right-radius: 80px;
-    width: 235px;
+    width: 250px;
 }
 
 .sidebar-items-rounded {
-    border-top-left-radius: 30px;
-    border-bottom-left-radius: 30px;
+    border-top-left-radius: 50px;
+    border-bottom-left-radius: 50px;
 }
 
 .sidebar-items-rounded:hover {
