@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "openchaindex-backend",
+  "private_key_id": "3b308a6047b3401a929e671e6b39f610ab968074",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDKcgOPcSUTBqrA\ntpMGHq2zwDweS0ecXtQj4qm0jhALVP+G5a8CPoDYhROVN2LXvo5gvGaXFgTTY8/1\nHbTzvkuz08Kg/BNa8jvAN/UJFvlJg28vokb+y0KzPk6U6WKzeOl0rgG+ZeJPBBnX\nDf0wK60jGH8nOnOUEswwE3tWfV2l3kTtAJTS7LxXj/gO3LXD+2/eLah5o5E+EpyV\nGkfeMTQetbiRnFfFgn7lgZDqhZOvpLDqLEjwZlBEEY9xmBwA+rI2ER6e0NjrrEAk\nDUrG5CHrRSVx03xy3AYzpWVzq2i2uufwdry5oYAZaa2t6nPvulTu0evE5uFttNU/\nK38A2LpRAgMBAAECggEAAlA8ZVinZ2OBiDC97DQQYO1kMnttPtFK7tBhserCrlfN\nu2VSCJOdcNFP0zoeDXWZFmwTZwwXyNugjijv/wNlxZEOAxLGXNkc9i9y2SRTpnOo\n+FwhdWVuER136UCOgcWys0Q5cwsig4Ek6Mh5OXec+PmdcF29DDbicZ/eCQkR4iSW\nJJDqJrFtb9+pkghgou1eFlqjztTt/wgUn2bK3DN9wwvoICHcDizFoyB9AxIhwpo+\neptQSQCD2iKPzcZCWN+4TSUnLlc2lF56pzgFZ/Yh4hPT11q9gxv20MtrfVJMDTmR\npq57EoaoHypfdXL6uvA1UsXYUhJQO3g8G2WCYXNgkQKBgQDkbLV3ST1UBIxgE73L\nQADqiJqHMAwpJ4/JvoPYMnqQu1sIz1at/IXQ33KMF1K1QRSlzUIfTJ7MIMScz8q1\nQb7rZ8oPBqTCJpiGBzDzW+vTeZgSiXiU9Vtz8jQW/IMd3ukBrjQgi6sofnL8FSNA\ng64UY86o2sgaMiND+rmBmZOzyQKBgQDi4m9jhMI/vkkIO6FD6cGaBkdU2ygzX9XO\nbdi/JdMxhK6Ej7cdObTf9whG+g+TdpDQK5lFpau1Blw1X3AZFApoeqjTb1wr4MYC\nvYROiUtAq7b1KdgWSVptIswMx9g0rHsIRTwOmpXBCMcF+ZfhyDD3UCHojuuoHXh5\nUrSNJ8XGSQKBgB//7qgIVZQYkwW+nj8D91zjyCoaHAoD5cvQaa323F68MHOagD0d\nfC2Xr/daKRcFR/w2NgYmeLSF/qUtIuujizh1MMRMHPap64ITLdNZ1D6q8RfftEnB\n2Y7zpkJ2G3Qqzx+SJPFOP6sLk9Ymq+qUx+VJWiEjjRbGYVRbonM6bYupAoGALCAx\n3b8SMGeHuKwwPw8VcilKcjx1Yxh+crl2cCahHn5ZmrqAuJRikzRuTa+Qm/NxUqtI\nEf2YmYp1IIRBPv9gztUcRJLh8D61BA9rzgJxulArMx9CQYNerN8ZpFqxt/zbqM4e\nUhDKk1JrssPKQEU5EMBq99nkBzxEFAR7zQAxPNECgYBMPBD4wYQ/w56PBKUeUg7I\nXutqdLfQTUOcFxVapvKlghx7z3KWADv8HbFs5zj3sFJKIuzT9EYViC/TETy18oQE\nVOvB5O7opvbkwL6N10Vuw6o6zmmtlFXSekaK7u92bymjIhz08IbZlohRAMwcyKXm\n1r0YpDclpS5bc0J92r/OQA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "openchaindex-backend-service-a@openchaindex-backend.iam.gserviceaccount.com",
+  "client_id": "107599882249716591559",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/openchaindex-backend-service-a%40openchaindex-backend.iam.gserviceaccount.com"
+}

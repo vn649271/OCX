@@ -1,3 +1,12 @@
+// var admin = require("firebase-admin");
+
+// var serviceAccount = require(process.env.GOOGLE_APPLICATION_CREDENTIALS);
+
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount),
+//   databaseURL: "https://your-database-url.firebaseio.com"
+// }
+
 const { Firestore } = require('@google-cloud/firestore');
 
 const db = new Firestore();
