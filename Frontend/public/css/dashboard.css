@@ -13,17 +13,11 @@
 }
 
 .sidebar-items-rounded:hover {
-    background-image: url(/images/SidebarItemBackground.png);
-    background-size: 200px 75px;
-    background-position-y: center;
-    background-repeat: no-repeat;
+    background-color: white;
 }
 
 .sidebar-items-rounded.active {
-    background-image: url(/images/SidebarItemBackground.png);
-    background-size: 200px 75px;
-    background-position-y: center;
-    background-repeat: no-repeat;
+    background-color: white;
 }
 
 .sidebar-items-rounded.active * {

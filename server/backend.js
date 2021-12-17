@@ -14,8 +14,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 /**
  * Router for user login and register
  */
-var Users = require("./app/routes/Users");
-app.use("/api/users", Users);
+ var Users = require("./app/routes/Users");
+ app.use("/api/users", Users);
+ 
+ /**
+ * Router for account management
+ */
+var Account = require("./app/routes/Account");
+app.use("/api/account", Account);
 
 /**
  * Router for recaptcha
