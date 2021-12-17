@@ -12,6 +12,7 @@
     "@heroicons/react": "^1.0.5",
     "@hookform/resolvers": "^2.8.4",
     "@tailwindcss/postcss7-compat": "^2.0.2",
+    "@talkrz/price-chart": "^0.16.0",
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.6.0",

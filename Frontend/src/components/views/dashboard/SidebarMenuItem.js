@@ -19,7 +19,7 @@ class SidebarMenuItem extends Component {
 
     render() {
         const { value } = this.state;
-        const { title, href } = this.props;
+        const { title, icons, href } = this.props;
 
         return (
             <li id={this.props.id} className="my-px block sidebar-menu-item-container" onClick={this.onSelect} >
@@ -28,7 +28,7 @@ class SidebarMenuItem extends Component {
                     className="flex flex-row items-center px-10 py-6 sidebar-items-rounded"
                 >
                     <span className="flex items-center justify-center font-20 mr-2 text-white">
-                        <i className="fa fa-weixin font-16" aria-hidden="true"></i>
+                        <i className={icons} aria-hidden="true"></i>
                     </span>
                     <span className="ml-3 main-font font-20 text-white">{title}</span>
                 </a>

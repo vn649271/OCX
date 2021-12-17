@@ -4,7 +4,7 @@ import WalletPage from './WalletPage';
 import LogPage from './LogPage';
 // import MyProfilePage from './MyProfilePage';
 import ChatPage from './ChatPage';
-import Dashboard from '../Dashboard';
+import HomeDashPage from './HomeDashPage';
 import GamePage from './GamePage';
 import HelpPage from './HelpPage';
 import PaymentPage from './PaymentPage';
@@ -26,7 +26,7 @@ class PageContainer extends Component {
         if (prevProps.target !== this.props.target) {
             switch (this.props.target) {
                 case 'dashboard-page':
-                    this.setState({ currentPageComponent: <Dashboard /> });
+                    this.setState({ currentPageComponent: <HomeDashPage /> });
                     break;
                 case 'assets-page':
                     this.setState({ currentPageComponent: <AssetsPage /> });
