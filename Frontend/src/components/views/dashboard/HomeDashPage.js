@@ -1,61 +1,8 @@
 import React, { Component } from 'react';
-import {
-  chartInit,
-  chartDraw,
-  chartDefaultConfig,
-  chartThemes
-} from "@talkrz/price-chart";
-
-document.getElementById("candlechart").innerHTML = `
-  <div id="ChartContent" class="candleChart-content">
-    <canvas id="ChartCanvasContent" class="candleChart-canvas">
-    </canvas>
-    <canvas id="ChartCanvasScale" class="candleChart-canvas-scale">
-    </canvas>
-  </div>
-`;
-
-// fetch test data, then draw the chart
-const dataUrl = "https://talkrz.github.io/price-chart-demo/exampleData.json";
-fetch(dataUrl)
-  .then(response => response.json())
-  .then(drawChart);
-
-function drawChart(data) {
-  // create HTML elements references
-  const content = document.getElementById("ChartContent");
-  const base = document.getElementById("ChartCanvasContent");
-  const scale = document.getElementById("ChartCanvasScale");
-
-  // set chart dimensions
-  const width = content.offsetWidth;
-  const height = content.offsetHeight;
-
-  // define drawing layers, minimum 2 layers are required
-  // one for drawing price and volume
-  // and other for scale
-  const layers = {
-    base: base,
-    scale: scale
-  };
-
-  // modify the config objects if you need
-  const config = chartDefaultConfig();
-  const themeConfig = chartThemes()["light"];
-
-  // prepare chart view
-  chartInit(data, layers, {
-    width,
-    height,
-    zoom: 8,
-    offset: 0,
-    config,
-    theme: themeConfig
-  });
-
-  // draw chart
-  chartDraw();
-}
+import DashboardCandleChart from '../../common/dashboard/DashboardCandleChart';
+import DashboardPieChart from '../../common/dashboard/DashboardPieChart';
+import DashboardProducts from '../../common/dashboard/DashboardProducts';
+import DashboardTable from '../../common/dashboard/DashboardTable';
 
 class HomeDashPage extends Component {
 
@@ -75,9 +22,30 @@ class HomeDashPage extends Component {
 
     render() {
         return (
-            <div className="my-profile-page">
-                <div className='' id='candlechart'>
-
+            <div className="dashboardpage-content p-16 w-full">
+                <div className='content-top flex w-full'>
+                    <div className='candlechart-content w-3/5 mr-20'>
+                        <div className='dashboard-card hover-transition w-full bg-green-100'>
+                            <DashboardCandleChart />
+                        </div>
+                    </div>
+                    <div className='product-list w-2/5'>
+                        <div className='dashboard-card hover-transition bg-pink-100'>
+                            <DashboardProducts />
+                        </div>
+                    </div>
+                </div>
+                <div className='content-bottom mt-20 flex w-full'>
+                    <div className='dashboard-table-content flex-1 mr-20'>
+                        <div className='dashboard-card hover-transition w-full bg-gray-100'>
+                            <DashboardTable />
+                        </div>
+                    </div>
+                    <div className='dashboard-pichart w-2/8'>
+                        <div className='dashboard-card hover-transition w-full bg-yellow-100'>
+                            <DashboardPieChart />
+                        </div>
+                    </div>
                 </div>
             </div>
         );
