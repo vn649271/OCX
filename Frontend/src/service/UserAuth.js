@@ -149,3 +149,56 @@ export const verifyRecaptcha = (token, onResponse) => {
             onResponse({ error: -20, message: "Server internal error: " + err });
         })
 }
+
+export const createNewBlockchainAccount = (token) => {
+    return axios
+        .post(BACKEND_BASE_URL + "/account/create", {
+            userToken: token
+        })
+        .then(response => {
+            console.log("createNewBlockchainAccount(): response=", response)
+        })
+        .catch(error => {
+            console.log("createNewBlockchainAccount(): response=", error)
+        })
+}
+
+export const getBalanceForBlockchainAccount = (token, accountId) => {
+    return axios
+        .post(BACKEND_BASE_URL + "/account/balance/", {
+            userToken: token,
+            accountId: accountId
+        })
+        .then(response => {
+            console.log("getBalanceForBlockchainAccount(): response=", response)
+        })
+        .catch(error => {
+            console.log("getBalanceForBlockchainAccount(): response=", error)
+        })
+}
+
+export const connectWallet = (token, walletId) => {
+    return axios
+        .get(BACKEND_BASE_URL + "/account/connect", {
+            userToken: token
+        })
+        .then(response => {
+            console.log("connectWallet(): response=", response)
+        })
+        .catch(error => {
+            console.log("connectWallet(): response=", error)
+        })
+}
+
+export const sendCryptoCurrency = (token, amount) => {
+    return axios
+        .get(BACKEND_BASE_URL + "/account/send", {
+            userToken: token
+        })
+        .then(response => {
+            console.log("sendCryptoCurrency(): response=", response)
+        })
+        .catch(error => {
+            console.log("sendCryptoCurrency(): response=", error)
+        })
+}

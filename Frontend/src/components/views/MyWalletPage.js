@@ -24,6 +24,7 @@ class MyWalletPage extends Component {
     }
 
     onCreateAccont = (param, ev, buttonCmpnt) => {
+        
         // If required action performed, buttonCmpnt.stopTimer() can be called to stop loading
         setTimeout(
             function () {
@@ -41,15 +42,17 @@ class MyWalletPage extends Component {
     render() {
         return (
             <div className="my-wallet-page">
-                {/* Create Account Button */}
-                <DelayButton
-                    captionInDelay="Creating"
-                    caption="Creat Account"
-                    maxDelayInterval={30}
-                    onClickButton={this.onCreateAccont}
-                    onClickButtonParam={null}
-                />
-                <span className="account-address-box main-font text-red-400 font-14">{this.state.address.eth}</span>
+                <div>
+                    {/* Create Account Button */}
+                    <DelayButton
+                        captionInDelay="Creating"
+                        caption="Creat Account"
+                        maxDelayInterval={30}
+                        onClickButton={this.onCreateAccont}
+                        onClickButtonParam={null}
+                    />
+                </div>
+                <span className="account-address-box main-font text-red-400 font-14">Balance: {this.state.address.eth}</span>
                 <div>
 
                 </div>
