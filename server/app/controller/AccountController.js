@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const Phone = require("../models/Firestore/Account");
 require('dotenv').config();
 
 var me;
@@ -13,34 +14,37 @@ class AccountController {
     }
 
     /**
-     * Create an account for blockchain
+     * Create an account in blockchain for user
      * @param {object} req request object from the client 
-     * @param {object} res response object to the client
+     * @param {object} resp response object to the client
      */
-     create = (req, res) => {
-
+    create = (req, resp) => {
+        return resp.json({ error: 0, data: "" });
     }
 
     /**
      * Connect to the specified wallet address
      * @param {object} req request object from the client 
-     * @param {object} res response object to the client
+     * @param {object} resp response object to the client
      */
-    connectToWallet = (req, res) => {
+    connectToWallet = (req, resp) => {
+        return resp.json({ error: 0, data: "" });
     }
 
     /**
      * @param {object} req request object from the client 
-     * @param {object} res response object to the client
+     * @param {object} resp response object to the client
      */
-    balance = (req, res) => {
+    balance = (req, resp) => {
+        return resp.json({ error: 0, data: "" });
     }
 
     /**
      * @param {object} req request object from the client
-     * @param {object} res response object to the client
+     * @param {object} resp response object to the client
      */
-    send = (req, res) => {
+    send = (req, resp) => {
+        return resp.json({ error: 0, data: "" });
     }
 };
 
