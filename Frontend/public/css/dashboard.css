@@ -33,3 +33,35 @@
     height: 40px;
     border-radius: 50%;
 }
+
+/* candlechart */
+
+  
+
+  
+  #candlechart {
+    width: 100%;
+    height: 100%;
+    display: flex;
+  }
+  
+  .candleChart-content {
+    position: relative;
+    flex-grow: 1;
+  }
+  
+  .candleChart-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+  }
+  
+  .candleChart-canvas-scale {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+  }
+  
+  

@@ -25,7 +25,7 @@ class SidebarMenu extends Component {
 
     render() {
         const { value } = this.state;
-        const { title, href } = this.props;
+        const { title, icons, href } = this.props;
 
         return (
             <div class="sidebar flex flex-row bg-white text-gray-800">
@@ -34,15 +34,16 @@ class SidebarMenu extends Component {
                 >
                     <div class="sidebar-content py-40">
                         <ul class="flex flex-col w-full">
-                            <SidebarMenuItem id="dashboard-page" title="Dashboard" href="#" onClick={this.onClickItem} />
-                            <SidebarMenuItem id="assets-page" title="Assets" href="#" onClick={this.onClickItem} />
-                            <SidebarMenuItem id="wallet-page" title="Wallet" href="#" onClick={this.onClickItem} />
-                            <SidebarMenuItem id="shop-page" title="Pawn shop" href="#" onClick={this.onClickItem} />
-                            <SidebarMenuItem id="payment-page" title="Request payment" href="#" onClick={this.onClickItem} />
-                            <SidebarMenuItem id="game-page" title="Game" href="#" onClick={this.onClickItem} />
-                            <SidebarMenuItem id="help-page" title="Help" href="#" onClick={this.onClickItem} />
-                            <SidebarMenuItem id="chat-page" title="Chat" href="#" onClick={this.onClickItem} />
-                            <SidebarMenuItem id="log-page" title="Log" href="#" onClick={this.onClickItem} />
+                            <SidebarMenuItem icons="fa fa-tachometer" id="dashboard-page" title="Dashboard" href="#" onClick={this.onClickItem} />
+                            <SidebarMenuItem icons="fa fa-btc" id="assets-page" title="Assets" href="#" onClick={this.onClickItem} />
+                            <SidebarMenuItem icons="fa fa-google-wallet" id="wallet-page" title="Wallet" href="#" onClick={this.onClickItem} />
+                            <SidebarMenuItem icons="fa fa-shopping-cart" id="shop-page" title="Pawn shop" href="#" onClick={this.onClickItem} />
+                            <SidebarMenuItem icons="fa fa-money" id="payment-page" title="Request payment" href="#" onClick={this.onClickItem} />
+                            <SidebarMenuItem icons="fa fa-gamepad" id="game-page" title="Game" href="#" onClick={this.onClickItem} />
+                            <SidebarMenuItem icons="fa fa-star" id="help-page" title="Help" href="#" onClick={this.onClickItem} />
+                            <SidebarMenuItem icons="fa fa-weixin" id="chat-page" title="Chat" href="#" onClick={this.onClickItem} />
+                            <SidebarMenuItem icons="fa fa-sticky-note" id="log-page" title="Log" href="#" onClick={this.onClickItem} />
+                            <SidebarMenuItem icons="fa fa-sign-out" id="logout-btn" title="Logout" href="#" />
                         </ul>
                     </div>
                 </aside>
