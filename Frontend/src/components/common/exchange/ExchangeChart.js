@@ -1,11 +1,9 @@
 import React from "react";
 import Chart from 'react-apexcharts'
 
-export default class Foo extends React.Component {
+export default class ExchangeChart extends React.Component {
     constructor(props) {
         super(props);
-
-        //see https://apexcharts.com/samples/vanilla-js/line/zoomable-timeseries.html
 
         var ts2 = 1484418600000;
         var dates = [];
@@ -94,8 +92,7 @@ export default class Foo extends React.Component {
     }
 }
 
-var
-    dataSeries = [
+var dataSeries = [
         [{
             "date": "2014-01-01",
             "value": 20000000
