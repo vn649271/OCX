@@ -4,36 +4,39 @@ export default class DashboardTable extends React.Component {
 
     render() {
         return (
-            <div id="dashboard-table-content h-full">
+            <div id="dashboard-table-content h-full dashboard-table">
                 <div class="">
-                    <p className="table-title font-16 main-font ">
-                        Wallet
+                    <p className="table-title font-16 main-font main-font main-bold mb-5">
+                        Assets
                     </p>
-                    <div class="border-b border-gray-100 shadow">
-                        <table class="w-full dashboard-table">
-                            <thead class="bg-gray-50">
+                    <div class="rounded-lg shadow dashboard-table">
+                        <table class="w-full rounded-lg dashboard-table main-font">
+                            <thead class="bg-gray-50 rounded-lg">
                                 <tr>
                                     <th class="font-16 text-gray-500">
-                                        ID
+                                        Transaction Hash
                                     </th>
                                     <th class="font-16 text-gray-500">
-                                        Name
+                                        Contract
                                     </th>
                                     <th class="font-16 text-gray-500">
-                                        Email
+                                        Action (In / Out/ Swap/ Purchase)
                                     </th>
                                     <th class="font-16 text-gray-500">
-                                        Created_at
+                                        Size
                                     </th>
                                     <th class="font-16 text-gray-500">
-                                        Edit
+                                        Price
                                     </th>
                                     <th class="font-16 text-gray-500">
-                                        Delete
+                                        Date time
+                                    </th>
+                                    <th class="font-16 text-gray-500">
+                                        P/L
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white">
+                            <tbody class="bg-white main-font">
                                 <tr class="whitespace-nowrap">
                                     <td class="font-16  text-gray-500">
                                         1
@@ -49,11 +52,14 @@ export default class DashboardTable extends React.Component {
                                     <td class="font-16  text-gray-500">
                                         2021-1-12
                                     </td>
-                                    <td class="font-16">
-                                        <a href="#" class="px-4 py-1  text-white bg-blue-400 rounded">Edit</a>
+                                    <td class="font-16 text-gray-500">
+                                        2021-1-12
+                                    </td>
+                                    <td class="font-16 text-gray-500">
+                                        2021-1-12
                                     </td>
                                     <td class="font-16">
-                                        <a href="#" class="px-4 py-1  text-white bg-red-400 rounded">Delete</a>
+                                        <a href="#" class="px-4 py-1  text-red-500 bg-red-200 rounded-lg">Paid</a>
                                     </td>
                                 </tr>
                                 <tr class="whitespace-nowrap">
@@ -71,11 +77,14 @@ export default class DashboardTable extends React.Component {
                                     <td class="font-16  text-gray-500">
                                         2021-1-12
                                     </td>
-                                    <td class="font-16">
-                                        <a href="#" class="px-4 py-1  text-white bg-blue-400 rounded">Edit</a>
+                                    <td class="font-16 text-gray-500">
+                                        2021-1-12
+                                    </td>
+                                    <td class="font-16 text-gray-500">
+                                        2021-1-12
                                     </td>
                                     <td class="font-16">
-                                        <a href="#" class="px-4 py-1  text-white bg-red-400 rounded">Delete</a>
+                                        <a href="#" class="px-4 py-1  text-blue-500 bg-blue-200 rounded-lg">Pendding</a>
                                     </td>
                                 </tr>
                                 <tr class="whitespace-nowrap">
@@ -93,14 +102,16 @@ export default class DashboardTable extends React.Component {
                                     <td class="font-16  text-gray-500">
                                         2021-1-12
                                     </td>
-                                    <td class="font-16">
-                                        <a href="#" class="px-4 py-1  text-white bg-blue-400 rounded">Edit</a>
+                                    <td class="font-16 text-gray-500">
+                                        2021-1-12
+                                    </td>
+                                    <td class="font-16 text-gray-500">
+                                        2021-1-12
                                     </td>
                                     <td class="font-16">
-                                        <a href="#" class="px-4 py-1  text-white bg-red-400 rounded">Delete</a>
+                                        <a href="#" class="px-4 py-1  text-green-500 bg-green-200 rounded-lg">Decline</a>
                                     </td>
                                 </tr>
-
                             </tbody>
                         </table>
                     </div>

@@ -21,7 +21,7 @@ export default function Header(props) {
                             </span>
                         </div>
                     </Link>
-                    <div className='dashboard_name hidden main-font main-color font-30 pl-40 py-0'>
+                    <div className='dashboard_name hidden main-font main-color font-30 pl-24 py-0'>
                         Dashboard
                     </div>
                     <div className="header-navgation flex items-center font-16 main-color main-font ml-20">
@@ -35,6 +35,9 @@ export default function Header(props) {
 
                 <div className="header-right flex items-center">
                     <div className='user-logo flex items-center hidden'>
+                        <div className='dataTimePicker main-font font-18 main-color mr-20'>
+                            Dec 18, 2021
+                        </div>
                         <div className='user-avatar'>
                             <img src={userLogo} alt='user-avatar' className='user-avatar'  />
                         </div>
