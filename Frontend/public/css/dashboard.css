@@ -1,11 +1,11 @@
 .sidebar-content {
-    padding-left: 40px;
+    padding-left: 30px;
 }
 
 .dashboard-sidebar {
     border-top-right-radius: 80px;
     border: none !important;
-    width: 300px;
+    width: 250px;
     box-shadow: none !important;
 }
 
@@ -15,17 +15,20 @@
 }
 
 .sidebar-items-rounded:hover {
-    background-image: url('../images/sidenav.png');
-    background-size: 260px 120px;
+    background-image: url("../images/sidenav.png");
+    background-size: cover;
     background-repeat: no-repeat;
-    background-position: center;
+    background-position-y: center;
+    background-position-x: 3px;
+
 }
 
 .sidebar-items-rounded.active {
-    background-image: url('../images/sidenav.png');
-    background-size: 260px 120px;
+    background-image: url("../images/sidenav.png");
+    background-size: cover;
     background-repeat: no-repeat;
-    background-position: center;
+    background-position-y: center;
+    background-position-x: 3px;
 }
 
 .sidebar-items-rounded.active * {
@@ -46,6 +49,7 @@
     border-radius: 20px;
     padding: 30px;
     box-shadow: 0px 0px 10px rgb(180, 180, 180);
+    font-family: Qualy-Light !important;
 }
 
 /* tabs */
@@ -61,9 +65,41 @@
     border-radius: 30px;
 }
 
-
 .product-item-content {
     overflow-y: auto;
     height: 340px;
     overflow-x: hidden;
+}
+
+.dashboard-top-part {
+    background: #bbf1f3;
+}
+
+.dashboard-table {
+    background: #e6c8fa;
+}
+
+.dashboard-pichart {
+    background: #fef6a1;
+}
+
+.product-middle-line {
+    left: 50%;
+}
+
+.product-symbol {
+    left: 41%;
+}
+
+.product-card-header {
+    border-radius: 10px;
+}
+
+.product-card {
+    border-radius: 10px;
+}
+
+.trading-price {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
 }

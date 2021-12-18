@@ -47,8 +47,8 @@ class SidebarMenu extends Component {
                         </ul>
                     </div>
                 </aside>
-                <div class="flex flex-col flex-grow -ml-64 md:ml-0 transition-all duration-150 ease-in">
-                </div>
+                {/* <div class="flex flex-col flex-grow -ml-64 md:ml-0 transition-all duration-150 ease-in"> */}
+                {/* </div> */}
             </div>
 
         );
