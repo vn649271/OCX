@@ -1,6 +1,6 @@
 const BACKEND_BASE_URL = "http://localhost:5000/api";
 // const BACKEND_BASE_URL = "https://openchaindex-backend-6apegx3ocq-uc.a.run.app/api";
-const GOOGLE_LOGIN_CLIENT_ID = '533897933750-7kl95gavadq3po8qfrc2hn1o6618f5v2.apps.googleusercontent.com';
+const GOOGLE_LOGIN_CLIENT_ID = '760003596258-gien4jnstrtgq07u46b14ifa44cmtub0.apps.googleusercontent.com';
 const RECAPTCHA_SITE_KEY = "6LdoC28dAAAAACQ6Wbl7YPpOZVGHr9H-YQBKUkAA";
 const BATCHED_VALIDATION = 0; // Validation mode
 const INDIVIDUAL_VALIDATION = 1; // Validation mode
