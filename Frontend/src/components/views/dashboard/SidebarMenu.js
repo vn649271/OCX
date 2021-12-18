@@ -28,7 +28,7 @@ class SidebarMenu extends Component {
         const { title, icons, href } = this.props;
 
         return (
-            <div class="sidebar flex flex-row bg-white text-gray-800">
+            <div class="sidebar flex flex-row bg-white text-gray-800 border-none">
                 <aside
                     class="dashboard-sidebar md:shadow transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in bg-main-dark"
                 >

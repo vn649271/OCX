@@ -2,9 +2,9 @@ import { Link } from "react-router-dom";
 
 import Header from "../../common/Header";
 import Footer from "../../common/Footer";
-import ApexChart from "../../common/exchange/ApexChart";
 import ExchangeSwap from "../../common/exchange/ExchangeSwap";
 import MobileNav from "../../common/MobileNav";
+import ExchangeChart from "../../common/exchange/ExchangeChart";
 
 export default function Liquidity() {
     return (
@@ -24,7 +24,7 @@ export default function Liquidity() {
                 <div className="exchange-container home-card w-full p-10">
                     <div className="w-full flex exchange-content">
                         <div className="w-full lg:w-2/3 pr-0 lg:pr-10">
-                            <ApexChart />
+                            <ExchangeChart />
                         </div>
                         <div className="w-full lg:w-1/3">
                             <ExchangeSwap />
