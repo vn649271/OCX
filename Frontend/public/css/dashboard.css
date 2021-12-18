@@ -4,7 +4,9 @@
 
 .dashboard-sidebar {
     border-top-right-radius: 80px;
+    border: none !important;
     width: 300px;
+    box-shadow: none !important;
 }
 
 .sidebar-items-rounded {
@@ -13,11 +15,17 @@
 }
 
 .sidebar-items-rounded:hover {
-    background-color: white;
+    background-image: url('../images/sidenav.png');
+    background-size: 260px 120px;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .sidebar-items-rounded.active {
-    background-color: white;
+    background-image: url('../images/sidenav.png');
+    background-size: 260px 120px;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .sidebar-items-rounded.active * {
