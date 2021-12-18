@@ -45,7 +45,7 @@ export default class Login extends Component {
     this.onSubmit = this.onSubmit.bind(this);
     this.submitData = this.submitData.bind(this);
     this.responseGoogle = this.responseGoogle.bind(this);
-    this.responseGoogleFailed = this.responseGoogleFailed.bind(this);
+    this.responseGoogleLoginFailed = this.responseGoogleLoginFailed.bind(this);
     this.clearAllWarnings = this.clearAllWarnings.bind(this);
   }
 
@@ -95,7 +95,8 @@ export default class Login extends Component {
    * Description:
    *    Enable Google Login button, release timer for  display failure message
    */
-  responseGoogleFailed = (failure) => {
+  responseGoogleLoginFailed = (failure) => {
+    console.log("Login.responseGoogledFailed", failure);
     /********************** Unlock Google button disabled **********************************/
     if (this.state.disableGoogleButton) {
       this.setState({ disableGoogleButton: false });
@@ -246,7 +247,7 @@ export default class Login extends Component {
               clientId={GOOGLE_LOGIN_CLIENT_ID}
               buttonText="Google Login"
               onSuccess={this.responseGoogle}
-              onFailure={this.responseGoogleFailed}
+              onFailure={this.responseGoogleLoginFailed}
               className="google-login-button hover-transition"
               disabled={this.state.disableGoogleButton}
               cookiePolicy={'single_host_origin'}
