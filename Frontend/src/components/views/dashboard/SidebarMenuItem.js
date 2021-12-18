@@ -25,7 +25,7 @@ class SidebarMenuItem extends Component {
             <li id={this.props.id} className="my-px block sidebar-menu-item-container" onClick={this.onSelect} >
                 <a
                     href={href}
-                    className="flex flex-row items-center px-10 py-6 sidebar-items-rounded"
+                    className="flex flex-row items-center px-10 py-20 sidebar-items-rounded"
                 >
                     <span className="flex items-center justify-center font-20 mr-2 text-white">
                         <i className={icons} aria-hidden="true"></i>
