@@ -1,5 +1,5 @@
 .sidebar-content {
-    padding-left: 30px;
+    /* padding-left: 30px; */
 }
 
 .dashboard-sidebar {
@@ -12,6 +12,7 @@
 .sidebar-items-rounded {
     border-top-left-radius: 50px;
     border-bottom-left-radius: 50px;
+    margin-left: 30px;
 }
 
 .sidebar-items-rounded:hover {
@@ -108,6 +109,14 @@
 .dashboard-table-body {
     width: 1000px;
     margin: auto;
+}
+
+.nav-active-line {
+    border-left: solid 3px white;
+    position: absolute;
+    height: 48px;
+    left: 0;
+    top: 26%;
 }
 
 @media (max-width: 1440px) {
