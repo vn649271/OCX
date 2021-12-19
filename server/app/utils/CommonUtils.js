@@ -1,4 +1,8 @@
 
-function debugLog(param1) {
-
+class CommonUtils {
+    validateUserToken = userToken => {
+        return true;
+    }
 }
+
+module.exports = CommonUtils
