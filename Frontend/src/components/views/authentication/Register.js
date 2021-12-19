@@ -46,7 +46,8 @@ export default class Register extends Component {
       input: {},
       errors: {
         register_result: '',
-        phone_for_email: ''
+        phone_for_email: '',
+        password: ''
       },
       password_strength: 0,
       phone_for_gmail: '',
