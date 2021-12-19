@@ -18,6 +18,7 @@ class SidebarMenu extends Component {
         if (this.state.selectedItemId !== null) {
             let oldSelectedItem = document.getElementById(this.state.selectedItemId);
             oldSelectedItem.children[0].classList.remove('active');
+            oldSelectedItem.children[1].classList.add('hidden');
         }
         this.setState({ selectedItemId: selectedId });
         this.props.onSelectItem(selectedId);
