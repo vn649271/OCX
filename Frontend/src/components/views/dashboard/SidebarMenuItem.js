@@ -13,7 +13,9 @@ class SidebarMenuItem extends Component {
     }
 
     onSelect = ev => {
-        ev.target.classList.add('active');
+        var closestElement = ev.target.closest(".sidebar-items-rounded");
+        closestElement.classList.add('active');
+        closestElement.nextSibling.classList.remove('hidden');
         this.props.onClick(this.props.id);
     }
 
@@ -32,7 +34,7 @@ class SidebarMenuItem extends Component {
                     </span>
                     <span className="ml-3 main-font font-20 text-white">{title}</span>
                 </a>
-                <div className='nav-active-line'></div>
+                <div className='nav-active-line hidden'></div>
             </li>
         );
     }
