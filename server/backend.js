@@ -18,10 +18,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
  app.use("/api/users", Users);
  
  /**
- * Router for account management
+ * Router for wallet management
  */
-var Account = require("./app/routes/Account");
-app.use("/api/account", Account);
+var Wallet = require("./app/routes/Wallet");
+app.use("/api/wallet", Wallet);
 
 /**
  * Router for recaptcha
