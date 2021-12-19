@@ -11,7 +11,7 @@ let commonUtils = new CommonUtils();
 
 // or using the web3 umbrella package
 var Web3 = require('web3');
-var web3 = new Web3(Web3.givenProvider || 'ws://10.128.0.4:8546');
+var web3 = new Web3(Web3.givenProvider || 'ws://localhost:8545');
 
 require('dotenv').config();
 
@@ -27,15 +27,14 @@ class WalletController {
     }
 
     _create(password, resp) {
-        web3.eth.getAccounts(console.log);
-        // let command = "geth account new";
-        // exec(command, function (error, stdout, stderr) {
-        //     if (stdout.length < 1) {
-        //         return resp.json({ error: -10, message: "Failed to create a new account." });
-        //     }
-        //     const obj = JSON.parse(stdout);
-        //     return resp.json({ error: 0, data: "" });
-        // });
+        let command = "geth account new";
+        exec(command, function (error, stdout, stderr) {
+            if (stdout.length < 1) {
+                return resp.json({ error: -10, message: "Failed to create a new account." });
+            }
+            const obj = JSON.parse(stdout);
+            return resp.json({ error: 0, data: "" });
+        });
     }
 
     /**
