@@ -22,7 +22,7 @@ class SidebarMenuItem extends Component {
         const { title, icons, href } = this.props;
 
         return (
-            <li id={this.props.id} className="my-px block sidebar-menu-item-container" onClick={this.onSelect} >
+            <li id={this.props.id} className="my-px block sidebar-menu-item-container relative" onClick={this.onSelect} >
                 <a
                     href={href}
                     className="flex flex-row items-center px-10 py-14 sidebar-items-rounded"
@@ -32,6 +32,7 @@ class SidebarMenuItem extends Component {
                     </span>
                     <span className="ml-3 main-font font-20 text-white">{title}</span>
                 </a>
+                <div className='nav-active-line'></div>
             </li>
         );
     }
