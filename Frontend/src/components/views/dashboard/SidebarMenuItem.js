@@ -30,7 +30,7 @@ class SidebarMenuItem extends Component {
                     <span className="flex items-center justify-center font-20 mr-2 text-white">
                         <i className={icons} aria-hidden="true"></i>
                     </span>
-                    <span className="ml-3 main-font font-14 text-white">{title}</span>
+                    <span className="ml-3 main-font font-20 text-white">{title}</span>
                 </a>
             </li>
         );

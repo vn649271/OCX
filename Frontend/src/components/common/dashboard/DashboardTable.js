@@ -9,8 +9,8 @@ export default class DashboardTable extends React.Component {
                     <p className="table-title font-16 main-font main-font main-bold mb-5">
                         Assets
                     </p>
-                    <div class="rounded-lg shadow dashboard-table">
-                        <table class="w-full rounded-lg dashboard-table main-font">
+                    <div class="rounded-lg shadow dashboard-table-main ">
+                        <table class=" rounded-lg dashboard-table-body main-font">
                             <thead class="bg-gray-50 rounded-lg">
                                 <tr>
                                     <th class="font-16 text-gray-500">
