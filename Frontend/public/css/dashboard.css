@@ -16,19 +16,20 @@
 
 .sidebar-items-rounded:hover {
     background-image: url("../images/sidenav.png");
-    background-size: cover;
+    background-size: contain;
     background-repeat: no-repeat;
-    background-position-y: center;
-    background-position-x: 3px;
+    background-position: center;
+}
 
+.sidebar-menu-item-container {
+    margin-top: -30px !important;
 }
 
 .sidebar-items-rounded.active {
     background-image: url("../images/sidenav.png");
-    background-size: cover;
+    background-size: contain;
     background-repeat: no-repeat;
-    background-position-y: center;
-    background-position-x: 3px;
+    background-position: center;
 }
 
 .sidebar-items-rounded.active * {
@@ -72,15 +73,15 @@
 }
 
 .dashboard-top-part {
-    background: #bbf1f3;
+    background: #c4f3f57c;
 }
 
 .dashboard-table {
-    background: #e6c8fa;
+    background: #e6c9f8c5;
 }
 
 .dashboard-pichart {
-    background: #fef6a1;
+    background: #f7f2c1;
 }
 
 .product-middle-line {
@@ -88,7 +89,7 @@
 }
 
 .product-symbol {
-    left: 41%;
+    left: 40%;
 }
 
 .product-card-header {
@@ -102,4 +103,53 @@
 .trading-price {
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
+}
+
+.dashboard-table-body {
+    width: 1000px;
+    margin: auto;
+}
+
+@media (max-width: 1440px) {
+    .product-symbol {
+        left: 38%;
+    }
+
+    .dashboard-sidebar {
+        box-shadow: none !important;
+    }
+
+    .dashboard-table-main {
+        overflow-x: auto;
+        width: 800px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .content-top,
+    .content-bottom {
+        flex-direction: column;
+    }
+    .dashboard-sidebar {
+        border-top-right-radius: 60px;
+    }
+
+    .candlechart-content,
+    .product-list,
+    .dashboard-table-content,
+    .dashboard-pichart {
+        width: 100% !important;
+    }
+
+    .product-symbol {
+        left: 46%;
+    }
+    .dashboard-table-main {
+        overflow-x: auto;
+        width: 100%;
+    }
+
+    .candlechart-content, .dashboard-table-content {
+        margin-bottom: 40px;
+    }
 }

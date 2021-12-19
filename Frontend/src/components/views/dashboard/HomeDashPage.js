@@ -41,7 +41,7 @@ class HomeDashPage extends Component {
                             <DashboardTable />
                         </div>
                     </div>
-                    <div className=' w-2/8'>
+                    <div className='content-piechart w-2/8'>
                         <div className='dashboard-card hover-transition w-full dashboard-pichart'>
                             <DashboardPieChart />
                         </div>

@@ -32,13 +32,13 @@ class SidebarMenu extends Component {
                 <aside
                     class="dashboard-sidebar md:shadow transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in bg-main-dark"
                 >
-                    <div class="sidebar-content py-40">
+                    <div class="sidebar-content py-60 md:py-48">
                         <ul class="flex flex-col w-full">
                             <SidebarMenuItem icons="fa fa-tachometer" id="dashboard-page" title="Dashboard" href="#" onClick={this.onClickItem} />
                             <SidebarMenuItem icons="fa fa-btc" id="assets-page" title="Assets" href="#" onClick={this.onClickItem} />
                             <SidebarMenuItem icons="fa fa-google-wallet" id="wallet-page" title="Wallet" href="#" onClick={this.onClickItem} />
                             <SidebarMenuItem icons="fa fa-shopping-cart" id="shop-page" title="Pawn shop" href="#" onClick={this.onClickItem} />
-                            <SidebarMenuItem icons="fa fa-money" id="payment-page" title="Request payment" href="#" onClick={this.onClickItem} />
+                            <SidebarMenuItem icons="fa fa-money" id="payment-page" title="Payment" href="#" onClick={this.onClickItem} />
                             <SidebarMenuItem icons="fa fa-gamepad" id="game-page" title="Game" href="#" onClick={this.onClickItem} />
                             <SidebarMenuItem icons="fa fa-star" id="help-page" title="Help" href="#" onClick={this.onClickItem} />
                             <SidebarMenuItem icons="fa fa-weixin" id="chat-page" title="Chat" href="#" onClick={this.onClickItem} />

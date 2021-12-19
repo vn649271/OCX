@@ -1,5 +1,4 @@
 import React from "react";
-// import productImg from '../assets/images/img/product.jpeg';
 
 
 export default class DashboardProducts extends React.Component {
@@ -13,7 +12,7 @@ export default class DashboardProducts extends React.Component {
                     </p>
                     <div className="product-item-content px-10">
                         <div className="product-card w-full dashboard-table mb-5">
-                            <div className="product-card-header  border-4 border-white relative flex justify-between w-full">
+                            <div className="product-card-header  border-2 border-white relative flex justify-between w-full">
                                 <div className="card-sell-part p-5">
                                     <p className="main-font font-20 main-color mb-5">
                                         <i class="fa fa-moon-o" aria-hidden="true"></i>
@@ -30,7 +29,7 @@ export default class DashboardProducts extends React.Component {
                                         1.2545
                                     </p>
                                 </div>
-                                <div className="product-middle-line border-l-4 border-white h-full absolute">
+                                <div className="product-middle-line border-l-2 border-white h-full absolute">
 
                                 </div>
                                 <div className="product-symbol absolute">
@@ -50,7 +49,7 @@ export default class DashboardProducts extends React.Component {
                             </div>
                         </div>
                         <div className="product-card w-full dashboard-table mb-5">
-                            <div className="product-card-header  border-4 border-white relative flex justify-between w-full">
+                            <div className="product-card-header  border-2 border-white relative flex justify-between w-full">
                                 <div className="card-sell-part p-5">
                                     <p className="main-font font-20 main-color mb-5">
                                         <i class="fa fa-moon-o" aria-hidden="true"></i>
@@ -67,7 +66,7 @@ export default class DashboardProducts extends React.Component {
                                         1.2545
                                     </p>
                                 </div>
-                                <div className="product-middle-line border-l-4 border-white h-full absolute">
+                                <div className="product-middle-line border-l-2 border-white h-full absolute">
 
                                 </div>
                                 <div className="product-symbol absolute">
@@ -87,7 +86,7 @@ export default class DashboardProducts extends React.Component {
                             </div>
                         </div>
                         <div className="product-card w-full dashboard-table mb-5">
-                            <div className="product-card-header  border-4 border-white relative flex justify-between w-full">
+                            <div className="product-card-header  border-2 border-white relative flex justify-between w-full">
                                 <div className="card-sell-part p-5">
                                     <p className="main-font font-20 main-color mb-5">
                                         <i class="fa fa-moon-o" aria-hidden="true"></i>
@@ -104,7 +103,7 @@ export default class DashboardProducts extends React.Component {
                                         1.2545
                                     </p>
                                 </div>
-                                <div className="product-middle-line border-l-4 border-white h-full absolute">
+                                <div className="product-middle-line border-l-2 border-white h-full absolute">
 
                                 </div>
                                 <div className="product-symbol absolute">
