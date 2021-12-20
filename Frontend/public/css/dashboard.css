@@ -112,11 +112,12 @@
 }
 
 .nav-active-line {
-    border-left: solid 3px white;
+    border: solid 2px white;
+    border-radius: 10px;
     position: absolute;
-    height: 48px;
+    height: 50px;
     left: 0;
-    top: 26%;
+    top: 27%;
 }
 
 @media (max-width: 1440px) {

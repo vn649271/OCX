@@ -35,7 +35,7 @@ class SidebarMenu extends Component {
                 >
                     <div class="sidebar-content py-60 md:py-48">
                         <ul class="flex flex-col w-full">
-                            <SidebarMenuItem icons="fa fa-tachometer" id="dashboard-page" title="Dashboard" href="#" onClick={this.onClickItem} />
+                            <SidebarMenuItem icons="fa fa-tachometer" className="active" id="dashboard-page" title="Dashboard" href="#" onClick={this.onClickItem} />
                             <SidebarMenuItem icons="fa fa-btc" id="assets-page" title="Assets" href="#" onClick={this.onClickItem} />
                             <SidebarMenuItem icons="fa fa-google-wallet" id="wallet-page" title="Wallet" href="#" onClick={this.onClickItem} />
                             <SidebarMenuItem icons="fa fa-shopping-cart" id="shop-page" title="Pawn shop" href="#" onClick={this.onClickItem} />
