@@ -3,14 +3,14 @@ import DelayButton from '../../common/DelayButton';
 import PasswordChecklistComponent from "../../common/PasswordChecklistComponent";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
-import { createAccount } from '../../../service/Wallet'
+import { createAccount, getBalance, sendCryptoCurrency } from '../../../service/Wallet'
 import { useParams } from 'react-router-dom';
 import {
     BATCHED_VALIDATION,
     INDIVIDUAL_VALIDATION,
     NOTIFY_WARNING,
     NOTIFY_INFORMATION,
-  } from "../../../Contants";
+} from "../../../Contants";
 
 const eye = <FontAwesomeIcon icon={faEye} />;
 
@@ -27,14 +27,19 @@ class WalletPage extends Component {
         this.state = {
             is_creating: false,
             creating_interval: MAX_CREATING_DELAY_TIMEOUT,
-            address: {
+            balance: {
                 eth: 0,
                 btc: 0,
             },
             input: {},
             errors: {
                 password: "",
-                confirm_password: ""
+                confirm_password: "",
+                balance: "",
+                amount: 0,
+            },
+            info: {
+                send: ''
             },
             password: "",
             confirm_password: "",
@@ -45,15 +50,44 @@ class WalletPage extends Component {
 
         this.validate = this.validate.bind(this)
         this.onCreateAccont = this.onCreateAccont.bind(this);
+        this.onSend = this.onSend.bind(this);
         this.onLeaveFromPasswordInput = this.onLeaveFromPasswordInput.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.togglePasswordVisiblity = this.togglePasswordVisiblity.bind(this);
         this.validatePassword = this.validatePassword.bind(this);
+		this.showMessageForSending = this.showMessageForSending.bind(this);
     }
 
     componentDidUpdate(prevProps) {
         if (prevProps.target !== this.props.target) {
         }
+    }
+
+    componentDidMount() {
+        console.log("componentDidMount()");
+        setInterval(function() {
+            getBalance({
+                userToken: "xxxxxxxxxxxxxxx",
+                account: "yyyyyyyyyyyyyyyyyyyyy",
+                onComplete: function(resp) {
+                    console.log("getBalance: ", resp);
+                    let error = resp ? resp.error ? resp.error : null : null;
+                    if (error === null) {
+                        let balance = resp ? resp.data ? resp.data : null : null;
+                        if (balance !== null) {
+                            let balanceObj = me.state.balance;
+                            balanceObj.eth = balance;
+                            me.setState({balance: balanceObj});
+                            return;
+                        }
+                    }
+                    let errorsObj = me.state.errors;
+                    errorsObj.balance = resp.data;
+                    me.setState({ errors: errorsObj });
+                }
+            });
+        }, 
+        5000);
     }
 
     togglePasswordVisiblity = event => {
@@ -75,75 +109,6 @@ class WalletPage extends Component {
         this.setState({ errors: errors });
 
         let isValid = true;
-
-        // Validate password
-        while (1) {
-            if (validationMode === INDIVIDUAL_VALIDATION && fieldName !== 'password')
-                break;
-
-            errors.password = "";
-            errors.register_result = "";
-
-            let value = input["password"] || null;
-            if (!value) {
-                isValid = false;
-                errors["password"] = "Please enter your password.";
-            }
-            if (typeof value !== "undefined") {
-                if (value) {
-                    if (value.length < this.thresholdLength) {
-                        isValid = false;
-                        errors["password"] = "Please add at least 8 charachter.";
-                    } else {
-                        let passwordStrength = this.validatePassword(value);
-                        if (passwordStrength < 0) {
-                            switch (passwordStrength) {
-                                case -1:
-                                    errors["password"] = "The password must contain at least 1 lowercase alphabetical character";
-                                    break;
-                                case -2:
-                                    errors["password"] = "The password must contain at least 1 uppercase alphabetical character";
-                                    break;
-                                case -3:
-                                    errors["password"] = "The password must contain at least 1 numeric character";
-                                    break;
-                                case -4:
-                                    errors["password"] = "The password must contain at least one special character";
-                                    break;
-                                case -5:
-                                    errors["password"] = "The password must be eight characters or longer";
-                                    break;
-                                default:
-                                    break;
-                            }
-                            isValid = false;
-                        }
-                    }
-                }
-            }
-            break;
-        }
-        // Validate confirm password
-        while (1) {
-            if (validationMode === INDIVIDUAL_VALIDATION && fieldName !== 'confirm_password')
-                break;
-
-            errors.confirm_password = "";
-            errors.register_result = "";
-
-            if (!input["confirm_password"]) {
-                isValid = false;
-                errors["confirm_password"] = "Please enter your confirm password.";
-            }
-
-            if (typeof input["password"] !== "undefined" && typeof input["confirm_password"] !== "undefined") {
-                if (input["password"] !== input["confirm_password"]) {
-                    isValid = false;
-                    errors["confirm_password"] = "Passwords don't match.";
-                }
-            }
-            break;
-        }
 
         this.setState({
             errors: errors
@@ -224,6 +189,66 @@ class WalletPage extends Component {
         });
     }
 
+	// type - 0: warning, 1: notification
+	showMessageForSending = (msg, type = 0) => {
+		let errorMsg = '', informMsg = '';
+		if (type == 0) {
+			errorMsg = msg;
+	        let errorsObj = this.state.errors;
+    	    errorsObj.send = errorMsg;
+        	this.setState({ errors: errorsObj });
+		} else if (type == 1) {
+			informMsg = msg;
+	    	let infoObj = this.state.info;
+            infoObj.send = informMsg;
+            this.setState({ info: infoObj });
+		}
+	}
+
+    onSend = (param, ev, buttonCmpnt) => {
+        console.log("WalletPage.onSend()");
+        let toAddress = this.state.input ? this.state.input.to_address ? this.state.input.to_address: null : null;
+        if (toAddress === null) {
+            buttonCmpnt.stopTimer();
+			this.showMessageForSending("Please input receiving address");
+            return;
+        }
+
+		let amount = this.state.input ? this.state.input.amount ? this.state.input.amount: null : null;
+        if (amount === null) {
+            buttonCmpnt.stopTimer();
+			this.showMessageForSending("Please input the amount to send");
+            return;
+        }
+
+        sendCryptoCurrency({
+            userToken: "xxxxxxxxxxxxxxx",
+            to: toAddress, // "0xADB366C070DFB857DC63ebF797EFE615B0567C1B",
+            amount: amount,
+            onComplete: function(resp) {
+				buttonCmpnt.stopTimer();
+
+				let input = me.state.input;
+				input.amount = '';
+				input.to_address = '';
+				me.setState({ input: input });
+
+				me.showMessageForSending('');
+                console.log("getBalance: ", resp);
+                let error = resp ? resp.error ? resp.error : null : null;
+                if (error === null) {
+					me.showMessageForSending("Sending Complete", 1);
+					return;
+                }
+				me.showMessageForSending(resp.data);
+        	},
+			onFailed: function(error) {
+				console.log("?????????????????????????? ", error);
+				me.showMessageForSending(error);
+			}
+        });
+    }
+
     onLeaveFromPasswordInput = event => {
         this.setState({ hidePasswordCheckList: true });
     }
@@ -232,52 +257,40 @@ class WalletPage extends Component {
     render() {
         return (
             <div className="my-wallet-page">
-                <div className="mb-10">
-                    <div className="password-container block w-full">
-                        <input
-                            type={this.state.showPassword ? "text" : "password"}
-                            className="password-input border border-grey-light bg-gray-100 w-full p-5 font-16 main-font focus:outline-none rounded "
-                            name="password"
-                            value={this.state.input.password}
-                            onChange={this.handleInputChange}
-                            onBlur={this.onLeaveFromPasswordInput}
-                            placeholder="Password" autoComplete="off"
-                        />
-                        <i className="ShowPasswordIcon font-16" onClick={this.togglePasswordVisiblity}>{eye}</i>
-                    </div>
-                    <span className="help-block main-font text-red-400 font-14">{this.state.errors.password}</span>
-                </div>
-                <PasswordChecklistComponent
-                    password={this.state.input['password'] || ""}
-                    confirmPassword={this.state.input['confirm_password'] || ""}
-                    hidden={this.state.hidePasswordCheckList}
-                />
-                <div className="mb-10">
+                <span className="account-balance-box main-font text-black-400 font-20">Balance: {this.state.balance.eth}</span>
+                <span className="account-balance-box main-font text-red-400 font-14">{this.state.errors.balance}</span>
+                <div>
                     <input
-                        type="password"
-                        className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded "
-                        name="confirm_password"
-                        id="confirm_password"
-                        value={this.state.input.confirm_password}
+                        type="text"
+                        className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
+                        name="to_address"
+                        id="to_address"
+                        placeholder="To Address"
+                        value={this.state.input.to_address}
                         onChange={this.handleInputChange}
-                        placeholder="Confirm Password" autoComplete="off"
-                    />
-                    <span className="help-block main-font text-red-400 font-14">{this.state.errors.confirm_password}</span>
-                </div>
+                        autoComplete="off" />
 
-                <div>
-                    {/* Create Account Button */}
-                    <DelayButton
-                        captionInDelay="Creating"
-                        caption="Creat Account"
-                        maxDelayInterval={30}
-                        onClickButton={this.onCreateAccont}
-                        onClickButtonParam={null}
-                    />
-                </div>
-                <span className="account-address-box main-font text-red-400 font-14">Balance: {this.state.address.eth}</span>
-                <div>
-
+                    <input
+                        type="number"
+                        className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
+                        name="amount"
+                        id="amount"
+                        placeholder="Amount"
+                        value={this.state.input.amount}
+                        onChange={this.handleInputChange}
+                        autoComplete="off" />
+                    {/* Send Button */}
+					<div>
+                        <DelayButton
+                            captionInDelay="Sending"
+                            caption="Send"
+                            maxDelayInterval={30}
+                            onClickButton={this.onSend}
+                            onClickButtonParam={null}
+                        />
+					</div>
+                    <span className="help-block main-font text-red-400 font-16">{this.state.errors.send}</span>
+                    <span className="help-block main-font text-green-400 font-16">{this.state.info.send}</span>
                 </div>
             </div>
         );
