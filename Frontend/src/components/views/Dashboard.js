@@ -45,6 +45,7 @@ export default class Dashboard extends Component {
             document.getElementsByClassName('main-header-content')[0].classList.add('px-20');
             document.getElementsByClassName('main-logo')[0].classList.add('mr-20');
             document.getElementsByClassName('message-part')[0].classList.remove('hidden');
+            document.getElementsByClassName('main-footer')[0].classList.add('hidden');
         }
     }
 

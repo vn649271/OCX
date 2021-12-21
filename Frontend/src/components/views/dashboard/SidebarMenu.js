@@ -31,7 +31,7 @@ class SidebarMenu extends Component {
         return (
             <div class="sidebar flex flex-row bg-white text-gray-800 border-none">
                 <aside
-                    class="dashboard-sidebar md:shadow transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in bg-main-dark"
+                    class="dashboard-sidebar md:shadow transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in dashboard-table"
                 >
                     <div class="sidebar-content py-60 md:py-48">
                         <ul class="flex flex-col w-full">

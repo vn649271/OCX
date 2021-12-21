@@ -1,7 +1,3 @@
-.sidebar-content {
-    /* padding-left: 30px; */
-}
-
 .dashboard-sidebar {
     border-top-right-radius: 80px;
     border: none !important;
@@ -34,11 +30,11 @@
 }
 
 .sidebar-items-rounded.active * {
-    color: #30373f;
+    color: #00021b;
 }
 
 .sidebar-items-rounded:hover * {
-    color: #30373f;
+    color: #00021b;
 }
 
 .user-avatar {
@@ -50,7 +46,6 @@
 .dashboard-card {
     border-radius: 20px;
     padding: 30px;
-    box-shadow: 0px 0px 10px rgb(180, 180, 180);
     font-family: Qualy-Light !important;
 }
 
@@ -69,20 +64,32 @@
 
 .product-item-content {
     overflow-y: auto;
-    height: 340px;
+    height: 330px;
     overflow-x: hidden;
+    padding: 3px;
 }
 
 .dashboard-top-part {
-    background: #c4f3f57c;
+    /* background: #bbf1f3; */
+    background: #00021b;
+    height: 100%;
+
 }
 
 .dashboard-table {
-    background: #e6c9f8c5;
+    /* background: #e6c8fa; */
+    background: #00021b;
+
+}
+
+.product-item-content {
+    background: #fb3f57;
 }
 
 .dashboard-pichart {
-    background: #f7f2c1;
+    /* background: #fef6a1; */
+    background: #00021b;
+
 }
 
 .product-middle-line {
@@ -90,20 +97,35 @@
 }
 
 .product-symbol {
-    left: 40%;
+    left: 36%;
+    top: 8px;
 }
 
 .product-card-header {
-    border-radius: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
 }
 
 .product-card {
+    border-radius: 10px;
+    background: #00021b;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border: 2px rgb(134, 134, 134) solid;
+}
+
+.rounded-10 {
     border-radius: 10px;
 }
 
 .trading-price {
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
+    background: rgb(134, 134, 134);
+}
+
+.dashboard-table-main {
+    background: #6089f5;
 }
 
 .dashboard-table-body {
@@ -118,6 +140,32 @@
     height: 50px;
     left: 0;
     top: 27%;
+}
+
+.MuiOutlinedInput-notchedOutline {
+
+    border: none !important;
+}
+
+.css-i4bv87-MuiSvgIcon-root {
+    font-size: 20px !important;
+    color: black !important;
+}
+
+.css-l0iinn, .css-f4950f-MuiSvgIcon-root, .MuiSvgIcon-fontSizeMedium {
+    font-size: 20px !important;
+}
+
+.css-m1gykc, .css-11i52bn-MuiTypography-root, .css-bkrceb-MuiButtonBase-root-MuiPickersDay-root, .css-1w13o7u-MuiTypography-root {
+    font-size: 15px !important;
+}
+
+.css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root {
+    font-size: 18px !important;
+}
+
+.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input {
+    width: 95px !important;
 }
 
 @media (max-width: 1440px) {
