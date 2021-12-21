@@ -37,17 +37,18 @@ export const createAccount = (params) => {
  * 
  * @returns 
  */
- export const getBalance = (params) => {
+export const getBalance = (params) => {
     return axios
         .post(BACKEND_BASE_URL + "/wallet/balance", {
             userToken: params.userToken,
-            accountId: params.account
+            account: params.account
         })
         .then(response => {
-            if (response !== undefined && response !== null
-            && response.error !== undefined && response.error !== null) {
+            let error = response ? response.data ? response.data.error ? 
+                                response.data.error: null : null: null;
+            if (error === null) {
                 if (params.onComplete) {
-                    params.onComplete(response);
+                    params.onComplete(response.data);
                 }
             }
         })
@@ -66,17 +67,18 @@ export const createAccount = (params) => {
  * 
  * @returns 
  */
- export const connect = (params) => {
+export const connect = (params) => {
     return axios
         .post(BACKEND_BASE_URL + "/wallet/connect", {
             userToken: params.userToken,
             wallet: params.walletId
         })
         .then(response => {
-            if (response !== undefined && response !== null
-            && response.error !== undefined && response.error !== null) {
+            let error = response ? response.data ? response.data.error ? 
+                                response.data.error: null : null: null;
+            if (error === 0) {
                 if (params.onComplete) {
-                    params.onComplete(response);
+                    params.onComplete(response.data);
                 }
             }
         })
@@ -104,14 +106,13 @@ export const sendCryptoCurrency = (params) => {
     return axios
         .post(BACKEND_BASE_URL + "/wallet/send", {
             userToken: params.userToken,
-            from: params.from,
             to: params.to,
             amount: params.amount
         })
         .then(response => {
-            if (response !== undefined && response !== null
-            && response.error !== undefined && response.error !== null) {
-                params.onComplete(response);
+			let data = response.data ? response.data.data ? response.data.data : null: null;
+            if (data !== null) {
+                params.onComplete(response.data);
             }
         })
         .catch(error => {
