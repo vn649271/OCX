@@ -168,6 +168,32 @@
     width: 95px !important;
 }
 
+.css-1gsv261 {
+    border-bottom: 1px solid;
+    border-color: rgb(255 255 255) !important;
+}
+
+.css-1h9z7r5-MuiButtonBase-root-MuiTab-root.Mui-selected {
+    color: #ffffff !important;
+    font-family: Qualy-Light !important;
+    font-size: 16px;
+}
+
+.css-1aquho2-MuiTabs-indicator {
+    background-color: white !important;
+}
+
+.css-1h9z7r5-MuiButtonBase-root-MuiTab-root {
+    color: white !important;
+    font-size: 16px !important;
+    font-family: Qualy-Light !important;
+
+}
+
+.apexcharts-legend  {
+    bottom: 0;
+}
+
 @media (max-width: 1440px) {
     .product-symbol {
         left: 38%;
