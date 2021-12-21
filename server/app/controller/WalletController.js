@@ -1,22 +1,15 @@
 var util = require('util');
+require('dotenv').config();
 var exec = require('child_process').exec;
 const jwt = require("jsonwebtoken");
 const Phone = require("../models/Firestore/Account");
 const CommonUtils = require('../utils/CommonUtils');
 let commonUtils = new CommonUtils();
 
-// var Eth = require('web3-eth');
-// // "Eth.providers.givenProvider" will be set if in an Ethereum supported browser.
-// var eth = new Eth(Eth.givenProvider || 'ws://localhost:8546');
-
-// or using the web3 umbrella package
 var Web3 = require('web3');
-var web3 = new Web3(Web3.givenProvider || 'ws://localhost:8545');
-
-require('dotenv').config();
+// var web3 = new Web3(Web3.givenProvider || 'ws://localhost:8545');
 
 var me;
-
 
 /**
  * Controller for user authentication
@@ -24,6 +17,10 @@ var me;
 class WalletController {
     constructor() {
         me = this;
+        // Create a signer account
+    }
+
+    getBalance = (signer) => {
     }
 
     _create(password, resp) {
@@ -107,6 +104,8 @@ class WalletController {
         if (!ret) {
             return resp.json({ error: -2, data: "Invalid user token" });
         }
+
+        console.log(CommonUtils.globalSettings);
 
         return resp.json({ error: 0, data: "" });
     }
