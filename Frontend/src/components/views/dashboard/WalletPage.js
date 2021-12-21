@@ -4,6 +4,7 @@ import PasswordChecklistComponent from "../../common/PasswordChecklistComponent"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { createAccount, getBalance, sendCryptoCurrency } from '../../../service/Wallet'
+import QRCode from "react-qr-code";
 import { useParams } from 'react-router-dom';
 import {
     BATCHED_VALIDATION,
@@ -260,6 +261,7 @@ class WalletPage extends Component {
                 <span className="account-balance-box main-font text-black-400 font-20">Balance: {this.state.balance.eth}</span>
                 <span className="account-balance-box main-font text-red-400 font-14">{this.state.errors.balance}</span>
                 <div>
+                    <QRCode value="hey" />
                     <input
                         type="text"
                         className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
