@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import QRCode from "react-qr-code";
 class GamePage extends Component {
 
     state = {
@@ -20,6 +20,7 @@ class GamePage extends Component {
         return (
             <div className="my-profile-page">
                 My Profile Page
+                <QRCode value="hey" />
             </div>
         );
     }

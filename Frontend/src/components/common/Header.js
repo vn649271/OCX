@@ -1,9 +1,18 @@
 import mainLogo from './assets/images/logo/logo.png';
 import userLogo from './assets/images/img/user-avatar.png';
 import { Link } from "react-router-dom";
+import TextField from '@mui/material/TextField';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DatePicker from '@mui/lab/DatePicker';
+import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
+import Stack from '@mui/material/Stack';
 import React from 'react';
+import { style } from '@mui/system';
 
 export default function Header(props) {
+    const [value, setValue] = React.useState(new Date());
+
     return (
         <header className="bg-white main-header py-3">
             <div className='message-part h-10 w-full hidden'>
@@ -35,11 +44,26 @@ export default function Header(props) {
 
                 <div className="header-right flex items-center">
                     <div className='user-logo flex items-center hidden'>
-                        <div className='dataTimePicker main-font font-18 main-color mr-20'>
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <Stack spacing={1}>
+                                <DatePicker
+                                    disableFuture
+                                    // label="Responsive"
+                                    openTo="year"
+                                    views={['year', 'month', 'day']}
+                                    value={value}
+                                    onChange={(newValue) => {
+                                        setValue(newValue);
+                                    }}
+                                    renderInput={(params) => <TextField {...params} />}
+                                />
+                            </Stack>
+                        </LocalizationProvider>
+                        {/* <div className='dataTimePicker main-font font-18 main-color mr-20'>
                             Dec 18, 2021
-                        </div>
-                        <div className='user-avatar'>
-                            <img src={userLogo} alt='user-avatar' className='user-avatar'  />
+                        </div> */}
+                        <div className='user-avatar ml-10'>
+                            <img src={userLogo} alt='user-avatar' className='user-avatar' />
                         </div>
                         <div className='user-name font-20 main-font main-color ml-5'>
                             Big-Star

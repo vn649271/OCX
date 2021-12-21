@@ -253,11 +253,8 @@ export default class DashboardCandleChart extends React.Component {
             options: {
                 chart: {
                     type: 'candlestick',
-                    height: 500
-                },
-                title: {
-                    text: 'Currency Chart',
-                    align: 'left'
+                    height: 400,
+                    fontFamily: 'Qualy-Light'
                 },
                 xaxis: {
                     type: 'datetime'
@@ -266,6 +263,10 @@ export default class DashboardCandleChart extends React.Component {
                     tooltip: {
                         enabled: true
                     }
+                },
+
+                chart: {
+                    foreColor: '#ffffff'
                 }
             },
         };
@@ -274,6 +275,9 @@ export default class DashboardCandleChart extends React.Component {
     render() {
         return (
             <div id="chart">
+                <p className="table-title font-16 text-white main-bold">
+                    Candle Chart
+                </p>
                 <ReactApexChart options={this.state.options} series={this.state.series} type="candlestick" height={350} />
             </div>
         );

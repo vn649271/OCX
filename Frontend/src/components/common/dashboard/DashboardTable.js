@@ -6,56 +6,56 @@ export default class DashboardTable extends React.Component {
         return (
             <div id="dashboard-table-content h-full dashboard-table">
                 <div class="">
-                    <p className="table-title font-16 main-font main-font main-bold mb-5">
+                    <p className="table-title font-16 text-white main-font main-bold mb-5">
                         Assets
                     </p>
-                    <div class="rounded-lg shadow dashboard-table-main ">
+                    <div class="rounded-lg dashboard-table-main ">
                         <table class=" rounded-lg dashboard-table-body main-font">
-                            <thead class="bg-gray-50 rounded-lg">
+                            <thead class="rounded-lg">
                                 <tr>
-                                    <th class="font-16 text-gray-500">
+                                    <th class="font-16 text-white">
                                         Transaction Hash
                                     </th>
-                                    <th class="font-16 text-gray-500">
+                                    <th class="font-16 text-white">
                                         Contract
                                     </th>
-                                    <th class="font-16 text-gray-500">
+                                    <th class="font-16 text-white">
                                         Action (In / Out/ Swap/ Purchase)
                                     </th>
-                                    <th class="font-16 text-gray-500">
+                                    <th class="font-16 text-white">
                                         Size
                                     </th>
-                                    <th class="font-16 text-gray-500">
+                                    <th class="font-16 text-white">
                                         Price
                                     </th>
-                                    <th class="font-16 text-gray-500">
+                                    <th class="font-16 text-white">
                                         Date time
                                     </th>
-                                    <th class="font-16 text-gray-500">
+                                    <th class="font-16 text-white">
                                         P/L
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white main-font">
+                            <tbody class=" main-font">
                                 <tr class="whitespace-nowrap">
-                                    <td class="font-16  text-gray-500">
+                                    <td class="font-16  text-white">
                                         1
                                     </td>
                                     <td class="font-16">
-                                        <div class=" text-gray-900">
+                                        <div class=" text-white">
                                             Jon doe
                                         </div>
                                     </td>
                                     <td class="font-16">
-                                        <div class=" text-gray-500">jhondoe@example.com</div>
+                                        <div class=" text-white">jhondoe@example.com</div>
                                     </td>
-                                    <td class="font-16  text-gray-500">
+                                    <td class="font-16  text-white">
                                         2021-1-12
                                     </td>
-                                    <td class="font-16 text-gray-500">
+                                    <td class="font-16 text-white">
                                         2021-1-12
                                     </td>
-                                    <td class="font-16 text-gray-500">
+                                    <td class="font-16 text-white">
                                         2021-1-12
                                     </td>
                                     <td class="font-16">
@@ -63,24 +63,24 @@ export default class DashboardTable extends React.Component {
                                     </td>
                                 </tr>
                                 <tr class="whitespace-nowrap">
-                                    <td class="font-16  text-gray-500">
+                                    <td class="font-16  text-white">
                                         1
                                     </td>
                                     <td class="font-16">
-                                        <div class=" text-gray-900">
+                                        <div class=" text-white">
                                             Jon doe
                                         </div>
                                     </td>
                                     <td class="font-16">
-                                        <div class=" text-gray-500">jhondoe@example.com</div>
+                                        <div class=" text-white">jhondoe@example.com</div>
                                     </td>
-                                    <td class="font-16  text-gray-500">
+                                    <td class="font-16  text-white">
                                         2021-1-12
                                     </td>
-                                    <td class="font-16 text-gray-500">
+                                    <td class="font-16 text-white">
                                         2021-1-12
                                     </td>
-                                    <td class="font-16 text-gray-500">
+                                    <td class="font-16 text-white">
                                         2021-1-12
                                     </td>
                                     <td class="font-16">
@@ -88,24 +88,24 @@ export default class DashboardTable extends React.Component {
                                     </td>
                                 </tr>
                                 <tr class="whitespace-nowrap">
-                                    <td class="font-16  text-gray-500">
+                                    <td class="font-16  text-white">
                                         1
                                     </td>
                                     <td class="font-16">
-                                        <div class=" text-gray-900">
+                                        <div class=" text-white">
                                             Jon doe
                                         </div>
                                     </td>
                                     <td class="font-16">
-                                        <div class=" text-gray-500">jhondoe@example.com</div>
+                                        <div class=" text-white">jhondoe@example.com</div>
                                     </td>
-                                    <td class="font-16  text-gray-500">
+                                    <td class="font-16  text-white">
                                         2021-1-12
                                     </td>
-                                    <td class="font-16 text-gray-500">
+                                    <td class="font-16 text-white">
                                         2021-1-12
                                     </td>
-                                    <td class="font-16 text-gray-500">
+                                    <td class="font-16 text-white">
                                         2021-1-12
                                     </td>
                                     <td class="font-16">

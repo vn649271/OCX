@@ -12,6 +12,8 @@ export default class DashboardPieChart extends React.Component {
                 chart: {
                     width: 380,
                     type: 'donut',
+                    foreColor: '#ffffff',
+                    fontFamily: 'Qualy-Light'
                 },
                 plotOptions: {
                     pie: {
