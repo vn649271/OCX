@@ -7,7 +7,7 @@ export default class DashboardPieChart extends React.Component {
 
         this.state = {
 
-            series: [44, 55, 41, 17, 15],
+            series: [15, 85],
             options: {
                 chart: {
                     width: 380,
@@ -17,8 +17,8 @@ export default class DashboardPieChart extends React.Component {
                 },
                 plotOptions: {
                     pie: {
-                        startAngle: -90,
-                        endAngle: 270
+                        startAngle: 270,
+                        endAngle: -90
                     }
                 },
                 dataLabels: {
