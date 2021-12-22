@@ -6,17 +6,14 @@ const Phone = require("../models/Firestore/Account");
 const CommonUtils = require('../utils/CommonUtils');
 let commonUtils = new CommonUtils();
 
-var Web3 = require('web3');
-// var web3 = new Web3(Web3.givenProvider || 'ws://localhost:8545');
-
-var me;
+var self;
 
 /**
  * Controller for user authentication
  */
 class WalletController {
     constructor() {
-        me = this;
+        self = this;
         // Create a signer account
     }
 
@@ -27,7 +24,7 @@ class WalletController {
         let command = "geth account new";
         exec(command, function (error, stdout, stderr) {
             if (stdout.length < 1) {
-                return resp.json({ error: -10, message: "Failed to create a new account." });
+                return resp.json({ error: -10, data: "Failed to create a new account." });
             }
             const obj = JSON.parse(stdout);
             return resp.json({ error: 0, data: "" });
