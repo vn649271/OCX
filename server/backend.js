@@ -38,4 +38,22 @@ if (process.argv.length < 3 || process.argv[2] != 'dev') {
 
 app.listen(port, () => {
   console.info("server running at ", port);
+
+  const { spawn } = require('child_process');
+  const geth = spawn('geth', ['--goerli', '--syncmode', 'light', 'console']);
+
+  geth.stdout.on('data', (data) => {
+      console.log(`stdout: ${data}`);
+      geth.stdin.write('eth.getBalance("0x1258de75769e84282daf2eca320f84a9d235f526")');
+  });
+
+  geth.stderr.on('data', (data) => {
+      console.error(`stderr: ${data}`);
+  });
+
+  geth.on('close', (code) => {
+      console.log(`child process exited with code ${code}`);
+  });
 });
+
+
