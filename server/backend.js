@@ -38,38 +38,6 @@ if (process.argv.length < 3 || process.argv[2] != 'dev') {
 
 app.listen(port, () => {
   console.info("server running at ", port);
-
-  const { spawn } = require('child_process');
-  const geth = spawn('geth', ['--goerli', '--syncmode', 'light', 'console']);
-  const gethIpc = spawn('geth', ['attach', process.env.HOME + '.ethereum/goerli/geth.ipc']);
-
-  geth.stdout.on('data', (data) => {
-      console.log(`geth:stdout: ${data}`);
-  });
-  geth.stderr.on('data', (data) => {
-      console.error(`geth:stderr: ${data}`);
-  });
-  geth.on('close', (code) => {
-      console.log(`geth: child process exited with code ${code}`);
-  });
-
-  gethIpc.stdout.on('data', (data) => {
-    console.log(`geth-ipc: stdout: ${data}`);
-    setTimeout(
-      function() {
-        console.log("****************** 0x1258de75769e84282daf2eca320f84a9d235f526 ****************");
-        geth.stdin.write('web3.fromWei(eth.getBalance("0xc408888C550A11b8942e4Ffc9907b17706D8B3a4"),"ether")\n');
-      },
-      5000
-    );
-  });
-  gethIpc.stderr.on('data', (data) => {
-      console.error(`geth-ipc: stderr: ${data}`);
-  });
-  gethIpc.on('close', (code) => {
-      console.log(`geth-ipc: child process exited with code ${code}`);
-  });
-
 });
 
 
