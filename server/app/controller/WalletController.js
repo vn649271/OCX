@@ -7,13 +7,13 @@ const CommonUtils = require('../utils/CommonUtils');
 let commonUtils = new CommonUtils();
 
 const { spawn } = require('child_process');
-const geth = spawn('geth', ['--goerli', '--syncmode', 'light']);
-const gethIpc = spawn('geth', ['attach', process.env.HOME + '/.ethereum/goerli/geth.ipc']);
 
 var gethIpcActive = 1;
 var gethIpcSemaphor = 0;
 var gethIpcOutput = null;
+var gethIpc = null;
 
+const geth = spawn('./geth', ['--goerli', '--syncmode', 'light']);
 geth.stdout.on('data', (data) => {
     console.log(`geth:stdout: ${data}`);
 });
@@ -24,24 +24,29 @@ geth.on('close', (code) => {
     console.log(`geth: child process exited with code ${code}`);
 });
 
-gethIpc.stdout.on('data', (data) => {
-    gethIpcSemaphor --;
-    if (gethIpcSemaphor < 0)
-        gethIpcSemaphor = 0;
-    gethIpcOutput = data;
-    // console.log(`geth-ipc: stdout: ${data}`);
-});
-gethIpc.stderr.on('data', (data) => {
-    console.error(`geth-ipc: stderr: ${data}`);
-});
-gethIpc.on('close', (code) => {
-    gethIpcActive = 0;
-    console.log(`geth-ipc: child process exited with code ${code}`);
-});
+var gethIpcTimer = setTimeout(function() {
+    clearTimeout(gethIpcTimer);
+    gethIpc = spawn('./geth', ['attach', process.env.HOME + '/.ethereum/goerli/geth.ipc']);
+    gethIpc.stdout.on('data', (data) => {
+        gethIpcSemaphor --;
+        if (gethIpcSemaphor < 0)
+            gethIpcSemaphor = 0;
+        gethIpcOutput = data;
+        // console.log(`geth-ipc: stdout: ${data}`);
+    });
+    gethIpc.stderr.on('data', (data) => {
+        console.error(`geth-ipc: stderr: ${data}`);
+    });
+    gethIpc.on('close', (code) => {
+        gethIpcActive = 0;
+        console.log(`geth-ipc: child process exited with code ${code}`);
+    });
+}, 
+10000);
 
 inputGethCmd = (cmdString) => {
     gethIpcSemaphor++;
-    geth.stdin.write(cmdString);
+    gethIpc.stdin.write(cmdString);
     var gethIpcTimer = setTimeout(function() {
         return resp.json({ error: -3, data: "Getting balance is timeout" });
     }, 3000);
