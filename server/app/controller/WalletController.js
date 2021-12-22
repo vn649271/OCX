@@ -8,21 +8,26 @@ let commonUtils = new CommonUtils();
 
 const { spawn } = require('child_process');
 
+var geth = null;
 var gethIpcActive = 1;
 var gethIpcSemaphor = 0;
 var gethIpcOutput = null;
 var gethIpc = null;
 
-const geth = spawn('./geth', ['--goerli', '--syncmode', 'light']);
-geth.stdout.on('data', (data) => {
-    console.log(`geth:stdout: ${data}`);
-});
-geth.stderr.on('data', (data) => {
-    console.error(`geth:stderr: ${data}`);
-});
-geth.on('close', (code) => {
-    console.log(`geth: child process exited with code ${code}`);
-});
+var gethTimer = setTimeout(function() {
+    geth = spawn('./geth', ['--goerli', '--syncmode', 'light']);
+    geth.stdout.on('data', (data) => {
+        console.log(`geth:stdout: ${data}`);
+    });
+    geth.stderr.on('data', (data) => {
+        console.log(`geth:stderr: ${data}`);
+    });
+    geth.on('close', (code) => {
+        console.log(`geth: child process exited with code ${code}`);
+    });
+  },
+  5000
+);
 
 var gethIpcTimer = setTimeout(function() {
     clearTimeout(gethIpcTimer);
@@ -36,14 +41,15 @@ var gethIpcTimer = setTimeout(function() {
         // console.log(`geth-ipc: stdout: ${data}`);
     });
     gethIpc.stderr.on('data', (data) => {
-        console.error(`geth-ipc: stderr: ${data}`);
+        console.log(`geth-ipc: stderr: ${data}`);
     });
     gethIpc.on('close', (code) => {
         gethIpcActive = 0;
         console.log(`geth-ipc: child process exited with code ${code}`);
     });
-}, 
-30000);
+  }, 
+  30000
+);
 
 inputGethCmd = (cmdString) => {
     gethIpcSemaphor++;
