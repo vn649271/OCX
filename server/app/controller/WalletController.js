@@ -7,7 +7,7 @@ const CommonUtils = require('../utils/CommonUtils');
 let commonUtils = new CommonUtils();
 
 const { spawn } = require('child_process');
-const geth = spawn('geth', ['--goerli', '--syncmode', 'light', 'console']);
+const geth = spawn('geth', ['--goerli', '--syncmode', 'light']);
 const gethIpc = spawn('geth', ['attach', process.env.HOME + '/.ethereum/goerli/geth.ipc']);
 
 var gethIpcActive = 1;
@@ -38,6 +38,23 @@ gethIpc.on('close', (code) => {
     gethIpcActive = 0;
     console.log(`geth-ipc: child process exited with code ${code}`);
 });
+
+inputGethCmd = (cmdString) => {
+    gethIpcSemaphor++;
+    geth.stdin.write(cmdString);
+    var gethIpcTimer = setTimeout(function() {
+        return resp.json({ error: -3, data: "Getting balance is timeout" });
+    }, 3000);
+    while (gethIpcActive && gethIpcSemaphor);
+    if (!gethIpcActive) {
+        if (gethIpcTimer) {
+            clearTimeout(gethIpcTimer);
+        }
+        return { error: -4, data: "Failed to connect geth IPC" };
+    }
+console.log("balance: ", gethIpcOutput);
+    return { error: 0, data: gethIpcOutput };
+}
 
 var self;
 
@@ -117,20 +134,11 @@ class WalletController {
         if (!ret) {
             return resp.json({ error: -2, data: "Invalid user token" });
         }
-        gethIpcSemaphor++;
-        geth.stdin.write('web3.fromWei(eth.getBalance("0xc408888C550A11b8942e4Ffc9907b17706D8B3a4"),"ether")\n');
-        var gethIpcTimer = setTimeout(function() {
-            return resp.json({ error: -3, data: "Getting balance is timeout" });
-        }, 3000);
-        while (gethIpcActive && gethIpcSemaphor);
-        if (!gethIpcActive) {
-            if (gethIpcTimer) {
-                clearTimeout(gethIpcTimer);
-            }
-            return resp.json({ error: -4, data: "Failed to connect geth IPC" });
+        let jsonRes = inputGethCmd('web3.fromWei(eth.getBalance("0xc408888C550A11b8942e4Ffc9907b17706D8B3a4"),"ether")\n');
+        if (jsonRes == undefined || jsonRes == null) {
+            return resp.json({error: -10, data: "Failed to execute the geth command"});
         }
-console.log("balance: ", gethIpcOutput);
-        return resp.json({ error: 0, data: gethIpcOutput });
+        return resp.json(jsonRes);
     }
 
     /**
