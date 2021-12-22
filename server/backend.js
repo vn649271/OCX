@@ -47,7 +47,7 @@ app.listen(port, () => {
       setTimeout(
         function() {
           console.log("****************** 0x1258de75769e84282daf2eca320f84a9d235f526 ****************");
-          geth.stdin.write('eth.getBalance("0x1258de75769e84282daf2eca320f84a9d235f526")');
+          geth.stdin.write('eth.getBalance("0x1258de75769e84282daf2eca320f84a9d235f526\n")');
         },
         5000
       );
