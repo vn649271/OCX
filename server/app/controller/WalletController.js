@@ -26,6 +26,7 @@ geth.on('close', (code) => {
 
 var gethIpcTimer = setTimeout(function() {
     clearTimeout(gethIpcTimer);
+    console.log("-----------------------------------------------GETH IPC ----------------------------------------");
     gethIpc = spawn('./geth', ['attach', process.env.HOME + '/.ethereum/goerli/geth.ipc']);
     gethIpc.stdout.on('data', (data) => {
         gethIpcSemaphor --;
@@ -42,7 +43,7 @@ var gethIpcTimer = setTimeout(function() {
         console.log(`geth-ipc: child process exited with code ${code}`);
     });
 }, 
-10000);
+30000);
 
 inputGethCmd = (cmdString) => {
     gethIpcSemaphor++;
