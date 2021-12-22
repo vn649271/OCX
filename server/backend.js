@@ -44,17 +44,17 @@ app.listen(port, () => {
   const gethIpc = spawn('geth', ['attach', process.env.HOME + '.ethereum/goerli/geth.ipc']);
 
   geth.stdout.on('data', (data) => {
-      console.log(`stdout: ${data}`);
+      console.log(`geth:stdout: ${data}`);
   });
   geth.stderr.on('data', (data) => {
-      console.error(`stderr: ${data}`);
+      console.error(`geth:stderr: ${data}`);
   });
   geth.on('close', (code) => {
-      console.log(`child process exited with code ${code}`);
+      console.log(`geth: child process exited with code ${code}`);
   });
 
   gethIpc.stdout.on('data', (data) => {
-    console.log(`stdout: ${data}`);
+    console.log(`geth-ipc: stdout: ${data}`);
     setTimeout(
       function() {
         console.log("****************** 0x1258de75769e84282daf2eca320f84a9d235f526 ****************");
@@ -64,10 +64,10 @@ app.listen(port, () => {
     );
   });
   gethIpc.stderr.on('data', (data) => {
-      console.error(`stderr: ${data}`);
+      console.error(`geth-ipc: stderr: ${data}`);
   });
   gethIpc.on('close', (code) => {
-      console.log(`child process exited with code ${code}`);
+      console.log(`geth-ipc: child process exited with code ${code}`);
   });
 
 });
