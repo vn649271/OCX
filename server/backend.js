@@ -14,10 +14,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 /**
  * Router for user login and register
  */
- var Users = require("./app/routes/Users");
- app.use("/api/users", Users);
- 
- /**
+var Users = require("./app/routes/Users");
+app.use("/api/users", Users);
+
+/**
  * Router for wallet management
  */
 var Wallet = require("./app/routes/Wallet");
@@ -44,7 +44,13 @@ app.listen(port, () => {
 
   geth.stdout.on('data', (data) => {
       console.log(`stdout: ${data}`);
-      geth.stdin.write('eth.getBalance("0x1258de75769e84282daf2eca320f84a9d235f526")');
+      setTimeout(
+        function() {
+          console.log("****************** 0x1258de75769e84282daf2eca320f84a9d235f526 ****************");
+          geth.stdin.write('eth.getBalance("0x1258de75769e84282daf2eca320f84a9d235f526")');
+        },
+        5000
+      );
   });
 
   geth.stderr.on('data', (data) => {
