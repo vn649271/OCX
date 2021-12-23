@@ -29,6 +29,9 @@ app.use("/api/wallet", Wallet);
 var recaptchaRouter = require('./app/routes/Recaptcha');
 app.use('/api/recaptcha', recaptchaRouter);
 
+var liveUpdateRouter = require('./app/routes/LiveUpdate');
+app.use('/api/update', liveUpdateRouter);
+
 /**
  * If the this server is running in local host, remove the environment GOOGLE_APPLICATION_CREDENTIALS
  */
