@@ -39,10 +39,7 @@ export const createAccount = (params) => {
  */
 export const getBalance = (params) => {
     return axios
-        .post(BACKEND_BASE_URL + "/wallet/balance", {
-            userToken: params.userToken,
-            account: params.account
-        })
+        .get(BACKEND_BASE_URL + "/wallet/balance/" + params.userToken)
         .then(response => {
             let error = response ? response.data ? response.data.error ? 
                                 response.data.error: null : null: null;
