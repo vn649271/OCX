@@ -16,21 +16,19 @@ var gethIpcActive = 1;
 var gethIpcQueue = []; // Queue of response objects
 var gethIpc = null;
 
-var gethTimer = setTimeout(
-    function() {
-        geth = spawn('./geth', ['--goerli', '--syncmode', 'light']);
-        geth.stdout.on('data', (data) => {
-            console.log(`geth:stdout: ${data}`);
-        });
-        geth.stderr.on('data', (data) => {
-            console.log(`geth:stderr: ${data}`);
-        });
-        geth.on('close', (code) => {
-            console.log(`geth: child process exited with code ${code}`);
-        });
-    },
-    3000
-);
+geth = spawn('./geth', ['--goerli', '--syncmode', 'light']);
+
+geth.stdout.on('data', (data) => {
+    console.log(`geth:stdout: ${data}`);
+});
+
+geth.stderr.on('data', (data) => {
+    console.log(`geth:stderr: ${data}`);
+});
+
+geth.on('close', (code) => {
+    console.log(`geth: child process exited with code ${code}`);
+});
 
 var gethIpcTimer = setTimeout(
     function() {
