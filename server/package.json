@@ -42,7 +42,7 @@
     "zxcvbn": "4.4.2"
   },
   "scripts": {
-    "start": "nodemon backend.js",
+    "start": "node backend.js",
     "dev": "nodemon backend.js dev",
     "eject": "react-scripts eject"
   },
