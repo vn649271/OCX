@@ -29,7 +29,7 @@ var gethTimer = setTimeout(
             console.log(`geth: child process exited with code ${code}`);
         });
     },
-    5000
+    3000
 );
 
 var gethIpcTimer = setTimeout(
@@ -59,7 +59,7 @@ var gethIpcTimer = setTimeout(
             console.log(`geth-ipc: child process exited with code ${code}`);
         });
     }, 
-    30000
+    60000
 );
 
 inputGethCmd = (cmdString, resp) => {
