@@ -2,70 +2,75 @@ var util = require('util');
 require('dotenv').config();
 var exec = require('child_process').exec;
 const jwt = require("jsonwebtoken");
+const User = require("../models/Firestore/Users");
 const Phone = require("../models/Firestore/Account");
 const CommonUtils = require('../utils/CommonUtils');
 let commonUtils = new CommonUtils();
+
+var userModel = new User();
 
 const { spawn } = require('child_process');
 
 var geth = null;
 var gethIpcActive = 1;
-var gethIpcSemaphor = 0;
-var gethIpcOutput = null;
+var gethIpcQueue = []; // Queue of response objects
 var gethIpc = null;
 
-var gethTimer = setTimeout(function() {
-    geth = spawn('./geth', ['--goerli', '--syncmode', 'light']);
-    geth.stdout.on('data', (data) => {
-        console.log(`geth:stdout: ${data}`);
-    });
-    geth.stderr.on('data', (data) => {
-        console.log(`geth:stderr: ${data}`);
-    });
-    geth.on('close', (code) => {
-        console.log(`geth: child process exited with code ${code}`);
-    });
-  },
-  5000
+var gethTimer = setTimeout(
+    function() {
+        geth = spawn('./geth', ['--goerli', '--syncmode', 'light']);
+        geth.stdout.on('data', (data) => {
+            console.log(`geth:stdout: ${data}`);
+        });
+        geth.stderr.on('data', (data) => {
+            console.log(`geth:stderr: ${data}`);
+        });
+        geth.on('close', (code) => {
+            console.log(`geth: child process exited with code ${code}`);
+        });
+    },
+    5000
 );
 
-var gethIpcTimer = setTimeout(function() {
-    clearTimeout(gethIpcTimer);
-    console.log("-----------------------------------------------GETH IPC ----------------------------------------");
-    gethIpc = spawn('./geth', ['attach', process.env.HOME + '/.ethereum/goerli/geth.ipc']);
-    gethIpc.stdout.on('data', (data) => {
-        gethIpcSemaphor --;
-        if (gethIpcSemaphor < 0)
-            gethIpcSemaphor = 0;
-        gethIpcOutput = data;
-        // console.log(`geth-ipc: stdout: ${data}`);
-    });
-    gethIpc.stderr.on('data', (data) => {
-        console.log(`geth-ipc: stderr: ${data}`);
-    });
-    gethIpc.on('close', (code) => {
-        gethIpcActive = 0;
-        console.log(`geth-ipc: child process exited with code ${code}`);
-    });
-  }, 
-  30000
+var gethIpcTimer = setTimeout(
+    function() {
+        clearTimeout(gethIpcTimer);
+        console.log("-----------------------------------------------GETH IPC ----------------------------------------");
+        gethIpc = spawn('./geth', ['attach', process.env.HOME + '/.ethereum/goerli/geth.ipc']);
+        gethIpc.stdout.on('data', (data) => {
+            if (gethIpcQueue == []) {
+                console.log("Geth IPC is empty");
+                return;
+            }
+            let resp = gethIpcQueue.pop();
+            if (resp == undefined || resp == null) {
+                console.log("Response object from Geth IPC is invalid");
+                return;
+            }
+            resp.json({ error: 0, data: data });
+            gethIpcOutput = data;
+            // console.log(`geth-ipc: stdout: ${data}`);
+        });
+        gethIpc.stderr.on('data', (data) => {
+            console.log(`geth-ipc: stderr: ${data}`);
+        });
+        gethIpc.on('close', (code) => {
+            gethIpcActive = 0;
+            console.log(`geth-ipc: child process exited with code ${code}`);
+        });
+    }, 
+    30000
 );
 
-inputGethCmd = (cmdString) => {
-    gethIpcSemaphor++;
+inputGethCmd = (cmdString, resp) => {
+    gethIpcQueue.push(resp);
+    if (gethIpc == null) {
+        return { error: -20, data: "Failed to connect IPC" };
+    }
     gethIpc.stdin.write(cmdString);
     var gethIpcTimer = setTimeout(function() {
-        return resp.json({ error: -3, data: "Getting balance is timeout" });
+        return { error: -21, data: "Getting balance is timeout" };
     }, 3000);
-    while (gethIpcActive && gethIpcSemaphor);
-    if (!gethIpcActive) {
-        if (gethIpcTimer) {
-            clearTimeout(gethIpcTimer);
-        }
-        return { error: -4, data: "Failed to connect geth IPC" };
-    }
-console.log("balance: ", gethIpcOutput);
-    return { error: 0, data: gethIpcOutput };
 }
 
 var self;
@@ -77,9 +82,6 @@ class WalletController {
     constructor() {
         self = this;
         // Create a signer account
-    }
-
-    getBalance = (signer) => {
     }
 
     _create(password, resp) {
@@ -103,7 +105,7 @@ class WalletController {
             req.body.userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
         }
-        let ret = commonUtils.validateUserToken(req.body.userToken);
+        let ret = userModel.validateUserToken(req.body.userToken);
         if (!ret) {
             return resp.json({ error: -2, data: "Invalid user token" });
         }
@@ -125,7 +127,7 @@ class WalletController {
             req.body.userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
         }
-        let ret = commonUtils.validateUserToken(req.body.userToken);
+        let ret = userModel.validateUserToken(req.body.userToken);
         if (!ret) {
             return resp.json({ error: -2, data: "Invalid user token" });
         }
@@ -137,20 +139,18 @@ class WalletController {
      * @param {object} req request object from the client 
      * @param {object} resp response object to the client
      */
-    balance = (req, resp) => {
-        if (req.body === null || req.body.userToken === undefined ||
-            req.body.userToken === null) {
+    balance = (req, resp, next) => {
+        if (req.params === undefined || req.params.userToken === undefined ||
+        req.params.userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
         }
-        let ret = commonUtils.validateUserToken(req.body.userToken);
+        let userToken = req.params.userToken;
+        let ret = userModel.validateUserToken(userToken);
         if (!ret) {
             return resp.json({ error: -2, data: "Invalid user token" });
         }
-        let jsonRes = inputGethCmd('web3.fromWei(eth.getBalance("0xc408888C550A11b8942e4Ffc9907b17706D8B3a4"),"ether")\n');
-        if (jsonRes == undefined || jsonRes == null) {
-            return resp.json({error: -10, data: "Failed to execute the geth command"});
-        }
-        return resp.json(jsonRes);
+        let account = userModel.getAccount(userToken);
+        inputGethCmd('web3.fromWei(eth.getBalance("' + account + '"),"ether")\n', resp);
     }
 
     /**
@@ -162,7 +162,7 @@ class WalletController {
             req.body.userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
         }
-        let ret = commonUtils.validateUserToken(req.body.userToken);
+        let ret = userModel.validateUserToken(req.body.userToken);
         if (!ret) {
             return resp.json({ error: -2, data: "Invalid user token" });
         }

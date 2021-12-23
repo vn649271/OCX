@@ -10,10 +10,7 @@ class CommonUtils {
         this.loadGlobalSetting();
     }
     
-    validateUserToken = userToken => {
-        return true;
-    }
-    
+
     loadGlobalSetting = () => {
         fs.readFile(GLOBAL_SETTINGS_FILE_NAME, 'utf8', function readFileCallback(err, data){
             if (err){
