@@ -34,7 +34,11 @@ var gethTimer = setTimeout(
 
 var gethIpcTimer = setTimeout(
     function() {
-        clearTimeout(gethIpcTimer);
+        if (gethIpc) {
+            clearTimeout(gethIpcTimer);
+            gethIpcTimer = null;
+            return;
+        }
         console.log("-----------------------------------------------GETH IPC ----------------------------------------");
         gethIpc = spawn('./geth', ['attach', process.env.HOME + '/.ethereum/goerli/geth.ipc']);
         gethIpc.stdout.on('data', (data) => {
