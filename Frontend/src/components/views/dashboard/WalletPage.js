@@ -77,7 +77,7 @@ class WalletPage extends Component {
                         let balance = resp ? resp.data ? resp.data : null : null;
                         if (balance !== null) {
                             let balanceObj = me.state.balance;
-                            balanceObj.eth = balance;
+                            balanceObj.eth = ((balance - 0) / 1000000000000000000).toFixed(4);
                             me.setState({balance: balanceObj});
                             return;
                         }
@@ -88,7 +88,7 @@ class WalletPage extends Component {
                 }
             });
         }, 
-        5000);
+        10000);
     }
 
     togglePasswordVisiblity = event => {
@@ -258,7 +258,7 @@ class WalletPage extends Component {
     render() {
         return (
             <div className="my-wallet-page">
-                <span className="account-balance-box main-font text-black-400 font-20">Balance: {this.state.balance.eth}</span>
+                <span className="account-balance-box main-font text-black-400 mb-100 font-20">Balance: {this.state.balance.eth} ETH</span>
                 <span className="account-balance-box main-font text-red-400 font-14">{this.state.errors.balance}</span>
                 <div>
                     <QRCode value="hey" />
