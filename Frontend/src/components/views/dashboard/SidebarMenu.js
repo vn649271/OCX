@@ -25,8 +25,6 @@ class SidebarMenu extends Component {
     }
 
     render() {
-        const { value } = this.state;
-        const { title, icons, href } = this.props;
 
         return (
             <div class="sidebar flex flex-row bg-white text-gray-800 border-none">

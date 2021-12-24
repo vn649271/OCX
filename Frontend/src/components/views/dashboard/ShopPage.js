@@ -2,13 +2,12 @@ import React, { Component } from 'react';
 
 class ShopPage extends Component {
 
-    state = {
-        value: '',
-        title: null,
-    }
-
+    
     constructor(props) {
         super(props);
+        this.state = {
+            title: props.title,
+        }
     }
 
     componentDidUpdate(prevProps) {
@@ -19,7 +18,7 @@ class ShopPage extends Component {
     render() {
         return (
             <div className="my-profile-page">
-                My Profile Page
+                {this.state.title}
             </div>
         );
     }

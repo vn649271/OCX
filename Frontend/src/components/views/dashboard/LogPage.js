@@ -2,15 +2,13 @@ import React, { Component } from 'react';
 
 class LogPage extends Component {
 
-    state = {
-        value: '',
-        title: null,
-    }
-
     constructor(props) {
         super(props);
+        this.state = {
+            title: props.title,
+        }
     }
-
+    
     componentDidUpdate(prevProps) {
         if (prevProps.target !== this.props.target) {
         }
@@ -19,7 +17,7 @@ class LogPage extends Component {
     render() {
         return (
             <div className="log-page">
-                Log Page
+                {this.state.title}
             </div>
         );
     }

@@ -2,13 +2,11 @@ import React, { Component } from 'react';
 
 class ChatPage extends Component {
 
-    state = {
-        value: '',
-        title: null,
-    }
-
     constructor(props) {
         super(props);
+        this.state = {
+            title: props.title,
+        }
     }
 
     componentDidUpdate(prevProps) {
@@ -19,7 +17,7 @@ class ChatPage extends Component {
     render() {
         return (
             <div className="chat-page">
-                Chat Page
+                {this.state.title}
             </div>
         );
     }

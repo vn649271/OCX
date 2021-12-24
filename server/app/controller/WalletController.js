@@ -5,6 +5,9 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/Firestore/Users");
 const Phone = require("../models/Firestore/Account");
 const CommonUtils = require('../utils/CommonUtils');
+const net = require('net');
+const Web3 = require('web3');
+
 let commonUtils = new CommonUtils();
 
 var userModel = new User();
@@ -12,9 +15,6 @@ var userModel = new User();
 const { spawn } = require('child_process');
 
 var geth = null;
-var gethIpcActive = 1;
-var gethIpcQueue = []; // Queue of response objects
-var gethIpc = null;
 
 geth = spawn('./geth', ['--goerli', '--syncmode', 'light']);
 
@@ -30,50 +30,9 @@ geth.on('close', (code) => {
     console.log(`geth: child process exited with code ${code}`);
 });
 
-var gethIpcTimer = setTimeout(
-    function() {
-        if (gethIpc) {
-            clearTimeout(gethIpcTimer);
-            gethIpcTimer = null;
-            return;
-        }
-        console.log("-----------------------------------------------GETH IPC ----------------------------------------");
-        gethIpc = spawn('./geth', ['attach', process.env.HOME + '/.ethereum/goerli/geth.ipc']);
-        gethIpc.stdout.on('data', (data) => {
-            if (gethIpcQueue == []) {
-                console.log("Geth IPC is empty");
-                return;
-            }
-            let resp = gethIpcQueue.pop();
-            if (resp == undefined || resp == null) {
-                console.log("Response object from Geth IPC is invalid");
-                return;
-            }
-            resp.json({ error: 0, data: data });
-            gethIpcOutput = data;
-            // console.log(`geth-ipc: stdout: ${data}`);
-        });
-        gethIpc.stderr.on('data', (data) => {
-            console.log(`geth-ipc: stderr: ${data}`);
-        });
-        gethIpc.on('close', (code) => {
-            gethIpcActive = 0;
-            console.log(`geth-ipc: child process exited with code ${code}`);
-        });
-    }, 
-    60000
-);
+const ipcPath = process.env.HOME + "/.ethereum/goerli/geth.ipc";
+const web3 = new Web3(new Web3.providers.IpcProvider(ipcPath, net));
 
-inputGethCmd = (cmdString, resp) => {
-    gethIpcQueue.push(resp);
-    if (gethIpc == null) {
-        return { error: -20, data: "Failed to connect IPC" };
-    }
-    gethIpc.stdin.write(cmdString);
-    var gethIpcTimer = setTimeout(function() {
-        return { error: -21, data: "Getting balance is timeout" };
-    }, 3000);
-}
 
 var self;
 
@@ -152,7 +111,10 @@ class WalletController {
             return resp.json({ error: -2, data: "Invalid user token" });
         }
         let account = userModel.getAccount(userToken);
-        inputGethCmd('web3.fromWei(eth.getBalance("' + account + '"),"ether")\n', resp);
+        web3.eth.getBalance(account).then(function(balance) {
+            console.log("WalletController.balance(): balance = ", balance);
+            resp.json({error: 0, data: balance});
+        });
     }
 
     /**

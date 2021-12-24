@@ -2,14 +2,13 @@ import React, { Component } from 'react';
 
 class HelpPage extends Component {
 
-    state = {
-        value: '',
-        title: null,
-    }
-
     constructor(props) {
         super(props);
+        this.state = {
+            title: props.title,
+        }
     }
+
 
     componentDidUpdate(prevProps) {
         if (prevProps.target !== this.props.target) {
@@ -19,7 +18,7 @@ class HelpPage extends Component {
     render() {
         return (
             <div className="my-profile-page">
-                My Profile Page
+                {this.state.title}
             </div>
         );
     }
