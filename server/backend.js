@@ -1,6 +1,7 @@
 var express = require("express");
 var cors = require("cors");
 var bodyParser = require("body-parser");
+const { spawn } = require('child_process');
 var app = express();
 require('dotenv').config();
 
@@ -41,6 +42,18 @@ if (process.argv.length < 3 || process.argv[2] != 'dev') {
 
 app.listen(port, () => {
   console.info("server running at ", port);
+
+  var geth = null;
+  geth = spawn('./geth', ['--goerli', '--syncmode', 'light']);
+  geth.stdout.on('data', (data) => {
+      console.log(`geth:stdout: ${data}`);
+  });
+  geth.stderr.on('data', (data) => {
+      console.log(`geth:stderr: ${data}`);
+  });
+  geth.on('close', (code) => {
+      console.log(`geth: child process exited with code ${code}`);
+  });
 });
 
 

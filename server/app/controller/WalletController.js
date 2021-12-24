@@ -12,24 +12,6 @@ let commonUtils = new CommonUtils();
 
 var userModel = new User();
 
-const { spawn } = require('child_process');
-
-var geth = null;
-
-geth = spawn('./geth', ['--goerli', '--syncmode', 'light']);
-
-geth.stdout.on('data', (data) => {
-    console.log(`geth:stdout: ${data}`);
-});
-
-geth.stderr.on('data', (data) => {
-    console.log(`geth:stderr: ${data}`);
-});
-
-geth.on('close', (code) => {
-    console.log(`geth: child process exited with code ${code}`);
-});
-
 const ipcPath = process.env.HOME + "/.ethereum/goerli/geth.ipc";
 const web3 = new Web3(new Web3.providers.IpcProvider(ipcPath, net));
 
