@@ -254,7 +254,8 @@ export default class DashboardCandleChart extends React.Component {
                 chart: {
                     type: 'candlestick',
                     height: 400,
-                    fontFamily: 'Qualy-Light'
+                    fontFamily: 'Qualy-Light',
+                    foreColor: '#ffffff'
                 },
                 xaxis: {
                     type: 'datetime'
@@ -264,10 +265,6 @@ export default class DashboardCandleChart extends React.Component {
                         enabled: true
                     }
                 },
-
-                chart: {
-                    foreColor: '#ffffff'
-                }
             },
         };
     }

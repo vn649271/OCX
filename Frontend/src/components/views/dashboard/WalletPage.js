@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 import DelayButton from '../../common/DelayButton';
-import PasswordChecklistComponent from "../../common/PasswordChecklistComponent";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye } from "@fortawesome/free-solid-svg-icons";
+// import PasswordChecklistComponent from "../../common/PasswordChecklistComponent";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { createAccount, getBalance, sendCryptoCurrency } from '../../../service/Wallet'
 import QRCode from "react-qr-code";
-import { useParams } from 'react-router-dom';
+// import { useParams } from 'react-router-dom';
 import {
     BATCHED_VALIDATION,
     INDIVIDUAL_VALIDATION,
     NOTIFY_WARNING,
-    NOTIFY_INFORMATION,
+    // NOTIFY_INFORMATION,
 } from "../../../Contants";
 
-const eye = <FontAwesomeIcon icon={faEye} />;
+// const eye = <FontAwesomeIcon icon={faEye} />;
 
 const MAX_CREATING_DELAY_TIMEOUT = 10
 
@@ -101,7 +101,7 @@ class WalletPage extends Component {
         if (fieldName !== null && fieldName !== "") {
             validationMode = INDIVIDUAL_VALIDATION;
         }
-        let input = this.state.input;
+        // let input = this.state.input;
         let errors = {
             password: this.state.errors.password,
             confirm_password: this.state.errors.confirm_password,
@@ -193,12 +193,12 @@ class WalletPage extends Component {
 	// type - 0: warning, 1: notification
 	showMessageForSending = (msg, type = 0) => {
 		let errorMsg = '', informMsg = '';
-		if (type == 0) {
+		if (type === 0) {
 			errorMsg = msg;
 	        let errorsObj = this.state.errors;
     	    errorsObj.send = errorMsg;
         	this.setState({ errors: errorsObj });
-		} else if (type == 1) {
+		} else if (type === 1) {
 			informMsg = msg;
 	    	let infoObj = this.state.info;
             infoObj.send = informMsg;

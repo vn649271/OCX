@@ -1,4 +1,3 @@
-import React, {useState} from "react"
 import PasswordChecklist from "react-password-checklist"
 
 export default function PasswordChecklistComponent(props) {

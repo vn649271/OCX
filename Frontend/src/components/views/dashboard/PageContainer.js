@@ -12,14 +12,13 @@ import ShopPage from './ShopPage';
 
 class PageContainer extends Component {
 
-    state = {
-        value: '',
-        title: null,
-        currentPageComponent: null
-    }
-
+    
     constructor(props) {
         super(props);
+        this.state = {
+            title: null,
+            currentPageComponent: null
+        }
     }
 
     componentDidUpdate(prevProps) {

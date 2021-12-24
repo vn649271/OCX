@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
-import QRCode from "react-qr-code";
-class GamePage extends Component {
 
-    state = {
-        value: '',
-        title: null,
-    }
+class GamePage extends Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            title: props.title,
+        }
     }
+
 
     componentDidUpdate(prevProps) {
         if (prevProps.target !== this.props.target) {
@@ -19,8 +18,7 @@ class GamePage extends Component {
     render() {
         return (
             <div className="my-profile-page">
-                My Profile Page
-                <QRCode value="hey" />
+                {this.state.title}
             </div>
         );
     }
