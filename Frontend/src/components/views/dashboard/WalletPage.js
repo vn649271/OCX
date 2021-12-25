@@ -195,12 +195,12 @@ class WalletPage extends Component {
 		let errorMsg = '', informMsg = '';
 		if (type === 0) {
 			errorMsg = msg;
-	        let errorsObj = this.state.errors;
-    	    errorsObj.send = errorMsg;
-        	this.setState({ errors: errorsObj });
+            let errorsObj = this.state.errors;
+            errorsObj.send = errorMsg;
+            this.setState({ errors: errorsObj });
 		} else if (type === 1) {
 			informMsg = msg;
-	    	let infoObj = this.state.info;
+            let infoObj = this.state.info;
             infoObj.send = informMsg;
             this.setState({ info: infoObj });
 		}
@@ -214,9 +214,14 @@ class WalletPage extends Component {
 			this.showMessageForSending("Please input receiving address");
             return;
         }
+        if (toAddress.trim().length !== 42) {
+            buttonCmpnt.stopTimer();
+			this.showMessageForSending("Please input valid receiving address");
+            return;
+        }
 
 		let amount = this.state.input ? this.state.input.amount ? this.state.input.amount: null : null;
-        if (amount === null) {
+        if (amount === null || amount.trim() === "") {
             buttonCmpnt.stopTimer();
 			this.showMessageForSending("Please input the amount to send");
             return;
@@ -242,7 +247,7 @@ class WalletPage extends Component {
 					return;
                 }
 				me.showMessageForSending(resp.data);
-        	},
+            },
 			onFailed: function(error) {
 				console.log("?????????????????????????? ", error);
 				me.showMessageForSending(error);
@@ -261,28 +266,34 @@ class WalletPage extends Component {
                 <span className="account-balance-box main-font text-black-400 mb-100 font-20">Balance: {this.state.balance.eth} ETH</span>
                 <span className="account-balance-box main-font text-red-400 font-14">{this.state.errors.balance}</span>
                 <div>
-                    <QRCode value="hey" />
-                    <input
-                        type="text"
-                        className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
-                        name="to_address"
-                        id="to_address"
-                        placeholder="To Address"
-                        value={this.state.input.to_address}
-                        onChange={this.handleInputChange}
-                        autoComplete="off" />
+                    <div id="qr-account-container">
+                        <div id="qr-container">
+                            <QRCode value="hey" />
+                        </div>
+                        <div id="account-info-container">
+                            <input
+                                type="text"
+                                className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
+                                name="to_address"
+                                id="to_address"
+                                placeholder="To Address"
+                                value={this.state.input.to_address}
+                                onChange={this.handleInputChange}
+                                autoComplete="off" />
 
-                    <input
-                        type="number"
-                        className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
-                        name="amount"
-                        id="amount"
-                        placeholder="Amount"
-                        value={this.state.input.amount}
-                        onChange={this.handleInputChange}
-                        autoComplete="off" />
-                    {/* Send Button */}
-					<div>
+                            <input
+                                type="number"
+                                className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
+                                name="amount"
+                                id="amount"
+                                placeholder="Amount"
+                                value={this.state.input.amount}
+                                onChange={this.handleInputChange}
+                                autoComplete="off" />
+                        </div>
+                    </div>
+					<div id="send-button-container">
+                        {/* Send Button */}
                         <DelayButton
                             captionInDelay="Sending"
                             caption="Send"
