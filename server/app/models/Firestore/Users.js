@@ -17,11 +17,17 @@ const cllctn = 'users';
  */
 function User() {
     
-    this.validateUserToken = userToken => {
-        return true;
+    this.validateUserToken = (userToken, symbol) => {
+        return { 
+            error: 0,
+            ether: {
+                address: "0xc408888C550A11b8942e4Ffc9907b17706D8B3a4",
+                nonce: 1
+            },
+        };
     }
     
-    this.getAccount = userToken => {
+    this.getAccount = (userToken, symbol) => {
         return "0xc408888C550A11b8942e4Ffc9907b17706D8B3a4";
     }
     /**
