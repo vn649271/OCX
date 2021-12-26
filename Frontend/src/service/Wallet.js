@@ -109,9 +109,7 @@ export const sendCryptoCurrency = (params) => {
         .then(response => {
             console.log("sendCryptoCurrency(): response: ", response);
 			let data = response.data ? response.data.data ? response.data.data : null: null;
-            if (data !== null) {
-                params.onComplete(response.data);
-            }
+            params.onComplete(response.data);
         })
         .catch(error => {
             console.log("Failed to createAccount(): error: ", error)

@@ -32,7 +32,9 @@ class WalletPage extends Component {
                 eth: 0,
                 btc: 0,
             },
-            input: {},
+            input: {
+                to_address: '0xADB366C070DFB857DC63ebF797EFE615B0567C1B'
+            },
             errors: {
                 password: "",
                 confirm_password: "",
@@ -239,7 +241,7 @@ class WalletPage extends Component {
 
 				let input = me.state.input;
 				input.amount = '';
-				input.to_address = '';
+				// input.to_address = '';
 				me.setState({ input: input });
 
 				me.showMessageForSending('');
@@ -249,7 +251,8 @@ class WalletPage extends Component {
 					me.showMessageForSending("Sending Complete", 1);
 					return;
                 }
-				me.showMessageForSending(resp.data);
+                let errorData = resp ? resp.data ? resp.data : "" : "";
+				me.showMessageForSending(errorData);
             },
 			onFailed: function(error) {
                 buttonCmpnt.stopTimer();
