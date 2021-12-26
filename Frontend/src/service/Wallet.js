@@ -103,10 +103,11 @@ export const sendCryptoCurrency = (params) => {
     return axios
         .post(BACKEND_BASE_URL + "/wallet/send", {
             userToken: params.userToken,
-            to: params.to,
+            toAddress: params.toAddress,
             amount: params.amount
         })
         .then(response => {
+            console.log("sendCryptoCurrency(): response: ", response);
 			let data = response.data ? response.data.data ? response.data.data : null: null;
             if (data !== null) {
                 params.onComplete(response.data);

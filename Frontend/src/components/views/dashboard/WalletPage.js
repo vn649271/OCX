@@ -193,6 +193,9 @@ class WalletPage extends Component {
 	// type - 0: warning, 1: notification
 	showMessageForSending = (msg, type = 0) => {
 		let errorMsg = '', informMsg = '';
+        if (typeof msg === 'object') {
+            return;
+        }
 		if (type === 0) {
 			errorMsg = msg;
             let errorsObj = this.state.errors;
@@ -229,7 +232,7 @@ class WalletPage extends Component {
 
         sendCryptoCurrency({
             userToken: "xxxxxxxxxxxxxxx",
-            to: toAddress, // "0xADB366C070DFB857DC63ebF797EFE615B0567C1B",
+            toAddress: toAddress, // "0xADB366C070DFB857DC63ebF797EFE615B0567C1B",
             amount: amount,
             onComplete: function(resp) {
 				buttonCmpnt.stopTimer();
@@ -249,8 +252,9 @@ class WalletPage extends Component {
 				me.showMessageForSending(resp.data);
             },
 			onFailed: function(error) {
+                buttonCmpnt.stopTimer();
 				console.log("?????????????????????????? ", error);
-				me.showMessageForSending(error);
+				me.showMessageForSending("Failed to send. For more details, see the console.");
 			}
         });
     }

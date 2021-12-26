@@ -44,7 +44,7 @@ app.listen(port, () => {
   console.info("server running at ", port);
 
   var geth = null;
-  geth = spawn('./geth', ['--goerli', '--syncmode', 'light']);
+  geth = spawn('geth', ['--goerli', '--syncmode', 'light']);
   geth.stdout.on('data', (data) => {
       console.log(`geth:stdout: ${data}`);
   });
