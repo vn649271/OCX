@@ -506,6 +506,28 @@ li.sc-gsDKAQ {
     background: white;
 }
 
+/**/
+#qr-account-container {
+    display: block;
+}
+
+
+/* Wallet/QR container */
+#qr-container {
+    float: right;
+    margin-right: 10%;
+}
+
+/* Wallet/Account box */
+#account-info-container {
+    float: left;
+    width: 60%;
+}
+
+#send-button-container {
+    margin-bottom: 1rem;
+}
+
 /* responsive */
 @media (max-width: 1024px) {
     html,

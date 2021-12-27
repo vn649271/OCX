@@ -6,13 +6,11 @@ import DashboardTable from '../../common/dashboard/DashboardTable';
 
 class HomeDashPage extends Component {
 
-    state = {
-        value: '',
-        title: null,
-    }
-
     constructor(props) {
         super(props);
+        this.state = {
+            title: props.title,
+        }
     }
 
     componentDidUpdate(prevProps) {
@@ -22,7 +20,8 @@ class HomeDashPage extends Component {
 
     render() {
         return (
-            <div className="dashboardpage-content pr-14 pt-20 pb-10 pl-0 w-full">
+            <div className="dashboardpage-content p-16 pl-0 w-full">
+                {this.state.title}
                 <div className='content-top flex w-full'>
                     <div className='candlechart-content w-4/5 mr-12'>
                         <div className='dashboard-card hover-transition w-full dashboard-top-part'>
