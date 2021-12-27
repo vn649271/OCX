@@ -234,6 +234,75 @@ export default function BasicTabs() {
                                     2021-1-12
                                 </td>
                             </tr>
+                            <tr class="whitespace-nowrap">
+                                <td class="font-16  text-white">
+                                    1
+                                </td>
+                                <td class="font-16">
+                                    <div class=" text-white">
+                                        Jon doe
+                                    </div>
+                                </td>
+                                <td class="font-16">
+                                    <div class=" text-white">jhondoe@example.com</div>
+                                </td>
+                                <td class="font-16  text-white">
+                                    2021-1-12
+                                </td>
+                                <td class="font-16 text-white">
+                                    2021-1-12
+                                </td>
+                                <td class="font-16 text-white">
+                                    2021-1-12
+                                </td>
+                                <td class="font-16 text-white">
+                                    2021-1-12
+                                </td>
+                                <td class="font-16 text-white">
+                                    2021-1-12
+                                </td>
+                                <td class="font-16 text-white">
+                                    2021-1-12
+                                </td>
+                                <td class="font-16 text-white">
+                                    2021-1-12
+                                </td>
+                            </tr>
+                            <tr class="whitespace-nowrap">
+                                <td class="font-16  text-white">
+                                    1
+                                </td>
+                                <td class="font-16">
+                                    <div class=" text-white">
+                                        Jon doe
+                                    </div>
+                                </td>
+                                <td class="font-16">
+                                    <div class=" text-white">jhondoe@example.com</div>
+                                </td>
+                                <td class="font-16  text-white">
+                                    2021-1-12
+                                </td>
+                                <td class="font-16 text-white">
+                                    2021-1-12
+                                </td>
+                                <td class="font-16 text-white">
+                                    2021-1-12
+                                </td>
+                                <td class="font-16 text-white">
+                                    2021-1-12
+                                </td>
+                                <td class="font-16 text-white">
+                                    2021-1-12
+                                </td>
+                                <td class="font-16 text-white">
+                                    2021-1-12
+                                </td>
+                                <td class="font-16 text-white">
+                                    2021-1-12
+                                </td>
+                            </tr>
+                            
                         </tbody>
                     </table>
                 </div>
