@@ -2,13 +2,12 @@ import React, { Component } from 'react';
 
 class MyAssetsPage extends Component {
 
-    state = {
-        value: '',
-        title: null,
-    }
-
+    
     constructor(props) {
         super(props);
+        this.state = {
+            title: null,
+        }
     }
 
     componentDidUpdate(prevProps) {
@@ -19,7 +18,7 @@ class MyAssetsPage extends Component {
     render() {
         return (
             <div className="my-assets-page">
-                My Assets Page
+                {this.state.title}
             </div>
         );
     }

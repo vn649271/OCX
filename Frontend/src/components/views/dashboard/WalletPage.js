@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 import DelayButton from '../../common/DelayButton';
-import PasswordChecklistComponent from "../../common/PasswordChecklistComponent";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye } from "@fortawesome/free-solid-svg-icons";
+// import PasswordChecklistComponent from "../../common/PasswordChecklistComponent";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { createAccount, getBalance, sendCryptoCurrency } from '../../../service/Wallet'
 import QRCode from "react-qr-code";
-import { useParams } from 'react-router-dom';
+// import { useParams } from 'react-router-dom';
 import {
     BATCHED_VALIDATION,
     INDIVIDUAL_VALIDATION,
     NOTIFY_WARNING,
-    NOTIFY_INFORMATION,
+    // NOTIFY_INFORMATION,
 } from "../../../Contants";
 
-const eye = <FontAwesomeIcon icon={faEye} />;
+// const eye = <FontAwesomeIcon icon={faEye} />;
 
 const MAX_CREATING_DELAY_TIMEOUT = 10
 
@@ -32,7 +32,9 @@ class WalletPage extends Component {
                 eth: 0,
                 btc: 0,
             },
-            input: {},
+            input: {
+                to_address: '0xADB366C070DFB857DC63ebF797EFE615B0567C1B'
+            },
             errors: {
                 password: "",
                 confirm_password: "",
@@ -77,7 +79,7 @@ class WalletPage extends Component {
                         let balance = resp ? resp.data ? resp.data : null : null;
                         if (balance !== null) {
                             let balanceObj = me.state.balance;
-                            balanceObj.eth = balance;
+                            balanceObj.eth = ((balance - 0) / 1000000000000000000).toFixed(4);
                             me.setState({balance: balanceObj});
                             return;
                         }
@@ -88,7 +90,7 @@ class WalletPage extends Component {
                 }
             });
         }, 
-        5000);
+        10000);
     }
 
     togglePasswordVisiblity = event => {
@@ -101,7 +103,7 @@ class WalletPage extends Component {
         if (fieldName !== null && fieldName !== "") {
             validationMode = INDIVIDUAL_VALIDATION;
         }
-        let input = this.state.input;
+        // let input = this.state.input;
         let errors = {
             password: this.state.errors.password,
             confirm_password: this.state.errors.confirm_password,
@@ -193,14 +195,17 @@ class WalletPage extends Component {
 	// type - 0: warning, 1: notification
 	showMessageForSending = (msg, type = 0) => {
 		let errorMsg = '', informMsg = '';
-		if (type == 0) {
+        if (typeof msg === 'object') {
+            return;
+        }
+		if (type === 0) {
 			errorMsg = msg;
-	        let errorsObj = this.state.errors;
-    	    errorsObj.send = errorMsg;
-        	this.setState({ errors: errorsObj });
-		} else if (type == 1) {
+            let errorsObj = this.state.errors;
+            errorsObj.send = errorMsg;
+            this.setState({ errors: errorsObj });
+		} else if (type === 1) {
 			informMsg = msg;
-	    	let infoObj = this.state.info;
+            let infoObj = this.state.info;
             infoObj.send = informMsg;
             this.setState({ info: infoObj });
 		}
@@ -214,9 +219,14 @@ class WalletPage extends Component {
 			this.showMessageForSending("Please input receiving address");
             return;
         }
+        if (toAddress.trim().length !== 42) {
+            buttonCmpnt.stopTimer();
+			this.showMessageForSending("Please input valid receiving address");
+            return;
+        }
 
 		let amount = this.state.input ? this.state.input.amount ? this.state.input.amount: null : null;
-        if (amount === null) {
+        if (amount === null || amount.trim() === "") {
             buttonCmpnt.stopTimer();
 			this.showMessageForSending("Please input the amount to send");
             return;
@@ -224,14 +234,14 @@ class WalletPage extends Component {
 
         sendCryptoCurrency({
             userToken: "xxxxxxxxxxxxxxx",
-            to: toAddress, // "0xADB366C070DFB857DC63ebF797EFE615B0567C1B",
+            toAddress: toAddress, // "0xADB366C070DFB857DC63ebF797EFE615B0567C1B",
             amount: amount,
             onComplete: function(resp) {
 				buttonCmpnt.stopTimer();
 
 				let input = me.state.input;
 				input.amount = '';
-				input.to_address = '';
+				// input.to_address = '';
 				me.setState({ input: input });
 
 				me.showMessageForSending('');
@@ -241,11 +251,13 @@ class WalletPage extends Component {
 					me.showMessageForSending("Sending Complete", 1);
 					return;
                 }
-				me.showMessageForSending(resp.data);
-        	},
+                let errorData = resp ? resp.data ? resp.data : "" : "";
+				me.showMessageForSending(errorData);
+            },
 			onFailed: function(error) {
+                buttonCmpnt.stopTimer();
 				console.log("?????????????????????????? ", error);
-				me.showMessageForSending(error);
+				me.showMessageForSending("Failed to send. For more details, see the console.");
 			}
         });
     }
@@ -258,31 +270,37 @@ class WalletPage extends Component {
     render() {
         return (
             <div className="my-wallet-page">
-                <span className="account-balance-box main-font text-black-400 font-20">Balance: {this.state.balance.eth}</span>
+                <span className="account-balance-box main-font text-black-400 mb-100 font-20">Balance: {this.state.balance.eth} ETH</span>
                 <span className="account-balance-box main-font text-red-400 font-14">{this.state.errors.balance}</span>
                 <div>
-                    <QRCode value="hey" />
-                    <input
-                        type="text"
-                        className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
-                        name="to_address"
-                        id="to_address"
-                        placeholder="To Address"
-                        value={this.state.input.to_address}
-                        onChange={this.handleInputChange}
-                        autoComplete="off" />
+                    <div id="qr-account-container">
+                        <div id="qr-container">
+                            <QRCode value="hey" />
+                        </div>
+                        <div id="account-info-container">
+                            <input
+                                type="text"
+                                className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
+                                name="to_address"
+                                id="to_address"
+                                placeholder="To Address"
+                                value={this.state.input.to_address}
+                                onChange={this.handleInputChange}
+                                autoComplete="off" />
 
-                    <input
-                        type="number"
-                        className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
-                        name="amount"
-                        id="amount"
-                        placeholder="Amount"
-                        value={this.state.input.amount}
-                        onChange={this.handleInputChange}
-                        autoComplete="off" />
-                    {/* Send Button */}
-					<div>
+                            <input
+                                type="number"
+                                className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
+                                name="amount"
+                                id="amount"
+                                placeholder="Amount"
+                                value={this.state.input.amount}
+                                onChange={this.handleInputChange}
+                                autoComplete="off" />
+                        </div>
+                    </div>
+					<div id="send-button-container">
+                        {/* Send Button */}
                         <DelayButton
                             captionInDelay="Sending"
                             caption="Send"

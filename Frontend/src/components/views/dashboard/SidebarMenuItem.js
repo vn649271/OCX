@@ -1,5 +1,5 @@
-import React, { Component, Fragment } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+// import PropTypes from 'prop-types';
 
 class SidebarMenuItem extends Component {
 
@@ -7,7 +7,7 @@ class SidebarMenuItem extends Component {
         super(props);
         
         this.state = {
-            value: '',
+            // value: '',
         }
         this.onSelect = this.onSelect.bind(this);
     }
@@ -20,7 +20,7 @@ class SidebarMenuItem extends Component {
     }
 
     render() {
-        const { value } = this.state;
+        // const { value } = this.state;
         const { title, icons, href } = this.props;
 
         return (

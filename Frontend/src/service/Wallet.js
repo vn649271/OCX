@@ -39,10 +39,7 @@ export const createAccount = (params) => {
  */
 export const getBalance = (params) => {
     return axios
-        .post(BACKEND_BASE_URL + "/wallet/balance", {
-            userToken: params.userToken,
-            account: params.account
-        })
+        .get(BACKEND_BASE_URL + "/wallet/balance/" + params.userToken)
         .then(response => {
             let error = response ? response.data ? response.data.error ? 
                                 response.data.error: null : null: null;
@@ -106,14 +103,13 @@ export const sendCryptoCurrency = (params) => {
     return axios
         .post(BACKEND_BASE_URL + "/wallet/send", {
             userToken: params.userToken,
-            to: params.to,
+            toAddress: params.toAddress,
             amount: params.amount
         })
         .then(response => {
+            console.log("sendCryptoCurrency(): response: ", response);
 			let data = response.data ? response.data.data ? response.data.data : null: null;
-            if (data !== null) {
-                params.onComplete(response.data);
-            }
+            params.onComplete(response.data);
         })
         .catch(error => {
             console.log("Failed to createAccount(): error: ", error)

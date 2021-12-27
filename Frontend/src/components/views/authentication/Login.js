@@ -155,7 +155,7 @@ export default class Login extends Component {
             google_login: res.message
           }
         });
-        if (res.error == -2) {
+        if (res.error === -2) {
           me.setState({ hide_link_to_signup: false })
         }
       }

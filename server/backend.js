@@ -14,10 +14,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 /**
  * Router for user login and register
  */
- var Users = require("./app/routes/Users");
- app.use("/api/users", Users);
- 
- /**
+var Users = require("./app/routes/Users");
+app.use("/api/users", Users);
+
+/**
  * Router for wallet management
  */
 var Wallet = require("./app/routes/Wallet");
@@ -29,6 +29,9 @@ app.use("/api/wallet", Wallet);
 var recaptchaRouter = require('./app/routes/Recaptcha');
 app.use('/api/recaptcha', recaptchaRouter);
 
+var liveUpdateRouter = require('./app/routes/LiveUpdate');
+app.use('/api/update', liveUpdateRouter);
+
 /**
  * If the this server is running in local host, remove the environment GOOGLE_APPLICATION_CREDENTIALS
  */
@@ -39,3 +42,5 @@ if (process.argv.length < 3 || process.argv[2] != 'dev') {
 app.listen(port, () => {
   console.info("server running at ", port);
 });
+
+
