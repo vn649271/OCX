@@ -46,12 +46,10 @@ export default function Header(props) {
                     <div className='user-logo flex items-center hidden'>
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <Stack spacing={1}>
-                                <DatePicker
+                                <DesktopDatePicker
                                     disableFuture
-                                    // label="Responsive"
-                                    openTo="year"
-                                    views={['year', 'month', 'day']}
                                     value={value}
+                                    minDate={new Date('2021-01-01')}
                                     onChange={(newValue) => {
                                         setValue(newValue);
                                     }}
@@ -59,9 +57,7 @@ export default function Header(props) {
                                 />
                             </Stack>
                         </LocalizationProvider>
-                        {/* <div className='dataTimePicker main-font font-18 main-color mr-20'>
-                            Dec 18, 2021
-                        </div> */}
+
                         <div className='user-avatar ml-10'>
                             <img src={userLogo} alt='user-avatar' className='user-avatar' />
                         </div>

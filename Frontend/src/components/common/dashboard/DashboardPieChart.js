@@ -10,7 +10,7 @@ export default class DashboardPieChart extends React.Component {
             series: [15, 85],
             options: {
                 chart: {
-                    width: 380,
+                    width: 300,
                     type: 'donut',
                     foreColor: '#ffffff',
                     fontFamily: 'Qualy-Light'
@@ -28,18 +28,39 @@ export default class DashboardPieChart extends React.Component {
                     type: 'gradient',
                 },
                 legend: {
+                    position: 'bottom',
+                    horizontalAlign: 'center',
                     formatter: function (val, opts) {
                         return val + " - " + opts.w.globals.series[opts.seriesIndex]
                     }
                 },
-                title: {
-                    text: 'Proffit/Lost'
-                },
+
                 responsive: [{
-                    breakpoint: 480,
+                    breakpoint: 1441,
                     options: {
                         chart: {
-                            width: 200
+                            width: 300
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }, {
+                    breakpoint: 769,
+                    options: {
+                        chart: {
+                            width: 400
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                },
+                {
+                    breakpoint: 415,
+                    options: {
+                        chart: {
+                            width: 350
                         },
                         legend: {
                             position: 'bottom'
@@ -51,8 +72,13 @@ export default class DashboardPieChart extends React.Component {
     }
     render() {
         return (
-            <div id="chart">
-                <ReactApexChart options={this.state.options} series={this.state.series} type="donut" width={380} />
+            <div className="chart-body relative">
+                <p className="table-title font-16 text-white main-bold">
+                    Dount Chart
+                </p>
+                <div id="piechart">
+                    <ReactApexChart options={this.state.options} series={this.state.series} type="donut" width={380} />
+                </div>
             </div>
         );
     }

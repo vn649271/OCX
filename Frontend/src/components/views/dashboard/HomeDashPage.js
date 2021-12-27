@@ -22,27 +22,27 @@ class HomeDashPage extends Component {
 
     render() {
         return (
-            <div className="dashboardpage-content p-16 pl-0 w-full">
+            <div className="dashboardpage-content pr-14 pt-20 pb-10 pl-0 w-full">
                 <div className='content-top flex w-full'>
-                    <div className='candlechart-content w-3/4 mr-20'>
+                    <div className='candlechart-content w-4/5 mr-12'>
                         <div className='dashboard-card hover-transition w-full dashboard-top-part'>
                             <DashboardCandleChart />
                         </div>
                     </div>
-                    <div className='product-list w-1/4'>
+                    <div className='product-list w-1/5'>
                         <div className='dashboard-card hover-transition dashboard-top-part'>
                             <DashboardProducts />
                         </div>
                     </div>
                 </div>
                 <div className='content-bottom mt-20 flex w-full'>
-                    <div className='dashboard-table-content w-3/4 mr-20'>
+                    <div className='dashboard-table-content w-3/4 mr-12'>
                         <div className='dashboard-card hover-transition w-full dashboard-table'>
                             <DashboardTable />
                         </div>
                     </div>
-                    <div className='content-piechart w-1/4'>
-                        <div className='dashboard-card hover-transition w-full dashboard-pichart'>
+                    <div className='content-piechart w-1/4 w-full'>
+                        <div className='dashboard-card hover-transition h-full w-full dashboard-pichart'>
                             <DashboardPieChart />
                         </div>
                     </div>
