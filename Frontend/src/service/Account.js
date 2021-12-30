@@ -2,7 +2,7 @@ import axios from "axios";
 import { BACKEND_BASE_URL } from "../Contants";
 
 /**
- * Create a new account in user's wallet.
+ * Create a new account.
  * @param {string} userToken    user token
  * @param {string} account      account address
  * 
@@ -10,7 +10,7 @@ import { BACKEND_BASE_URL } from "../Contants";
  */
 export const createAccount = (params) => {
     return axios
-        .post(BACKEND_BASE_URL + "/wallet/create", {
+        .post(BACKEND_BASE_URL + "/account/create", {
             userToken: params.userToken,
             password: params.password
         })
@@ -31,7 +31,7 @@ export const createAccount = (params) => {
 }
 
 /**
- * Connect to specified wallet.
+ * Connect to specified account.
  * @param {string} userToken    user token
  * @param {string} account      account address
  * 
@@ -39,7 +39,7 @@ export const createAccount = (params) => {
  */
 export const getBalance = (params) => {
     return axios
-        .get(BACKEND_BASE_URL + "/wallet/balance/" + params.userToken)
+        .get(BACKEND_BASE_URL + "/account/balance/" + params.userToken)
         .then(response => {
             let error = response ? response.data ? response.data.error ? 
                                 response.data.error: null : null: null;
@@ -58,17 +58,17 @@ export const getBalance = (params) => {
 }
 
 /**
- * Connect to specified wallet.
+ * Connect to specified account.
  * @param {string} userToken    user token
- * @param {string} walletId     wallet address
+ * @param {string} accountId     account address
  * 
  * @returns 
  */
 export const connect = (params) => {
     return axios
-        .post(BACKEND_BASE_URL + "/wallet/connect", {
+        .post(BACKEND_BASE_URL + "/account/connect", {
             userToken: params.userToken,
-            wallet: params.walletId
+            account: params.accountId
         })
         .then(response => {
             let error = response ? response.data ? response.data.error ? 
@@ -101,7 +101,7 @@ export const connect = (params) => {
  */
 export const sendCryptoCurrency = (params) => {
     return axios
-        .post(BACKEND_BASE_URL + "/wallet/send", {
+        .post(BACKEND_BASE_URL + "/account/send", {
             userToken: params.userToken,
             toAddress: params.toAddress,
             amount: params.amount
