@@ -14,7 +14,7 @@ const ETHER_NETWORK = process.env.ETHER_NETWORK || "goerli";
 const ipcPath = process.env.HOME + "/.ethereum/" + ETHER_NETWORK + "/geth.ipc";
 
 
-var geth = spawn('./geth', ['--goerli', '--syncmode', 'light']);
+var geth = spawn('geth', ['--goerli', '--syncmode', 'light']);
 geth.stdout.on('data', (data) => {
     console.log(`geth:stdout: ${data}`);
 });
@@ -55,6 +55,7 @@ function attachToGethIPC() {
 
 gethIpcTimer = setTimeout(attachToGethIPC, 10000);
 
+var self = null;
 
 /**
  * Controller for user authentication
@@ -105,11 +106,11 @@ class AccountController {
     }
 
     /**
-     * Connect to the specified wallet address
+     * Connect to the specified account
      * @param {object} req request object from the client 
      * @param {object} resp response object to the client
      */
-    connectToWallet = (req, resp) => {
+    connectToAccount = (req, resp) => {
         if (req.body === null || req.body.userToken === undefined ||
             req.body.userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
