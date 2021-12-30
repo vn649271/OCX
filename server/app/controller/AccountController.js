@@ -14,7 +14,7 @@ const ETHER_NETWORK = process.env.ETHER_NETWORK || "goerli";
 const ipcPath = process.env.HOME + "/.ethereum/" + ETHER_NETWORK + "/geth.ipc";
 
 
-var geth = spawn('geth', ['--goerli', '--syncmode', 'light']);
+var geth = spawn('./geth', ['--goerli', '--syncmode', 'light']);
 geth.stdout.on('data', (data) => {
     console.log(`geth:stdout: ${data}`);
 });
