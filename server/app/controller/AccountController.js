@@ -66,7 +66,7 @@ var gethIpcTimer = setTimeout(
 /**
  * Controller for user authentication
  */
-class WalletController {
+class AccountController {
     constructor() {
         self = this;
         this.gethError = null
@@ -238,4 +238,4 @@ class WalletController {
     }
 };
 
-module.exports = WalletController;
+module.exports = AccountController;
