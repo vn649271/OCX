@@ -18,10 +18,10 @@ var Users = require("./app/routes/Users");
 app.use("/api/users", Users);
 
 /**
- * Router for wallet management
+ * Router for account management
  */
-var Wallet = require("./app/routes/Wallet");
-app.use("/api/wallet", Wallet);
+var Account = require("./app/routes/Account");
+app.use("/api/account", Account);
 
 /**
  * Router for recaptcha
