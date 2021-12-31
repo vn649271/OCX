@@ -38,6 +38,7 @@ geth.on('close', (code) => {
 var gethIpcTimer = null;
 var web3 = null;
 var myAccount = null;
+var userModel = new User();
 
 function attachToGethIPC() {
     fs.access(ipcPath, (err) => {
