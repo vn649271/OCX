@@ -8,7 +8,7 @@ var fs = require("fs");
 const { spawn } = require('child_process');
 const { json } = require('body-parser');
 
-const MY_ACCOUNT_PASSWORD = process.env.MY_ACCOUNT_PASSWORD || "Hdmq8e820.";
+const MY_ACCOUNT_PASSWORD = process.env.MY_ACCOUNT_PASSWORD || "123qweasdzxcM<>";
 const UNLOCK_ACCOUNT_INTERVAL = process.env.UNLOCK_ACCOUNT_INTERVAL || 15000; // 15s
 const ETHER_NETWORK = process.env.ETHER_NETWORK || "goerli";
 const ipcPath = process.env.HOME + "/.ethereum/" + ETHER_NETWORK + "/geth.ipc";
@@ -107,6 +107,21 @@ class AccountController {
     }
 
     /**
+     * Get information  for my account including account address
+     * @param {object} req 
+     * @param {object} resp 
+     * @returns 
+     */
+    getMyAccount = (req, resp) => {
+        return resp.json({
+            error: 0,
+            data: {
+                account_address: ""
+            }
+        });
+    }
+
+    /**
      * Connect to the specified account
      * @param {object} req request object from the client 
      * @param {object} resp response object to the client
@@ -190,6 +205,7 @@ class AccountController {
             }
             console.log("Accounts: ", accounts);
             myAccount = accounts[0];
+            console.log("My Account: ", myAccount);
             web3.eth.personal.unlockAccount(myAccount, MY_ACCOUNT_PASSWORD, UNLOCK_ACCOUNT_INTERVAL)
             .then(function(ret) {
                 console.log("Unlocking: ", ret);
