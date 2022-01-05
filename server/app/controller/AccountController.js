@@ -9,12 +9,14 @@ var fs = require("fs");
 const { spawn } = require('child_process');
 const { json } = require('body-parser');
 const { generate, generateMultiple } = require('generate-passphrase-id')
+var keythereum = require("keythereum");
 
 const MY_ACCOUNT_PASSWORD = process.env.MY_ACCOUNT_PASSWORD || "123qweasdzxcM<>";
 const UNLOCK_ACCOUNT_INTERVAL = process.env.UNLOCK_ACCOUNT_INTERVAL || 15000; // 15s
 const ETHER_NETWORK = process.env.ETHER_NETWORK || "goerli";
-// const ipcPath = process.env.HOME + "/.ethereum/" + ETHER_NETWORK + "/geth.ipc"; // For Linux
-const ipcPath = "\\\\.\\pipe\\geth.ipc";    // For Windows
+const GETH_DATA_DIR = process.env.HOME + "/.ethereum/" + ETHER_NETWORK
+const ipcPath = GETH_DATA_DIR + "/geth.ipc"; // For Linux
+// const ipcPath = "\\\\.\\pipe\\geth.ipc";    // For Windows
 
 var geth = spawn('geth', ['--goerli', '--syncmode', 'light']);
 geth.stdout.on('data', (data) => {
@@ -68,24 +70,33 @@ class AccountController {
                 console.log("Invalid account address");
                 return params.response.json({ error: -4, data: "Created account address invalid"});
             }
-            let accountInfo = accountModel.create({
-                user_token: userToken,
+            // Get private key for new account
+            var keyObject = keythereum.importFromFile(accountAddress, GETH_DATA_DIR);
+            var privateKey = keythereum.recover(params.password, keyObject);
+            console.log("Private Key for new account: ", privateKey.toString('hex'));
+
+            accountModel.create({
+                user_token: params.userToken,
                 passphrase: params.passphrase,
                 password: params.password,
                 accounts: {
                     eth: 
                     [
                         {
-                            address: accountAddress
+                            address: accountAddress,
+                            private: privateKey
                         }
                     ]
                 }
+            }).then(accountInfo => {
+                console.log("*********** Created Account: ", accountInfo);
+                return params.response.json({ 
+                    error: 0,
+                    data: accountInfo.id,
+                    address: accountAddress
+                });                
             })
-            console.log("*********** Created Account: ", accountInfo);
-            return params.response.json({ 
-                error: 0,
-                data: accountInfo
-            });
+
         });
     }
 
@@ -116,6 +127,7 @@ class AccountController {
         console.log(passphrase);
 
         this._create({
+            userToken: req.body.userToken,
             password: req.body.password, 
             passphrase: passphrase,
             response: resp
@@ -132,12 +144,10 @@ class AccountController {
         if (web3 == null) {
             return resp.json({ error: -3, data: "Geth node is not ready yet. Please retry a while later."})
         }
-        if (req.params === undefined 
-         || req.params.userToken === undefined
-         || req.params.userToken === null) {
+        var userToken = req.body? req.body.userToken? req.body.userToken: null: null;
+        if (userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
         }
-        let userToken = req.params.userToken;
         let ret = userController.validateUserToken(userToken);
         if (!ret < 0) {
             return resp.json({ error: -2, data: "Invalid user token" });
@@ -178,23 +188,22 @@ class AccountController {
      * @param {object} req request object from the client 
      * @param {object} resp response object to the client
      */
-    balance = (req, resp, next) => {
+    balance = (req, resp) => {
         if (web3 == null) {
-            return resp.json({ error: -3, data: "Geth node is not ready yet. Please retry a while later."})
+            return resp.json({ error: -1, data: "Geth node is not ready yet. Please retry a while later."})
         }
-        if (req.params === undefined || req.params.userToken === undefined ||
-        req.params.userToken === null) {
-            return resp.json({ error: -1, data: "Invalid request" });
+        var userToken = req.body ? req.body.userToken? req.body.userToken: null: null;
+        if (userToken === null) {
+            return resp.json({ error: -2, data: "Invalid request" });
         }
-        let userToken = req.params.userToken;
         let ret = userController.validateUserToken(userToken);
         if (!ret < 0) {
-            return resp.json({ error: -2, data: "Invalid user token" });
+            return resp.json({ error: -3, data: "Invalid user token" });
         }
         web3.eth.personal.getAccounts().then(function(accounts) {
             if (accounts.length < 1) {
                 console.log("No account");
-                return resp.json({ error: -3, data: "No account for you"});
+                return resp.json({ error: -4, data: "No account for you"});
             }
             myAccount = accounts[0];
             web3.eth.getBalance(myAccount).then(function(balanceInWei) {

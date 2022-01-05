@@ -9,6 +9,7 @@ import { BACKEND_BASE_URL } from "../Contants";
  * @returns new account address
  */
 export const createAccount = (params) => {
+    console.log("Account.createAccount(): parameter: ", params);
     return axios
         .post(BACKEND_BASE_URL + "/account/create", {
             userToken: params.userToken,
@@ -32,7 +33,9 @@ export const createAccount = (params) => {
 
 export const getAccountInfo = (params) => {
     return axios
-        .get(BACKEND_BASE_URL + "/account/" + params.userToken)
+        .post(BACKEND_BASE_URL + "/account", {
+            userToken: params.userToken
+        })
         .then(response => {
             let ret = response ? response.data ? response.data: null: null;
             if (ret === null) {
@@ -43,7 +46,7 @@ export const getAccountInfo = (params) => {
             }        
         })
         .catch(error => {
-            console.log("Failed to createAccount(): error: ", error)
+            console.log("Failed to getAccountInfo(): error: ", error)
             if (params.onFailed) {
                 params.onFailed(error);
             }
@@ -58,8 +61,11 @@ export const getAccountInfo = (params) => {
  * @returns 
  */
 export const getBalance = (params) => {
+    console.log("service/Account::getBalance(): parameter: ", params, BACKEND_BASE_URL + "/account/balance");
     return axios
-        .get(BACKEND_BASE_URL + "/account/balance/" + params.userToken)
+        .post(BACKEND_BASE_URL + "/account/balance", {
+            userToken: params.userToken
+        })
         .then(response => {
             let ret = response ? response.data ? response.data: null: null;
             if (ret === null) {
@@ -70,7 +76,7 @@ export const getBalance = (params) => {
             }        
         })
         .catch(error => {
-            console.log("Failed to createAccount(): error: ", error)
+            console.log("Failed to getBalance(): error: ", error)
             if (params.onFailed) {
                 params.onFailed(error);
             }
@@ -100,7 +106,7 @@ export const connect = (params) => {
             }
         })
         .catch(error => {
-            console.log("Failed to createAccount(): error: ", error)
+            console.log("Failed to connect(): error: ", error)
             if (params.onFailed) {
                 params.onFailed(error);
             }
@@ -132,7 +138,7 @@ export const sendCryptoCurrency = (params) => {
             params.onComplete(response.data);
         })
         .catch(error => {
-            console.log("Failed to createAccount(): error: ", error)
+            console.log("Failed to sendCryptoCurrency(): error: ", error)
             params.onFailed(error);
         })
 }

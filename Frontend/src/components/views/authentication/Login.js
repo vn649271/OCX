@@ -112,7 +112,7 @@ export default class Login extends Component {
   /**
    * Callback called after Google Sign Up completes successfully
    */
-   responseGoogle = (response) => {
+  responseGoogle = (response) => {
     /********************** Unlock Google button disabled ************************************/
     if (this.state.disableGoogleButton) {
       this.setState({ disableGoogleButton: false });
@@ -182,6 +182,7 @@ export default class Login extends Component {
     login(user, res => {
       me.setState({ loading: false });
       me.setState({ disableGoogleButton: false });
+      console.log("Login.js::login(): ", res);
       if (!res.error) {
         localStorage.setItem("userToken", res.message)
         localStorage.setItem("email", this.state.email)

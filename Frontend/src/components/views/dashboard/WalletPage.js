@@ -63,8 +63,7 @@ class WalletPage extends Component {
             loading: false
         }
 
-
-
+        this.userToken = null;
         this.validate = this.validate.bind(this)
         this.onCreateAccont = this.onCreateAccont.bind(this);
         this.onSend = this.onSend.bind(this);
@@ -81,10 +80,11 @@ class WalletPage extends Component {
     }
 
     componentDidMount() {
-        console.log("componentDidMount()");
+        this.userToken = localStorage.getItem("userToken");
+        console.log("componentDidMount(): userToken", this.userToken);
         setInterval(function() {
             getBalance({
-                userToken: "xxxxxxxxxxxxxxx",
+                userToken: self.userToken,
                 account: "yyyyyyyyyyyyyyyyyyyyy",
                 onComplete: function(resp) {
                     console.log("getBalance: ", resp);
@@ -107,7 +107,7 @@ class WalletPage extends Component {
         }, 
         10000);
         getAccountInfo({
-            userToken: "xxxxxxxxxxxxxxx",
+            userToken: self.userToken,
             onComplete: function(resp) {
                 if (resp.error == 1) { // No account
                     // Show UI to create an account
@@ -205,8 +205,12 @@ class WalletPage extends Component {
         }
         // Perform additional validation for email-phone
         // If required action performed, buttonCmpnt.stopTimer() must be called to stop loading
+        if (this.userToken === null) {
+            console.log("Error: user token invalid(null)");
+            return;
+        }
         createAccount({
-            userToken: "xxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            userToken: this.userToken,
             password: this.state.input.password,
             onComplete: function (resp) {
                 buttonCmpnt.stopTimer();
@@ -260,8 +264,8 @@ class WalletPage extends Component {
         }
 
         sendCryptoCurrency({
-            userToken: "xxxxxxxxxxxxxxx",
-            toAddress: toAddress, // "0xADB366C070DFB857DC63ebF797EFE615B0567C1B",
+            userToken: this.userToken,
+            toAddress: toAddress,
             amount: amount,
             onComplete: function(resp) {
 				buttonCmpnt.stopTimer();
@@ -378,7 +382,7 @@ class WalletPage extends Component {
                             captionInDelay="New Account"
                             caption="New Account"
                             maxDelayInterval={30}
-                            onClickButton={this.onCreateNewAccount}
+                            onClickButton={this.onCreateAccont}
                             onClickButtonParam={null}
                         />
                     </div>
