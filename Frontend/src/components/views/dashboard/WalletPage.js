@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
 import DelayButton from '../../common/DelayButton';
-// import PasswordChecklistComponent from "../../common/PasswordChecklistComponent";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faEye } from "@fortawesome/free-solid-svg-icons";
-import { createAccount, getBalance, sendCryptoCurrency } from '../../../service/Account'
+import PasswordChecklistComponent from "../../common/PasswordChecklistComponent";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye } from "@fortawesome/free-solid-svg-icons";
+import { 
+    createAccount, 
+    getAccountInfo, 
+    getBalance, 
+    sendCryptoCurrency 
+} from '../../../service/Account';
+
 import QRCode from "react-qr-code";
 // import { useParams } from 'react-router-dom';
 import {
@@ -13,27 +19,33 @@ import {
     // NOTIFY_INFORMATION,
 } from "../../../Contants";
 
-// const eye = <FontAwesomeIcon icon={faEye} />;
+const eye = <FontAwesomeIcon icon={faEye} />;
+
 
 const MAX_CREATING_DELAY_TIMEOUT = 10
+const UNKNOWN_USER = 0;
+const NEW_USER = 1;
+const USER_WITH_ACCOUNT = 2;
 
-var me;
+var self;
 
 class WalletPage extends Component {
-
+    
+    
     constructor(props) {
         super(props);
-        me = this;
+        self = this;
 
         this.state = {
             is_creating: false,
+            user_mode: UNKNOWN_USER,
             creating_interval: MAX_CREATING_DELAY_TIMEOUT,
             balance: {
                 eth: 0,
                 btc: 0,
             },
             input: {
-                to_address: '0xADB366C070DFB857DC63ebF797EFE615B0567C1B'
+                to_address: '0xADB366C070DFB857DC63ebF797EFE615B0567C1B',
             },
             errors: {
                 password: "",
@@ -50,6 +62,8 @@ class WalletPage extends Component {
             hidePasswordCheckList: true,
             loading: false
         }
+
+
 
         this.validate = this.validate.bind(this)
         this.onCreateAccont = this.onCreateAccont.bind(this);
@@ -74,27 +88,40 @@ class WalletPage extends Component {
                 account: "yyyyyyyyyyyyyyyyyyyyy",
                 onComplete: function(resp) {
                     console.log("getBalance: ", resp);
-                    let error = resp ? resp.error ? resp.error : null : null;
-                    if (error === null) {
-                        let balance = resp ? resp.data ? resp.data : null : null;
-                        if (balance !== null) {
-                            let balanceObj = me.state.balance;
-                            balanceObj.eth = ((balance - 0) / 1000000000000000000).toFixed(4);
-                            me.setState({balance: balanceObj});
-                            return;
-                        }
+                    let errorMsg = null;
+                    if (resp.error === 0) {
+                        let balanceMsg = self.state.balance;
+                        balanceMsg.eth = ((resp.data - 0) / 1000000000000000000).toFixed(4);
+                        self.setState({balance: balanceMsg});
+                        return;
+                    } else if (resp.error === -100) {
+                        errorMsg = "No response for get balance";
+                    } else if (resp.error < 0) {
+                        errorMsg = resp.data
                     }
-                    let errorsObj = me.state.errors;
-                    errorsObj.balance = resp.data;
-                    me.setState({ errors: errorsObj });
+                    let errorsObj = self.state.errors;
+                    errorsObj.balance = errorMsg;
+                    self.setState({ errors: errorsObj });
                 }
             });
         }, 
         10000);
+        getAccountInfo({
+            userToken: "xxxxxxxxxxxxxxx",
+            onComplete: function(resp) {
+                if (resp.error == 1) { // No account
+                    // Show UI to create an account
+                    self.setState({user_mode: NEW_USER})
+                    return;
+                }
+                console.log("getAccountInfo: response=", resp);
+            }
+        });
     }
 
     togglePasswordVisiblity = event => {
-        console.log("togglePasswordVisiblity()", event.target.value);
+        // let password = event.target.parentNode.parentNode.parentNode.firstElementChild.value;
+        // console.log("togglePasswordVisiblity()", password);
         this.setState({ showPassword: !this.state.showPassword });
     }
 
@@ -239,25 +266,25 @@ class WalletPage extends Component {
             onComplete: function(resp) {
 				buttonCmpnt.stopTimer();
 
-				let input = me.state.input;
+				let input = self.state.input;
 				input.amount = '';
 				// input.to_address = '';
-				me.setState({ input: input });
+				self.setState({ input: input });
 
-				me.showMessageForSending('');
+				self.showMessageForSending('');
                 console.log("getBalance: ", resp);
                 let error = resp ? resp.error ? resp.error : null : null;
                 if (error === null) {
-					me.showMessageForSending("Sending Complete", 1);
+					self.showMessageForSending("Sending Complete", 1);
 					return;
                 }
                 let errorData = resp ? resp.data ? resp.data : "" : "";
-				me.showMessageForSending(errorData);
+				self.showMessageForSending(errorData);
             },
 			onFailed: function(error) {
                 buttonCmpnt.stopTimer();
 				console.log("?????????????????????????? ", error);
-				me.showMessageForSending("Failed to send. For more details, see the console.");
+				self.showMessageForSending("Failed to send. For more details, see the console.");
 			}
         });
     }
@@ -271,8 +298,8 @@ class WalletPage extends Component {
         return (
             <div className="my-account-page">
                 <span className="account-balance-box main-font text-black-400 mb-100 font-20">Balance: {this.state.balance.eth} ETH</span>
-                <span className="account-balance-box main-font text-red-400 font-14">{this.state.errors.balance}</span>
-                <div>
+                <span className="account-balance-box main-font text-red-400 mb-100 font-14">{this.state.errors.balance}</span>
+                <div className={this.state.user_mode === USER_WITH_ACCOUNT ? 'shownBox': 'hiddenBox'}>
                     <div id="qr-account-container">
                         <div id="qr-container">
                             <QRCode value="hey" />
@@ -287,7 +314,7 @@ class WalletPage extends Component {
                                 value={this.state.input.to_address}
                                 onChange={this.handleInputChange}
                                 autoComplete="off" />
-
+            
                             <input
                                 type="number"
                                 className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
@@ -299,7 +326,7 @@ class WalletPage extends Component {
                                 autoComplete="off" />
                         </div>
                     </div>
-					<div id="send-button-container">
+                    <div id="send-button-container">
                         {/* Send Button */}
                         <DelayButton
                             captionInDelay="Sending"
@@ -308,7 +335,53 @@ class WalletPage extends Component {
                             onClickButton={this.onSend}
                             onClickButtonParam={null}
                         />
-					</div>
+                    </div>
+                    <span className="help-block main-font text-red-400 font-16">{this.state.errors.send}</span>
+                    <span className="help-block main-font text-green-400 font-16">{this.state.info.send}</span>
+                </div>
+                <div className={this.state.user_mode === NEW_USER ? 'shownBox': 'hiddenBox'}>
+                    <div className="mb-10">
+                        <div className="password-container block w-full">
+                            <input
+                            type={this.state.showPassword ? "text" : "password"}
+                            className="password-input border border-grey-light bg-gray-100 w-full p-5 font-16 main-font focus:outline-none rounded "
+                            name="password"
+                            value={this.state.input.password}
+                            onChange={this.handleInputChange}
+                            onBlur={this.onLeaveFromPasswordInput}
+                            placeholder="Password" autoComplete="off"
+                            />
+                            <i className="ShowPasswordIcon font-16" onClick={this.togglePasswordVisiblity}>{eye}</i>
+                        </div>
+                        <span className="help-block main-font text-red-400 font-14">{this.state.errors.password}</span>
+                    </div>
+                    <PasswordChecklistComponent
+                    password={this.state.input['password'] || ""}
+                    confirmPassword={this.state.input['confirm_password'] || ""}
+                    hidden={this.state.hidePasswordCheckList}
+                    />
+                    <div className="mb-10">
+                        <input
+                            type="password"
+                            className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded "
+                            name="confirm_password"
+                            id="confirm_password"
+                            value={this.state.input.confirm_password}
+                            onChange={this.handleInputChange}
+                            placeholder="Confirm Password" autoComplete="off"
+                        />
+                        <span className="help-block main-font text-red-400 font-14">{this.state.errors.confirm_password}</span>
+                    </div>
+                    <div id="create-account-button-container">
+                        {/* Send Button */}
+                        <DelayButton
+                            captionInDelay="New Account"
+                            caption="New Account"
+                            maxDelayInterval={30}
+                            onClickButton={this.onCreateNewAccount}
+                            onClickButtonParam={null}
+                        />
+                    </div>
                     <span className="help-block main-font text-red-400 font-16">{this.state.errors.send}</span>
                     <span className="help-block main-font text-green-400 font-16">{this.state.info.send}</span>
                 </div>

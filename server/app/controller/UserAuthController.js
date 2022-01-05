@@ -20,6 +20,17 @@ class UserAuthController {
         me = this;
     }
 
+
+    /**
+     * Internal function - Validate specified user token
+     * Handle the request to resend the pin-code from client
+     * @param {object} userToken user's token for the requestor
+     * @returns {boolean} 0 - No error or errors
+     */
+    validateUserToken = (userToken) => {
+        return 0;
+    }
+
     /**
      * Handle the request to resend the pin-code from client
      * @param {object} req request object from the client 
