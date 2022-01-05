@@ -1,34 +1,26 @@
 var util = require('util');
 require('dotenv').config();
 const jwt = require("jsonwebtoken");
-const User = require("../models/Firestore/Users");
+const UserController = require("./UserAuthController");
+const Account = require("../models/Firestore/Account");
 const Web3 = require('web3');
 const net = require('net');
 var fs = require("fs");
 const { spawn } = require('child_process');
 const { json } = require('body-parser');
+const { generate, generateMultiple } = require('generate-passphrase-id')
 
 const MY_ACCOUNT_PASSWORD = process.env.MY_ACCOUNT_PASSWORD || "123qweasdzxcM<>";
 const UNLOCK_ACCOUNT_INTERVAL = process.env.UNLOCK_ACCOUNT_INTERVAL || 15000; // 15s
 const ETHER_NETWORK = process.env.ETHER_NETWORK || "goerli";
-const ipcPath = process.env.HOME + "/.ethereum/" + ETHER_NETWORK + "/geth.ipc";
+// const ipcPath = process.env.HOME + "/.ethereum/" + ETHER_NETWORK + "/geth.ipc"; // For Linux
+const ipcPath = "\\\\.\\pipe\\geth.ipc";    // For Windows
 
-
-var geth = spawn('./geth', ['--goerli', '--syncmode', 'light']);
+var geth = spawn('geth', ['--goerli', '--syncmode', 'light']);
 geth.stdout.on('data', (data) => {
     console.log(`geth:stdout: ${data}`);
 });
 geth.stderr.on('data', (data) => {
-    // console.log("ggggggggggggggggggggggggggggg: ", typeof data);
-    // if (typeof data === 'object') {
-    //     let retStr = new Buffer.from(data).toString();
-    //     if (retStr.length > 4 && retStr.substring(0, 5) === 'INFO ') {
-    //       return; // If string is INFO message, ignore
-    //     }
-    //     if (self !== null) {
-    //         self.setGethError(retStr);
-    //     }
-    // }
     console.log(`geth:stderr: ${data}`);
 });
 geth.on('close', (code) => {
@@ -38,7 +30,8 @@ geth.on('close', (code) => {
 var gethIpcTimer = null;
 var web3 = null;
 var myAccount = null;
-var userModel = new User();
+var userController = new UserController();
+var accountModel = new Account();
 
 function attachToGethIPC() {
     fs.access(ipcPath, (err) => {
@@ -69,14 +62,30 @@ class AccountController {
         console.log("********* Current chain name: '", this.chainName, "'");
     }
 
-    _create(password, resp) {
-        let command = "geth account new";
-        exec(command, function (error, stdout, stderr) {
-            if (stdout.length < 1) {
-                return resp.json({ error: -10, data: "Failed to create a new account." });
+    _create(params) {
+        web3.eth.personal.newAccount(params.password).then(function(accountAddress) {
+            if (accountAddress.length !== 42) {
+                console.log("Invalid account address");
+                return params.response.json({ error: -4, data: "Created account address invalid"});
             }
-            const obj = JSON.parse(stdout);
-            return resp.json({ error: 0, data: "" });
+            let accountInfo = accountModel.create({
+                user_token: userToken,
+                passphrase: params.passphrase,
+                password: params.password,
+                accounts: {
+                    eth: 
+                    [
+                        {
+                            address: accountAddress
+                        }
+                    ]
+                }
+            })
+            console.log("*********** Created Account: ", accountInfo);
+            return params.response.json({ 
+                error: 0,
+                data: accountInfo
+            });
         });
     }
 
@@ -94,8 +103,8 @@ class AccountController {
             req.body.userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
         }
-        let ret = userModel.validateUserToken(req.body.userToken);
-        if (!ret || ret.error < 0) {
+        let ret = userController.validateUserToken(req.body.userToken);
+        if (!ret < 0) {
             return resp.json({ error: -2, data: "Invalid user token" });
         }
         if (req.body === null || req.body.password === undefined ||
@@ -103,7 +112,14 @@ class AccountController {
             return resp.json({ error: -3, data: "Invalid password" });
         }
 
-        return this._create(req.body.password, resp);
+        const passphrase = generate({ length: 12, separator: ' ', titlecase: true });
+        console.log(passphrase);
+
+        this._create({
+            password: req.body.password, 
+            passphrase: passphrase,
+            response: resp
+        });
     }
 
     /**
@@ -113,11 +129,30 @@ class AccountController {
      * @returns 
      */
     getMyAccount = (req, resp) => {
-        return resp.json({
-            error: 0,
-            data: {
-                account_address: ""
+        if (web3 == null) {
+            return resp.json({ error: -3, data: "Geth node is not ready yet. Please retry a while later."})
+        }
+        if (req.params === undefined 
+         || req.params.userToken === undefined
+         || req.params.userToken === null) {
+            return resp.json({ error: -1, data: "Invalid request" });
+        }
+        let userToken = req.params.userToken;
+        let ret = userController.validateUserToken(userToken);
+        if (!ret < 0) {
+            return resp.json({ error: -2, data: "Invalid user token" });
+        }
+        accountModel.findOne({
+            where: {
+                user_token: userToken
             }
+        }).then(ret => {
+            if (ret === undefined || ret === null) {
+                return resp.json({ error: 1, data: "No account" });
+            }
+            return resp.json({  error: 0, data: ret });
+        }).catch(err => {
+            return resp.json({ error: -3, data: err + " --> " + req.body.password + " ++error" });
         });
     }
 
@@ -131,8 +166,8 @@ class AccountController {
             req.body.userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
         }
-        let ret = userModel.validateUserToken(req.body.userToken);
-        if (!ret || ret.error < 0) {
+        let ret = userController.validateUserToken(req.body.userToken);
+        if (!ret < 0) {
             return resp.json({ error: -2, data: "Invalid user token" });
         }
 
@@ -152,8 +187,8 @@ class AccountController {
             return resp.json({ error: -1, data: "Invalid request" });
         }
         let userToken = req.params.userToken;
-        let ret = userModel.validateUserToken(userToken);
-        if (!ret || ret.error < 0) {
+        let ret = userController.validateUserToken(userToken);
+        if (!ret < 0) {
             return resp.json({ error: -2, data: "Invalid user token" });
         }
         web3.eth.personal.getAccounts().then(function(accounts) {
@@ -182,8 +217,8 @@ class AccountController {
         req.body.userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
         }
-        let ret = userModel.validateUserToken(req.body.userToken);
-        if (!ret || ret.error < 0) {
+        let ret = userController.validateUserToken(req.body.userToken);
+        if (!ret < 0) {
             return resp.json({ error: -2, data: "Invalid user token" });
         }
         if (req.body === null || req.body.toAddress === undefined ||

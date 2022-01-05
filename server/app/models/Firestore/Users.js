@@ -17,19 +17,6 @@ const cllctn = 'users';
  */
 function User() {
     
-    this.validateUserToken = (userToken, symbol) => {
-        return { 
-            error: 0,
-            ether: {
-                address: "0xc408888C550A11b8942e4Ffc9907b17706D8B3a4",
-                nonce: 12
-            },
-        };
-    }
-    
-    this.getAccount = (userToken, symbol) => {
-        return "0xc408888C550A11b8942e4Ffc9907b17706D8B3a4";
-    }
     /**
      * Find user information document by the specified conditions
      * @param {json} jsonWhere search condition to be used

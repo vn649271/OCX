@@ -528,6 +528,14 @@ li.sc-gsDKAQ {
     margin-bottom: 1rem;
 }
 
+.hiddenBox {
+    display: none
+}
+
+.shownBox {
+    display: block
+}
+
 /* responsive */
 @media (max-width: 1024px) {
     html,

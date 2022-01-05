@@ -23,6 +23,7 @@
     "firebase": "^9.6.0",
     "firebase-admin": "^10.0.0",
     "formidable": "^2.0.1",
+    "generate-passphrase-id": "^1.2.0",
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^2.2.0",
     "mysql2": "^1.6.5",

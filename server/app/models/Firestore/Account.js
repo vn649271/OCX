@@ -34,51 +34,24 @@ function Account() {
 
     /**
      * Create a new user information document
-     * @param {object} jsonUser parameter object presenting new user information
+     * @param {object} jsonAccount parameter object presenting new user information
      */
-    this.create = async function (jsonUser) {
+    this.create = async function (jsonAccount) {
         // Add a new document in collection "users"
         let now = new Date();
-        jsonUser.created_at = now;
-        jsonUser.updated_at = now;
+        jsonAccount.created_at = now;
+        jsonAccount.updated_at = now;
 
-        const res = await db.collection(cllctn).add(jsonUser);
-        if (res !== null) {
-            return res.id;
-        }
-        return null;
+        return await db.collection(cllctn).add(jsonAccount);
     }
 
-    /**
-     * Set pin code in the specified user information docment
-     * @param {string} userId id for the user information document to set status
-     * @param {string} pinCode pin code to be set
-     */
-    this.setPinCode = async function (userId, pinCode) {
-        const userRef = db.collection(cllctn).doc(userId);
-        let now = new Date();
-        const res = await userRef.update({ pin_code: pinCode, updated_at: now });
-        return res;
-    }
-
-    /**
-     * Set access token to the server in the specified user information docment
-     * @param {string} userId id for the user information document to set status
-     * @param {token} token token to be set
-     */
-    this.setToken = async function (userId, token) {
-        const userRef = db.collection(cllctn).doc(userId);
-        let now = new Date();
-        const res = await userRef.update({ token: token, updated_at: now });
-        return res;
-    }
     /**
      * Set status in the specified user information docment
-     * @param {string} userId id for the user information document to set status
+     * @param {string} accountId id for the user information document to set status
      * @param {integer} status status to be set
      */
-    this.setStatus = async function (userId, status) {
-        const userRef = db.collection(cllctn).doc(userId);
+    this.setStatus = async function (accountId, status) {
+        const userRef = db.collection(cllctn).doc(accountId);
         const res = await userRef.update({ status: status });
         return res;
     }

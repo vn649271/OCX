@@ -30,6 +30,26 @@ export const createAccount = (params) => {
         })
 }
 
+export const getAccountInfo = (params) => {
+    return axios
+        .get(BACKEND_BASE_URL + "/account/" + params.userToken)
+        .then(response => {
+            let ret = response ? response.data ? response.data: null: null;
+            if (ret === null) {
+                ret = { error: -100 }
+            }
+            if (params.onComplete) {
+                params.onComplete(ret);
+            }        
+        })
+        .catch(error => {
+            console.log("Failed to createAccount(): error: ", error)
+            if (params.onFailed) {
+                params.onFailed(error);
+            }
+        })
+}
+
 /**
  * Connect to specified account.
  * @param {string} userToken    user token
@@ -41,13 +61,13 @@ export const getBalance = (params) => {
     return axios
         .get(BACKEND_BASE_URL + "/account/balance/" + params.userToken)
         .then(response => {
-            let error = response ? response.data ? response.data.error ? 
-                                response.data.error: null : null: null;
-            if (error === null) {
-                if (params.onComplete) {
-                    params.onComplete(response.data);
-                }
+            let ret = response ? response.data ? response.data: null: null;
+            if (ret === null) {
+                ret = { error: -100 }
             }
+            if (params.onComplete) {
+                params.onComplete(ret);
+            }        
         })
         .catch(error => {
             console.log("Failed to createAccount(): error: ", error)
