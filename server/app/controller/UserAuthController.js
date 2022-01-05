@@ -182,15 +182,15 @@ class UserAuthController {
         }).then(user => {
             if (user) {
                 if (bcrypt.compareSync(req.body.password, user.password)) {
-                    let lastToken = user.token;
-                    if (lastToken === undefined || lastToken === null || lastToken == "") {
-                        lastToken = user.pin_code;
-                    }
-                    let token = jwt.sign({ token: lastToken }, TOKEN_GENERATION_SECRET_KEY, {
-                        expiresIn: 1440
-                    });
-                    let ret = userModel.setToken(user.id, token);
-                    res.json({ error: 0, message: token });
+                    // let lastToken = user.token;
+                    // if (lastToken === undefined || lastToken === null || lastToken == "") {
+                    //     lastToken = user.pin_code;
+                    // }
+                    // let token = jwt.sign({ token: lastToken }, TOKEN_GENERATION_SECRET_KEY, {
+                    //     expiresIn: 1440
+                    // });
+                    // let ret = userModel.setToken(user.id, token);
+                    res.json({ error: 0, message: user.token });
                 } else {
                     res.json({ error: -1, message: 'Wrong Email or password. Please check again.' })
                 }

@@ -5,8 +5,8 @@ const AccountController = require("../controller/AccountController");
 var accountController = new AccountController();
 
 account.post("/create", accountController.create);
-account.get("/:userToken", accountController.getMyAccount);
-account.get("/balance/:userToken", accountController.balance);
+account.post("/", accountController.getMyAccount);
+account.post("/balance", accountController.balance);
 account.post("/connect", accountController.connectToAccount);
 account.post("/send", accountController.send);
 
