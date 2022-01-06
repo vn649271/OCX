@@ -86,7 +86,7 @@ class AccountController {
                 accounts: {
                     eth: {
                         address: accountAddress,
-                        private: privateKey
+                        private: privateKey.toString('hex')
                     }
                 }
             }).then(accountInfo => {
