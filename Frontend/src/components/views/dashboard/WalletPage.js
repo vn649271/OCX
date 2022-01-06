@@ -7,7 +7,8 @@ import {
     createAccount, 
     getAccountInfo, 
     getBalance, 
-    sendCryptoCurrency 
+    sendCryptoCurrency,
+    lockAccount, unlockAccount
 } from '../../../service/Account';
 
 import QRCode from "react-qr-code";
@@ -26,6 +27,9 @@ const MAX_CREATING_DELAY_TIMEOUT = 10
 const UNKNOWN_USER = 0;
 const NEW_USER = 1;
 const USER_WITH_ACCOUNT = 2;
+
+const ACCOUNT_LOCKED = 0;
+const ACCOUNT_UNLOCKED = 1;
 
 var self;
 
@@ -56,6 +60,7 @@ class WalletPage extends Component {
             info: {
                 send: ''
             },
+            locked: ACCOUNT_LOCKED,
             password: "",
             confirm_password: "",
             showPassword: false,
@@ -63,7 +68,7 @@ class WalletPage extends Component {
             loading: false
         }
 
-        this.userToken = null;
+        this.props.userToken = null;
         this.validate = this.validate.bind(this)
         this.onCreateAccont = this.onCreateAccont.bind(this);
         this.onSend = this.onSend.bind(this);
@@ -72,6 +77,8 @@ class WalletPage extends Component {
         this.togglePasswordVisiblity = this.togglePasswordVisiblity.bind(this);
         this.validatePassword = this.validatePassword.bind(this);
 		this.showMessageForSending = this.showMessageForSending.bind(this);
+        this.onUnlockAccont = this.onUnlockAccont.bind(this);
+        this.onLockAccont = this.onLockAccont.bind(this);
     }
 
     componentDidUpdate(prevProps) {
@@ -80,11 +87,11 @@ class WalletPage extends Component {
     }
 
     componentDidMount() {
-        this.userToken = localStorage.getItem("userToken");
-        console.log("componentDidMount(): userToken", this.userToken);
+        this.props.userToken = localStorage.getItem("userToken");
+        console.log("componentDidMount(): userToken", this.props.userToken);
         setInterval(function() {
             getBalance({
-                userToken: self.userToken,
+                userToken: self.props.userToken,
                 account: "yyyyyyyyyyyyyyyyyyyyy",
                 onComplete: function(resp) {
                     console.log("getBalance: ", resp);
@@ -107,7 +114,7 @@ class WalletPage extends Component {
         }, 
         10000);
         getAccountInfo({
-            userToken: self.userToken,
+            userToken: self.props.userToken,
             onComplete: function(resp) {
                 if (resp.error == 1) { // No account
                     // Show UI to create an account
@@ -205,12 +212,12 @@ class WalletPage extends Component {
         }
         // Perform additional validation for email-phone
         // If required action performed, buttonCmpnt.stopTimer() must be called to stop loading
-        if (this.userToken === null) {
+        if (this.props.userToken === null) {
             console.log("Error: user token invalid(null)");
             return;
         }
         createAccount({
-            userToken: this.userToken,
+            userToken: this.props.userToken,
             password: this.state.input.password,
             onComplete: function (resp) {
                 buttonCmpnt.stopTimer();
@@ -264,7 +271,7 @@ class WalletPage extends Component {
         }
 
         sendCryptoCurrency({
-            userToken: this.userToken,
+            userToken: this.props.userToken,
             toAddress: toAddress,
             amount: amount,
             onComplete: function(resp) {
@@ -297,48 +304,113 @@ class WalletPage extends Component {
         this.setState({ hidePasswordCheckList: true });
     }
 
+    onUnlockAccont = (event) => {
+        // Try to unlock
+        unlockAccount({
+            userToken: this.props.userToken, 
+            password: this.state.input.password
+        }).then(ret => {
+            if (ret.error != 0) {
+                console.log("Failed to unlock account");
+                return;
+            }
+            // Display unlocked account page
+            this.setStatus({ locked: false });
+        });
+    }
+
+    onLockAccont = (event) => {
+        // Try to unlock
+        lockAccount(this.props.userToken).then(ret => {
+            if (ret.error != 0) {
+                console.log("Failed to lock account");
+                return;
+            }
+            // Display unlocked account page
+            this.setStatus({ locked: true });
+        });
+    }
 
     render() {
         return (
             <div className="my-account-page">
-                <span className="account-balance-box main-font text-black-400 mb-100 font-20">Balance: {this.state.balance.eth} ETH</span>
-                <span className="account-balance-box main-font text-red-400 mb-100 font-14">{this.state.errors.balance}</span>
+                <p className="account-balance-box main-font text-black-400 mb-100 font-20">Balance: {this.state.balance.eth} ETH</p>
+                <p className="account-balance-box main-font text-red-400 mb-100 font-14">{this.state.errors.balance}</p>
                 <div className={this.state.user_mode === USER_WITH_ACCOUNT ? 'shownBox': 'hiddenBox'}>
-                    <div id="qr-account-container">
-                        <div id="qr-container">
-                            <QRCode value="hey" />
+                    <div className={this.state.locked === ACCOUNT_UNLOCKED ? 'shownBox': 'hiddenBox'}>
+                        <div id="qr-account-container">
+                            <div id="lock-account-button-container">
+                                {/* Send Button */}
+                                <DelayButton
+                                    captionInDelay="Locking"
+                                    caption="Lock"
+                                    maxDelayInterval={30}
+                                    onClickButton={this.onLockAccont}
+                                    onClickButtonParam={null}
+                                />
+                            </div>
+                            <div id="qr-container">
+                                <QRCode value="hey" />
+                            </div>
+                            <div id="account-info-container">
+                                <input
+                                    type="text"
+                                    className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
+                                    name="to_address"
+                                    id="to_address"
+                                    placeholder="To Address"
+                                    value={this.state.input.to_address}
+                                    onChange={this.handleInputChange}
+                                    autoComplete="off" />
+                
+                                <input
+                                    type="number"
+                                    className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
+                                    name="amount"
+                                    id="amount"
+                                    placeholder="Amount"
+                                    value={this.state.input.amount}
+                                    onChange={this.handleInputChange}
+                                    autoComplete="off" />
+                            </div>
                         </div>
-                        <div id="account-info-container">
-                            <input
-                                type="text"
-                                className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
-                                name="to_address"
-                                id="to_address"
-                                placeholder="To Address"
-                                value={this.state.input.to_address}
-                                onChange={this.handleInputChange}
-                                autoComplete="off" />
-            
-                            <input
-                                type="number"
-                                className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
-                                name="amount"
-                                id="amount"
-                                placeholder="Amount"
-                                value={this.state.input.amount}
-                                onChange={this.handleInputChange}
-                                autoComplete="off" />
+                        <div id="send-button-container">
+                            {/* Send Button */}
+                            <DelayButton
+                                captionInDelay="Sending"
+                                caption="Send"
+                                maxDelayInterval={30}
+                                onClickButton={this.onSend}
+                                onClickButtonParam={null}
+                            />
                         </div>
                     </div>
-                    <div id="send-button-container">
-                        {/* Send Button */}
-                        <DelayButton
-                            captionInDelay="Sending"
-                            caption="Send"
-                            maxDelayInterval={30}
-                            onClickButton={this.onSend}
-                            onClickButtonParam={null}
-                        />
+                    <div className={this.state.locked === ACCOUNT_LOCKED ? 'shownBox': 'hiddenBox'}>
+                        <div className="mb-10">
+                            <div className="password-container block w-full">
+                                <input
+                                type={this.state.showPassword ? "text" : "password"}
+                                className="password-input border border-grey-light bg-gray-100 w-full p-5 font-16 main-font focus:outline-none rounded "
+                                name="password"
+                                value={this.state.input.password}
+                                onChange={this.handleInputChange}
+                                onBlur={this.onLeaveFromPasswordInput}
+                                placeholder="Password" autoComplete="off"
+                                />
+                                <i className="ShowPasswordIcon font-16" onClick={this.togglePasswordVisiblity}>{eye}</i>
+                            </div>
+                            <span className="help-block main-font text-red-400 font-14">{this.state.errors.password}</span>
+                            <div id="unlock-account-button-container">
+                                {/* Send Button */}
+                                <DelayButton
+                                    captionInDelay="Unlocking"
+                                    caption="Unlock"
+                                    maxDelayInterval={30}
+                                    onClickButton={this.onUnlockAccont}
+                                    onClickButtonParam={null}
+                                />
+                            </div>
+                        </div>
                     </div>
                     <span className="help-block main-font text-red-400 font-16">{this.state.errors.send}</span>
                     <span className="help-block main-font text-green-400 font-16">{this.state.info.send}</span>

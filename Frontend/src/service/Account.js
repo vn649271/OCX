@@ -31,6 +31,63 @@ export const createAccount = (params) => {
         })
 }
 
+/**
+ * Lock an account.
+ * @param {string} userToken    user token
+ * 
+ * @returns locked status
+ */
+export const lockAccount = (params) => {
+    console.log("Account.lockAccount(): parameter: ", params);
+    return axios
+        .post(BACKEND_BASE_URL + "/account/lock", {
+            userToken: params.userToken
+        })
+        .then(response => {
+            if (response !== undefined && response !== null
+            && response.error !== undefined && response.error !== null) {
+                if (params.onComplete) {
+                    params.onComplete(response);
+                }
+            }
+        })
+        .catch(error => {
+            console.log("Failed to lockAccount(): error: ", error)
+            if (params.onFailed) {
+                params.onFailed(error);
+            }
+        })
+}
+
+/**
+ * Unlock an account.
+ * @param {string} userToken    user token
+ * 
+ * @returns unlocked status
+ */
+export const unlockAccount = (params) => {
+    console.log("Account.unlockAccount(): parameter: ", params);
+    return axios
+        .post(BACKEND_BASE_URL + "/account/unlock", {
+            userToken: params.userToken,
+            password: params.password
+        })
+        .then(response => {
+            if (response !== undefined && response !== null
+            && response.error !== undefined && response.error !== null) {
+                if (params.onComplete) {
+                    params.onComplete(response);
+                }
+            }
+        })
+        .catch(error => {
+            console.log("Failed to lockAccount(): error: ", error)
+            if (params.onFailed) {
+                params.onFailed(error);
+            }
+        })
+}
+
 export const getAccountInfo = (params) => {
     return axios
         .post(BACKEND_BASE_URL + "/account", {

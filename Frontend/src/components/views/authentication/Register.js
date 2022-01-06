@@ -20,6 +20,7 @@ import {
   NOTIFY_INFORMATION,
   MAX_SMS_DELAY_TIMEOUT
 } from "../../../Contants";
+import { hashCode } from "../../../service/Utils";
 
 const eye = <FontAwesomeIcon icon={faEye} />;
 
@@ -526,12 +527,14 @@ export default class Register extends Component {
   }
 
   submitData = (param, recaptchaToken) => {
+    const hash = hashCode(me.state.input.password);
+    console.log("Hashed Password: ", me.state.input.password, hash);
     const newUser = {
       first_name: me.state.input.first_name,
       last_name: me.state.input.last_name,
       email_type: 0,
       email: me.state.input.email,
-      password: me.state.input.password,
+      password: hash,
       phone_for_email: me.state.input.phone_for_email
     }
     register(newUser, (ret) => {

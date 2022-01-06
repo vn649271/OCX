@@ -80,13 +80,10 @@ class AccountController {
                 passphrase: params.passphrase,
                 password: params.password,
                 accounts: {
-                    eth: 
-                    [
-                        {
-                            address: accountAddress,
-                            private: privateKey
-                        }
-                    ]
+                    eth: {
+                        address: accountAddress,
+                        private: privateKey
+                    }
                 }
             }).then(accountInfo => {
                 console.log("*********** Created Account: ", accountInfo);
@@ -200,6 +197,7 @@ class AccountController {
         if (!ret < 0) {
             return resp.json({ error: -3, data: "Invalid user token" });
         }
+        accountModel.getMyAccount(userToken);
         web3.eth.personal.getAccounts().then(function(accounts) {
             if (accounts.length < 1) {
                 console.log("No account");
@@ -210,6 +208,64 @@ class AccountController {
                 console.log(balanceInWei);
                 let balance = web3.utils.fromWei(balanceInWei, 'ether');
                 resp.json({ error: 0, data: balance });
+            });
+        });
+    }
+
+    /**
+     * @param {object} req request object from the client 
+     * @param {object} resp response object to the client
+     */
+    lock = (req, resp) => {
+        if (web3 == null) {
+            return resp.json({ error: -1, data: "Geth node is not ready yet. Please retry a while later."})
+        }
+        var userToken = req.body ? req.body.userToken? req.body.userToken: null: null;
+        if (userToken === null) {
+            return resp.json({ error: -2, data: "Invalid request" });
+        }
+        let ret = userController.validateUserToken(userToken);
+        if (!ret < 0) {
+            return resp.json({ error: -3, data: "Invalid user token" });
+        }
+        accountModel.getAddresses(userToken).then(accounts => {
+            if (accounts == undefined || accounts == {}) {
+                console.log("No account");
+                return resp.json({ error: -4, data: "No account for you"});
+            }
+            myAccount = accounts.eth.address;
+            web3.eth.personal.lockAccount(myAccount).then(ret => {
+                return resp.json({ error: 0, data: ret });
+            });
+        });
+    }
+
+    /**
+     * @param {object} req request object from the client 
+     * @param {object} resp response object to the client
+     */
+    unlock = (req, resp) => {
+        if (web3 == null) {
+            return resp.json({ error: -1, data: "Geth node is not ready yet. Please retry a while later."})
+        }
+        var userToken = req.body ? req.body.userToken? req.body.userToken: null: null;
+        if (userToken === null) {
+            return resp.json({ error: -2, data: "Invalid request" });
+        }
+        let ret = userController.validateUserToken(userToken);
+        if (!ret < 0) {
+            return resp.json({ error: -3, data: "Invalid user token" });
+        }
+        var password = req.body ? req.body.password ? req.body.password : null : null;
+
+        accountModel.getAddresses(userToken).then(accounts => {
+            if (accounts == undefined || accounts == {}) {
+                console.log("No account");
+                return resp.json({ error: -4, data: "No account for you"});
+            }
+            myAccount = accounts.eth.address;
+            web3.eth.personal.unlockAccount(myAccount, password).then(ret => {
+                return resp.json({ error: 0, data: ret });
             });
         });
     }
