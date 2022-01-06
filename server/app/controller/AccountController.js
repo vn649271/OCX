@@ -157,7 +157,7 @@ class AccountController {
             if (ret === undefined || ret === null) {
                 return resp.json({ error: 1, data: "No account" });
             }
-            return resp.json({  error: 0, data: ret });
+            return resp.json({  error: 0, data: ret.accounts });
         }).catch(err => {
             return resp.json({ error: -3, data: err + " --> " + req.body.password + " ++error" });
         });
@@ -197,13 +197,12 @@ class AccountController {
         if (!ret < 0) {
             return resp.json({ error: -3, data: "Invalid user token" });
         }
-        accountModel.getMyAccount(userToken);
-        web3.eth.personal.getAccounts().then(function(accounts) {
-            if (accounts.length < 1) {
+        accountModel.getAddresses(userToken).then(function(accounts) {
+            if (accounts == undefined || accounts == null || accounts == {}) {
                 console.log("No account");
                 return resp.json({ error: -4, data: "No account for you"});
             }
-            myAccount = accounts[0];
+            myAccount = accounts.eth.address;
             web3.eth.getBalance(myAccount).then(function(balanceInWei) {
                 console.log(balanceInWei);
                 let balance = web3.utils.fromWei(balanceInWei, 'ether');
@@ -236,6 +235,10 @@ class AccountController {
             myAccount = accounts.eth.address;
             web3.eth.personal.lockAccount(myAccount).then(ret => {
                 return resp.json({ error: 0, data: ret });
+            })
+            .catch(error => {
+                console.log("Failed to lock: ", error)
+                return resp.json({ error: -1, data: error.message });
             });
         });
     }
@@ -266,6 +269,10 @@ class AccountController {
             myAccount = accounts.eth.address;
             web3.eth.personal.unlockAccount(myAccount, password).then(ret => {
                 return resp.json({ error: 0, data: ret });
+            })
+            .catch(error => {
+                console.log("Failed to unlock: ", error)
+                return resp.json({ error: -1, data: error.message });
             });
         });
     }
