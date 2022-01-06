@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { hashCode } from "../../../service/Utils";
 import { login } from "../../../service/UserAuth";
 import Header from "../../common/Header";
 import Footer from "../../common/Footer";
@@ -173,10 +174,12 @@ export default class Login extends Component {
       Alert("Failed to init reCAPTCHA");
       return;
     }
-    // call a backend API to verify reCAPTCHA response
+    console.log(">>>>>>>>>>>>>>>> ", me.state.password);
+    const hash = hashCode(me.state.password);
+    console.log("................ ", hash);
     const user = {
-      email: this.state.email,
-      password: this.state.password
+      email: me.state.email,
+      password: hash
     }
 
     login(user, res => {
@@ -185,10 +188,10 @@ export default class Login extends Component {
       console.log("Login.js::login(): ", res);
       if (!res.error) {
         localStorage.setItem("userToken", res.message)
-        localStorage.setItem("email", this.state.email)
+        localStorage.setItem("email", me.state.email)
         me.props.history.push('/dashboard')
       } else {
-        this.setState({ notify: res.message });
+        me.setState({ notify: res.message });
       }
     })
   }
@@ -213,7 +216,7 @@ export default class Login extends Component {
   /**
    * 
    */
-   onSubmit(e) {
+  onSubmit(e) {
     e.preventDefault();
     if (this.state.email.trim() === "") {
       this.setState({ errors: { email: "Please input your Email" } });

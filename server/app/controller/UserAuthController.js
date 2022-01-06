@@ -80,15 +80,12 @@ class UserAuthController {
             }
         }).then(user => {
             if (!user) {
-                bcrypt.hash(params.req.body.password, 10, (err, hash) => {
-                    userData.password = hash;
-                    userModel.create(userData).then(newUserId => {
-                        if (newUserId === null) {
-                            params.resp.json({ error: -2, message: "Failed to add new user." });
-                            return;
-                        }
-                        params.resp.json({ error: 0 });
-                    });
+                userModel.create(userData).then(newUserId => {
+                    if (newUserId === null) {
+                        params.resp.json({ error: -2, message: "Failed to add new user." });
+                        return;
+                    }
+                    params.resp.json({ error: 0 });
                 });
             } else {
                 params.resp.json({ error: -1, message: "The Gmail account is registered already" });
@@ -146,18 +143,19 @@ class UserAuthController {
             }
         }).then(user => {
             if (!user) {
-                bcrypt.hash(req.body.password, 10, (err, hash) => {
-                    userData.password = hash;
-                    userModel.create(userData).then(newUserId => {
-                        if (newUserId === null) {
-                            return res.json({ error: -2, message: "Failed to add new user." });
-                        }
-                        me.sendEmail(newUserId, userData, res);
-                        return;
-                        // res.json({ status: user.email + " Registered" });
-                    }).catch(err => {
-                        res.json({ error: -3, message: err + " ==error" });
+                userModel.create(userData).then(newUserId => {
+                    if (newUserId === null) {
+                        return res.json({ error: -2, message: "Failed to add new user." });
+                    }
+                    let token = jwt.sign({ token: newUserId }, TOKEN_GENERATION_SECRET_KEY, {
+                        expiresIn: 1440
                     });
+                    userModel.setToken(newUserId, token);        
+                    me.sendEmail(newUserId, userData, res);
+                    return;
+                    // res.json({ status: user.email + " Registered" });
+                }).catch(err => {
+                    res.json({ error: -3, message: err + " ==error" });
                 });
             } else if (user.status == 0) {
                 res.json({ error: 1, message: "User already exists, but not confirmed." });
@@ -181,7 +179,7 @@ class UserAuthController {
             }
         }).then(user => {
             if (user) {
-                if (bcrypt.compareSync(req.body.password, user.password)) {
+                if (req.body.password == user.password) {
                     // let lastToken = user.token;
                     // if (lastToken === undefined || lastToken === null || lastToken == "") {
                     //     lastToken = user.pin_code;
@@ -251,6 +249,7 @@ class UserAuthController {
             '</b><br> to verify your email address' +
             '</p>';
         let ret = userModel.setPinCode(newUserId, pinCode);
+        
         var mailOptions = {
             from: process.env.ADMIN_GMAIL_ADDRESS,
             to: toAddress,
