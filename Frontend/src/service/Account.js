@@ -125,7 +125,6 @@ export const getAccountInfo = (params) => {
  * @returns 
  */
 export const getBalance = (params) => {
-    console.log("service/Account::getBalance(): parameter: ", params, BACKEND_BASE_URL + "/account/balance");
     return axios
         .post(BACKEND_BASE_URL + "/account/balance", {
             userToken: params.userToken
