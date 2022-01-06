@@ -97,7 +97,6 @@ export default class Login extends Component {
    *    Enable Google Login button, release timer for  display failure message
    */
   responseGoogleLoginFailed = (failure) => {
-    console.log("Login.responseGoogledFailed", failure);
     /********************** Unlock Google button disabled **********************************/
     if (this.state.disableGoogleButton) {
       this.setState({ disableGoogleButton: false });
@@ -123,7 +122,6 @@ export default class Login extends Component {
     if (response === undefined || response === null ||
       response.profileObj === undefined || response.profileObj === null ||
       response.profileObj.email === undefined || response.profileObj.email === null) {
-      console.log("Login.responseGoogle(): this.rmCheck=", this.rmCheck);
       if (this.rmCheck) {
         this.setState({
           warning: {
@@ -174,9 +172,7 @@ export default class Login extends Component {
       Alert("Failed to init reCAPTCHA");
       return;
     }
-    console.log(">>>>>>>>>>>>>>>> ", me.state.password);
     const hash = hashCode(me.state.password);
-    console.log("................ ", hash);
     const user = {
       email: me.state.email,
       password: hash
@@ -185,7 +181,6 @@ export default class Login extends Component {
     login(user, res => {
       me.setState({ loading: false });
       me.setState({ disableGoogleButton: false });
-      console.log("Login.js::login(): ", res);
       if (!res.error) {
         localStorage.setItem("userToken", res.message)
         localStorage.setItem("email", me.state.email)

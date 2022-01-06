@@ -10,6 +10,7 @@ import {
     sendCryptoCurrency,
     lockAccount, unlockAccount
 } from '../../../service/Account';
+import { hashCode } from "../../../service/Utils";
 
 import QRCode from "react-qr-code";
 // import { useParams } from 'react-router-dom';
@@ -17,6 +18,7 @@ import {
     BATCHED_VALIDATION,
     INDIVIDUAL_VALIDATION,
     NOTIFY_WARNING,
+    BALANCE_CHECKING_INTERVAL
     // NOTIFY_INFORMATION,
 } from "../../../Contants";
 
@@ -27,9 +29,6 @@ const MAX_CREATING_DELAY_TIMEOUT = 10
 const UNKNOWN_USER = 0;
 const NEW_USER = 1;
 const USER_WITH_ACCOUNT = 2;
-
-const ACCOUNT_LOCKED = 0;
-const ACCOUNT_UNLOCKED = 1;
 
 var self;
 
@@ -56,11 +55,14 @@ class WalletPage extends Component {
                 confirm_password: "",
                 balance: "",
                 amount: 0,
+                account: ""
             },
             info: {
-                send: ''
+                send: '',
+                account: ""
             },
-            locked: ACCOUNT_LOCKED,
+            accounts: {},
+            locked: true,
             password: "",
             confirm_password: "",
             showPassword: false,
@@ -68,7 +70,7 @@ class WalletPage extends Component {
             loading: false
         }
 
-        this.props.userToken = null;
+        this.userToken = null;
         this.validate = this.validate.bind(this)
         this.onCreateAccont = this.onCreateAccont.bind(this);
         this.onSend = this.onSend.bind(this);
@@ -77,6 +79,7 @@ class WalletPage extends Component {
         this.togglePasswordVisiblity = this.togglePasswordVisiblity.bind(this);
         this.validatePassword = this.validatePassword.bind(this);
 		this.showMessageForSending = this.showMessageForSending.bind(this);
+		this.showMessageForAccount = this.showMessageForAccount.bind(this);
         this.onUnlockAccont = this.onUnlockAccont.bind(this);
         this.onLockAccont = this.onLockAccont.bind(this);
     }
@@ -87,14 +90,12 @@ class WalletPage extends Component {
     }
 
     componentDidMount() {
-        this.props.userToken = localStorage.getItem("userToken");
-        console.log("componentDidMount(): userToken", this.props.userToken);
+        this.userToken = localStorage.getItem("userToken");
         setInterval(function() {
             getBalance({
-                userToken: self.props.userToken,
+                userToken: self.userToken,
                 account: "yyyyyyyyyyyyyyyyyyyyy",
                 onComplete: function(resp) {
-                    console.log("getBalance: ", resp);
                     let errorMsg = null;
                     if (resp.error === 0) {
                         let balanceMsg = self.state.balance;
@@ -112,23 +113,24 @@ class WalletPage extends Component {
                 }
             });
         }, 
-        10000);
+        BALANCE_CHECKING_INTERVAL);
         getAccountInfo({
-            userToken: self.props.userToken,
+            userToken: self.userToken,
             onComplete: function(resp) {
                 if (resp.error == 1) { // No account
                     // Show UI to create an account
                     self.setState({user_mode: NEW_USER})
                     return;
+                } else if (resp.error == 0) {
+                    self.setState({ accounts: resp.data });
+                    self.setState({user_mode: USER_WITH_ACCOUNT})
                 }
-                console.log("getAccountInfo: response=", resp);
             }
         });
     }
 
     togglePasswordVisiblity = event => {
         // let password = event.target.parentNode.parentNode.parentNode.firstElementChild.value;
-        // console.log("togglePasswordVisiblity()", password);
         this.setState({ showPassword: !this.state.showPassword });
     }
 
@@ -181,8 +183,6 @@ class WalletPage extends Component {
 
 
     handleInputChange = event => {
-        console.log("handleInputChange(): src: ", event.target.name, "    content: ", event.target.value);
-
         let input = this.state.input;
         input[event.target.name] = event.target.value;
         this.setState({
@@ -198,39 +198,7 @@ class WalletPage extends Component {
         this.validate(event.target.name);
     }
 
-    showWarningForPassword = (msg, type = NOTIFY_WARNING) => {
-        let errors = this.state.errors;
-        errors.password = msg;
-        this.setState({
-            errors: errors
-        });
-    }
-
-    onCreateAccont = (param, ev, buttonCmpnt) => {
-        if (!this.validate()) {
-            return;
-        }
-        // Perform additional validation for email-phone
-        // If required action performed, buttonCmpnt.stopTimer() must be called to stop loading
-        if (this.props.userToken === null) {
-            console.log("Error: user token invalid(null)");
-            return;
-        }
-        createAccount({
-            userToken: this.props.userToken,
-            password: this.state.input.password,
-            onComplete: function (resp) {
-                buttonCmpnt.stopTimer();
-                console.log("WalletPage.onCreateAccont():  ", resp);
-            },
-            onFailed: function (error) {
-                buttonCmpnt.stopTimer();
-                console.log("WalletPage.onCreateAccont():  ", error);
-            }
-        });
-    }
-
-	// type - 0: warning, 1: notification
+    // type - 0: warning, 1: notification
 	showMessageForSending = (msg, type = 0) => {
 		let errorMsg = '', informMsg = '';
         if (typeof msg === 'object') {
@@ -249,8 +217,51 @@ class WalletPage extends Component {
 		}
 	}
 
+    // type - 0: warning, 1: notification
+	showMessageForAccount = (msg, type = 0) => {
+		let errorMsg = '', informMsg = '';
+        if (typeof msg === 'object') {
+            return;
+        }
+		if (type === 0) {
+			errorMsg = msg;
+            let errorsObj = this.state.errors;
+            errorsObj.account = errorMsg;
+            this.setState({ errors: errorsObj });
+		} else if (type === 1) {
+			informMsg = msg;
+            let infoObj = this.state.info;
+            infoObj.account = informMsg;
+            this.setState({ info: infoObj });
+		}
+	}
+
+    onCreateAccont = (param, ev, buttonCmpnt) => {
+        if (!this.validate()) {
+            return;
+        }
+        // Perform additional validation for email-phone
+        // If required action performed, buttonCmpnt.stopTimer() must be called to stop loading
+        if (this.userToken === null) {
+            this.showMessageForAccount("Error: user token invalid(null)");
+            return;
+        }
+        createAccount({
+            userToken: this.userToken,
+            password: hashCode(this.state.input.password),
+            onComplete: resp => {
+                buttonCmpnt.stopTimer();
+                self.setState({ accounts: resp.data });
+                self.setState({user_mode: USER_WITH_ACCOUNT})
+            },
+            onFailed: error => {
+                buttonCmpnt.stopTimer();
+                this.showMessageForAccount(error);
+            }
+        });
+    }
+
     onSend = (param, ev, buttonCmpnt) => {
-        console.log("WalletPage.onSend()");
         let toAddress = this.state.input ? this.state.input.to_address ? this.state.input.to_address: null : null;
         if (toAddress === null) {
             buttonCmpnt.stopTimer();
@@ -271,7 +282,7 @@ class WalletPage extends Component {
         }
 
         sendCryptoCurrency({
-            userToken: this.props.userToken,
+            userToken: this.userToken,
             toAddress: toAddress,
             amount: amount,
             onComplete: function(resp) {
@@ -281,9 +292,7 @@ class WalletPage extends Component {
 				input.amount = '';
 				// input.to_address = '';
 				self.setState({ input: input });
-
 				self.showMessageForSending('');
-                console.log("getBalance: ", resp);
                 let error = resp ? resp.error ? resp.error : null : null;
                 if (error === null) {
 					self.showMessageForSending("Sending Complete", 1);
@@ -294,7 +303,6 @@ class WalletPage extends Component {
             },
 			onFailed: function(error) {
                 buttonCmpnt.stopTimer();
-				console.log("?????????????????????????? ", error);
 				self.showMessageForSending("Failed to send. For more details, see the console.");
 			}
         });
@@ -304,30 +312,44 @@ class WalletPage extends Component {
         this.setState({ hidePasswordCheckList: true });
     }
 
-    onUnlockAccont = (event) => {
+    onUnlockAccont = (param, ev, buttonCmpnt) => {
         // Try to unlock
         unlockAccount({
-            userToken: this.props.userToken, 
-            password: this.state.input.password
-        }).then(ret => {
-            if (ret.error != 0) {
-                console.log("Failed to unlock account");
-                return;
+            userToken: this.userToken, 
+            password: hashCode(this.state.input.password),
+            onComplete: ret => {
+                buttonCmpnt.stopTimer();
+                if (ret.error === undefined || ret.error !== 0) {
+                    self.showMessageForAccount(ret.data);
+                    return;
+                }
+                // Display unlocked account page
+                self.setState({ locked: false });
+            },
+            onFailed: error => {
+                buttonCmpnt.stopTimer();
+                self.showMessageForAccount(error);
             }
-            // Display unlocked account page
-            this.setStatus({ locked: false });
         });
     }
 
-    onLockAccont = (event) => {
+    onLockAccont = (param, ev, buttonCmpnt) => {
         // Try to unlock
-        lockAccount(this.props.userToken).then(ret => {
-            if (ret.error != 0) {
-                console.log("Failed to lock account");
-                return;
+        lockAccount({
+            userToken: this.userToken, 
+            onComplete: ret => {
+                buttonCmpnt.stopTimer();
+                if (ret.error === undefined || ret.error !== 0) {
+                    self.showMessageForAccount(ret.data);
+                    return;
+                }
+                // Display unlocked account page
+                self.setState({ locked: true });
+            },
+            onFailed: error => {
+                buttonCmpnt.stopTimer();
+                self.showMessageForAccount(error);
             }
-            // Display unlocked account page
-            this.setStatus({ locked: true });
         });
     }
 
@@ -336,8 +358,10 @@ class WalletPage extends Component {
             <div className="my-account-page">
                 <p className="account-balance-box main-font text-black-400 mb-100 font-20">Balance: {this.state.balance.eth} ETH</p>
                 <p className="account-balance-box main-font text-red-400 mb-100 font-14">{this.state.errors.balance}</p>
+                <p className="help-block main-font text-red-400 font-16">{this.state.errors.account}</p>
+                <p className="help-block main-font text-green-400 font-16">{this.state.info.account}</p>
                 <div className={this.state.user_mode === USER_WITH_ACCOUNT ? 'shownBox': 'hiddenBox'}>
-                    <div className={this.state.locked === ACCOUNT_UNLOCKED ? 'shownBox': 'hiddenBox'}>
+                    <div className={!this.state.locked? 'shownBox': 'hiddenBox'}>
                         <div id="qr-account-container">
                             <div id="lock-account-button-container">
                                 {/* Send Button */}
@@ -353,6 +377,17 @@ class WalletPage extends Component {
                                 <QRCode value="hey" />
                             </div>
                             <div id="account-info-container">
+                                <div id="my-account-info-container">
+                                    {
+                                        this.state.accounts? 
+                                            this.state.accounts.eth ? 
+                                                this.state.accounts.eth.address ?
+                                                    this.state.accounts.eth.address :
+                                                null :
+                                            null :
+                                        null
+                                    }
+                                </div>
                                 <input
                                     type="text"
                                     className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
@@ -385,7 +420,7 @@ class WalletPage extends Component {
                             />
                         </div>
                     </div>
-                    <div className={this.state.locked === ACCOUNT_LOCKED ? 'shownBox': 'hiddenBox'}>
+                    <div className={this.state.locked? 'shownBox': 'hiddenBox'}>
                         <div className="mb-10">
                             <div className="password-container block w-full">
                                 <input
@@ -412,8 +447,6 @@ class WalletPage extends Component {
                             </div>
                         </div>
                     </div>
-                    <span className="help-block main-font text-red-400 font-16">{this.state.errors.send}</span>
-                    <span className="help-block main-font text-green-400 font-16">{this.state.info.send}</span>
                 </div>
                 <div className={this.state.user_mode === NEW_USER ? 'shownBox': 'hiddenBox'}>
                     <div className="mb-10">

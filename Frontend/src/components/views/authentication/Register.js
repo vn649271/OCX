@@ -304,7 +304,6 @@ export default class Register extends Component {
   }
 
   onRequestSmsCode = ev => {
-    console.log("Register.onRequestSmsCode()");
     if (this.state.loading && this.state.loading_sms_verify_interval > 0) {
       return;
     }
@@ -363,7 +362,6 @@ export default class Register extends Component {
   }
 
   togglePasswordVisiblity = event => {
-    console.log("togglePasswordVisiblity()", event.target.value);
     this.setState({ showPassword: !this.state.showPassword });
   }
 
@@ -471,8 +469,6 @@ export default class Register extends Component {
   }
 
   responseGoogleFailed = (failure) => {
-    console.log("responseGoogleFailed()");
-
     /******************************************************************************************/
     /********************** Unlock Google button disabled *************************************/
     if (this.state.disableGoogleButton) {
@@ -487,7 +483,6 @@ export default class Register extends Component {
   }
 
   responseGoogle = (response) => {
-    console.log("responseGoogle()");
     if (response === undefined || response === null ||
       response.profileObj === undefined || response.profileObj === null ||
       response.profileObj.email === undefined || response.profileObj.email === null) {
@@ -528,7 +523,6 @@ export default class Register extends Component {
 
   submitData = (param, recaptchaToken) => {
     const hash = hashCode(me.state.input.password);
-    console.log("Hashed Password: ", me.state.input.password, hash);
     const newUser = {
       first_name: me.state.input.first_name,
       last_name: me.state.input.last_name,

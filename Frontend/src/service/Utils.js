@@ -1,3 +1,11 @@
+export const encodeBase64 = str => {
+    return window.btoa(unescape(encodeURIComponent( str )));
+}
+
+export const decodeBase64 = str => {
+    return decodeURIComponent(escape(window.atob( str )));
+}
+
 export const hashCode/*cyrb53*/ = function(str, seed = 0) {
     let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
     for (let i = 0, ch; i < str.length; i++) {
@@ -7,5 +15,7 @@ export const hashCode/*cyrb53*/ = function(str, seed = 0) {
     }
     h1 = Math.imul(h1 ^ (h1>>>16), 2246822507) ^ Math.imul(h2 ^ (h2>>>13), 3266489909);
     h2 = Math.imul(h2 ^ (h2>>>16), 2246822507) ^ Math.imul(h1 ^ (h1>>>13), 3266489909);
-    return 4294967296 * (2097151 & h2) + (h1>>>0);
+    let hashCode = 4294967296 * (2097151 & h2) + (h1>>>0);
+    console.log("hashCode(): ", hashCode);
+    return encodeBase64(hashCode);
 };
