@@ -91,15 +91,15 @@ class WalletPage extends Component {
 
     componentDidMount() {
         this.userToken = localStorage.getItem("userToken");
-        setInterval(function() {
+        setTimeout(function() {
             getBalance({
                 userToken: self.userToken,
                 account: "yyyyyyyyyyyyyyyyyyyyy",
                 onComplete: function(resp) {
-                    let errorMsg = null;
+                    var errorMsg = null;
                     if (resp.error === 0) {
-                        let balanceMsg = self.state.balance;
-                        balanceMsg.eth = ((resp.data - 0) / 1000000000000000000).toFixed(4);
+                        var balanceMsg = self.state.balance;
+                        balanceMsg['eth'] = resp.data;
                         self.setState({balance: balanceMsg});
                         return;
                     } else if (resp.error === -100) {
