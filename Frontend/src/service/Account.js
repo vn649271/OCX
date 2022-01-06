@@ -9,7 +9,6 @@ import { BACKEND_BASE_URL } from "../Contants";
  * @returns new account address
  */
 export const createAccount = (params) => {
-    console.log("Account.createAccount(): parameter: ", params);
     return axios
         .post(BACKEND_BASE_URL + "/account/create", {
             userToken: params.userToken,
@@ -44,11 +43,15 @@ export const lockAccount = (params) => {
             userToken: params.userToken
         })
         .then(response => {
-            if (response !== undefined && response !== null
-            && response.error !== undefined && response.error !== null) {
-                if (params.onComplete) {
-                    params.onComplete(response);
+            let respData = response ? response.data ? response.data : null : null;
+            if (respData == null) {
+                if (params.onFailed) {
+                    params.onFailed("Invalid response for lock account");
                 }
+                return;
+            }
+            if (params.onComplete) {
+                params.onComplete(respData);
             }
         })
         .catch(error => {
@@ -73,11 +76,15 @@ export const unlockAccount = (params) => {
             password: params.password
         })
         .then(response => {
-            if (response !== undefined && response !== null
-            && response.error !== undefined && response.error !== null) {
-                if (params.onComplete) {
-                    params.onComplete(response);
+            let respData = response ? response.data ? response.data : null : null;
+            if (respData == null) {
+                if (params.onFailed) {
+                    params.onFailed("Invalid response for unlock account");
                 }
+                return;
+            }
+            if (params.onComplete) {
+                params.onComplete(respData);
             }
         })
         .catch(error => {
