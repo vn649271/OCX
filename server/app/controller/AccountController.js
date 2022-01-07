@@ -15,12 +15,12 @@ const MY_ACCOUNT_PASSWORD = process.env.MY_ACCOUNT_PASSWORD || "123qweasdzxcM<>"
 const UNLOCK_ACCOUNT_INTERVAL = process.env.UNLOCK_ACCOUNT_INTERVAL || 15000; // 15s
 const ETHER_NETWORK = process.env.ETHER_NETWORK || "goerli";
 // For Linux
-// const GETH_DATA_DIR = process.env.HOME + "/.ethereum/" + ETHER_NETWORK
-// const ipcPath = GETH_DATA_DIR + "/geth.ipc"; // For Linux
+const GETH_DATA_DIR = process.env.HOME + "/.ethereum/" + ETHER_NETWORK
+const ipcPath = GETH_DATA_DIR + "/geth.ipc"; // For Linux
 // For Windows
 // EX: C:\Users\PolarStar\AppData\Local\Ethereum\goerli\keystore
-const GETH_DATA_DIR = process.env.LOCALAPPDATA +"\\Ethereum\\" + ETHER_NETWORK;
-const ipcPath = "\\\\.\\pipe\\geth.ipc";
+// const GETH_DATA_DIR = process.env.LOCALAPPDATA +"\\Ethereum\\" + ETHER_NETWORK;
+// const ipcPath = "\\\\.\\pipe\\geth.ipc";
 
 var geth = spawn('geth', ['--goerli', '--syncmode', 'light']);
 geth.stdout.on('data', (data) => {
@@ -142,7 +142,7 @@ class AccountController {
      * @param {object} resp 
      * @returns 
      */
-     connect = (req, resp) => {
+    connect = (req, resp) => {
         if (web3 == null) {
             return resp.json({ error: -31, data: "Geth node is not ready yet. Please retry a while later."})
         }
