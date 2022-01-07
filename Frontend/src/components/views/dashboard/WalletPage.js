@@ -79,6 +79,7 @@ class WalletPage extends Component {
         this.showMessageForBalance = this.showMessageForBalance.bind(this);
         this.setSendingAmountInUI = this.setSendingAmountInUI.bind(this);
         this.setBalanceInUI = this.setBalanceInUI.bind(this);
+        this.setPasswordInUI = this.setPasswordInUI.bind(this);
         this.onUnlockAccont = this.onUnlockAccont.bind(this);
         this.onLockAccont = this.onLockAccont.bind(this);
     }
@@ -286,6 +287,12 @@ class WalletPage extends Component {
         this.setState({ balance: balanceMsg });
     }
 
+    setPasswordInUI = password => {
+        let input = this.state.input;
+        input.password = password;
+        this.setState({ input: input });
+    }
+
     onCreateAccont = (param, ev, buttonCmpnt) => {
         if (!this.validate()) {
             return;
@@ -406,6 +413,7 @@ class WalletPage extends Component {
                 buttonCmpnt.stopTimer();
                 if (resp.error == 0) {
                     // Display unlocked account page
+                    self.setPasswordInUI('');
                     self.setState({ locked: false });
                     return;
                 } else if (resp.error == -100) {
