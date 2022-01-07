@@ -97,7 +97,6 @@ class WalletPage extends Component {
                     userToken: self.userToken
                 },
                 onComplete: resp => {
-                    console.log("WalletPage::componentDidMount(): response: ", resp);
                     var errorMsg = null;
                     if (resp.error === 0) {
                         self.setBalanceInUI('eth', (resp.data - 0).toFixed(4));
@@ -122,10 +121,13 @@ class WalletPage extends Component {
             },
             onComplete: resp => {
                 var errorMsg = null;
+                var accounts = null;
                 if (resp.error !== undefined) {
                     switch (resp.error) {
                         case 0:
-                            self.setState({ accounts: resp.data });
+                            accounts = self.state.accounts;
+                            accounts['eth'] = resp.data;
+                            self.setState({ accounts: accounts });
                             self.setState({ user_mode: USER_WITH_ACCOUNT })
                             return;
                         case 1:
@@ -311,7 +313,11 @@ class WalletPage extends Component {
             onComplete: resp => {
                 buttonCmpnt.stopTimer();
                 if (resp.error == 0) {
-                    self.setState({ accounts: resp.data });
+                    self.setState({ locked: false });
+                    let accounts = this.state.accounts;
+                    accounts.eth = resp.data;
+                    self.setState({ accounts: accounts });
+                    self.showMessageForAccount('');
                     self.setState({ user_mode: USER_WITH_ACCOUNT });
                     return;
                 } else if (resp.error == -100) {
@@ -363,6 +369,8 @@ class WalletPage extends Component {
                 buttonCmpnt.stopTimer();
                 if (resp.error == 0) {
                     // Display unlocked account page
+                    self.showMessageForAccount('');
+                    self.showMessageForBalance('');
                     self.setPasswordInUI('');
                     self.setState({ locked: false });
                     return;
@@ -442,8 +450,8 @@ class WalletPage extends Component {
                                 {
                                     this.state.accounts ?
                                     this.state.accounts.eth ?
-                                        this.state.accounts.eth.address ?
-                                            this.state.accounts.eth.address :
+                                        this.state.accounts.eth ?
+                                            this.state.accounts.eth :
                                             null :
                                         null :
                                     null
