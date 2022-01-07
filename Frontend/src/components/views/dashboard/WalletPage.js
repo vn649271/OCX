@@ -327,56 +327,6 @@ class WalletPage extends Component {
         });
     }
 
-    onSend = (param, ev, buttonCmpnt) => {
-        let toAddress = this.state.input ? this.state.input.to_address ? this.state.input.to_address : null : null;
-        if (toAddress === null) {
-            buttonCmpnt.stopTimer();
-            this.showMessageForSending("Please input receiving address");
-            return;
-        }
-        if (toAddress.trim().length !== 42) {
-            buttonCmpnt.stopTimer();
-            this.showMessageForSending("Please input valid receiving address");
-            return;
-        }
-
-        let amount = this.state.input ? this.state.input.amount ? this.state.input.amount : null : null;
-        if (amount === null || amount.trim() === "") {
-            buttonCmpnt.stopTimer();
-            this.showMessageForSending("Please input the amount to send");
-            return;
-        }
-
-        sendCryptoCurrency({
-            reqParam: {
-                userToken: this.userToken,
-                toAddress: toAddress,
-                amount: amount,
-            },
-            onComplete: resp => {
-                buttonCmpnt.stopTimer();
-
-                if (resp.error == 0) {
-                    self.setSendingAmountInUI(0);
-                    self.showMessageForSending("Sending Complete", 1);
-                    return;
-                } else if (resp.error == -100) {
-                    self.showMessageForSending("Invalid response for sending token");
-                } else {
-                    self.showMessageForSending(resp.data);
-                }
-            },
-            onFailed: error => {
-                buttonCmpnt.stopTimer();
-                self.showMessageForSending(error);
-            }
-        });
-    }
-
-    onLeaveFromPasswordInput = event => {
-        this.setState({ hidePasswordCheckList: true });
-    }
-
     onLockAccont = (param, ev, buttonCmpnt) => {
         // Try to unlock
         lockAccount({
@@ -427,6 +377,56 @@ class WalletPage extends Component {
                 self.showMessageForAccount(error);
             }
         });
+    }
+
+    onSend = (param, ev, buttonCmpnt) => {
+        let toAddress = this.state.input ? this.state.input.to_address ? this.state.input.to_address : null : null;
+        if (toAddress === null) {
+            buttonCmpnt.stopTimer();
+            this.showMessageForSending("Please input receiving address");
+            return;
+        }
+        if (toAddress.trim().length !== 42) {
+            buttonCmpnt.stopTimer();
+            this.showMessageForSending("Please input valid receiving address");
+            return;
+        }
+
+        let amount = this.state.input ? this.state.input.amount ? this.state.input.amount : null : null;
+        if (amount === null || amount.trim() === "") {
+            buttonCmpnt.stopTimer();
+            this.showMessageForSending("Please input the amount to send");
+            return;
+        }
+
+        sendCryptoCurrency({
+            reqParam: {
+                userToken: this.userToken,
+                toAddress: toAddress,
+                amount: amount,
+            },
+            onComplete: resp => {
+                buttonCmpnt.stopTimer();
+
+                if (resp.error == 0) {
+                    self.setSendingAmountInUI(0);
+                    self.showMessageForSending("Sending Complete", 1);
+                    return;
+                } else if (resp.error == -100) {
+                    self.showMessageForSending("Invalid response for sending token");
+                } else {
+                    self.showMessageForSending(resp.data);
+                }
+            },
+            onFailed: error => {
+                buttonCmpnt.stopTimer();
+                self.showMessageForSending(error);
+            }
+        });
+    }
+
+    onLeaveFromPasswordInput = event => {
+        this.setState({ hidePasswordCheckList: true });
     }
 
     render() {
