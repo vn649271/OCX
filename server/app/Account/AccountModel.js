@@ -20,7 +20,7 @@ Data Model
 /**
  * Declaration of model object for user information
  */
-function Account() {
+function AccountModel() {
 
     /**
      * Find user information document by the specified conditions
@@ -82,11 +82,11 @@ function Account() {
      * @param {string} accountId id for the user information document to set status
      * @param {integer} status status to be set
      */
-    this.setStatus = async function (accountId, status) {
+    this.setLock = async function (accountId, lock) {
         const userRef = db.collection(cllctn).doc(accountId);
-        const res = await userRef.update({ status: status });
+        const res = await userRef.update({ locked: lock });
         return res;
     }
 }
 
-module.exports = Account;
+module.exports = AccountModel;
