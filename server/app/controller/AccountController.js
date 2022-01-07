@@ -14,13 +14,13 @@ var keythereum = require("keythereum");
 const MY_ACCOUNT_PASSWORD = process.env.MY_ACCOUNT_PASSWORD || "123qweasdzxcM<>";
 const UNLOCK_ACCOUNT_INTERVAL = process.env.UNLOCK_ACCOUNT_INTERVAL || 15000; // 15s
 const ETHER_NETWORK = process.env.ETHER_NETWORK || "goerli";
-
+// For Linux
 // const GETH_DATA_DIR = process.env.HOME + "/.ethereum/" + ETHER_NETWORK
 // const ipcPath = GETH_DATA_DIR + "/geth.ipc"; // For Linux
-
+// For Windows
 // EX: C:\Users\PolarStar\AppData\Local\Ethereum\goerli\keystore
 const GETH_DATA_DIR = process.env.LOCALAPPDATA +"\\Ethereum\\" + ETHER_NETWORK;
-const ipcPath = "\\\\.\\pipe\\geth.ipc";    // For Windows
+const ipcPath = "\\\\.\\pipe\\geth.ipc";
 
 var geth = spawn('geth', ['--goerli', '--syncmode', 'light']);
 geth.stdout.on('data', (data) => {
@@ -77,7 +77,6 @@ class AccountController {
             // Get private key for new account
             var keyObject = keythereum.importFromFile(accountAddress, GETH_DATA_DIR);
             var privateKey = keythereum.recover(params.password, keyObject);
-            console.log("Private Key for new account: ", privateKey.toString('hex'));
 
             accountModel.create({
                 user_token: params.userToken,
@@ -90,14 +89,16 @@ class AccountController {
                     }
                 }
             }).then(accountInfo => {
-                console.log("*********** Created Account: ", accountInfo);
                 return params.response.json({ 
                     error: 0,
                     data: accountInfo.id,
                     address: accountAddress
                 });                
-            })
-
+            }).catch(err => {
+                return resp.json({ error: -5, data: err });
+            });
+        }).catch(err => {
+            return resp.json({ error: -6, data: err });
         });
     }
 
@@ -141,17 +142,17 @@ class AccountController {
      * @param {object} resp 
      * @returns 
      */
-    getMyAccount = (req, resp) => {
+     connect = (req, resp) => {
         if (web3 == null) {
-            return resp.json({ error: -3, data: "Geth node is not ready yet. Please retry a while later."})
+            return resp.json({ error: -31, data: "Geth node is not ready yet. Please retry a while later."})
         }
         var userToken = req.body? req.body.userToken? req.body.userToken: null: null;
         if (userToken === null) {
-            return resp.json({ error: -1, data: "Invalid request" });
+            return resp.json({ error: -2, data: "Invalid request" });
         }
         let ret = userController.validateUserToken(userToken);
         if (!ret < 0) {
-            return resp.json({ error: -2, data: "Invalid user token" });
+            return resp.json({ error: -3, data: "Invalid user token" });
         }
         accountModel.findOne({
             where: {
@@ -163,26 +164,8 @@ class AccountController {
             }
             return resp.json({  error: 0, data: ret.accounts });
         }).catch(err => {
-            return resp.json({ error: -3, data: err + " --> " + req.body.password + " ++error" });
+            return resp.json({ error: -4, data: err });
         });
-    }
-
-    /**
-     * Connect to the specified account
-     * @param {object} req request object from the client 
-     * @param {object} resp response object to the client
-     */
-    connectToAccount = (req, resp) => {
-        if (req.body === null || req.body.userToken === undefined ||
-            req.body.userToken === null) {
-            return resp.json({ error: -1, data: "Invalid request" });
-        }
-        let ret = userController.validateUserToken(req.body.userToken);
-        if (!ret < 0) {
-            return resp.json({ error: -2, data: "Invalid user token" });
-        }
-
-        return resp.json({ error: 0, data: "" });
     }
 
     /**
@@ -211,7 +194,11 @@ class AccountController {
                 console.log(balanceInWei);
                 let balance = web3.utils.fromWei(balanceInWei, 'ether');
                 resp.json({ error: 0, data: balance });
+            }).catch(error => {
+                return resp.json({error: -5, data: error});
             });
+        }).catch(error => {
+            return resp.json({error: -6, data: error});
         });
     }
 
@@ -242,8 +229,10 @@ class AccountController {
             })
             .catch(error => {
                 console.log("Failed to lock: ", error)
-                return resp.json({ error: -1, data: error.message });
+                return resp.json({ error: -5, data: error.message });
             });
+        }).catch(error => {
+            return resp.json({error: -6, data: error});
         });
     }
 
@@ -275,9 +264,20 @@ class AccountController {
                 return resp.json({ error: 0, data: ret });
             })
             .catch(error => {
-                console.log("Failed to unlock: ", error)
-                return resp.json({ error: -1, data: error.message });
+                console.log("Failed to unlock: ", error);
+                let msg = "Failed to unlock";
+                if (error.message !== undefined && error.message !== null && error.message !== "") {
+                    msg = error.message.replace("Returned error: ", "");
+                    if (msg == "could not decrypt key with given password") {
+                        msg = "Wrong password";
+                    }
+                } else {
+                    msg = "Unknown error occurred in unlocking account";
+                }
+                return resp.json({ error: -5, data: msg });
             });
+        }).catch(error => {
+            return resp.json({error: -6, data: error});
         });
     }
 
@@ -289,9 +289,9 @@ class AccountController {
         if (web3 == null) {
             return resp.json({ error: -3, data: "Geth node is not ready yet. Please retry a while later."})
         }
-        if (req.body === null || req.body.userToken === undefined ||
-        req.body.userToken === null) {
-            return resp.json({ error: -1, data: "Invalid request" });
+        var userToken = req.body ? req.body.userToken? req.body.userToken: null: null;
+        if (userToken === null) {
+            return resp.json({ error: -2, data: "Invalid request" });
         }
         let ret = userController.validateUserToken(req.body.userToken);
         if (!ret < 0) {
@@ -309,30 +309,37 @@ class AccountController {
         var toAddress = req.body.toAddress;
         var toAmount = req.body.amount;
 
-        web3.eth.personal.getAccounts().then(function(accounts) {
-            if (accounts.length < 1) {
-                console.log("No account");
-                return;
+        accountModel.findOne({
+            where: {
+                user_token: userToken
             }
-            console.log("Accounts: ", accounts);
-            myAccount = accounts[0];
-            console.log("My Account: ", myAccount);
-            web3.eth.personal.unlockAccount(myAccount, MY_ACCOUNT_PASSWORD, UNLOCK_ACCOUNT_INTERVAL)
+        }).then(accountInfo => {
+            if (accountInfo == undefined || accountInfo.accounts == undefined || accountInfo.accounts == {}) {
+                console.log("No account");
+                return resp.json({ error: -5, data: "No account for you"});
+            }
+            var accounts = accountInfo.accounts;
+            myAccount = accounts.eth.address;
+            var amountToSend = web3.utils.toWei(toAmount.toString(), "ether");
+            web3.eth.personal.unlockAccount(myAccount, accountInfo.password, UNLOCK_ACCOUNT_INTERVAL)
             .then(function(ret) {
-                console.log("Unlocking: ", ret);
                 if (!ret) {
-                    console.log("Failed to unlock the account");
-                    return;
+                    return resp.json({ error: -6, data: "Failed to unlock for sending" });
                 }
-                let amountToSend = web3.utils.toWei(toAmount.toString(), "ether");
                 web3.eth.sendTransaction({
                     "from": myAccount,
                     "to": toAddress,
                     "value": amountToSend
                 }).then(function(txHash) {
                     return resp.json({error: 0, data: txHash});
+                }).catch(error => {
+                    return resp.json({error: -10, data: error});
                 });
+            }).catch(error => {
+                return resp.json({error: -7, data: error});
             });
+        }).catch(error => {
+            return resp.json({error: -8, data: error});
         });
     }
 };

@@ -536,6 +536,24 @@ li.sc-gsDKAQ {
     display: block
 }
 
+.account-info-container {
+    margin-bottom: 100px;
+}
+
+/* .account-address-box {
+    float: left;
+} */
+
+/* .account-balance-box {
+    float: right;
+} */
+
+.lock-account-button-container {
+    float: right;
+    width: 100%;
+    height: 30px;
+}
+
 /* responsive */
 @media (max-width: 1024px) {
     html,
