@@ -1,6 +1,31 @@
 import axios from "axios";
 import { BACKEND_BASE_URL } from "../Contants";
 
+const GET_REQ = 0;
+const POST_REQ = 1;
+
+function _sendRequest(params, reqType) {
+    var reqCall = axios.post(params.url, params.reqParam); // Default reqType = POST_REQ
+    if (reqType !== undefined && reqType == GET_REQ) {
+        reqCall = axios.get(params.url, params.reqParam);
+    }
+    reqCall.then(response => {
+        let ret = response ? response.data ? response.data: null: null;
+        if (ret === null) {
+            ret = { error: -100 }
+        }
+        if (params.onComplete) {
+            params.onComplete(ret);
+        }        
+    })
+    .catch(error => {
+        console.log("Failed to getBalance(): error: ", error)
+        if (params.onFailed) {
+            params.onFailed(error);
+        }
+    })
+}
+
 /**
  * Create a new account.
  * @param {string} userToken    user token
@@ -9,25 +34,8 @@ import { BACKEND_BASE_URL } from "../Contants";
  * @returns new account address
  */
 export const createAccount = (params) => {
-    return axios
-        .post(BACKEND_BASE_URL + "/account/create", {
-            userToken: params.userToken,
-            password: params.password
-        })
-        .then(response => {
-            if (response !== undefined && response !== null
-            && response.error !== undefined && response.error !== null) {
-                if (params.onComplete) {
-                    params.onComplete(response);
-                }
-            }
-        })
-        .catch(error => {
-            console.log("Failed to createAccount(): error: ", error)
-            if (params.onFailed) {
-                params.onFailed(error);
-            }
-        })
+    params.url = BACKEND_BASE_URL + "/account/create";
+    _sendRequest(params);
 }
 
 /**
@@ -37,29 +45,8 @@ export const createAccount = (params) => {
  * @returns locked status
  */
 export const lockAccount = (params) => {
-    console.log("Account.lockAccount(): parameter: ", params);
-    return axios
-        .post(BACKEND_BASE_URL + "/account/lock", {
-            userToken: params.userToken
-        })
-        .then(response => {
-            let respData = response ? response.data ? response.data : null : null;
-            if (respData == null) {
-                if (params.onFailed) {
-                    params.onFailed("Invalid response for lock account");
-                }
-                return;
-            }
-            if (params.onComplete) {
-                params.onComplete(respData);
-            }
-        })
-        .catch(error => {
-            console.log("Failed to lockAccount(): error: ", error)
-            if (params.onFailed) {
-                params.onFailed(error);
-            }
-        })
+    params.url = BACKEND_BASE_URL + "/account/lock";
+    _sendRequest(params);
 }
 
 /**
@@ -69,52 +56,13 @@ export const lockAccount = (params) => {
  * @returns unlocked status
  */
 export const unlockAccount = (params) => {
-    console.log("Account.unlockAccount(): parameter: ", params);
-    return axios
-        .post(BACKEND_BASE_URL + "/account/unlock", {
-            userToken: params.userToken,
-            password: params.password
-        })
-        .then(response => {
-            let respData = response ? response.data ? response.data : null : null;
-            if (respData == null) {
-                if (params.onFailed) {
-                    params.onFailed("Invalid response for unlock account");
-                }
-                return;
-            }
-            if (params.onComplete) {
-                params.onComplete(respData);
-            }
-        })
-        .catch(error => {
-            console.log("Failed to lockAccount(): error: ", error)
-            if (params.onFailed) {
-                params.onFailed(error);
-            }
-        })
+    params.url = BACKEND_BASE_URL + "/account/unlock";
+    _sendRequest(params);
 }
 
-export const getAccountInfo = (params) => {
-    return axios
-        .post(BACKEND_BASE_URL + "/account", {
-            userToken: params.userToken
-        })
-        .then(response => {
-            let ret = response ? response.data ? response.data: null: null;
-            if (ret === null) {
-                ret = { error: -100 }
-            }
-            if (params.onComplete) {
-                params.onComplete(ret);
-            }        
-        })
-        .catch(error => {
-            console.log("Failed to getAccountInfo(): error: ", error)
-            if (params.onFailed) {
-                params.onFailed(error);
-            }
-        })
+export const connectAccount = (params) => {
+    params.url = BACKEND_BASE_URL + "/account/connect";
+    _sendRequest(params);
 }
 
 /**
@@ -125,55 +73,8 @@ export const getAccountInfo = (params) => {
  * @returns 
  */
 export const getBalance = (params) => {
-    return axios
-        .post(BACKEND_BASE_URL + "/account/balance", {
-            userToken: params.userToken
-        })
-        .then(response => {
-            let ret = response ? response.data ? response.data: null: null;
-            if (ret === null) {
-                ret = { error: -100 }
-            }
-            if (params.onComplete) {
-                params.onComplete(ret);
-            }        
-        })
-        .catch(error => {
-            console.log("Failed to getBalance(): error: ", error)
-            if (params.onFailed) {
-                params.onFailed(error);
-            }
-        })
-}
-
-/**
- * Connect to specified account.
- * @param {string} userToken    user token
- * @param {string} accountId     account address
- * 
- * @returns 
- */
-export const connect = (params) => {
-    return axios
-        .post(BACKEND_BASE_URL + "/account/connect", {
-            userToken: params.userToken,
-            account: params.accountId
-        })
-        .then(response => {
-            let error = response ? response.data ? response.data.error ? 
-                                response.data.error: null : null: null;
-            if (error === 0) {
-                if (params.onComplete) {
-                    params.onComplete(response.data);
-                }
-            }
-        })
-        .catch(error => {
-            console.log("Failed to connect(): error: ", error)
-            if (params.onFailed) {
-                params.onFailed(error);
-            }
-        })
+    params.url = BACKEND_BASE_URL + "/account/balance";
+    _sendRequest(params);
 }
 
 /**
@@ -189,19 +90,6 @@ export const connect = (params) => {
  * @returns 
  */
 export const sendCryptoCurrency = (params) => {
-    return axios
-        .post(BACKEND_BASE_URL + "/account/send", {
-            userToken: params.userToken,
-            toAddress: params.toAddress,
-            amount: params.amount
-        })
-        .then(response => {
-            console.log("sendCryptoCurrency(): response: ", response);
-			let data = response.data ? response.data.data ? response.data.data : null: null;
-            params.onComplete(response.data);
-        })
-        .catch(error => {
-            console.log("Failed to sendCryptoCurrency(): error: ", error)
-            params.onFailed(error);
-        })
+    params.url = BACKEND_BASE_URL + "/account/send";
+    _sendRequest(params);
 }
