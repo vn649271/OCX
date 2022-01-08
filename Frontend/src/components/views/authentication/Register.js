@@ -522,7 +522,13 @@ export default class Register extends Component {
   }
 
   submitData = (param, recaptchaToken) => {
+    let errors = this.state.errors;
     const hash = hashCode(me.state.input.password);
+    if (hash === null) {
+      errors.register_result = "Please provide a valid password";
+      this.setState({ errors: errors });
+      return;
+    }
     const newUser = {
       first_name: me.state.input.first_name,
       last_name: me.state.input.last_name,
@@ -537,7 +543,6 @@ export default class Register extends Component {
         me.props.history.push(`/confirm`, { email: me.state.input.email });
         return;
       }
-      let errors = this.state.errors;
       errors.register_result = ret.message;
       this.setState({ errors: errors });
     })

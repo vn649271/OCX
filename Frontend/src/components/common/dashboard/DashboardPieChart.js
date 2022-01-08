@@ -73,9 +73,9 @@ export default class DashboardPieChart extends React.Component {
     render() {
         return (
             <div className="chart-body relative">
-                <p className="table-title font-16 text-white main-bold">
+                <div className="table-title font-16 text-white main-bold">
                     Dount Chart
-                </p>
+                </div>
                 <div id="piechart">
                     <ReactApexChart options={this.state.options} series={this.state.series} type="donut" width={380} />
                 </div>

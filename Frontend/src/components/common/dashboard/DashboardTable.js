@@ -54,107 +54,107 @@ export default function BasicTabs() {
                 </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
-                <div class="rounded-lg dashboard-table-main ">
-                    <table class=" rounded-lg dashboard-table-body main-font">
-                        <thead class="rounded-lg">
+                <div className="rounded-lg dashboard-table-main ">
+                    <table className=" rounded-lg dashboard-table-body main-font">
+                        <thead className="rounded-lg">
                             <tr>
-                                <th class="font-16 text-white">
+                                <th className="font-16 text-white">
                                     Transaction Hash
                                 </th>
-                                <th class="font-16 text-white">
+                                <th className="font-16 text-white">
                                     Contract
                                 </th>
-                                <th class="font-16 text-white">
+                                <th className="font-16 text-white">
                                     Action (In / Out/ Swap/ Purchase)
                                 </th>
-                                <th class="font-16 text-white">
+                                <th className="font-16 text-white">
                                     Size
                                 </th>
-                                <th class="font-16 text-white">
+                                <th className="font-16 text-white">
                                     Price
                                 </th>
-                                <th class="font-16 text-white">
+                                <th className="font-16 text-white">
                                     Date time
                                 </th>
-                                <th class="font-16 text-white">
+                                <th className="font-16 text-white">
                                     P/L
                                 </th>
                             </tr>
                         </thead>
-                        <tbody class=" main-font">
-                            <tr class="whitespace-nowrap">
-                                <td class="font-16  text-white">
+                        <tbody className=" main-font">
+                            <tr className="whitespace-nowrap">
+                                <td className="font-16  text-white">
                                     123134561134461
                                 </td>
-                                <td class="font-16">
-                                    <div class=" text-white">
+                                <td className="font-16">
+                                    <div className=" text-white">
                                         zsdfaetqeradsfq34r5
                                     </div>
                                 </td>
-                                <td class="font-16">
-                                    <a href="#" class="px-4 py-1  text-blue-500 bg-blue-200 rounded-lg">Swap</a>
+                                <td className="font-16">
+                                    <a href="#" className="px-4 py-1  text-blue-500 bg-blue-200 rounded-lg">Swap</a>
                                 </td>
-                                <td class="font-16  text-white">
+                                <td className="font-16  text-white">
                                     12
                                 </td>
-                                <td class="font-16 text-white">
+                                <td className="font-16 text-white">
                                     342523
                                 </td>
-                                <td class="font-16 text-white">
+                                <td className="font-16 text-white">
                                     2021-1-12
                                 </td>
-                                <td class="font-16">
-                                    <a href="#" class="px-4 py-1  text-red-500 bg-red-200 rounded-lg">Paid</a>
+                                <td className="font-16">
+                                    <a href="#" className="px-4 py-1  text-red-500 bg-red-200 rounded-lg">Paid</a>
                                 </td>
                             </tr>
-                            <tr class="whitespace-nowrap">
-                                <td class="font-16  text-white">
+                            <tr className="whitespace-nowrap">
+                                <td className="font-16  text-white">
                                     123134561134461
                                 </td>
-                                <td class="font-16">
-                                    <div class=" text-white">
+                                <td className="font-16">
+                                    <div className=" text-white">
                                         zsdfaetqeradsfq34r5
                                     </div>
                                 </td>
-                                <td class="font-16">
-                                    <a href="#" class="px-4 py-1  text-blue-500 bg-blue-200 rounded-lg">Swap</a>
+                                <td className="font-16">
+                                    <a href="#" className="px-4 py-1  text-blue-500 bg-blue-200 rounded-lg">Swap</a>
                                 </td>
-                                <td class="font-16  text-white">
+                                <td className="font-16  text-white">
                                     12
                                 </td>
-                                <td class="font-16 text-white">
+                                <td className="font-16 text-white">
                                     342523
                                 </td>
-                                <td class="font-16 text-white">
+                                <td className="font-16 text-white">
                                     2021-1-12
                                 </td>
-                                <td class="font-16">
-                                    <a href="#" class="px-4 py-1  text-blue-500 bg-blue-200 rounded-lg">Pendding</a>
+                                <td className="font-16">
+                                    <a href="#" className="px-4 py-1  text-blue-500 bg-blue-200 rounded-lg">Pendding</a>
                                 </td>
                             </tr>
-                            <tr class="whitespace-nowrap">
-                                <td class="font-16  text-white">
+                            <tr className="whitespace-nowrap">
+                                <td className="font-16  text-white">
                                     123134561134461
                                 </td>
-                                <td class="font-16">
-                                    <div class=" text-white">
+                                <td className="font-16">
+                                    <div className=" text-white">
                                         zsdfaetqeradsfq34r5
                                     </div>
                                 </td>
-                                <td class="font-16">
-                                    <a href="#" class="px-4 py-1  text-green-500 bg-green-200 rounded-lg">Pendding</a>
+                                <td className="font-16">
+                                    <a href="#" className="px-4 py-1  text-green-500 bg-green-200 rounded-lg">Pendding</a>
                                 </td>
-                                <td class="font-16  text-white">
+                                <td className="font-16  text-white">
                                     12
                                 </td>
-                                <td class="font-16 text-white">
+                                <td className="font-16 text-white">
                                     342523
                                 </td>
-                                <td class="font-16 text-white">
+                                <td className="font-16 text-white">
                                     2021-1-12
                                 </td>
-                                <td class="font-16">
-                                    <a href="#" class="px-4 py-1  text-green-500 bg-green-200 rounded-lg">Decline</a>
+                                <td className="font-16">
+                                    <a href="#" className="px-4 py-1  text-green-500 bg-green-200 rounded-lg">Decline</a>
                                 </td>
                             </tr>
                         </tbody>
@@ -163,142 +163,142 @@ export default function BasicTabs() {
             </TabPanel>
             <TabPanel value={value} index={1}>
 
-                <div class="rounded-lg dashboard-table-main ">
-                    <table class=" rounded-lg dashboard-table-body main-font">
-                        <thead class="rounded-lg">
+                <div className="rounded-lg dashboard-table-main ">
+                    <table className=" rounded-lg dashboard-table-body main-font">
+                        <thead className="rounded-lg">
                             <tr>
-                                <th class="font-16 text-white">
+                                <th className="font-16 text-white">
                                     Transaction Hash
                                 </th>
-                                <th class="font-16 text-white">
+                                <th className="font-16 text-white">
                                     Method
                                 </th>
-                                <th class="font-16 text-white">
+                                <th className="font-16 text-white">
                                     Action (In / Out/ Swap/ Purchase)
                                 </th>
-                                <th class="font-16 text-white">
+                                <th className="font-16 text-white">
                                     Block
                                 </th>
-                                <th class="font-16 text-white">
+                                <th className="font-16 text-white">
                                     Dattime
                                 </th>
-                                <th class="font-16 text-white">
+                                <th className="font-16 text-white">
                                     From
                                 </th>
-                                <th class="font-16 text-white">
+                                <th className="font-16 text-white">
                                     To
                                 </th>
-                                <th class="font-16 text-white">
+                                <th className="font-16 text-white">
                                     Value
                                 </th>
-                                <th class="font-16 text-white">
+                                <th className="font-16 text-white">
                                     Gas Fee
                                 </th>
-                                <th class="font-16 text-white">
+                                <th className="font-16 text-white">
                                     Product List
                                 </th>
                             </tr>
                         </thead>
-                        <tbody class=" main-font">
-                            <tr class="whitespace-nowrap">
-                                <td class="font-16  text-white">
+                        <tbody className=" main-font">
+                            <tr className="whitespace-nowrap">
+                                <td className="font-16  text-white">
                                     1
                                 </td>
-                                <td class="font-16">
-                                    <div class=" text-white">
+                                <td className="font-16">
+                                    <div className=" text-white">
                                         Jon doe
                                     </div>
                                 </td>
-                                <td class="font-16">
-                                    <div class=" text-white">jhondoe@example.com</div>
+                                <td className="font-16">
+                                    <div className=" text-white">jhondoe@example.com</div>
                                 </td>
-                                <td class="font-16  text-white">
+                                <td className="font-16  text-white">
                                     2021-1-12
                                 </td>
-                                <td class="font-16 text-white">
+                                <td className="font-16 text-white">
                                     2021-1-12
                                 </td>
-                                <td class="font-16 text-white">
+                                <td className="font-16 text-white">
                                     2021-1-12
                                 </td>
-                                <td class="font-16 text-white">
+                                <td className="font-16 text-white">
                                     2021-1-12
                                 </td>
-                                <td class="font-16 text-white">
+                                <td className="font-16 text-white">
                                     2021-1-12
                                 </td>
-                                <td class="font-16 text-white">
+                                <td className="font-16 text-white">
                                     2021-1-12
                                 </td>
-                                <td class="font-16 text-white">
+                                <td className="font-16 text-white">
                                     2021-1-12
                                 </td>
                             </tr>
-                            <tr class="whitespace-nowrap">
-                                <td class="font-16  text-white">
+                            <tr className="whitespace-nowrap">
+                                <td className="font-16  text-white">
                                     1
                                 </td>
-                                <td class="font-16">
-                                    <div class=" text-white">
+                                <td className="font-16">
+                                    <div className=" text-white">
                                         Jon doe
                                     </div>
                                 </td>
-                                <td class="font-16">
-                                    <div class=" text-white">jhondoe@example.com</div>
+                                <td className="font-16">
+                                    <div className=" text-white">jhondoe@example.com</div>
                                 </td>
-                                <td class="font-16  text-white">
+                                <td className="font-16  text-white">
                                     2021-1-12
                                 </td>
-                                <td class="font-16 text-white">
+                                <td className="font-16 text-white">
                                     2021-1-12
                                 </td>
-                                <td class="font-16 text-white">
+                                <td className="font-16 text-white">
                                     2021-1-12
                                 </td>
-                                <td class="font-16 text-white">
+                                <td className="font-16 text-white">
                                     2021-1-12
                                 </td>
-                                <td class="font-16 text-white">
+                                <td className="font-16 text-white">
                                     2021-1-12
                                 </td>
-                                <td class="font-16 text-white">
+                                <td className="font-16 text-white">
                                     2021-1-12
                                 </td>
-                                <td class="font-16 text-white">
+                                <td className="font-16 text-white">
                                     2021-1-12
                                 </td>
                             </tr>
-                            <tr class="whitespace-nowrap">
-                                <td class="font-16  text-white">
+                            <tr className="whitespace-nowrap">
+                                <td className="font-16  text-white">
                                     1
                                 </td>
-                                <td class="font-16">
-                                    <div class=" text-white">
+                                <td className="font-16">
+                                    <div className=" text-white">
                                         Jon doe
                                     </div>
                                 </td>
-                                <td class="font-16">
-                                    <div class=" text-white">jhondoe@example.com</div>
+                                <td className="font-16">
+                                    <div className=" text-white">jhondoe@example.com</div>
                                 </td>
-                                <td class="font-16  text-white">
+                                <td className="font-16  text-white">
                                     2021-1-12
                                 </td>
-                                <td class="font-16 text-white">
+                                <td className="font-16 text-white">
                                     2021-1-12
                                 </td>
-                                <td class="font-16 text-white">
+                                <td className="font-16 text-white">
                                     2021-1-12
                                 </td>
-                                <td class="font-16 text-white">
+                                <td className="font-16 text-white">
                                     2021-1-12
                                 </td>
-                                <td class="font-16 text-white">
+                                <td className="font-16 text-white">
                                     2021-1-12
                                 </td>
-                                <td class="font-16 text-white">
+                                <td className="font-16 text-white">
                                     2021-1-12
                                 </td>
-                                <td class="font-16 text-white">
+                                <td className="font-16 text-white">
                                     2021-1-12
                                 </td>
                             </tr>

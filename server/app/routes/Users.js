@@ -1,9 +1,9 @@
 const express = require("express");
 let users = express.Router();
 
-const UserAuthController = require("../controller/UserAuthController");
+const UserAuthController = require("../UserAuth/UserAuthController");
 var userAuthController = new UserAuthController();
-const PhoneVerifyController = require('../controller/PhoneVerifyController');
+const PhoneVerifyController = require('../PhoneVerify/PhoneVerifyController');
 var phoneVerifyController = new PhoneVerifyController();
 
 users.post("/register", userAuthController.register);

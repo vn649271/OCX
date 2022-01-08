@@ -7,6 +7,9 @@ export const decodeBase64 = str => {
 }
 
 export const hashCode/*cyrb53*/ = function(str, seed = 0) {
+    if (str === undefined || str === null || str === "") {
+        return null;
+    }
     let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
     for (let i = 0, ch; i < str.length; i++) {
         ch = str.charCodeAt(i);

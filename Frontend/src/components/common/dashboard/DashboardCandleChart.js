@@ -272,9 +272,9 @@ export default class DashboardCandleChart extends React.Component {
     render() {
         return (
             <div id="chart">
-                <p className="table-title font-16 text-white main-bold">
+                <div className="table-title font-16 text-white main-bold">
                     Candle Chart
-                </p>
+                </div>
                 <ReactApexChart options={this.state.options} series={this.state.series} type="candlestick" height={350} />
             </div>
         );

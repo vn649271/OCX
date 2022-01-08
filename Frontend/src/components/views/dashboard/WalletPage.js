@@ -26,6 +26,10 @@ const UNKNOWN_USER = 0;
 const NEW_USER = 1;
 const USER_WITH_ACCOUNT = 2;
 
+const   IDLE = 0,
+        LOCKING = 1,
+        SENDING = 2;
+
 var self;
 
 class WalletPage extends Component {
@@ -38,6 +42,7 @@ class WalletPage extends Component {
             is_creating: false,
             user_mode: UNKNOWN_USER,
             creating_interval: MAX_CREATING_DELAY_TIMEOUT,
+            current_state: IDLE,
             balance: {
                 eth: 0,
                 btc: 0,
@@ -45,18 +50,8 @@ class WalletPage extends Component {
             input: {
                 to_address: '0xADB366C070DFB857DC63ebF797EFE615B0567C1B',
             },
-            errors: {
-                password: "",
-                confirm_password: "",
-                balance: "",
-                amount: 0,
-                account: ""
-            },
-            info: {
-                send: "",
-                account: "",
-                balance: ""
-            },
+            error: "",
+            info: "",
             accounts: {},
             locked: true,
             password: "",
@@ -67,16 +62,14 @@ class WalletPage extends Component {
         }
 
         this.userToken = null;
-        this.validate = this.validate.bind(this)
         this.onCreateAccont = this.onCreateAccont.bind(this);
         this.onSend = this.onSend.bind(this);
         this.onLeaveFromPasswordInput = this.onLeaveFromPasswordInput.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.togglePasswordVisiblity = this.togglePasswordVisiblity.bind(this);
         this.validatePassword = this.validatePassword.bind(this);
-        this.showMessageForSending = this.showMessageForSending.bind(this);
-        this.showMessageForAccount = this.showMessageForAccount.bind(this);
-        this.showMessageForBalance = this.showMessageForBalance.bind(this);
+        this.inform = this.inform.bind(this);
+        this.warning = this.warning.bind(this);
         this.setSendingAmountInUI = this.setSendingAmountInUI.bind(this);
         this.setBalanceInUI = this.setBalanceInUI.bind(this);
         this.setPasswordInUI = this.setPasswordInUI.bind(this);
@@ -106,10 +99,10 @@ class WalletPage extends Component {
                     } else if (resp.error !== 0) {
                         errorMsg = resp.data
                     }
-                    self.showMessageForBalance(errorMsg);
+                    self.warning(errorMsg);
                 },
                 onFailed: error => {
-                    self.showMessageForBalance(error);
+                    self.warning(error);
                 }
             });
         },
@@ -121,14 +114,12 @@ class WalletPage extends Component {
             },
             onComplete: resp => {
                 var errorMsg = null;
-                var accounts = null;
                 if (resp.error !== undefined) {
                     switch (resp.error) {
                         case 0:
-                            accounts = self.state.accounts;
-                            accounts['eth'] = resp.data;
-                            self.setState({ accounts: accounts });
+                            self.setState({ accounts: resp.data.addresses });
                             self.setState({ user_mode: USER_WITH_ACCOUNT })
+                            self.setState({ locked: resp.data.locked });
                             return;
                         case 1:
                             self.setState({ user_mode: NEW_USER })
@@ -143,10 +134,10 @@ class WalletPage extends Component {
                 } else {
                     errorMsg = "Invalid response for connecting to my account"
                 }
-                self.showMessageForAccount(errorMsg);
+                self.warning(errorMsg);
             },
             onFailed: error => {
-                self.showMessageForAccount(error);
+                self.warning(error);
             }
         });
     }
@@ -156,55 +147,8 @@ class WalletPage extends Component {
         this.setState({ showPassword: !this.state.showPassword });
     }
 
-    validate = (fieldName = null) => {
-        let validationMode = BATCHED_VALIDATION;
-        if (fieldName !== null && fieldName !== "") {
-            validationMode = INDIVIDUAL_VALIDATION;
-        }
-        // let input = this.state.input;
-        let errors = {
-            password: this.state.errors.password,
-            confirm_password: this.state.errors.confirm_password,
-            register_result: this.state.errors.register_result,
-        };
-        this.setState({ errors: errors });
-
-        let isValid = true;
-
-        this.setState({
-            errors: errors
-        });
-
-        if (validationMode === INDIVIDUAL_VALIDATION) {
-            isValid = false;
-        }
-        return isValid;
-    }
-
-    // fieldStateChanged = field => state => this.setState({ [field]: state.errors.length === 0 });
-    validatePassword = (password) => {
-        var re = {
-            'lowercase': /(?=.*[a-z])/,
-            'uppercase': /(?=.*[A-Z])/,
-            'numeric_char': /(?=.*[0-9])/,
-            'special_char': /(?=.[!@#$%^&<>?()\-+*=|{}[\]:";'])/,
-            'atleast_8': /(?=.{8,})/
-        };
-        if (!re.lowercase.test(password))
-            return -1;
-        if (!re.uppercase.test(password))
-            return -2;
-        if (!re.numeric_char.test(password))
-            return -3;
-        if (!re.special_char.test(password))
-            return -4;
-        if (!re.atleast_8.test(password))
-            return -5;
-        return 0;
-    }
-
-
     handleInputChange = event => {
+        this.warning('');
         let input = this.state.input;
         input[event.target.name] = event.target.value;
         this.setState({
@@ -216,65 +160,30 @@ class WalletPage extends Component {
             if (password === null) {
                 password = "";
             }
-        }
-        this.validate(event.target.name);
-    }
-
-    // type - 0: warning, 1: notification
-    showMessageForSending = (msg, type = 0) => {
-        let errorMsg = '', informMsg = '';
-        if (typeof msg === 'object') {
-            return;
-        }
-        if (type === 0) {
-            errorMsg = msg;
-            let errorsObj = this.state.errors;
-            errorsObj.send = errorMsg;
-            this.setState({ errors: errorsObj });
-        } else if (type === 1) {
-            informMsg = msg;
-            let infoObj = this.state.info;
-            infoObj.send = informMsg;
-            this.setState({ info: infoObj });
+        } else if (event.target.name === 'confirm_password') {
+            let password = input['password'];
+            let confirmPassword = input['confirm_password'];
+            if (confirmPassword !== password) {
+                this.warning('Password mismatch');
+            }
         }
     }
 
-    // type - 0: warning, 1: notification
-    showMessageForAccount = (msg, type = 0) => {
-        let errorMsg = '', informMsg = '';
+    inform = (msg) => {
+        console.log("-------------------inform(): ", msg);
         if (typeof msg === 'object') {
-            return;
+            msg = msg.toString();
         }
-        if (type === 0) {
-            errorMsg = msg;
-            let errorsObj = this.state.errors;
-            errorsObj.account = errorMsg;
-            this.setState({ errors: errorsObj });
-        } else if (type === 1) {
-            informMsg = msg;
-            let infoObj = this.state.info;
-            infoObj.account = informMsg;
-            this.setState({ info: infoObj });
-        }
+        this.setState({ info: msg });
+        this.setState({ error: '' });
     }
 
-    // type - 0: warning, 1: notification
-    showMessageForBalance = (msg, type = 0) => {
-        let errorMsg = '', informMsg = '';
+    warning = (msg) => {
         if (typeof msg === 'object') {
-            return;
+            msg = msg.toString();
         }
-        if (type === 0) {
-            errorMsg = msg;
-            let errorsObj = this.state.errors;
-            errorsObj.balance = errorMsg;
-            this.setState({ errors: errorsObj });
-        } else if (type === 1) {
-            informMsg = msg;
-            let infoObj = this.state.info;
-            infoObj.balance = informMsg;
-            this.setState({ info: infoObj });
-        }
+        this.setState({ error: msg });
+        this.setState({ info: '' });
     }
 
     setSendingAmountInUI = (amount) => {
@@ -295,14 +204,42 @@ class WalletPage extends Component {
         this.setState({ input: input });
     }
 
+    validatePassword = (password, confirmPassword) => {
+        var re = {
+            'lowercase': /(?=.*[a-z])/,
+            'uppercase': /(?=.*[A-Z])/,
+            'numeric_char': /(?=.*[0-9])/,
+            'special_char': /(?=.[!@#$%^&<>?()\-+*=|{}[\]:";'])/,
+            'atleast_8': /(?=.{8,})/
+        };
+        if (!re.lowercase.test(password))
+            return -1;
+        if (!re.uppercase.test(password))
+            return -2;
+        if (!re.numeric_char.test(password))
+            return -3;
+        if (!re.special_char.test(password))
+            return -4;
+        if (!re.atleast_8.test(password))
+            return -5;
+        if (password !== confirmPassword)
+            return -6;
+        return 0;
+    }
+
     onCreateAccont = (param, ev, buttonCmpnt) => {
-        if (!this.validate()) {
+        let passwordValidation = this.validatePassword(
+            this.state.input.password, 
+            this.state.input.confirm_password
+        );
+        if (passwordValidation < 0) {
+            this.warning("Invalid password");
             return;
         }
         // Perform additional validation for email-phone
         // If required action performed, buttonCmpnt.stopTimer() must be called to stop loading
         if (this.userToken === null) {
-            this.showMessageForAccount("Error: user token invalid(null)");
+            this.warning("Error: user token invalid(null)");
             return;
         }
         createAccount({
@@ -317,48 +254,59 @@ class WalletPage extends Component {
                     let accounts = this.state.accounts;
                     accounts.eth = resp.data;
                     self.setState({ accounts: accounts });
-                    self.showMessageForAccount('');
+                    self.warning('');
                     self.setState({ user_mode: USER_WITH_ACCOUNT });
                     return;
                 } else if (resp.error == -100) {
-                    self.showMessageForAccount("Invalid response for creating account");
+                    self.warning("Invalid response for creating account");
                     return;
                 }
-                self.showMessageForAccount(resp.data);
+                self.warning(resp.data);
             },
             onFailed: error => {
                 buttonCmpnt.stopTimer();
-                this.showMessageForAccount(error);
+                this.warning(error);
             }
         });
     }
 
     onLockAccont = (param, ev, buttonCmpnt) => {
+        this.warning('');
+        if (this.state.current_state !== IDLE) {
+            buttonCmpnt.stopTimer();
+            this.warning('Could not perform the current action during another one');
+            return;
+        }
         // Try to unlock
+        this.setState({ current_state: LOCKING });
         lockAccount({
             reqParam: {
                 userToken: this.userToken,
             },
             onComplete: resp => {
+                this.setState({ current_state: IDLE });
                 buttonCmpnt.stopTimer();
+                this.warning('');
                 if (resp.error == 0) {
                     // Display unlocked account page
                     self.setState({ locked: true });
                     return;
                 } else if (resp.error == -100) {
-                    self.showMessageForAccount("Invalid response for locking account");
+                    self.warning("Invalid response for locking account");
                     return;
                 }
-                self.showMessageForAccount(resp.data);
+                self.warning(resp.data);
             },
             onFailed: error => {
+                this.setState({ current_state: IDLE });
                 buttonCmpnt.stopTimer();
-                self.showMessageForAccount(error);
+                self.warning(error);
             }
         });
     }
 
     onUnlockAccont = (param, ev, buttonCmpnt) => {
+        this.warning('');
         // Try to unlock
         unlockAccount({
             reqParam: {
@@ -369,43 +317,51 @@ class WalletPage extends Component {
                 buttonCmpnt.stopTimer();
                 if (resp.error == 0) {
                     // Display unlocked account page
-                    self.showMessageForAccount('');
-                    self.showMessageForBalance('');
+                    self.warning('');
                     self.setPasswordInUI('');
                     self.setState({ locked: false });
                     return;
                 } else if (resp.error == -100) {
-                    self.showMessageForAccount("Invalid response for locking account");
+                    self.warning("Invalid response for locking account");
                     return;
                 }
-                self.showMessageForAccount(resp.data);
+                self.warning(resp.data);
             },
             onFailed: error => {
+                this.setState({ current_state: IDLE });
                 buttonCmpnt.stopTimer();
-                self.showMessageForAccount(error);
+                self.warning(error);
             }
         });
     }
 
     onSend = (param, ev, buttonCmpnt) => {
+        this.warning('');
+        if (this.state.current_state !== IDLE) {
+            buttonCmpnt.stopTimer();
+            this.warning('Could not perform the current action during another one');
+            return;
+        }
         let toAddress = this.state.input ? this.state.input.to_address ? this.state.input.to_address : null : null;
         if (toAddress === null) {
             buttonCmpnt.stopTimer();
-            this.showMessageForSending("Please input receiving address");
+            this.warning("Please input receiving address");
             return;
         }
         if (toAddress.trim().length !== 42) {
             buttonCmpnt.stopTimer();
-            this.showMessageForSending("Please input valid receiving address");
+            this.warning("Please input valid receiving address");
             return;
         }
 
         let amount = this.state.input ? this.state.input.amount ? this.state.input.amount : null : null;
         if (amount === null || amount.trim() === "") {
             buttonCmpnt.stopTimer();
-            this.showMessageForSending("Please input the amount to send");
+            this.warning("Please input the amount to send");
             return;
         }
+
+        this.setState({ current_state: SENDING });
 
         sendCryptoCurrency({
             reqParam: {
@@ -414,21 +370,22 @@ class WalletPage extends Component {
                 amount: amount,
             },
             onComplete: resp => {
+                this.setState({ current_state: IDLE });
                 buttonCmpnt.stopTimer();
-
                 if (resp.error == 0) {
                     self.setSendingAmountInUI(0);
-                    self.showMessageForSending("Sending Complete", 1);
+                    self.inform("Sending Complete");
                     return;
                 } else if (resp.error == -100) {
-                    self.showMessageForSending("Invalid response for sending token");
+                    self.warning("Invalid response for sending token");
                 } else {
-                    self.showMessageForSending(resp.data);
+                    self.warning(resp.data);
                 }
             },
             onFailed: error => {
+                this.setState({ current_state: IDLE });
                 buttonCmpnt.stopTimer();
-                self.showMessageForSending(error);
+                self.warning(error);
             }
         });
     }
@@ -440,9 +397,8 @@ class WalletPage extends Component {
     render() {
         return (
             <div className="my-account-page">
-                <p className="account-balance-box main-font text-red-400 mb-100 font-14">{this.state.errors.balance}</p>
-                <p className="help-block main-font text-red-400 font-16">{this.state.errors.account}</p>
-                <p className="help-block main-font text-green-400 font-16">{this.state.info.account}</p>
+                <p className="account-balance-box main-font text-red-400 mb-100 font-16">{this.state.error}</p>
+                <p className="help-block main-font text-green-400 font-16">{this.state.info }</p>
                 <div className={this.state.user_mode === USER_WITH_ACCOUNT ? 'shownBox' : 'hiddenBox'}>
                     <div className={!this.state.locked ? 'shownBox' : 'hiddenBox'}>
                         <div id="my-account-info-container" className="account-info-container help-block main-font font-16 mr-16">
@@ -457,7 +413,7 @@ class WalletPage extends Component {
                                     null
                                 }
                             </p>
-                            <div class="lock-account-button-container">
+                            <div className="lock-account-button-container">
                                 {/* Lock Button */}
                                 <DelayButton
                                     captionInDelay="Locking"
@@ -510,10 +466,10 @@ class WalletPage extends Component {
                     </div>
                     <div className={this.state.locked ? 'shownBox' : 'hiddenBox'}>
                         <div className="mb-10">
-                            <div className="password-container block w-full">
+                            <div className="account-password-container block w-full">
                                 <input
                                     type={this.state.showPassword ? "text" : "password"}
-                                    className="password-input border border-grey-light bg-gray-100 w-full p-5 font-16 main-font focus:outline-none rounded "
+                                    className="password-input border border-grey-light bg-gray-100 p-5 width-50 font-16 main-font focus:outline-none rounded "
                                     name="password"
                                     value={this.state.input.password}
                                     onChange={this.handleInputChange}
@@ -522,9 +478,8 @@ class WalletPage extends Component {
                                 />
                                 <i className="ShowPasswordIcon font-16" onClick={this.togglePasswordVisiblity}>{eye}</i>
                             </div>
-                            <span className="help-block main-font text-red-400 font-14">{this.state.errors.password}</span>
                             <div id="unlock-account-button-container">
-                                {/* Send Button */}
+                                {/* Unlock Button */}
                                 <DelayButton
                                     captionInDelay="Unlocking"
                                     caption="Unlock"
@@ -538,10 +493,10 @@ class WalletPage extends Component {
                 </div>
                 <div className={this.state.user_mode === NEW_USER ? 'shownBox' : 'hiddenBox'}>
                     <div className="mb-10">
-                        <div className="password-container block w-full">
+                        <div className="account-password-container block w-full">
                             <input
                                 type={this.state.showPassword ? "text" : "password"}
-                                className="password-input border border-grey-light bg-gray-100 w-full p-5 font-16 main-font focus:outline-none rounded "
+                                className="password-input border border-grey-light bg-gray-100 p-5 font-16 main-font focus:outline-none rounded "
                                 name="password"
                                 value={this.state.input.password}
                                 onChange={this.handleInputChange}
@@ -550,7 +505,6 @@ class WalletPage extends Component {
                             />
                             <i className="ShowPasswordIcon font-16" onClick={this.togglePasswordVisiblity}>{eye}</i>
                         </div>
-                        <span className="help-block main-font text-red-400 font-14">{this.state.errors.password}</span>
                     </div>
                     <PasswordChecklistComponent
                         password={this.state.input['password'] || ""}
@@ -567,7 +521,6 @@ class WalletPage extends Component {
                             onChange={this.handleInputChange}
                             placeholder="Confirm Password" autoComplete="off"
                         />
-                        <span className="help-block main-font text-red-400 font-14">{this.state.errors.confirm_password}</span>
                     </div>
                     <div id="create-account-button-container">
                         {/* Send Button */}
@@ -579,8 +532,6 @@ class WalletPage extends Component {
                             onClickButtonParam={null}
                         />
                     </div>
-                    <span className="help-block main-font text-red-400 font-16">{this.state.errors.send}</span>
-                    <span className="help-block main-font text-green-400 font-16">{this.state.info.send}</span>
                 </div>
             </div>
         );
