@@ -173,6 +173,10 @@ export default class Login extends Component {
       return;
     }
     const hash = hashCode(me.state.password);
+    if (hash === null) {
+      this.warning("Please provide a valid password");
+      return;
+    }
     const user = {
       email: me.state.email,
       password: hash

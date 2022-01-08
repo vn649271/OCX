@@ -1,7 +1,7 @@
 require('dotenv').config();
 const AccountModel = require("./AccountModel");
 const AccountService = require("./AccountService");
-const UserController = require("../controller/UserAuthController");
+const UserController = require("../UserAuth/UserAuthController");
 const { generate, generateMultiple } = require('generate-passphrase-id')
 
 var self = null;
@@ -73,7 +73,15 @@ class AccountController {
             if (ret === undefined || ret === null) {
                 return resp.json({ error: 1, data: "No account" });
             }
-            return resp.json({  error: 0, data: ret.accounts.eth.address });
+            return resp.json({  
+                error: 0, 
+                data: {
+                    locked: ret.locked,
+                    addresses: {
+                        eth: ret.accounts.eth.address
+                    }
+                }
+            });
         }).catch(err => {
             return resp.json({ error: -4, data: err });
         });
@@ -132,7 +140,22 @@ class AccountController {
         if (!ret < 0) {
             return resp.json({ error: -3, data: "Invalid user token" });
         }
-        accountService.unlock(userToken, resp);
+        let password = req.body? req.body.password ? req.body.password : null : null;
+        accountModel.findOne({
+            where: {
+                user_token: userToken
+            }
+        }).then(accountInfo => {
+            if (accountInfo) {
+                if (accountInfo.password === password) {
+                    return accountService.unlock(userToken, resp);
+                }
+                return resp.json({ error: -4, data: "Wrong Password" });
+            }
+            return resp.json({ error: -5, data: "Invalid user token" });
+        }).catch(error => {
+            return resp.json({ error: -6, data: error.message });
+        });
     }
 
     /**
@@ -165,10 +188,6 @@ class AccountController {
                 user_token: userToken
             }
         }).then(accountInfo => {
-            if (accountInfo == undefined || accountInfo.accounts == undefined || accountInfo.accounts == {}) {
-                console.log("No account");
-                return resp.json({ error: -5, data: "No account for you"});
-            }
             accountService.sendToken(accountInfo, 'eth', toAddress, toAmount, resp);
         }).catch(error => {
             return resp.json({error: -8, data: error});

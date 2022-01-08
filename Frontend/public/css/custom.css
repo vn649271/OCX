@@ -197,7 +197,7 @@ a {
 /* main-option */
 
 .spinner-button {
-    font-size: 1.6em !important;
+    font-size: 16px !important;
     background-color: #01c1cc !important;
     border: none;
     color: white;
@@ -447,6 +447,10 @@ button:focus {
 
 input.password-input {
     padding-right: 4em;
+}
+
+.account-password-container .password-input {
+    width: 50%;
 }
 
 .PhoneInputCountry {

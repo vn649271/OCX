@@ -90,11 +90,13 @@ class AccountService {
                     error: 0,
                     data: accountAddress
                 });                
-            }).catch(err => {
-                return resp.json({ error: -5, data: err });
+            }).catch(error => {
+                let errorMessage = error.message.replace("Returned error: ", "");
+                return resp.json({error: -200, data: errorMessage});
             });
-        }).catch(err => {
-            return resp.json({ error: -6, data: err });
+        }).catch(error => {
+            let errorMessage = error.message.replace("Returned error: ", "");
+            return resp.json({error: -201, data: errorMessage});
         });
     }
 
@@ -108,11 +110,11 @@ class AccountService {
         }
         let myAccount = accounts[token].address;
         web3.eth.getBalance(myAccount).then(function(balanceInWei) {
-            console.log(balanceInWei);
             let balance = web3.utils.fromWei(balanceInWei, 'ether');
             resp.json({ error: 0, data: balance });
         }).catch(error => {
-            return resp.json({error: -5, data: error});
+            let errorMessage = error.message.replace("Returned error: ", "");
+            return resp.json({error: -200, data: errorMessage});
         });
     }
 
@@ -132,7 +134,13 @@ class AccountService {
                 } else {
                     return resp.json({ error: -1, data: "Failed to lock account" })
                 }
+            }).catch(error => {
+                let errorMessage = error.message.replace("Returned error: ", "");
+                return resp.json({error: -200, data: errorMessage});
             });
+        }).catch(error => {
+            let errorMessage = error.message.replace("Returned error: ", "");
+            return resp.json({error: -201, data: errorMessage});
         });
     }
 
@@ -152,7 +160,13 @@ class AccountService {
                 } else {
                     return resp.json({ error: -1, data: "Failed to unlock account" })
                 }
+            }).catch(error => {
+                let errorMessage = error.message.replace("Returned error: ", "");
+                return resp.json({error: -200, data: errorMessage});
             });
+        }).catch(error => {
+            let errorMessage = error.message.replace("Returned error: ", "");
+            return resp.json({error: -201, data: errorMessage});
         });
     }
 
@@ -183,10 +197,12 @@ class AccountService {
             }).then(function(txHash) {
                 return resp.json({error: 0, data: txHash});
             }).catch(error => {
-                return resp.json({error: -10, data: error.message});
+                let errorMessage = error.message.replace("Returned error: ", "");
+                return resp.json({error: -200, data: errorMessage});
             });
         }).catch(error => {
-            return resp.json({error: -7, data: error});
+            let errorMessage = error.message.replace("Returned error: ", "");
+            return resp.json({error: -201, data: errorMessage});
         });
     }
 };

@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const User = require("../models/Firestore/Users");
-const Phone = require("../models/Firestore/Phone");
+const User = require("./UserAuthModel");
+const Phone = require("../PhoneVerify/PhoneVerifyModel");
 var nodemailer = require('nodemailer');
 var randtoken = require('rand-token');
 require('dotenv').config();

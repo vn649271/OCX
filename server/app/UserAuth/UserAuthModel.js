@@ -16,7 +16,6 @@ const cllctn = 'users';
  * Declaration of model object for user information
  */
 function User() {
-    
     /**
      * Find user information document by the specified conditions
      * @param {json} jsonWhere search condition to be used

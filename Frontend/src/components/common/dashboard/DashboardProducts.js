@@ -6,10 +6,10 @@ export default class DashboardProducts extends React.Component {
     render() {
         return (
             <div id="product-content">
-                <div class="">
-                    <p className="table-title font-16 text-white main-bold mb-5">
+                <div >
+                    <div className="table-title font-16 text-white main-bold mb-5">
                         Products List
-                    </p>
+                    </div>
                     <div className="product-item-content">
                         <div className="product-card w-full  mb-5">
                             <div className="product-card-header  border-b-2 border-gray-400 relative flex justify-between w-full">

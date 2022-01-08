@@ -1,6 +1,6 @@
 var util = require('util');
 var exec = require('child_process').exec;
-const Phone = require("../models/Firestore/Phone");
+const PhoneVerifyModel = require("./PhoneVerifyModel");
 require('dotenv').config();
 
 
@@ -19,10 +19,9 @@ var me;
 class PhoneVerifyController {
     constructor() {
         me = this;
-        this.phoneModel = new Phone();
+        this.phoneModel = new PhoneVerifyModel();
         this.urlForTwilioStatusCallback = TWILIO_STATUS_CALLBACK_URL;
     }
-
 
     /**
      * 

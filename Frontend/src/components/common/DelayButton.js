@@ -62,7 +62,7 @@ class DelayButton extends Component {
     render() {
         return (
             <button
-                className="spinner-button border border-grey-light button-bg p-5 hover-transition font-16 main-font focus:outline-none rounded text-white verify-button"
+                className="spinner-button border border-grey-light button-bg p-5 hover-transition main-font focus:outline-none rounded text-white verify-button"
                 onClick={this.onClicked}
                 disabled={this.state.in_delay}>
                 {this.state.in_delay && (

@@ -48,3 +48,18 @@
     - [FIXED] Separate between Google Login and Email Login
     - Add "forgot password" functionality
     - Refine error message "Server internal error: Error: Request failed with status code 404"
+
+2022-01-08
+  + Create Account
+    - [FIXED] Checking Confirm Password
+  + Lock
+    - [FIXED] When press <Send> button during locking
+  + Unlock
+    - [FIXED] Once unlocked, the status must be kept during navigating between another pages
+    - [FIXED] When the <Unlock> button double clicked after password input
+    - Move to lock status if no any user's action for a specified time after unlocked
+  + Get Balance
+    - 
+  + Send ETH
+    - [FIXED] When press <Lock> button during sending
+    - Display a success message after complete sending action
