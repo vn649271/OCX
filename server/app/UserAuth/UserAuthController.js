@@ -262,7 +262,6 @@ class UserAuthController {
         }
         transporter.sendMail(mailOptions, function (error) {
             if (error) {
-                console.log("Failed to send mail: ", error);
                 response.json({ error: -1, message: error.message });
             } else {
                 response.json({ error: 0 });
