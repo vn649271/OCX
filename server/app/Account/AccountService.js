@@ -5,7 +5,6 @@ const AccountModel = require("./AccountModel");
 const Web3 = require('web3');
 const net = require('net');
 var fs = require("fs");
-const { spawn } = require('child_process');
 const { json } = require('body-parser');
 var keythereum = require("keythereum");
 
@@ -19,16 +18,16 @@ const ipcPath = GETH_DATA_DIR + "/geth.ipc"; // For Linux
 // const GETH_DATA_DIR = process.env.LOCALAPPDATA +"\\Ethereum\\" + ETHER_NETWORK;
 // const ipcPath = "\\\\.\\pipe\\geth.ipc";
 
-var geth = spawn('geth', ['--goerli', '--syncmode', 'light']);
-geth.stdout.on('data', (data) => {
-    console.log(`geth:stdout: ${data}`);
-});
-geth.stderr.on('data', (data) => {
-    console.log(`geth:stderr: ${data}`);
-});
-geth.on('close', (code) => {
-    console.log(`geth: child process exited with code ${code}`);
-});
+// var geth = spawn('geth', ['--goerli', '--syncmode', 'light']);
+// geth.stdout.on('data', (data) => {
+//     console.log(`geth:stdout: ${data}`);
+// });
+// geth.stderr.on('data', (data) => {
+//     console.log(`geth:stderr: ${data}`);
+// });
+// geth.on('close', (code) => {
+//     console.log(`geth: child process exited with code ${code}`);
+// });
 
 var gethIpcTimer = null;
 var web3 = null;
