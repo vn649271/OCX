@@ -178,7 +178,6 @@ class WalletPage extends Component {
     }
 
     inform = (msg) => {
-        console.log("-------------------inform(): ", msg);
         if (typeof msg === 'object') {
             msg = msg.toString();
         }
