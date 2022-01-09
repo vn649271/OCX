@@ -53,6 +53,10 @@ class AccountService {
     }
 
     createAccount(params) {
+        if (web3 == null) {
+            console.log("AccountService.createAccount(): Geth node is not ready yet. Please retry a while later.");
+            return resp.json({ error: -1, data: "Geth node is not ready yet. Please retry a while later."})
+        }
         web3.eth.personal.newAccount(params.password).then(function(accountAddress) {
             if (accountAddress.length !== 42) {
                 return params.response.json({ error: -4, data: "Created account address invalid"});
