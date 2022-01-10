@@ -62,6 +62,7 @@ class WalletPage extends Component {
         }
 
         this.userToken = null;
+        this.balanceTimer = null;
         this.onCreateAccont = this.onCreateAccont.bind(this);
         this.onSend = this.onSend.bind(this);
         this.onLeaveFromPasswordInput = this.onLeaveFromPasswordInput.bind(this);
@@ -84,7 +85,7 @@ class WalletPage extends Component {
 
     componentDidMount() {
         this.userToken = localStorage.getItem("userToken");
-        setInterval(function () {
+        this.balanceTimer = setInterval(function () {
             getBalance({
                 reqParam: {
                     userToken: self.userToken
@@ -142,6 +143,13 @@ class WalletPage extends Component {
         });
     }
 
+    componentWillUnmount() {
+        if (this.balanceTimer) {
+            clearInterval(this.balanceTimer);
+            this.balanceTimer = null;
+        }
+    }
+
     togglePasswordVisiblity = event => {
         // let password = event.target.parentNode.parentNode.parentNode.firstElementChild.value;
         this.setState({ showPassword: !this.state.showPassword });
@@ -170,7 +178,6 @@ class WalletPage extends Component {
     }
 
     inform = (msg) => {
-        console.log("-------------------inform(): ", msg);
         if (typeof msg === 'object') {
             msg = msg.toString();
         }

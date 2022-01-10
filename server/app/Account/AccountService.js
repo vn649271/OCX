@@ -18,17 +18,6 @@ const ETHER_NETWORK = process.env.ETHER_NETWORK || "goerli";
 const GETH_DATA_DIR = process.env.LOCALAPPDATA +"\\Ethereum\\" + ETHER_NETWORK;
 const ipcPath = "\\\\.\\pipe\\geth.ipc";
 
-// var geth = spawn('geth', ['--goerli', '--syncmode', 'light']);
-// geth.stdout.on('data', (data) => {
-//     console.log(`geth:stdout: ${data}`);
-// });
-// geth.stderr.on('data', (data) => {
-//     console.log(`geth:stderr: ${data}`);
-// });
-// geth.on('close', (code) => {
-//     console.log(`geth: child process exited with code ${code}`);
-// });
-
 var gethIpcTimer = null;
 var web3 = null;
 var myAccount = null;
@@ -64,9 +53,12 @@ class AccountService {
     }
 
     createAccount(params) {
+        if (web3 == null) {
+            console.log("AccountService.createAccount(): Geth node is not ready yet. Please retry a while later.");
+            return resp.json({ error: -1, data: "Geth node is not ready yet. Please retry a while later."})
+        }
         web3.eth.personal.newAccount(params.password).then(function(accountAddress) {
             if (accountAddress.length !== 42) {
-                console.log("Invalid account address");
                 return params.response.json({ error: -4, data: "Created account address invalid"});
             }
             // Get private key for new account
@@ -175,11 +167,10 @@ class AccountService {
      */
      sendToken = (accountInfo, token, toAddress, toAmount, resp) => {
         if (web3 == null) {
-            return resp.json({ error: -3, data: "Geth node is not ready yet. Please retry a while later."})
+            return resp.json({ error: -3, data: "sendToken(): Geth node is not ready yet. Please retry a while later."})
         }
         if (accountInfo == undefined || accountInfo.accounts == undefined || accountInfo.accounts == {}) {
-            console.log("No account");
-            return resp.json({ error: -5, data: "No account for you"});
+            return resp.json({ error: -5, data: "sendToken(): No account for you"});
         }
         var accounts = accountInfo.accounts;
         myAccount = accounts[token].address;

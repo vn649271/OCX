@@ -102,7 +102,6 @@ class AccountController {
         }
         accountModel.getAddresses(userToken).then(function(accounts) {
             if (accounts == undefined || accounts == null || accounts == {}) {
-                console.log("No account");
                 return resp.json({ error: -4, data: "No account for you"});
             }
             accountService.balance(accounts, 'eth', resp);
