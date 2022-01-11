@@ -449,7 +449,7 @@ input.password-input {
     padding-right: 4em;
 }
 
-.account-password-container .password-input {
+.account-password-container.w-half .password-input {
     width: 50%;
 }
 
@@ -556,6 +556,15 @@ li.sc-gsDKAQ {
     float: right;
     height: 30px;
     margin-bottom: -40px
+}
+
+.import-passphrase-button {
+    cursor: pointer;
+    color: #01c1cc;
+}
+
+.dialog-title, .dialog-button {
+    font-size: 16px !important;
 }
 
 /* responsive */

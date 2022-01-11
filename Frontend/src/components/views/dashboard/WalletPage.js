@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import DelayButton from '../../common/DelayButton';
 import PasswordChecklistComponent from "../../common/PasswordChecklistComponent";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye } from "@fortawesome/free-solid-svg-icons";
 import {
     createAccount,
     connectAccount,
@@ -18,6 +16,10 @@ import {
     NOTIFY_WARNING,
     BALANCE_CHECKING_INTERVAL
 } from "../../../Contants";
+import PassphraseImportDialog from '../../common/PassphraseImportDialog';
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye } from "@fortawesome/free-solid-svg-icons";
 
 const eye = <FontAwesomeIcon icon={faEye} />;
 
@@ -58,6 +60,7 @@ class WalletPage extends Component {
             confirm_password: "",
             showPassword: false,
             hidePasswordCheckList: true,
+            showPassphraseImportDialog: false,
             loading: false
         }
 
@@ -76,6 +79,8 @@ class WalletPage extends Component {
         this.setPasswordInUI = this.setPasswordInUI.bind(this);
         this.onUnlockAccont = this.onUnlockAccont.bind(this);
         this.onLockAccont = this.onLockAccont.bind(this);
+        this.onClickImportPassphrase = this.onClickImportPassphrase.bind(this);
+        this.onClosePassphraseImportDialog = this.onClosePassphraseImportDialog.bind(this);
     }
 
     componentDidUpdate(prevProps) {
@@ -397,155 +402,163 @@ class WalletPage extends Component {
         });
     }
 
+    onClickImportPassphrase = (ev) => {
+        this.setState({showPassphraseImportDialog: true})
+    }
+
+    onClosePassphraseImportDialog = () => {
+        this.setState({showPassphraseImportDialog: false})
+    }
+
     onLeaveFromPasswordInput = event => {
         this.setState({ hidePasswordCheckList: true });
     }
 
     render() {
         return (
-            <div className="my-account-page">
-                <p className="account-balance-box main-font text-red-400 mb-100 font-16">{this.state.error}</p>
-                <p className="help-block main-font text-green-400 font-16">{this.state.info }</p>
-                <div className={this.state.user_mode === USER_WITH_ACCOUNT ? 'shownBox' : 'hiddenBox'}>
-                    <div className={!this.state.locked ? 'shownBox' : 'hiddenBox'}>
-                        <div id="my-account-info-container" className="account-info-container help-block main-font font-16 mr-16">
-                            <p className="account-address-box help-block main-font text-green-400 font-16">
-                                {
-                                    this.state.accounts ?
-                                    this.state.accounts.eth ?
+            <>
+                <div className="my-account-page">
+                    <p className="account-balance-box main-font text-red-400 mb-100 font-16">{this.state.error}</p>
+                    <p className="help-block main-font text-green-400 font-16">{this.state.info}</p>
+                    <div className={this.state.user_mode === USER_WITH_ACCOUNT ? 'shownBox' : 'hiddenBox'}>
+                        <div className={!this.state.locked ? 'shownBox' : 'hiddenBox'}>
+                            <div id="my-account-info-container" className="account-info-container help-block main-font font-16 mr-16">
+                                <p className="account-address-box help-block main-font text-green-400 font-16">
+                                    {this.state.accounts ?
                                         this.state.accounts.eth ?
-                                            this.state.accounts.eth :
+                                            this.state.accounts.eth ?
+                                                this.state.accounts.eth :
+                                                null :
                                             null :
-                                        null :
-                                    null
-                                }
-                            </p>
-                            <div className="lock-account-button-container">
-                                {/* Lock Button */}
+                                        null}
+                                </p>
+                                <div className="lock-account-button-container">
+                                    {/* Lock Button */}
+                                    <DelayButton
+                                        captionInDelay="Locking"
+                                        caption="Lock"
+                                        maxDelayInterval={30}
+                                        onClickButton={this.onLockAccont}
+                                        onClickButtonParam={null} />
+                                </div>
+                                <p className="account-balance-box main-font text-black-400 mb-100 font-20">
+                                    Balance: {this.state.balance.eth} ETH
+                                </p>
+                            </div>
+                            <div id="qr-account-container">
+                                <div id="qr-container">
+                                    <QRCode value="hey" />
+                                </div>
+                                <div id="account-info-container">
+                                    <input
+                                        type="text"
+                                        className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
+                                        name="to_address"
+                                        id="to_address"
+                                        placeholder="To Address"
+                                        value={this.state.input.to_address}
+                                        onChange={this.handleInputChange}
+                                        autoComplete="off" />
+                                    <input
+                                        type="number"
+                                        className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
+                                        name="amount"
+                                        id="amount"
+                                        placeholder="Amount"
+                                        value={this.state.input.amount}
+                                        onChange={this.handleInputChange}
+                                        autoComplete="off" />
+                                </div>
+                            </div>
+                            <div id="send-button-container">
+                                {/* Send Button */}
                                 <DelayButton
-                                    captionInDelay="Locking"
-                                    caption="Lock"
+                                    captionInDelay="Sending"
+                                    caption="Send"
                                     maxDelayInterval={30}
-                                    onClickButton={this.onLockAccont}
-                                    onClickButtonParam={null}
-                                />
-                            </div>
-                            <p className="account-balance-box main-font text-black-400 mb-100 font-20">
-                                Balance: {this.state.balance.eth} ETH
-                            </p>
-                        </div>
-                        <div id="qr-account-container">
-                            <div id="qr-container">
-                                <QRCode value="hey" />
-                            </div>
-                            <div id="account-info-container">
-                                <input
-                                    type="text"
-                                    className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
-                                    name="to_address"
-                                    id="to_address"
-                                    placeholder="To Address"
-                                    value={this.state.input.to_address}
-                                    onChange={this.handleInputChange}
-                                    autoComplete="off" />
-
-                                <input
-                                    type="number"
-                                    className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
-                                    name="amount"
-                                    id="amount"
-                                    placeholder="Amount"
-                                    value={this.state.input.amount}
-                                    onChange={this.handleInputChange}
-                                    autoComplete="off" />
+                                    onClickButton={this.onSend}
+                                    onClickButtonParam={null} />
                             </div>
                         </div>
-                        <div id="send-button-container">
-                            {/* Send Button */}
-                            <DelayButton
-                                captionInDelay="Sending"
-                                caption="Send"
-                                maxDelayInterval={30}
-                                onClickButton={this.onSend}
-                                onClickButtonParam={null}
-                            />
+                        <div className={this.state.locked ? 'shownBox' : 'hiddenBox'}>
+                            <div className="mb-10">
+                                <div className="account-password-container w-half block">
+                                    <input
+                                        type={this.state.showPassword ? "text" : "password"}
+                                        className="password-input border border-grey-light bg-gray-100 p-5 width-50 font-16 main-font focus:outline-none rounded "
+                                        name="password"
+                                        value={this.state.input.password}
+                                        onChange={this.handleInputChange}
+                                        onBlur={this.onLeaveFromPasswordInput}
+                                        placeholder="Password" autoComplete="off" />
+                                    <i className="ShowPasswordIcon font-16" onClick={this.togglePasswordVisiblity}>{eye}</i>
+                                </div>
+                                <div id="unlock-account-button-container">
+                                    {/* Unlock Button */}
+                                    <DelayButton
+                                        captionInDelay="Unlocking"
+                                        caption="Unlock"
+                                        maxDelayInterval={30}
+                                        onClickButton={this.onUnlockAccont}
+                                        onClickButtonParam={null} />
+                                </div>
+                                <div className="import-passphrase-container main-font font-16">
+                                    <p className="import-passphrase-button" onClick={this.onClickImportPassphrase}>Import passphrase</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div className={this.state.locked ? 'shownBox' : 'hiddenBox'}>
+                    <div className={this.state.user_mode === NEW_USER ? 'shownBox' : 'hiddenBox'}>
                         <div className="mb-10">
                             <div className="account-password-container block w-full">
                                 <input
                                     type={this.state.showPassword ? "text" : "password"}
-                                    className="password-input border border-grey-light bg-gray-100 p-5 width-50 font-16 main-font focus:outline-none rounded "
+                                    className="password-input border border-grey-light bg-gray-100 p-5 font-16 main-font focus:outline-none rounded "
                                     name="password"
                                     value={this.state.input.password}
                                     onChange={this.handleInputChange}
                                     onBlur={this.onLeaveFromPasswordInput}
-                                    placeholder="Password" autoComplete="off"
-                                />
+                                    placeholder="Password" autoComplete="off" />
                                 <i className="ShowPasswordIcon font-16" onClick={this.togglePasswordVisiblity}>{eye}</i>
                             </div>
-                            <div id="unlock-account-button-container">
-                                {/* Unlock Button */}
-                                <DelayButton
-                                    captionInDelay="Unlocking"
-                                    caption="Unlock"
-                                    maxDelayInterval={30}
-                                    onClickButton={this.onUnlockAccont}
-                                    onClickButtonParam={null}
-                                />
-                            </div>
                         </div>
-                    </div>
-                </div>
-                <div className={this.state.user_mode === NEW_USER ? 'shownBox' : 'hiddenBox'}>
-                    <div className="mb-10">
-                        <div className="account-password-container block w-full">
+                        <PasswordChecklistComponent
+                            password={this.state.input['password'] || ""}
+                            confirmPassword={this.state.input['confirm_password'] || ""}
+                            hidden={this.state.hidePasswordCheckList} />
+                        <div className="mb-10">
                             <input
-                                type={this.state.showPassword ? "text" : "password"}
-                                className="password-input border border-grey-light bg-gray-100 p-5 font-16 main-font focus:outline-none rounded "
-                                name="password"
-                                value={this.state.input.password}
+                                type="password"
+                                className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded "
+                                name="confirm_password"
+                                id="confirm_password"
+                                value={this.state.input.confirm_password}
                                 onChange={this.handleInputChange}
-                                onBlur={this.onLeaveFromPasswordInput}
-                                placeholder="Password" autoComplete="off"
-                            />
-                            <i className="ShowPasswordIcon font-16" onClick={this.togglePasswordVisiblity}>{eye}</i>
+                                placeholder="Confirm Password" autoComplete="off" />
+                        </div>
+                        <div id="create-account-button-container">
+                            {/* Send Button */}
+                            <DelayButton
+                                captionInDelay="New Account"
+                                caption="New Account"
+                                maxDelayInterval={30}
+                                onClickButton={this.onCreateAccont}
+                                onClickButtonParam={null} />
+                        </div>
+                        <div className="import-passphrase-container">
+                            <span className="import-passphrase-button" onClick={this.onClickImportPassphrase}>Import passphrase</span>
                         </div>
                     </div>
-                    <PasswordChecklistComponent
-                        password={this.state.input['password'] || ""}
-                        confirmPassword={this.state.input['confirm_password'] || ""}
-                        hidden={this.state.hidePasswordCheckList}
-                    />
-                    <div className="mb-10">
-                        <input
-                            type="password"
-                            className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded "
-                            name="confirm_password"
-                            id="confirm_password"
-                            value={this.state.input.confirm_password}
-                            onChange={this.handleInputChange}
-                            placeholder="Confirm Password" autoComplete="off"
-                        />
-                    </div>
-                    <div id="create-account-button-container">
-                        {/* Send Button */}
-                        <DelayButton
-                            captionInDelay="New Account"
-                            caption="New Account"
-                            maxDelayInterval={30}
-                            onClickButton={this.onCreateAccont}
-                            onClickButtonParam={null}
-                        />
-                    </div>
                 </div>
-            </div>
+                <PassphraseImportDialog 
+                    className="passphrase-import-dialog" 
+                    show={this.state.showPassphraseImportDialog}
+                    onClose={this.onClosePassphraseImportDialog}
+                />
+            </>
         );
     }
 
 }
 
 export default WalletPage;
-
-
