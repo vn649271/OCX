@@ -410,6 +410,10 @@ i.od-spinner {
     font-weight: bold !important;
 }
 
+.main-button-type {
+    font-size: 1.6em !important;
+}
+
 .verify-button {
     right: -1px;
     top: -3px;

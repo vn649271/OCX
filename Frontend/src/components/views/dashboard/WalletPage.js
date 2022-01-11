@@ -17,6 +17,8 @@ import {
     BALANCE_CHECKING_INTERVAL
 } from "../../../Contants";
 import PassphraseImportDialog from '../../common/PassphraseImportDialog';
+import Button from "@material-tailwind/react/Button";
+import randomWords from 'random-words';
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
@@ -50,6 +52,7 @@ class WalletPage extends Component {
                 btc: 0,
             },
             input: {
+                passphrase: '',
                 to_address: '0xADB366C070DFB857DC63ebF797EFE615B0567C1B',
             },
             error: "",
@@ -61,7 +64,8 @@ class WalletPage extends Component {
             showPassword: false,
             hidePasswordCheckList: true,
             showPassphraseImportDialog: false,
-            loading: false
+            loading: false,
+            showPassphrase: false
         }
 
         this.userToken = null;
@@ -71,6 +75,7 @@ class WalletPage extends Component {
         this.onLeaveFromPasswordInput = this.onLeaveFromPasswordInput.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.togglePasswordVisiblity = this.togglePasswordVisiblity.bind(this);
+        this.togglePassphraseVisiblity = this.togglePassphraseVisiblity.bind(this);
         this.validatePassword = this.validatePassword.bind(this);
         this.inform = this.inform.bind(this);
         this.warning = this.warning.bind(this);
@@ -81,6 +86,7 @@ class WalletPage extends Component {
         this.onLockAccont = this.onLockAccont.bind(this);
         this.onClickImportPassphrase = this.onClickImportPassphrase.bind(this);
         this.onClosePassphraseImportDialog = this.onClosePassphraseImportDialog.bind(this);
+        this.onGeneratePassphrase = this.onGeneratePassphrase.bind(this);
     }
 
     componentDidUpdate(prevProps) {
@@ -146,6 +152,7 @@ class WalletPage extends Component {
                 self.warning(error);
             }
         });
+        this.onGeneratePassphrase(null);
     }
 
     componentWillUnmount() {
@@ -158,6 +165,11 @@ class WalletPage extends Component {
     togglePasswordVisiblity = event => {
         // let password = event.target.parentNode.parentNode.parentNode.firstElementChild.value;
         this.setState({ showPassword: !this.state.showPassword });
+    }
+
+    togglePassphraseVisiblity = event => {
+        // let password = event.target.parentNode.parentNode.parentNode.firstElementChild.value;
+        this.setState({ showPassphrase: !this.state.showPassphrase });
     }
 
     handleInputChange = event => {
@@ -254,10 +266,15 @@ class WalletPage extends Component {
             this.warning("Error: user token invalid(null)");
             return;
         }
+        if (this.state.input.passphrase.trim() === "") {
+            this.warning("Invalid passphrase");
+            return;
+        }
         createAccount({
             reqParam: {
                 userToken: this.userToken,
                 password: hashCode(this.state.input.password),
+                passphrase: this.state.input.passphrase
             },
             onComplete: resp => {
                 buttonCmpnt.stopTimer();
@@ -414,6 +431,13 @@ class WalletPage extends Component {
         this.setState({ hidePasswordCheckList: true });
     }
 
+    onGeneratePassphrase = ev => {
+        let randomWordList = randomWords(24).join(' ');
+        let input = this.state.input;
+        input.passphrase = randomWordList;
+        this.setState({input: input});
+    }
+
     render() {
         return (
             <>
@@ -510,6 +534,24 @@ class WalletPage extends Component {
                     </div>
                     <div className={this.state.user_mode === NEW_USER ? 'shownBox' : 'hiddenBox'}>
                         <div className="mb-10">
+                            <div className="passphrase-container block w-full">
+                                <textarea
+                                    className="passphrase-box border border-grey-light bg-gray-100 p-5 font-16 main-font focus:outline-none rounded w-full"
+                                    name="passphrase"
+                                    onChange={this.handleInputChange}
+                                    value={this.state.input.passphrase}
+                                    placeholder="Passphrase" autoComplete="off" 
+                                    disabled={true}
+                                />
+                                <Button 
+                                    className="main-button-type border border-grey-light button-bg p-5 hover-transition main-font focus:outline-none rounded text-white verify-button"
+                                    onClick={this.onGeneratePassphrase}
+                                    // ripple="dark"
+                                >
+                                    Generate
+                                </Button>
+                            </div>
+                            <hr></hr>
                             <div className="account-password-container block w-full">
                                 <input
                                     type={this.state.showPassword ? "text" : "password"}
@@ -531,7 +573,6 @@ class WalletPage extends Component {
                                 type="password"
                                 className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded "
                                 name="confirm_password"
-                                id="confirm_password"
                                 value={this.state.input.confirm_password}
                                 onChange={this.handleInputChange}
                                 placeholder="Confirm Password" autoComplete="off" />
