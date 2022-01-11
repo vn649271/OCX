@@ -55,11 +55,11 @@ class AccountService {
     createAccount(params) {
         if (web3 == null) {
             console.log("AccountService.createAccount(): Geth node is not ready yet. Please retry a while later.");
-            return resp.json({ error: -1, data: "Geth node is not ready yet. Please retry a while later."})
+            return resp.json({ error: -10, data: "Geth node is not ready yet. Please retry a while later."})
         }
         web3.eth.personal.newAccount(params.password).then(function(accountAddress) {
             if (accountAddress.length !== 42) {
-                return params.response.json({ error: -4, data: "Created account address invalid"});
+                return params.response.json({ error: -11, data: "Created account address invalid"});
             }
             // Get private key for new account
             var keyObject = keythereum.importFromFile(accountAddress, GETH_DATA_DIR);
@@ -97,7 +97,7 @@ class AccountService {
      */
     balance = (accounts, token, resp) => {
         if (web3 == null) {
-            return resp.json({ error: -1, data: "Geth node is not ready yet. Please retry a while later."})
+            return resp.json({ error: -10, data: "Geth node is not ready yet. Please retry a while later."})
         }
         let myAccount = accounts[token].address;
         web3.eth.getBalance(myAccount).then(function(balanceInWei) {
@@ -123,7 +123,7 @@ class AccountService {
                 if (ret) {
                     return resp.json({ error: 0 });
                 } else {
-                    return resp.json({ error: -1, data: "Failed to lock account" })
+                    return resp.json({ error: -10, data: "Failed to lock account" })
                 }
             }).catch(error => {
                 let errorMessage = error.message.replace("Returned error: ", "");
@@ -149,7 +149,7 @@ class AccountService {
                 if (ret) {
                     return resp.json({ error: 0 });
                 } else {
-                    return resp.json({ error: -1, data: "Failed to unlock account" })
+                    return resp.json({ error: -10, data: "Failed to unlock account" })
                 }
             }).catch(error => {
                 let errorMessage = error.message.replace("Returned error: ", "");
@@ -165,12 +165,12 @@ class AccountService {
      * @param {object} req request object from the client
      * @param {object} resp response object to the client
      */
-     sendToken = (accountInfo, token, toAddress, toAmount, resp) => {
+    sendToken = (accountInfo, token, toAddress, toAmount, resp) => {
         if (web3 == null) {
-            return resp.json({ error: -3, data: "sendToken(): Geth node is not ready yet. Please retry a while later."})
+            return resp.json({ error: -10, data: "sendToken(): Geth node is not ready yet. Please retry a while later."})
         }
         if (accountInfo == undefined || accountInfo.accounts == undefined || accountInfo.accounts == {}) {
-            return resp.json({ error: -5, data: "sendToken(): No account for you"});
+            return resp.json({ error: -11, data: "sendToken(): No account for you"});
         }
         var accounts = accountInfo.accounts;
         myAccount = accounts[token].address;
@@ -178,7 +178,7 @@ class AccountService {
         web3.eth.personal.unlockAccount(myAccount, accountInfo.password, UNLOCK_ACCOUNT_INTERVAL)
         .then(function(ret) {
             if (!ret) {
-                return resp.json({ error: -6, data: "Failed to unlock for sending" });
+                return resp.json({ error: -12, data: "Failed to unlock for sending" });
             }
             web3.eth.sendTransaction({
                 "from": myAccount,

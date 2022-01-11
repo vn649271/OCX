@@ -2,7 +2,6 @@ require('dotenv').config();
 const AccountModel = require("./AccountModel");
 const AccountService = require("./AccountService");
 const UserController = require("../UserAuth/UserAuthController");
-const { generate, generateMultiple } = require('generate-passphrase-id')
 
 var self = null;
 var accountModel = new AccountModel();
@@ -40,8 +39,11 @@ class AccountController {
         req.body.password === null) {
             return resp.json({ error: -3, data: "Invalid password" });
         }
+        const passphrase = req.body ? req.body.passphrase ? req.body.passphrase : null : null;
+        if (passphrase === null) {
+            return resp.json({ error: -4, data: "Invalid passphrase" });
+        }
 
-        const passphrase = generate({ length: 12, separator: ' ', titlecase: true });
         accountService.createAccount({
             userToken: req.body.userToken,
             password: req.body.password, 
