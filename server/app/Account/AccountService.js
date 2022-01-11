@@ -14,7 +14,7 @@ const ETHER_NETWORK = process.env.ETHER_NETWORK || "goerli";
 // For Linux
 var GETH_DATA_DIR = process.env.HOME + "/.ethereum/" + ETHER_NETWORK
 var ipcPath = GETH_DATA_DIR + "/geth.ipc";
-if (process.platform.search('windows') >= 0) {
+if (process.platform.search('win32') >= 0) {
     // For Windows
     GETH_DATA_DIR = process.env.LOCALAPPDATA +"\\Ethereum\\" + ETHER_NETWORK;
     ipcPath = "\\\\.\\pipe\\geth.ipc";
