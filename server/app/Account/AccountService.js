@@ -16,7 +16,6 @@ var GETH_DATA_DIR = process.env.HOME + "/.ethereum/" + ETHER_NETWORK
 var ipcPath = GETH_DATA_DIR + "/geth.ipc";
 if (process.platform.search('windows') >= 0) {
     // For Windows
-    // EX: C:\Users\PolarStar\AppData\Local\Ethereum\goerli\keystore
     GETH_DATA_DIR = process.env.LOCALAPPDATA +"\\Ethereum\\" + ETHER_NETWORK;
     ipcPath = "\\\\.\\pipe\\geth.ipc";
 }
