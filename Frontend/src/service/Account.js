@@ -33,8 +33,20 @@ function _sendRequest(params, reqType) {
  * 
  * @returns new account address
  */
-export const createAccount = (params) => {
+ export const createAccount = (params) => {
     params.url = BACKEND_BASE_URL + "/account/create";
+    _sendRequest(params);
+}
+
+/**
+ * Recovery exist account.
+ * @param {string} userToken    user token
+ * @param {string} account      account address
+ * 
+ * @returns new account address
+ */
+ export const restoreAccount = (params) => {
+    params.url = BACKEND_BASE_URL + "/account/restore";
     _sendRequest(params);
 }
 

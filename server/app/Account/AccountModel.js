@@ -78,13 +78,57 @@ function AccountModel() {
     }
 
     /**
-     * Set status in the specified user information docment
+     * Set status in the specified account information document
      * @param {string} accountId id for the user information document to set status
      * @param {integer} status status to be set
      */
     this.setLock = async function (accountId, lock) {
         const userRef = db.collection(cllctn).doc(accountId);
         const res = await userRef.update({ locked: lock });
+        return res;
+    }
+
+    /**
+     * Set status in the specified account information document
+     * @param {string} accountId id for the user information document to set status
+     * @param {integer} status status to be set
+     */
+    this.setUserToken = async function (accountId, userToken) {
+        const userRef = db.collection(cllctn).doc(accountId);
+        const res = await userRef.update({ user_token: userToken });
+        return res;
+    }
+
+    /**
+     * Set status in the specified accoun information docment
+     * @param {string} accountId id for the user information document to set status
+     * @param {integer} status status to be set
+     */
+    this.setUserPassword = async function (accountId, userPassword) {
+        const userRef = db.collection(cllctn).doc(accountId);
+        const res = await userRef.update({ user_password: userPassword });
+        return res;
+    }
+
+    /**
+     * Set status in the specified accoun information docment
+     * @param {string} accountId id for the user information document to set status
+     * @param {integer} status status to be set
+     */
+    this.updateSecretKeys = async function (accountId, secretKeys) {
+        const userRef = db.collection(cllctn).doc(accountId);
+        const res = await userRef.update({ secret_keys: secretKeys });
+        return res;
+    }
+
+    /**
+     * Set status in the specified accoun information docment
+     * @param {string} accountId id for the user information document to set status
+     * @param {integer} status status to be set
+     */
+    this.updateAddresses = async function (accountId, addresses) {
+        const userRef = db.collection(cllctn).doc(accountId);
+        const res = await userRef.update({ addresses: addresses });
         return res;
     }
 }

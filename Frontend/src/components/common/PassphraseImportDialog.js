@@ -38,7 +38,7 @@ class PassphraseImportDialog extends Component {
         this.onCancel = this.onCancel.bind(this);
         this.inform = this.inform.bind(this);
         this.warning = this.warning.bind(this);
-        // this.inform = this.inform.bind(this);
+        this.validatePassword = this.validatePassword.bind(this);
         // this.inform = this.inform.bind(this);
     }
 
@@ -67,6 +67,29 @@ class PassphraseImportDialog extends Component {
         if (prevProps.show !== this.props.show && this.state.showModal !== this.props.show) {
             this.setState({showModal: this.props.show});
         }
+    }
+
+    validatePassword = (password, confirmPassword) => {
+        var re = {
+            'lowercase': /(?=.*[a-z])/,
+            'uppercase': /(?=.*[A-Z])/,
+            'numeric_char': /(?=.*[0-9])/,
+            'special_char': /(?=.[!@#$%^&<>?()\-+*=|{}[\]:";'])/,
+            'atleast_8': /(?=.{8,})/
+        };
+        if (!re.lowercase.test(password))
+            return -1;
+        if (!re.uppercase.test(password))
+            return -2;
+        if (!re.numeric_char.test(password))
+            return -3;
+        if (!re.special_char.test(password))
+            return -4;
+        if (!re.atleast_8.test(password))
+            return -5;
+        if (password !== confirmPassword)
+            return -6;
+        return 0;
     }
 
     handleInputChange = ev => {
@@ -105,7 +128,43 @@ class PassphraseImportDialog extends Component {
     }
 
     onRestoreAccount = (param, ev, btnCmp) => {
-        btnCmp.stopTimer();
+        let passwordValidation = this.validatePassword(
+            this.state.input.password, 
+            this.state.input.confirm_password
+        );
+        if (passwordValidation < 0) {
+            btnCmp.stopTimer();
+            this.warning("Invalid password");
+            return;
+        }
+        restoreAccount({
+            reqParam: {
+                userToken: this.userToken,
+                password: hashCode(this.state.input.password),
+                passphrase: this.state.input.passphrase
+            },
+            onComplete: resp => {
+                btnCmp.stopTimer();
+                if (resp.error == 0) {
+                    self.setState({ locked: false });
+                    let accounts = this.state.accounts;
+                    accounts.eth = resp.data;
+                    self.setState({ accounts: accounts });
+                    self.warning('');
+                    self.setState({ user_mode: USER_WITH_ACCOUNT });
+                    return;
+                } else if (resp.error == -100) {
+                    self.warning("Invalid response for creating account");
+                    return;
+                }
+                self.warning(resp.data);
+            },
+            onFailed: error => {
+                btnCmp.stopTimer();
+                this.warning(error);
+            }
+        });
+
         this.setShowModal(false)
     }
 
