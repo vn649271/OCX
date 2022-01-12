@@ -33,6 +33,7 @@ export default class Login extends Component {
       disableGoogleButton: false,
       hide_link_to_signup: true
     }
+
     if (props !== undefined && props !== null &&
       props.location !== undefined && props.location !== null &&
       props.location.state !== undefined && props.location.state !== null &&
@@ -144,8 +145,9 @@ export default class Login extends Component {
       me.setState({ disableGoogleButton: false });
 
       if (res !== undefined && res !== null &&
-        res.error !== undefined && res.error === 0) {
-        localStorage.setItem("userToken", res.message)
+      res.error !== undefined && res.error === 0) {
+        localStorage.setItem("userToken", res.message.user_token)
+        localStorage.setItem("encryptKey", res.message.encrypt_key)
         localStorage.setItem("email", profile.email)
         me.props.history.push('/dashboard')
       } else {
@@ -186,7 +188,8 @@ export default class Login extends Component {
       me.setState({ loading: false });
       me.setState({ disableGoogleButton: false });
       if (!res.error) {
-        localStorage.setItem("userToken", res.message)
+        localStorage.setItem("userToken", res.message.user_token)
+        localStorage.setItem("encryptKey", res.message.encrypt_key)
         localStorage.setItem("email", me.state.email)
         me.props.history.push('/dashboard')
       } else {

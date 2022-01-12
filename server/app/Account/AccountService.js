@@ -54,42 +54,40 @@ class AccountService {
         console.log("********* Current chain name: '", this.chainName, "'");
     }
 
-    create(newAccountInfo, response) {
+    getPrivateKey() {
+        // Get private key for new account
+        var keyObject = keythereum.importFromFile(myEthAddress, GETH_DATA_DIR);
+        // var privateKey = keythereum.recover(params.password, keyObject);
+        return keythereum.recover(newAccountInfo.accountPassword, keyObject);
+    }
+
+    async create(newAccountInfoObj, response) {
         if (web3 == null) {
             console.log("AccountService.createAccount(): Geth node is not ready yet. Please retry a while later.");
             return resp.json({ error: -10, data: "Geth node is not ready yet. Please retry a while later."})
         }
-        
-        web3.eth.personal.newAccount(newAccountInfo.accountPassword).then(function(myEthAddress) {
-            if (myEthAddress.length !== 42) {
-                return response.json({ error: -11, data: "Created account address invalid"});
-            }
-            // Get private key for new account
-            var keyObject = keythereum.importFromFile(myEthAddress, GETH_DATA_DIR);
-            // var privateKey = keythereum.recover(params.password, keyObject);
-            var privateKey = keythereum.recover(newAccountInfo.accountPassword, keyObject);
-            var secretKey = privateKey.toString('hex');
-            var secretKeys = newAccountInfo.secretKeys;
-            secretKeys.eth = secretKey;
-            accountModel.updateSecretKeys(newAccountInfo.id, secretKeys).then(accountInfo => {
-                let addresses = accountInfo.addresses;
-                addresses.eth = myEthAddress;
-                accountModel.updateAddresses(accountInfo.id, addresses).then(accountInfo => {
-                    return response.json({
-                        error: 0,
-                        data: accountInfo.addresses
-                    });
-                }).catch(error => {
-                    let errorMessage = error.message.replace("Returned error: ", "");
-                    return resp.json({error: -200, data: "Error 10000: " + errorMessage});
-                });
-            }).catch(error => {
-                let errorMessage = error.message.replace("Returned error: ", "");
-                return resp.json({error: -201, data: "Error 10001: " + errorMessage});
+        var accountId = newAccountInfoObj.id;
+        var newAccountInfo = await newAccountInfoObj.get();
+        newAccountInfo = await newAccountInfo.data();
+        var accountPassword = newAccountInfo.account_password;
+        var addresses = newAccountInfo.addresses;
+
+        var myEthAddress = await web3.eth.personal.newAccount(accountPassword);
+        if (myEthAddress && myEthAddress.length !== 42) {
+            return response.json({ error: -11, data: "Created account address invalid"});
+        }
+        addresses.eth = myEthAddress;
+        accountModel.updateAddresses(accountId, addresses).then(ret => {
+            return response.json({
+                error: 0,
+                data: {
+                    addresses: newAccountInfo.addresses,
+                    locked: newAccountInfo.locked
+                }
             });
         }).catch(error => {
             let errorMessage = error.message.replace("Returned error: ", "");
-            return resp.json({error: -202, data: "Error 10002: " + errorMessage});
+            return response.json({error: -200, data: "Error 10000: " + errorMessage});
         });
     }
 
@@ -97,11 +95,11 @@ class AccountService {
      * @param {object} req request object from the client 
      * @param {object} resp response object to the client
      */
-    balance = (accountInfo, token, resp) => {
+    balance = (addresses, token, resp) => {
         if (web3 == null) {
             return resp.json({ error: -10, data: "Geth node is not ready yet. Please retry a while later."})
         }
-        let myEthAddress = accountInfo.addresses[token];
+        let myEthAddress = addresses[token];
         web3.eth.getBalance(myEthAddress).then(function(balanceInWei) {
             let balance = web3.utils.fromWei(balanceInWei, 'ether');
             resp.json({ error: 0, data: balance });

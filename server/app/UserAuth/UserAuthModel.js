@@ -15,7 +15,7 @@ const cllctn = 'users';
 /**
  * Declaration of model object for user information
  */
-function User() {
+function UserAuth() {
     /**
      * Find user information document by the specified conditions
      * @param {json} jsonWhere search condition to be used
@@ -92,4 +92,4 @@ function User() {
     }
 }
 
-module.exports = User;
+module.exports = UserAuth;

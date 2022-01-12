@@ -9,11 +9,12 @@ Data Model
     user_token: <string>,
     passphrase: <string list>,
     password: <string>,
-    accounts: {
-        eth: {
-            address: <HexString>,
-            private: <HexString>
-        }
+    addresses: {
+        eth: <HexString>,
+    },
+    secret_keys: {
+        eth: <HexString>
+    }
 }
 */
 
@@ -72,7 +73,7 @@ function AccountModel() {
             return null;
         }
         snapshot.forEach(doc => {
-            ret = doc.data().accounts;
+            ret = doc.data().addresses;
         });
         return ret;
     }
