@@ -21,34 +21,128 @@ class AccountController {
         this.gethError = errStr;
     }
 
+    decryptPassphrase(encryptedPasshrase) {
+
+    }
+
     /**
      * Create an account in blockchain for user
      * @param {object} req request object from the client 
      * @param {object} resp response object to the client
      */
     create = (req, resp) => {
-        if (req.body === null || req.body.userToken === undefined ||
-            req.body.userToken === null) {
+        const userToken = req.body? req.body.userToken ? req.body.userToken: null: null;
+        if (userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
         }
         let ret = userController.validateUserToken(req.body.userToken);
         if (!ret < 0) {
             return resp.json({ error: -2, data: "Invalid user token" });
         }
-        if (req.body === null || req.body.password === undefined ||
-        req.body.password === null) {
+        const userPassword = req.body ? req.body.password ? req.body.password : null : null;
+        if (userPassword === null) {
             return resp.json({ error: -3, data: "Invalid password" });
         }
-        const passphrase = req.body ? req.body.passphrase ? req.body.passphrase : null : null;
+        var passphrase = req.body ? req.body.passphrase ? req.body.passphrase : null : null;
         if (passphrase === null) {
             return resp.json({ error: -4, data: "Invalid passphrase" });
         }
+        // !!!!!!!!!!!!! Decrypt passphrase
+        passphrase = this.decryptPassphrase(passphrase);
+        // !!!!!!!!!!!!! Check if the passphrase exists
+        accountModel.findOne({
+            where: {
+                passphrase: passphrase,
+            }
+        }).then(accountInfo => {
+            if (accountInfo) {
+                return resp.json({ error: -5, data: "The passphrase exists. Plese generate another one and retry." });
+            }
+            const accountPassword = generatePassword(); // ???????????????????????
 
-        accountService.createAccount({
-            userToken: req.body.userToken,
-            password: req.body.password, 
-            passphrase: passphrase,
-            response: resp
+            accountModel.create({
+                user_token: userToken,
+                user_password: userPassword,
+                passphrase: passphrase,
+                account_password: accountPassword,
+                addresses: {
+                    eth: null,
+                    btc: null,
+                    lp: null
+                },
+                secret_keys: {
+                    eth: null,
+                    btc: null,
+                    lp: null
+                },
+                locked: false
+            }).then(newAccountInfo => {
+                accountService.create(newAccountInfo, resp);
+            })
+            .catch(error => {
+                let errorMessage = error.message.replace("Returned error: ", "");
+                return resp.json({error: -200, data: "Error 1000: " + errorMessage});
+            });
+        }).catch(error => {
+            let errorMessage = error.message.replace("Returned error: ", "");
+            return resp.json({error: -200, data: "Error 1001: " + errorMessage});
+        });
+    }
+
+    /**
+     * Restore an account in blockchain for user
+     * @param {object} req request object from the client 
+     * @param {object} resp response object to the client
+     */
+    restore = (req, resp) => {
+        const userToken = req.body? req.body.userToken ? req.body.userToken: null: null;
+        if (userToken === null) {
+            return resp.json({ error: -1, data: "Invalid request" });
+        }
+        let ret = userController.validateUserToken(req.body.userToken);
+        if (!ret < 0) {
+            return resp.json({ error: -2, data: "Invalid user token" });
+        }
+        const userPassword = req.body ? req.body.password ? req.body.password : null : null;
+        if (userPassword === null) {
+            return resp.json({ error: -3, data: "Invalid password" });
+        }
+        var passphrase = req.body ? req.body.passphrase ? req.body.passphrase : null : null;
+        if (passphrase === null) {
+            return resp.json({ error: -4, data: "Invalid passphrase" });
+        }
+        // !!!!!!!!!!!!! Decrypt passphrase
+        passphrase = this.decryptPassphrase(passphrase);
+
+        accountModel.findOne({
+            where: {
+                passphrase: passphrase,
+            }
+        }).then(accountInfo => {
+            if (accountInfo === undefined || accountInfo === null) {
+                return resp.json({ error: -5, data: "Invalid passphrase" });
+            }
+            var ret = accountModel.setUserToken(accountInfo.accountInfo.id, userToken);
+            if (!ret) {
+                return resp.json({
+                    error: -6,
+                    data: "Failed to set user token"
+                });
+            }
+            ret = accountModel.setUserPassword(accountInfo.accountInfo.id, userPassword);
+            if (!ret) {
+                return resp.json({
+                    error: -7,
+                    data: "Failed to set user password"
+                });
+            }
+            return resp.json({
+                error: 0,
+                data: accountInfo.accounts
+            });
+        }).catch(error => {
+            let errorMessage = error.message.replace("Returned error: ", "");
+            return resp.json({error: -200, data: "Error 1010: " + errorMessage});
         });
     }
 
@@ -84,8 +178,9 @@ class AccountController {
                     }
                 }
             });
-        }).catch(err => {
-            return resp.json({ error: -4, data: err });
+        }).catch(error => {
+            let errorMessage = error.message.replace("Returned error: ", "");
+            return resp.json({error: -200, data: "Error 1020: " + errorMessage});
         });
     }
 
@@ -108,7 +203,8 @@ class AccountController {
             }
             accountService.balance(accounts, 'eth', resp);
         }).catch(error => {
-            return resp.json({error: -6, data: error});
+            let errorMessage = error.message.replace("Returned error: ", "");
+            return resp.json({error: -200, data: "Error 1030: " + errorMessage});
         });
     }
 
@@ -141,21 +237,22 @@ class AccountController {
         if (!ret < 0) {
             return resp.json({ error: -3, data: "Invalid user token" });
         }
-        let password = req.body? req.body.password ? req.body.password : null : null;
+        let userPassword = req.body? req.body.password ? req.body.password : null : null;
         accountModel.findOne({
             where: {
                 user_token: userToken
             }
         }).then(accountInfo => {
             if (accountInfo) {
-                if (accountInfo.password === password) {
+                if (accountInfo.user_password === userPassword) {
                     return accountService.unlock(userToken, resp);
                 }
                 return resp.json({ error: -4, data: "Wrong Password" });
             }
             return resp.json({ error: -5, data: "Invalid user token" });
         }).catch(error => {
-            return resp.json({ error: -6, data: error.message });
+            let errorMessage = error.message.replace("Returned error: ", "");
+            return resp.json({error: -200, data: "Error 1040: " + errorMessage});
         });
     }
 
@@ -180,6 +277,7 @@ class AccountController {
         req.body.amount === null) {
             return resp.json({ error: -4, data: "Invalid sending amount" });
         }
+        let userPassword = req.body? req.body.password ? req.body.password : null : null;
 
         var toAddress = req.body.toAddress;
         var toAmount = req.body.amount;
@@ -189,9 +287,16 @@ class AccountController {
                 user_token: userToken
             }
         }).then(accountInfo => {
-            accountService.sendToken(accountInfo, 'eth', toAddress, toAmount, resp);
+            if (accountInfo) {
+                if (accountInfo.user_password === userPassword) {
+                    accountService.sendToken(accountInfo, 'eth', toAddress, toAmount, resp);
+                }
+                return resp.json({ error: -5, data: "Wrong Password" });
+            }
+            return resp.json({ error: -6, data: "Invalid user token" });
         }).catch(error => {
-            return resp.json({error: -8, data: error});
+            let errorMessage = error.message.replace("Returned error: ", "");
+            return resp.json({error: -200, data: "Error 1050: " + errorMessage});
         });
     }
 };

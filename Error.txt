@@ -63,3 +63,9 @@
   + Send ETH
     - [FIXED] When press <Lock> button during sending
     - Display a success message after complete sending action
+
+
+2022-01-12
+  + Passphrase
+    - Check if existence of new passphrase
+    - Encrypt the passphrase before send requests including it

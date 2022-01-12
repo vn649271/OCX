@@ -2,20 +2,13 @@ import React, { Component } from 'react';
 import DelayButton from '../../common/DelayButton';
 import PasswordChecklistComponent from "../../common/PasswordChecklistComponent";
 import {
-    createAccount,
-    connectAccount,
-    getBalance,
-    sendCryptoCurrency,
+    createAccount, restoreAccount, connectAccount,
+    getBalance, sendCryptoCurrency,
     lockAccount, unlockAccount
 } from '../../../service/Account';
 import { hashCode } from "../../../service/Utils";
 import QRCode from "react-qr-code";
-import {
-    BATCHED_VALIDATION,
-    INDIVIDUAL_VALIDATION,
-    NOTIFY_WARNING,
-    BALANCE_CHECKING_INTERVAL
-} from "../../../Contants";
+import { BALANCE_CHECKING_INTERVAL } from "../../../Contants";
 import PassphraseImportDialog from '../../common/PassphraseImportDialog';
 import Button from "@material-tailwind/react/Button";
 import randomWords from 'random-words';
@@ -64,12 +57,15 @@ class WalletPage extends Component {
             showPassword: false,
             hidePasswordCheckList: true,
             showPassphraseImportDialog: false,
+            showPasscodeConfirmDialog: false,
             loading: false,
-            showPassphrase: false
+            showPassphrase: false,
         }
-
+        
         this.userToken = null;
         this.balanceTimer = null;
+        this.userPasswordToConfirmTx = "";
+
         this.onCreateAccont = this.onCreateAccont.bind(this);
         this.onSend = this.onSend.bind(this);
         this.onLeaveFromPasswordInput = this.onLeaveFromPasswordInput.bind(this);
@@ -86,6 +82,8 @@ class WalletPage extends Component {
         this.onLockAccont = this.onLockAccont.bind(this);
         this.onClickImportPassphrase = this.onClickImportPassphrase.bind(this);
         this.onClosePassphraseImportDialog = this.onClosePassphraseImportDialog.bind(this);
+        this.onOpenPasscodeConfirmDialog = this.onOpenPasscodeConfirmDialog.bind(this);
+        this.onClosePasscodeConfirmDialog = this.onClosePasscodeConfirmDialog.bind(this);
         this.onGeneratePassphrase = this.onGeneratePassphrase.bind(this);
     }
 
@@ -274,7 +272,7 @@ class WalletPage extends Component {
             reqParam: {
                 userToken: this.userToken,
                 password: hashCode(this.state.input.password),
-                passphrase: this.state.input.passphrase
+                passphrase: this.state.input.passphrase // !!!!!!!!!!!!! Encrypt passphrase
             },
             onComplete: resp => {
                 buttonCmpnt.stopTimer();
@@ -397,6 +395,7 @@ class WalletPage extends Component {
                 userToken: this.userToken,
                 toAddress: toAddress,
                 amount: amount,
+                password: hashCode(this.userPasswordToConfirmTx)
             },
             onComplete: resp => {
                 this.setState({ current_state: IDLE });
@@ -420,11 +419,47 @@ class WalletPage extends Component {
     }
 
     onClickImportPassphrase = (ev) => {
-        this.setState({showPassphraseImportDialog: true})
+        this.setState({showPassphraseImportDialog: true});
     }
 
     onClosePassphraseImportDialog = () => {
-        this.setState({showPassphraseImportDialog: false})
+        this.setState({showPassphraseImportDialog: false});
+        restoreAccount({
+            reqParam: {
+                userToken: this.userToken,
+                password: hashCode(this.state.input.password),
+                passphrase: this.state.input.passphrase // !!!!!!!!!!!!! Encrypt passphrase
+            },
+            onComplete: resp => {
+                buttonCmpnt.stopTimer();
+                if (resp.error == 0) {
+                    self.setState({ locked: false });
+                    let accounts = this.state.accounts;
+                    accounts.eth = resp.data;
+                    self.setState({ accounts: accounts });
+                    self.warning('');
+                    self.setState({ user_mode: USER_WITH_ACCOUNT });
+                    return;
+                } else if (resp.error == -100) {
+                    self.warning("Invalid response to restore account");
+                    return;
+                }
+                self.warning(resp.data);
+            },
+            onFailed: error => {
+                buttonCmpnt.stopTimer();
+                this.warning(error);
+            }
+        });
+    }
+
+    onOpenPasscodeConfirmDialog = (ev) => {
+        this.setState({showPasscodeConfirmDialog: true});
+    }
+
+    onClosePasscodeConfirmDialog = (userPasswordToConfirmTx) => {
+        this.setState({showPasscodeConfirmDialog: false});
+        this.userPasswordToConfirmTx = userPasswordToConfirmTx;
     }
 
     onLeaveFromPasswordInput = event => {
@@ -595,6 +630,11 @@ class WalletPage extends Component {
                     className="passphrase-import-dialog" 
                     show={this.state.showPassphraseImportDialog}
                     onClose={this.onClosePassphraseImportDialog}
+                />
+                <PasscodeConfirmDialog
+                    className="passcode-confirm-dialog" 
+                    show={this.state.showPasscodeConfirmDialog}
+                    onClose={this.onClosePasscodeConfirmDialog}
                 />
             </>
         );
