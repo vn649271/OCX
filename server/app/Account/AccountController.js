@@ -1,12 +1,15 @@
 require('dotenv').config();
+const PasswordGenerator = require('generate-password');
 const AccountModel = require("./AccountModel");
 const AccountService = require("./AccountService");
 const UserController = require("../UserAuth/UserAuthController");
+const CommonUtils = require('../utils/CommonUtils');
 
 var self = null;
 var accountModel = new AccountModel();
 var accountService = new AccountService();
 var userController = new UserController();
+var commonUtils = new CommonUtils();
 
 /**
  * Controller for user authentication
@@ -21,22 +24,18 @@ class AccountController {
         this.gethError = errStr;
     }
 
-    decryptPassphrase(encryptedPasshrase) {
-
-    }
-
     /**
      * Create an account in blockchain for user
      * @param {object} req request object from the client 
      * @param {object} resp response object to the client
      */
-    create = (req, resp) => {
+    async create(req, resp) {
         const userToken = req.body? req.body.userToken ? req.body.userToken: null: null;
         if (userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
         }
-        let ret = userController.validateUserToken(req.body.userToken);
-        if (!ret < 0) {
+        let userInfo = await userController.validateUserToken(userToken);
+        if (!userInfo) {
             return resp.json({ error: -2, data: "Invalid user token" });
         }
         const userPassword = req.body ? req.body.password ? req.body.password : null : null;
@@ -48,44 +47,42 @@ class AccountController {
             return resp.json({ error: -4, data: "Invalid passphrase" });
         }
         // !!!!!!!!!!!!! Decrypt passphrase
-        passphrase = this.decryptPassphrase(passphrase);
+        passphrase = await commonUtils.decrypt(passphrase, userInfo.decrypt_key);
         // !!!!!!!!!!!!! Check if the passphrase exists
-        accountModel.findOne({
+        var accountInfo = await accountModel.findOne({
             where: {
                 passphrase: passphrase,
             }
-        }).then(accountInfo => {
-            if (accountInfo) {
-                return resp.json({ error: -5, data: "The passphrase exists. Plese generate another one and retry." });
-            }
-            const accountPassword = generatePassword(); // ???????????????????????
-
-            accountModel.create({
-                user_token: userToken,
-                user_password: userPassword,
-                passphrase: passphrase,
-                account_password: accountPassword,
-                addresses: {
-                    eth: null,
-                    btc: null,
-                    lp: null
-                },
-                secret_keys: {
-                    eth: null,
-                    btc: null,
-                    lp: null
-                },
-                locked: false
-            }).then(newAccountInfo => {
-                accountService.create(newAccountInfo, resp);
-            })
-            .catch(error => {
-                let errorMessage = error.message.replace("Returned error: ", "");
-                return resp.json({error: -200, data: "Error 1000: " + errorMessage});
-            });
-        }).catch(error => {
+        });
+        if (accountInfo) {
+            return resp.json({ error: -5, data: "The passphrase exists. Plese generate another one and retry." });
+        }
+        var accountPassword = PasswordGenerator.generate({
+            length: 10,
+            numbers: true
+        });
+        accountModel.create({
+            user_token: userToken,
+            user_password: userPassword,
+            passphrase: passphrase,
+            account_password: accountPassword,
+            addresses: {
+                eth: null,
+                btc: null,
+                lp: null
+            },
+            secret_keys: {
+                eth: null,
+                btc: null,
+                lp: null
+            },
+            locked: false
+        }).then(newAccountInfo => {
+            accountService.create(newAccountInfo, resp);
+        })
+        .catch(error => {
             let errorMessage = error.message.replace("Returned error: ", "");
-            return resp.json({error: -200, data: "Error 1001: " + errorMessage});
+            return resp.json({error: -200, data: "Error 1000: " + errorMessage});
         });
     }
 
@@ -94,13 +91,13 @@ class AccountController {
      * @param {object} req request object from the client 
      * @param {object} resp response object to the client
      */
-    restore = (req, resp) => {
+    async restore(req, resp) {
         const userToken = req.body? req.body.userToken ? req.body.userToken: null: null;
         if (userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
         }
-        let ret = userController.validateUserToken(req.body.userToken);
-        if (!ret < 0) {
+        let userInfo = await userController.validateUserToken(userToken);
+        if (!userInfo) {
             return resp.json({ error: -2, data: "Invalid user token" });
         }
         const userPassword = req.body ? req.body.password ? req.body.password : null : null;
@@ -112,37 +109,33 @@ class AccountController {
             return resp.json({ error: -4, data: "Invalid passphrase" });
         }
         // !!!!!!!!!!!!! Decrypt passphrase
-        passphrase = this.decryptPassphrase(passphrase);
+        passphrase = await commonUtils.decrypt(passphrase, userInfo.decrypt_key);
 
-        accountModel.findOne({
+        var accountInfo = await accountModel.findOne({
             where: {
                 passphrase: passphrase,
             }
-        }).then(accountInfo => {
-            if (accountInfo === undefined || accountInfo === null) {
-                return resp.json({ error: -5, data: "Invalid passphrase" });
-            }
-            var ret = accountModel.setUserToken(accountInfo.accountInfo.id, userToken);
-            if (!ret) {
-                return resp.json({
-                    error: -6,
-                    data: "Failed to set user token"
-                });
-            }
-            ret = accountModel.setUserPassword(accountInfo.accountInfo.id, userPassword);
-            if (!ret) {
-                return resp.json({
-                    error: -7,
-                    data: "Failed to set user password"
-                });
-            }
+        })
+        if (accountInfo === undefined || accountInfo === null) {
+            return resp.json({ error: -5, data: "Invalid passphrase" });
+        }
+        var ret = await accountModel.setUserToken(accountInfo.id, userToken);
+        if (!ret) {
             return resp.json({
-                error: 0,
-                data: accountInfo.accounts
+                error: -6,
+                data: "Failed to set user token"
             });
-        }).catch(error => {
-            let errorMessage = error.message.replace("Returned error: ", "");
-            return resp.json({error: -200, data: "Error 1010: " + errorMessage});
+        }
+        ret = await accountModel.setUserPassword(accountInfo.id, userPassword);
+        if (!ret) {
+            return resp.json({
+                error: -7,
+                data: "Failed to set user password"
+            });
+        }
+        return resp.json({
+            error: 0,
+            data: accountInfo.addresses
         });
     }
 
@@ -152,35 +145,26 @@ class AccountController {
      * @param {object} resp 
      * @returns 
      */
-    connect = (req, resp) => {
+    async connect(req, resp) {
         var userToken = req.body? req.body.userToken? req.body.userToken: null: null;
         if (userToken === null) {
             return resp.json({ error: -2, data: "Invalid request" });
         }
-        let ret = userController.validateUserToken(userToken);
-        if (!ret < 0) {
-            return resp.json({ error: -3, data: "Invalid user token" });
-        }
-        accountModel.findOne({
+        let ret = await accountModel.findOne({
             where: {
                 user_token: userToken
             }
-        }).then(ret => {
-            if (ret === undefined || ret === null) {
-                return resp.json({ error: 1, data: "No account" });
+        });
+        if (ret === undefined || ret === null) {
+            return resp.json({ error: 1, data: "No account" });
+        }
+        return resp.json({  
+            error: 0, 
+            data: {
+                user_token: userToken,
+                locked: ret.locked,
+                addresses: ret.addresses
             }
-            return resp.json({  
-                error: 0, 
-                data: {
-                    locked: ret.locked,
-                    addresses: {
-                        eth: ret.accounts.eth.address
-                    }
-                }
-            });
-        }).catch(error => {
-            let errorMessage = error.message.replace("Returned error: ", "");
-            return resp.json({error: -200, data: "Error 1020: " + errorMessage});
         });
     }
 
@@ -188,38 +172,34 @@ class AccountController {
      * @param {object} req request object from the client 
      * @param {object} resp response object to the client
      */
-    balance = (req, resp) => {
+    async balance(req, resp) {
         var userToken = req.body ? req.body.userToken? req.body.userToken: null: null;
         if (userToken === null) {
             return resp.json({ error: -2, data: "Invalid request" });
         }
-        let ret = userController.validateUserToken(userToken);
-        if (!ret < 0) {
-            return resp.json({ error: -3, data: "Invalid user token" });
+        let userInfo = await userController.validateUserToken(userToken);
+        if (!userInfo) {
+            return resp.json({ error: -2, data: "Invalid user token" });
         }
-        accountModel.getAddresses(userToken).then(function(accounts) {
-            if (accounts == undefined || accounts == null || accounts == {}) {
-                return resp.json({ error: -4, data: "No account for you"});
-            }
-            accountService.balance(accounts, 'eth', resp);
-        }).catch(error => {
-            let errorMessage = error.message.replace("Returned error: ", "");
-            return resp.json({error: -200, data: "Error 1030: " + errorMessage});
-        });
+        var addresses = await accountModel.getAddresses(userToken);
+        if (addresses == undefined || addresses == null || addresses == {}) {
+            return resp.json({ error: -4, data: "No account for you"});
+        }
+        accountService.balance(addresses, 'eth', resp);
     }
 
     /**
      * @param {object} req request object from the client 
      * @param {object} resp response object to the client
      */
-    lock = (req, resp) => {
+    async lock(req, resp) {
         var userToken = req.body ? req.body.userToken? req.body.userToken: null: null;
         if (userToken === null) {
             return resp.json({ error: -2, data: "Invalid request" });
         }
-        let ret = userController.validateUserToken(userToken);
-        if (!ret < 0) {
-            return resp.json({ error: -3, data: "Invalid user token" });
+        let userInfo = await userController.validateUserToken(userToken);
+        if (!userInfo) {
+            return resp.json({ error: -2, data: "Invalid user token" });
         }
         accountService.lock(userToken, resp);
     }
@@ -228,7 +208,7 @@ class AccountController {
      * @param {object} req request object from the client 
      * @param {object} resp response object to the client
      */
-    unlock = (req, resp) => {
+    async unlock(req, resp) {
         var userToken = req.body ? req.body.userToken? req.body.userToken: null: null;
         if (userToken === null) {
             return resp.json({ error: -2, data: "Invalid request" });
@@ -260,13 +240,13 @@ class AccountController {
      * @param {object} req request object from the client
      * @param {object} resp response object to the client
      */
-    send = (req, resp) => {
+    async send (req, resp) {
         var userToken = req.body ? req.body.userToken? req.body.userToken: null: null;
         if (userToken === null) {
             return resp.json({ error: -2, data: "Invalid request" });
         }
-        let ret = userController.validateUserToken(req.body.userToken);
-        if (!ret < 0) {
+        let userInfo = await userController.validateUserToken(userToken);
+        if (!userInfo) {
             return resp.json({ error: -2, data: "Invalid user token" });
         }
         if (req.body === null || req.body.toAddress === undefined ||

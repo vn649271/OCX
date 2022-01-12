@@ -20,9 +20,9 @@ class PassphraseImportDialog extends Component {
             info: '',
             error: '',
             showModal: false,
-            passphrase: '',
             showPassword: false,
             input: {
+                passphrase: '',
                 password: '',
                 confirm_password: ''
             },
@@ -33,7 +33,6 @@ class PassphraseImportDialog extends Component {
         this.onLeaveFromPasswordInput = this.onLeaveFromPasswordInput.bind(this);
         this.togglePasswordVisiblity = this.togglePasswordVisiblity.bind(this);
         this.setShowModal = this.setShowModal.bind(this);
-        this.onInputPassphrase = this.onInputPassphrase.bind(this);
         this.onRestoreAccount = this.onRestoreAccount.bind(this);
         this.onCancel = this.onCancel.bind(this);
         this.inform = this.inform.bind(this);
@@ -60,7 +59,10 @@ class PassphraseImportDialog extends Component {
 
     setShowModal = show => {
         this.setState({showModal: show})
-        this.closeMe();
+        this.closeMe({
+            passphrase: this.state.input.passphrase,
+            password: this.state.input.password
+        });
     }
 
     componentDidUpdate(prevProps) {
@@ -123,49 +125,21 @@ class PassphraseImportDialog extends Component {
         this.setState({ showPassword: !this.state.showPassword });
     }
 
-    onInputPassphrase = ev => {
-        this.setState({passphrase: ev.target.value})
-    }
-
     onRestoreAccount = (param, ev, btnCmp) => {
+        btnCmp.stopTimer();
         let passwordValidation = this.validatePassword(
             this.state.input.password, 
             this.state.input.confirm_password
         );
         if (passwordValidation < 0) {
-            btnCmp.stopTimer();
             this.warning("Invalid password");
             return;
         }
-        restoreAccount({
-            reqParam: {
-                userToken: this.userToken,
-                password: hashCode(this.state.input.password),
-                passphrase: this.state.input.passphrase
-            },
-            onComplete: resp => {
-                btnCmp.stopTimer();
-                if (resp.error == 0) {
-                    self.setState({ locked: false });
-                    let accounts = this.state.accounts;
-                    accounts.eth = resp.data;
-                    self.setState({ accounts: accounts });
-                    self.warning('');
-                    self.setState({ user_mode: USER_WITH_ACCOUNT });
-                    return;
-                } else if (resp.error == -100) {
-                    self.warning("Invalid response for creating account");
-                    return;
-                }
-                self.warning(resp.data);
-            },
-            onFailed: error => {
-                btnCmp.stopTimer();
-                this.warning(error);
-            }
-        });
-
         this.setShowModal(false)
+        this.closeMe({
+            password: this.state.input.password,
+            passphrase: this.state.input.passphrase
+        });
     }
 
     onCancel = ev => {
@@ -187,8 +161,8 @@ class PassphraseImportDialog extends Component {
                             name="passphrase"
                             id="passphrase"
                             placeholder="Your passphrase"
-                            value={this.state.passphrase}
-                            onChange={this.onInputPassphrase}
+                            value={this.state.input.passphrase}
+                            onChange={this.handleInputChange}
                             autoComplete="off" />
                         <div className="mb-10">
                             <div className="account-password-container block w-full">

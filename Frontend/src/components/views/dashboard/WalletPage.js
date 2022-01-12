@@ -10,11 +10,15 @@ import { hashCode } from "../../../service/Utils";
 import QRCode from "react-qr-code";
 import { BALANCE_CHECKING_INTERVAL } from "../../../Contants";
 import PassphraseImportDialog from '../../common/PassphraseImportDialog';
+import PasscodeConfirmDialog from '../../common/PasscodeConfirmDialog';
 import Button from "@material-tailwind/react/Button";
 import randomWords from 'random-words';
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
+import { JSEncrypt } from 'jsencrypt'
+
+var rsaCrypt = new JSEncrypt();
 
 const eye = <FontAwesomeIcon icon={faEye} />;
 
@@ -60,12 +64,16 @@ class WalletPage extends Component {
             showPasscodeConfirmDialog: false,
             loading: false,
             showPassphrase: false,
+            encryptKey: ''
         }
         
         this.userToken = null;
+        this.encryptKey = null;
         this.balanceTimer = null;
         this.userPasswordToConfirmTx = "";
-
+        this.rsaCryptInited = false;
+        this.encryptedPassphrase = null;
+        
         this.onCreateAccont = this.onCreateAccont.bind(this);
         this.onSend = this.onSend.bind(this);
         this.onLeaveFromPasswordInput = this.onLeaveFromPasswordInput.bind(this);
@@ -85,6 +93,7 @@ class WalletPage extends Component {
         this.onOpenPasscodeConfirmDialog = this.onOpenPasscodeConfirmDialog.bind(this);
         this.onClosePasscodeConfirmDialog = this.onClosePasscodeConfirmDialog.bind(this);
         this.onGeneratePassphrase = this.onGeneratePassphrase.bind(this);
+        this.setEncryptKey = this.setEncryptKey.bind(this);
     }
 
     componentDidUpdate(prevProps) {
@@ -94,7 +103,13 @@ class WalletPage extends Component {
 
     componentDidMount() {
         this.userToken = localStorage.getItem("userToken");
+        this.encryptKey = localStorage.getItem("encryptKey");
+        this.setEncryptKey(this.encryptKey);
         this.balanceTimer = setInterval(function () {
+            console.log("balance function(): user_mode=", self.state.user_mode);
+            if (self.state.user_mode !== USER_WITH_ACCOUNT) {
+                return;
+            }
             getBalance({
                 reqParam: {
                     userToken: self.userToken
@@ -123,6 +138,7 @@ class WalletPage extends Component {
                 userToken: self.userToken
             },
             onComplete: resp => {
+console.log("************* connectAccount(): response=", resp);
                 var errorMsg = null;
                 if (resp.error !== undefined) {
                     switch (resp.error) {
@@ -132,7 +148,7 @@ class WalletPage extends Component {
                             self.setState({ locked: resp.data.locked });
                             return;
                         case 1:
-                            self.setState({ user_mode: NEW_USER })
+                            self.setState({ user_mode: NEW_USER });
                             return;
                         case -100:
                             errorMsg = "No response for get balance";
@@ -158,6 +174,12 @@ class WalletPage extends Component {
             clearInterval(this.balanceTimer);
             this.balanceTimer = null;
         }
+        
+    }
+
+    setEncryptKey(encryptKey) {
+        rsaCrypt.setPublicKey(encryptKey);
+        this.rsaCryptInited = true;
     }
 
     togglePasswordVisiblity = event => {
@@ -264,7 +286,7 @@ class WalletPage extends Component {
             this.warning("Error: user token invalid(null)");
             return;
         }
-        if (this.state.input.passphrase.trim() === "") {
+        if (this.encryptedPassphrase.trim() === "") {
             this.warning("Invalid passphrase");
             return;
         }
@@ -272,15 +294,13 @@ class WalletPage extends Component {
             reqParam: {
                 userToken: this.userToken,
                 password: hashCode(this.state.input.password),
-                passphrase: this.state.input.passphrase // !!!!!!!!!!!!! Encrypt passphrase
+                passphrase: this.encryptedPassphrase // !!!!!!!!!!!!! Encrypt passphrase
             },
             onComplete: resp => {
                 buttonCmpnt.stopTimer();
                 if (resp.error == 0) {
                     self.setState({ locked: false });
-                    let accounts = this.state.accounts;
-                    accounts.eth = resp.data;
-                    self.setState({ accounts: accounts });
+                    self.setState({ accounts: resp.data.addresses });
                     self.warning('');
                     self.setState({ user_mode: USER_WITH_ACCOUNT });
                     return;
@@ -422,32 +442,31 @@ class WalletPage extends Component {
         this.setState({showPassphraseImportDialog: true});
     }
 
-    onClosePassphraseImportDialog = () => {
+    onClosePassphraseImportDialog = (param) => {
+        this.encryptedPassphrase = rsaCrypt.encrypt(param.passphrase);
+console.log("************* onClosePassphraseImportDialog(): param=", param);
         this.setState({showPassphraseImportDialog: false});
         restoreAccount({
             reqParam: {
                 userToken: this.userToken,
-                password: hashCode(this.state.input.password),
-                passphrase: this.state.input.passphrase // !!!!!!!!!!!!! Encrypt passphrase
+                password: hashCode(param.password),
+                passphrase: self.encryptedPassphrase // ???????????? Encrypt
             },
             onComplete: resp => {
-                buttonCmpnt.stopTimer();
                 if (resp.error == 0) {
+console.log("************* restoreAccount(): response=", resp);
                     self.setState({ locked: false });
-                    let accounts = this.state.accounts;
-                    accounts.eth = resp.data;
-                    self.setState({ accounts: accounts });
+                    self.setState({ accounts: resp.data });
                     self.warning('');
                     self.setState({ user_mode: USER_WITH_ACCOUNT });
                     return;
                 } else if (resp.error == -100) {
-                    self.warning("Invalid response to restore account");
+                    self.warning("Invalid response for creating account");
                     return;
                 }
                 self.warning(resp.data);
             },
             onFailed: error => {
-                buttonCmpnt.stopTimer();
                 this.warning(error);
             }
         });
@@ -471,6 +490,7 @@ class WalletPage extends Component {
         let input = this.state.input;
         input.passphrase = randomWordList;
         this.setState({input: input});
+        this.encryptedPassphrase = rsaCrypt.encrypt(randomWordList);
     }
 
     render() {

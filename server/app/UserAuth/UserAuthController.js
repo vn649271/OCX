@@ -1,7 +1,8 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const User = require("./UserAuthModel");
+const UserAuth = require("./UserAuthModel");
 const Phone = require("../PhoneVerify/PhoneVerifyModel");
+const CommonUtils = require('../utils/CommonUtils');
 var nodemailer = require('nodemailer');
 var randtoken = require('rand-token');
 require('dotenv').config();
@@ -10,7 +11,8 @@ var TOKEN_GENERATION_SECRET_KEY = process.env.SECRET_KEY;
 var NUM_OF_CHARS_FOR_PIN_CODE = process.env.NUM_OF_CHARS_FOR_PIN_CODE || 5;
 
 var me;
-var userModel = new User();
+var userModel = new UserAuth();
+var commonUtils = new CommonUtils();
 
 /**
  * Controller for user authentication
@@ -27,8 +29,12 @@ class UserAuthController {
      * @param {object} userToken user's token for the requestor
      * @returns {boolean} 0 - No error or errors
      */
-    validateUserToken = (userToken) => {
-        return 0;
+    async validateUserToken(userToken) {
+        return await userModel.findOne({
+            where: {
+                token: userToken
+            }
+        });
     }
 
     /**
@@ -63,6 +69,7 @@ class UserAuthController {
             params.resp.json({ error: -1, message: "Failed to get phone information." });
             return;
         }
+        const { privateKey, publicKey } = commonUtils.GenerateKeyPair();
         const userData = {
             first_name: params.req.body.first_name,
             last_name: params.req.body.last_name,
@@ -70,6 +77,8 @@ class UserAuthController {
             password: params.req.body.password,
             phone: phoneInfo.number,
             email_type: params.req.body.email_type,
+            encrypt_key: publicKey,
+            decrypt_key: privateKey,
             token: "",
             pin_code: "",
             status: 0
@@ -123,6 +132,8 @@ class UserAuthController {
             this.registerWithGmail(req, res);
             return;
         }
+        const { privateKey, publicKey } = commonUtils.GenerateKeyPair();
+
         const userData = {
             first_name: req.body.first_name,
             last_name: req.body.last_name,
@@ -130,6 +141,8 @@ class UserAuthController {
             password: req.body.password,
             phone: req.body.phone_for_email,
             email_type: req.body.email_type,
+            encrypt_key: publicKey,
+            decrypt_key: privateKey,
             token: "",
             pin_code: "",
             status: 0
@@ -188,7 +201,13 @@ class UserAuthController {
                     //     expiresIn: 1440
                     // });
                     // let ret = userModel.setToken(user.id, token);
-                    res.json({ error: 0, message: user.token });
+                    res.json({ 
+                        error: 0, 
+                        message: { 
+                            user_token: user.token, 
+                            encrypt_key: user.encrypt_key 
+                        } 
+                    });
                 } else {
                     res.json({ error: -1, message: 'Wrong Email or password. Please check again.' })
                 }
