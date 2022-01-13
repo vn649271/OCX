@@ -17,6 +17,8 @@ import randomWords from 'random-words';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { JSEncrypt } from 'jsencrypt'
+import PageTabBar from '../../common/PageTabBar';
+import ExchangeSwap from '../../common/exchange/ExchangeSwap';
 
 var rsaCrypt = new JSEncrypt();
 
@@ -27,9 +29,20 @@ const UNKNOWN_USER = 0;
 const NEW_USER = 1;
 const USER_WITH_ACCOUNT = 2;
 
-const   IDLE = 0,
-        LOCKING = 1,
-        SENDING = 2;
+const IDLE = 0,
+    LOCKING = 1,
+    SENDING = 2;
+
+const walletPageTabItems = [
+    {
+        name: 'transfer-tab',
+        title: 'Transfer'
+    },
+    {
+        name: 'swap-tab',
+        title: 'Swap'
+    },
+];
 
 var self;
 
@@ -41,6 +54,7 @@ class WalletPage extends Component {
 
         this.state = {
             is_creating: false,
+            current_tab: "transfer-tab",
             user_mode: UNKNOWN_USER,
             creating_interval: MAX_CREATING_DELAY_TIMEOUT,
             current_state: IDLE,
@@ -66,14 +80,14 @@ class WalletPage extends Component {
             showPassphrase: false,
             encryptKey: ''
         }
-        
+
         this.userToken = null;
         this.encryptKey = null;
         this.balanceTimer = null;
         this.userPasswordToConfirmTx = "";
         this.rsaCryptInited = false;
         this.encryptedPassphrase = null;
-        
+
         this.onCreateAccont = this.onCreateAccont.bind(this);
         this.onSend = this.onSend.bind(this);
         this.onLeaveFromPasswordInput = this.onLeaveFromPasswordInput.bind(this);
@@ -94,6 +108,7 @@ class WalletPage extends Component {
         this.onClosePasscodeConfirmDialog = this.onClosePasscodeConfirmDialog.bind(this);
         this.onGeneratePassphrase = this.onGeneratePassphrase.bind(this);
         this.setEncryptKey = this.setEncryptKey.bind(this);
+        this.onSelectTab = this.onSelectTab.bind(this);
     }
 
     componentDidUpdate(prevProps) {
@@ -131,14 +146,14 @@ class WalletPage extends Component {
                 }
             });
         },
-        BALANCE_CHECKING_INTERVAL);
+            BALANCE_CHECKING_INTERVAL);
         // Try to connect to my account
         connectAccount({
             reqParam: {
                 userToken: self.userToken
             },
             onComplete: resp => {
-console.log("************* connectAccount(): response=", resp);
+                console.log("************* connectAccount(): response=", resp);
                 var errorMsg = null;
                 if (resp.error !== undefined) {
                     switch (resp.error) {
@@ -174,7 +189,7 @@ console.log("************* connectAccount(): response=", resp);
             clearInterval(this.balanceTimer);
             this.balanceTimer = null;
         }
-        
+
     }
 
     setEncryptKey(encryptKey) {
@@ -271,9 +286,13 @@ console.log("************* connectAccount(): response=", resp);
         return 0;
     }
 
+    onSelectTab = tabName => {
+        this.setState({ current_tab: tabName })
+    }
+
     onCreateAccont = (param, ev, buttonCmpnt) => {
         let passwordValidation = this.validatePassword(
-            this.state.input.password, 
+            this.state.input.password,
             this.state.input.confirm_password
         );
         if (passwordValidation < 0) {
@@ -439,13 +458,13 @@ console.log("************* connectAccount(): response=", resp);
     }
 
     onClickImportPassphrase = (ev) => {
-        this.setState({showPassphraseImportDialog: true});
+        this.setState({ showPassphraseImportDialog: true });
     }
 
     onClosePassphraseImportDialog = (param) => {
         this.encryptedPassphrase = rsaCrypt.encrypt(param.passphrase);
-console.log("************* onClosePassphraseImportDialog(): param=", param);
-        this.setState({showPassphraseImportDialog: false});
+        console.log("************* onClosePassphraseImportDialog(): param=", param);
+        this.setState({ showPassphraseImportDialog: false });
         restoreAccount({
             reqParam: {
                 userToken: this.userToken,
@@ -454,7 +473,7 @@ console.log("************* onClosePassphraseImportDialog(): param=", param);
             },
             onComplete: resp => {
                 if (resp.error == 0) {
-console.log("************* restoreAccount(): response=", resp);
+                    console.log("************* restoreAccount(): response=", resp);
                     self.setState({ locked: false });
                     self.setState({ accounts: resp.data });
                     self.warning('');
@@ -473,11 +492,11 @@ console.log("************* restoreAccount(): response=", resp);
     }
 
     onOpenPasscodeConfirmDialog = (ev) => {
-        this.setState({showPasscodeConfirmDialog: true});
+        this.setState({ showPasscodeConfirmDialog: true });
     }
 
     onClosePasscodeConfirmDialog = (userPasswordToConfirmTx) => {
-        this.setState({showPasscodeConfirmDialog: false});
+        this.setState({ showPasscodeConfirmDialog: false });
         this.userPasswordToConfirmTx = userPasswordToConfirmTx;
     }
 
@@ -489,7 +508,7 @@ console.log("************* restoreAccount(): response=", resp);
         let randomWordList = randomWords(24).join(' ');
         let input = this.state.input;
         input.passphrase = randomWordList;
-        this.setState({input: input});
+        this.setState({ input: input });
         this.encryptedPassphrase = rsaCrypt.encrypt(randomWordList);
     }
 
@@ -501,62 +520,79 @@ console.log("************* restoreAccount(): response=", resp);
                     <p className="help-block main-font text-green-400 font-16">{this.state.info}</p>
                     <div className={this.state.user_mode === USER_WITH_ACCOUNT ? 'shownBox' : 'hiddenBox'}>
                         <div className={!this.state.locked ? 'shownBox' : 'hiddenBox'}>
-                            <div id="my-account-info-container" className="account-info-container help-block main-font font-16 mr-16">
-                                <p className="account-address-box help-block main-font text-green-400 font-16">
-                                    {this.state.accounts ?
-                                        this.state.accounts.eth ?
+                            <div className="lock-account-button-container mr-20">
+                                {/* Lock Button */}
+                                <DelayButton
+                                    captionInDelay="Locking"
+                                    caption="Lock"
+                                    maxDelayInterval={30}
+                                    onClickButton={this.onLockAccont}
+                                    onClickButtonParam={null} />
+                            </div>
+                            <div className="pagetabbar-container mb-10">
+                                <PageTabBar
+                                    onClickItem={this.onSelectTab}
+                                    items={walletPageTabItems}
+                                    defaultActiveItem='transfer-tab'
+                                />
+                            </div>
+                            <div className={this.state.current_tab === 'transfer-tab' ? 'shownBox' : 'hiddenBox'}>
+                                <div id="my-account-info-container" className="account-info-container help-block main-font font-16 mr-16">
+                                    <p className="account-address-box help-block main-font text-green-400 font-16">
+                                        {this.state.accounts ?
                                             this.state.accounts.eth ?
-                                                this.state.accounts.eth :
+                                                this.state.accounts.eth ?
+                                                    this.state.accounts.eth :
+                                                    null :
                                                 null :
-                                            null :
-                                        null}
-                                </p>
-                                <div className="lock-account-button-container">
-                                    {/* Lock Button */}
+                                            null}
+                                    </p>
+
+                                    <p className="account-balance-box main-font text-black-400 mb-100 font-20">
+                                        Balance: {this.state.balance.eth} ETH
+                                    </p>
+                                </div>
+                                <div id="qr-account-container">
+                                    <div id="qr-container">
+                                        <QRCode value="hey" />
+                                    </div>
+                                    <div id="account-info-container">
+                                        <input
+                                            type="text"
+                                            className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
+                                            name="to_address"
+                                            id="to_address"
+                                            placeholder="To Address"
+                                            value={this.state.input.to_address}
+                                            onChange={this.handleInputChange}
+                                            autoComplete="off" />
+                                        <input
+                                            type="number"
+                                            className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
+                                            name="amount"
+                                            id="amount"
+                                            placeholder="Amount"
+                                            value={this.state.input.amount}
+                                            onChange={this.handleInputChange}
+                                            autoComplete="off" />
+                                    </div>
+                                </div>
+                                <div id="send-button-container">
+                                    {/* Send Button */}
                                     <DelayButton
-                                        captionInDelay="Locking"
-                                        caption="Lock"
+                                        captionInDelay="Sending"
+                                        caption="Send"
                                         maxDelayInterval={30}
-                                        onClickButton={this.onLockAccont}
+                                        onClickButton={this.onSend}
                                         onClickButtonParam={null} />
                                 </div>
-                                <p className="account-balance-box main-font text-black-400 mb-100 font-20">
-                                    Balance: {this.state.balance.eth} ETH
-                                </p>
                             </div>
-                            <div id="qr-account-container">
-                                <div id="qr-container">
-                                    <QRCode value="hey" />
+                            <div className={this.state.current_tab === 'swap-tab' ? 'shownBox' : 'hiddenBox'}>
+                                <div className="flex w-full justify-center">
+                                    <ExchangeSwap
+                                        extraClass="home-card py-10 px-0 w-half h-full"
+                                    />
                                 </div>
-                                <div id="account-info-container">
-                                    <input
-                                        type="text"
-                                        className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
-                                        name="to_address"
-                                        id="to_address"
-                                        placeholder="To Address"
-                                        value={this.state.input.to_address}
-                                        onChange={this.handleInputChange}
-                                        autoComplete="off" />
-                                    <input
-                                        type="number"
-                                        className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
-                                        name="amount"
-                                        id="amount"
-                                        placeholder="Amount"
-                                        value={this.state.input.amount}
-                                        onChange={this.handleInputChange}
-                                        autoComplete="off" />
-                                </div>
-                            </div>
-                            <div id="send-button-container">
-                                {/* Send Button */}
-                                <DelayButton
-                                    captionInDelay="Sending"
-                                    caption="Send"
-                                    maxDelayInterval={30}
-                                    onClickButton={this.onSend}
-                                    onClickButtonParam={null} />
                             </div>
                         </div>
                         <div className={this.state.locked ? 'shownBox' : 'hiddenBox'}>
@@ -595,13 +631,13 @@ console.log("************* restoreAccount(): response=", resp);
                                     name="passphrase"
                                     onChange={this.handleInputChange}
                                     value={this.state.input.passphrase}
-                                    placeholder="Passphrase" autoComplete="off" 
+                                    placeholder="Passphrase" autoComplete="off"
                                     disabled={true}
                                 />
-                                <Button 
+                                <Button
                                     className="main-button-type border border-grey-light button-bg p-5 hover-transition main-font focus:outline-none rounded text-white verify-button"
                                     onClick={this.onGeneratePassphrase}
-                                    // ripple="dark"
+                                // ripple="dark"
                                 >
                                     Generate
                                 </Button>
@@ -646,13 +682,13 @@ console.log("************* restoreAccount(): response=", resp);
                         </div>
                     </div>
                 </div>
-                <PassphraseImportDialog 
-                    className="passphrase-import-dialog" 
+                <PassphraseImportDialog
+                    className="passphrase-import-dialog"
                     show={this.state.showPassphraseImportDialog}
                     onClose={this.onClosePassphraseImportDialog}
                 />
                 <PasscodeConfirmDialog
-                    className="passcode-confirm-dialog" 
+                    className="passcode-confirm-dialog"
                     show={this.state.showPasscodeConfirmDialog}
                     onClose={this.onClosePasscodeConfirmDialog}
                 />

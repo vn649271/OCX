@@ -4,7 +4,6 @@ var me;
 
 class DelayButton extends Component {
 
-
     constructor(props) {
         super(props);
         me = this;
