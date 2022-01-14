@@ -591,6 +591,8 @@ class WalletPage extends Component {
                                 <div className="flex w-full justify-center">
                                     <ExchangeSwap
                                         extraClass="home-card py-10 px-0 w-half h-full"
+                                        inform={this.inform}
+                                        warning={this.warning}
                                     />
                                 </div>
                             </div>
@@ -637,7 +639,6 @@ class WalletPage extends Component {
                                 <Button
                                     className="main-button-type border border-grey-light button-bg p-5 hover-transition main-font focus:outline-none rounded text-white verify-button"
                                     onClick={this.onGeneratePassphrase}
-                                // ripple="dark"
                                 >
                                     Generate
                                 </Button>

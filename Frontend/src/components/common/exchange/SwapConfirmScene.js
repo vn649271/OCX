@@ -2,7 +2,7 @@ import { Component } from 'react';
 
 var self;
 
-class SwapView extends Component {
+export default class SwapConfirmScene extends Component {
 
     constructor(props) {
         super(props);
@@ -14,11 +14,9 @@ class SwapView extends Component {
 
     render() {
         return(
-            <div className="swap-container">
-                Swap Container
+            <div className="confirm-swap-container">
+                Confirm Swap Container
             </div>
         );
     }
 }
-
-export default SwapView;
