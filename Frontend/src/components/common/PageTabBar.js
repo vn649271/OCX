@@ -18,7 +18,6 @@ class PageTabBar extends Component {
         }
         this.defaultActiveItemName = props.defaultActiveItem ? props.defaultActiveItem : null;
         this.menuItems = props.items;
-        // this.defaultActiveItemName = props.defaultActiveItem;
         this.onClickTabItem = props.onClickItem;
 
         this.buildMenuItem = this.buildMenuItem.bind(this);
