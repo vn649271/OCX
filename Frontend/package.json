@@ -33,7 +33,6 @@
     "jsencrypt": "^3.2.1",
     "nodemon": "^1.19.4",
     "postcss": "^7.0.35",
-    "prop-types": "15.6.1",
     "qrcode.react": "^1.0.1",
     "random-words": "^1.1.1",
     "react": "^17.0.1",

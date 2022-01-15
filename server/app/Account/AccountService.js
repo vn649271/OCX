@@ -7,16 +7,24 @@ const net = require('net');
 var fs = require("fs");
 const { json } = require('body-parser');
 var keythereum = require("keythereum");
+const {
+    ETH2Token, 
+    Token2ETH,
+    DEFAULT_DEADLINE
+} = require('../Services/Uniswap/Swap/SwapImpl'); // Services/Uniswap/Swap
 
 const UNLOCK_ACCOUNT_INTERVAL = process.env.UNLOCK_ACCOUNT_INTERVAL || 15000; // 15s
-const ETHER_NETWORK = process.env.ETHER_NETWORK || "goerli";
+const CHAIN_NAME = process.env.CHAIN_NAME || "goerli";
+const CHAIN_ID = process.env.CHAIN_ID || 5;
+
+const MSG__GETH_NOT_READY = "Geth node is not ready yet. Please retry a while later.";
 
 // For Linux
-var GETH_DATA_DIR = process.env.HOME + "/.ethereum/" + ETHER_NETWORK
+var GETH_DATA_DIR = process.env.HOME + "/.ethereum/" + CHAIN_NAME
 var ipcPath = GETH_DATA_DIR + "/geth.ipc";
 if (process.platform.search('win32') >= 0) {
     // For Windows
-    GETH_DATA_DIR = process.env.LOCALAPPDATA +"\\Ethereum\\" + ETHER_NETWORK;
+    GETH_DATA_DIR = process.env.LOCALAPPDATA +"\\Ethereum\\" + CHAIN_NAME;
     ipcPath = "\\\\.\\pipe\\geth.ipc";
 }
 
@@ -50,7 +58,7 @@ class AccountService {
     constructor() {
         self = this;
         this.gethError = null
-        this.chainName = (ETHER_NETWORK === '.'? 'main': ETHER_NETWORK).trim();
+        this.chainName = (CHAIN_NAME === '.'? 'main': CHAIN_NAME).trim();
         console.log("********* Current chain name: '", this.chainName, "'");
     }
 
@@ -64,7 +72,7 @@ class AccountService {
     async create(newAccountInfoObj, response) {
         if (web3 == null) {
             console.log("AccountService.createAccount(): Geth node is not ready yet. Please retry a while later.");
-            return resp.json({ error: -10, data: "Geth node is not ready yet. Please retry a while later."})
+            return resp.json({ error: -10, data: MSG__GETH_NOT_READY})
         }
         var accountId = newAccountInfoObj.id;
         var newAccountInfo = await newAccountInfoObj.get();
@@ -76,7 +84,7 @@ class AccountService {
         if (myEthAddress && myEthAddress.length !== 42) {
             return response.json({ error: -11, data: "Created account address invalid"});
         }
-        addresses.eth = myEthAddress;
+        addresses['ETH'] = myEthAddress;
         accountModel.updateAddresses(accountId, addresses).then(ret => {
             return response.json({
                 error: 0,
@@ -97,7 +105,7 @@ class AccountService {
      */
     balance = (addresses, token, resp) => {
         if (web3 == null) {
-            return resp.json({ error: -10, data: "Geth node is not ready yet. Please retry a while later."})
+            return resp.json({ error: -10, data: MSG__GETH_NOT_READY})
         }
         let myEthAddress = addresses[token];
         web3.eth.getBalance(myEthAddress).then(function(balanceInWei) {
@@ -110,10 +118,11 @@ class AccountService {
     }
 
     /**
-     * @param {object} req request object from the client
+     * @param {object} userInfo request object from the client
      * @param {object} resp response object to the client
      */
-    lock = (userToken, resp) => {
+    lock = (userInfo, resp) => {
+        let userToken = userInfo.token;
         accountModel.findOne({
             where: {
                 user_token: userToken
@@ -195,6 +204,75 @@ class AccountService {
             return resp.json({error: -201, data: "Error 10041: " + errorMessage});
         });
     }
+
+    /**
+     * @param {object} params request object from the client
+     *      {
+     *          buySymbol:          token symbol to buy
+     *          sellAmount:         ETH amount to sell
+     *          acceptableMinRate:  acceptable minimum token value in Wei
+     *          deadline:           
+     *      }
+     * @param {object} resp response object to the client
+     */
+    swapEthToERC20 = (userInfo, params, resp) => {
+        if (web3 == null) {
+            return resp.json({ error: -10, data: MSG__GETH_NOT_READY})
+        }
+        var deadline = params ? 
+            params.deadline ? 
+                params.deadline : 
+                DEFAULT_DEADLINE : 
+            DEFAULT_DEADLINE;
+        let now = new Date();
+        deadline = new Date(now.valueOf() + deadline * 1000);
+        var userToken = userInfo.token;
+        var amountToSwap = web3.utils.toHex(params.sellAmount * 10 ** 18); // in ETH
+        var acceptableMinRate = web3.utils.toHex(
+            (params.acceptableMinRate - 0) * 10 ** 18    // 0.2 DAI
+        );
+        accountModel.findOne({
+            where: {
+                user_token: userToken
+            }
+        }).then(accountInfo => {
+            ETH2Token(
+                web3,
+                {
+                    address: accountInfo.addresses['ETH'],
+                    privateKey: accountInfo.secret_keys['ETH'],
+                    buySymbol: params.buySymbol,
+                    sellAmount: amountToSwap,
+                    acceptableMinRate: acceptableMinRate,
+                    deadline: deadline.valueOf() / 1000, // in ms -> in s
+                    chainId: CHAIN_ID // Goerli
+                },
+                (error, result) => {
+                    if (!error) {
+                        resp.json({ error: 0 });
+                    }
+                }
+            );
+        }).catch(error => {
+            let errorMessage = error.message.replace("Returned error: ", "");
+            return response.json({error: -200, data: "Error 10000: " + errorMessage});
+        });
+    }
+
+    /**
+     * @param {object} req request object from the client
+     * @param {object} resp response object to the client
+     */
+    swapERC20ToEth = (req, resp) => {
+        Token2ETH({
+            exchangeContractAddress: daiExchangeContract,
+            privateKey: privKey,
+            addressFrom: addressFrom,
+            addressTo: daiExchangeAddress,
+            amount: ETH_SOLD
+        });        
+    }
 };
+
 
 module.exports = AccountService;

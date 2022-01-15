@@ -33,7 +33,7 @@ function _sendRequest(params, reqType) {
  * 
  * @returns new account address
  */
- export const createAccount = (params) => {
+export const createAccount = (params) => {
     params.url = BACKEND_BASE_URL + "/account/create";
     _sendRequest(params);
 }
@@ -45,7 +45,7 @@ function _sendRequest(params, reqType) {
  * 
  * @returns new account address
  */
- export const restoreAccount = (params) => {
+export const restoreAccount = (params) => {
     params.url = BACKEND_BASE_URL + "/account/restore";
     _sendRequest(params);
 }
@@ -103,5 +103,17 @@ export const getBalance = (params) => {
  */
 export const sendCryptoCurrency = (params) => {
     params.url = BACKEND_BASE_URL + "/account/send";
+    _sendRequest(params);
+}
+
+/**
+ * Connect to specified account.
+ * @param {string} userToken    user token
+ * @param {string} account      account address
+ * 
+ * @returns 
+ */
+export const swap = (params) => {
+    params.url = BACKEND_BASE_URL + "/account/swap";
     _sendRequest(params);
 }
