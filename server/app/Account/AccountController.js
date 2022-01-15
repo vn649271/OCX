@@ -67,14 +67,14 @@ class AccountController {
             passphrase: passphrase,
             account_password: accountPassword,
             addresses: {
-                eth: null,
-                btc: null,
-                lp: null
+                ETH: null,
+                BTC: null,
+                LP: null
             },
             secret_keys: {
-                eth: null,
-                btc: null,
-                lp: null
+                ETH: null,
+                BTC: null,
+                LP: null
             },
             locked: false
         }).then(newAccountInfo => {
@@ -185,7 +185,7 @@ class AccountController {
         if (addresses == undefined || addresses == null || addresses == {}) {
             return resp.json({ error: -4, data: "No account for you"});
         }
-        accountService.balance(addresses, 'eth', resp);
+        accountService.balance(addresses, 'ETH', resp);
     }
 
     /**
@@ -201,7 +201,7 @@ class AccountController {
         if (!userInfo) {
             return resp.json({ error: -2, data: "Invalid user token" });
         }
-        accountService.lock(userToken, resp);
+        accountService.lock(userInfo, resp);
     }
 
     /**
@@ -214,7 +214,7 @@ class AccountController {
             return resp.json({ error: -2, data: "Invalid request" });
         }
         let ret = userController.validateUserToken(userToken);
-        if (!ret < 0) {
+        if (!ret) {
             return resp.json({ error: -3, data: "Invalid user token" });
         }
         let userPassword = req.body? req.body.password ? req.body.password : null : null;
@@ -269,7 +269,7 @@ class AccountController {
         }).then(accountInfo => {
             if (accountInfo) {
                 if (accountInfo.user_password === userPassword) {
-                    accountService.sendToken(accountInfo, 'eth', toAddress, toAmount, resp);
+                    accountService.sendToken(accountInfo, 'ETH', toAddress, toAmount, resp);
                 }
                 return resp.json({ error: -5, data: "Wrong Password" });
             }
@@ -278,6 +278,33 @@ class AccountController {
             let errorMessage = error.message.replace("Returned error: ", "");
             return resp.json({error: -200, data: "Error 1050: " + errorMessage});
         });
+    }
+
+    /**
+     * @param {object} req request object from the client
+     * @param {object} resp response object to the client
+     */
+    async swap (req, resp) {
+        var userToken = req.body ? req.body.userToken? req.body.userToken: null: null;
+        if (userToken === null) {
+            return resp.json({ error: -2, data: "Invalid request" });
+        }
+        let userInfo = userController.validateUserToken(userToken);
+        if (!userInfo) {
+            return resp.json({ error: -3, data: "Invalid user token" });
+        }
+        let userPassword = req.body? req.body.password ? req.body.password : null : null;
+
+        accountService.swapEthToERC20(
+            userInfo,
+            {
+                buySymbol:          "DAI",
+                sellAmount:         0.01,
+                acceptableMinRate:  3000,   // 3000 DAI
+                deadline:           600 // 600s = 10min
+            },
+            resp
+        );        
     }
 };
 

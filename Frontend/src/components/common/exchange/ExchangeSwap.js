@@ -1,4 +1,7 @@
 import React from "react";
+import {
+    swap
+} from '../../../service/Account';
 import cake from '../assets/images/icons/cake.png';
 import SwapConfirmScene from '../../common/exchange/SwapConfirmScene';
 
@@ -24,6 +27,7 @@ export default class ExchangeSwap extends React.Component {
             },
         }
 
+        this.userToken = props.userToken;
         this.topClass = (props.extraClass ? props.class : "home-card py-10 px-0 w-full h-full");
         this.inform = props.inform;
         this.warning = props.warning;
@@ -44,6 +48,9 @@ export default class ExchangeSwap extends React.Component {
     onClickSwap() {
         this.setState({ currentScene: SCENE_CONFIRM_SWAP });
         // this.inform(this.state.input.fromAmount + ", " + this.state.input.toAmount);
+        swap({
+            userToken: this.userToken,
+        });
     }
 
     render() {
