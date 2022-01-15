@@ -45,11 +45,35 @@ export default class ExchangeSwap extends React.Component {
         });
     }
 
+    componentDidUpdate(prevProps) {
+        if (prevProps.userToken !== this.props.userToken) {
+            this.userToken = this.props.userToken;
+        }
+    }
+
     onClickSwap() {
-        this.setState({ currentScene: SCENE_CONFIRM_SWAP });
+        // this.setState({ currentScene: SCENE_CONFIRM_SWAP });
         // this.inform(this.state.input.fromAmount + ", " + this.state.input.toAmount);
+        console.log("--------------------------", this.userToken);
         swap({
-            userToken: this.userToken,
+            reqParam: {
+                userToken: this.userToken,
+            },
+            onComplete: resp => {
+                var errorMsg = null;
+                if (resp.error === 0) {
+                    self.inform("Swap success");
+                    return;
+                } else if (resp.error === -100) {
+                    errorMsg = "No response for get balance";
+                } else if (resp.error !== 0) {
+                    errorMsg = resp.data
+                }
+                self.warning(errorMsg);
+            },
+            onFailed: error => {
+                self.warning(error);
+            }            
         });
     }
 

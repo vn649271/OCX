@@ -69,3 +69,8 @@
   + Passphrase
     - Check if existence of new passphrase
     - Encrypt the passphrase before send requests including it
+
+2022-01-15
+  + Create Account
+    - [FIXED] New account address is not shown after generated and unlocked
+

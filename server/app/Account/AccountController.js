@@ -213,7 +213,7 @@ class AccountController {
         if (userToken === null) {
             return resp.json({ error: -2, data: "Invalid request" });
         }
-        let ret = userController.validateUserToken(userToken);
+        let ret = await userController.validateUserToken(userToken);
         if (!ret) {
             return resp.json({ error: -3, data: "Invalid user token" });
         }
@@ -289,7 +289,7 @@ class AccountController {
         if (userToken === null) {
             return resp.json({ error: -2, data: "Invalid request" });
         }
-        let userInfo = userController.validateUserToken(userToken);
+        let userInfo = await userController.validateUserToken(userToken);
         if (!userInfo) {
             return resp.json({ error: -3, data: "Invalid user token" });
         }
@@ -300,7 +300,7 @@ class AccountController {
             {
                 buySymbol:          "DAI",
                 sellAmount:         0.01,
-                acceptableMinRate:  3000,   // 3000 DAI
+                acceptableMinRate:  0.0003,   // 0.0003 DAI
                 deadline:           600 // 600s = 10min
             },
             resp

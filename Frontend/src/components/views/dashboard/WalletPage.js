@@ -153,13 +153,12 @@ class WalletPage extends Component {
                 userToken: self.userToken
             },
             onComplete: resp => {
-                console.log("************* connectAccount(): response=", resp);
                 var errorMsg = null;
                 if (resp.error !== undefined) {
                     switch (resp.error) {
                         case 0:
                             self.setState({ accounts: resp.data.addresses });
-                            self.setState({ user_mode: USER_WITH_ACCOUNT })
+                            self.setState({ user_mode: USER_WITH_ACCOUNT });
                             self.setState({ locked: resp.data.locked });
                             return;
                         case 1:
@@ -540,9 +539,9 @@ class WalletPage extends Component {
                                 <div id="my-account-info-container" className="account-info-container help-block main-font font-16 mr-16">
                                     <p className="account-address-box help-block main-font text-green-400 font-16">
                                         {this.state.accounts ?
-                                            this.state.accounts.eth ?
-                                                this.state.accounts.eth ?
-                                                    this.state.accounts.eth :
+                                            this.state.accounts['ETH'] ?
+                                                this.state.accounts['ETH'] ?
+                                                    this.state.accounts['ETH'] :
                                                     null :
                                                 null :
                                             null}
@@ -593,6 +592,7 @@ class WalletPage extends Component {
                                         extraClass="home-card py-10 px-0 w-half h-full"
                                         inform={this.inform}
                                         warning={this.warning}
+                                        userToken={this.userToken}
                                     />
                                 </div>
                             </div>
