@@ -84,8 +84,8 @@ function AccountModel() {
      * @param {integer} status status to be set
      */
     this.setLock = async function (accountId, lock) {
-        const userRef = db.collection(cllctn).doc(accountId);
-        const res = await userRef.update({ locked: lock });
+        const accountRef = db.collection(cllctn).doc(accountId);
+        const res = await accountRef.update({ locked: lock });
         return res;
     }
 
@@ -95,8 +95,8 @@ function AccountModel() {
      * @param {integer} status status to be set
      */
     this.setUserToken = async function (accountId, userToken) {
-        const userRef = db.collection(cllctn).doc(accountId);
-        const res = await userRef.update({ user_token: userToken });
+        const accountRef = db.collection(cllctn).doc(accountId);
+        const res = await accountRef.update({ user_token: userToken });
         return res;
     }
 
@@ -106,8 +106,8 @@ function AccountModel() {
      * @param {integer} status status to be set
      */
     this.setUserPassword = async function (accountId, userPassword) {
-        const userRef = db.collection(cllctn).doc(accountId);
-        const res = await userRef.update({ user_password: userPassword });
+        const accountRef = db.collection(cllctn).doc(accountId);
+        const res = await accountRef.update({ user_password: userPassword });
         return res;
     }
 
@@ -116,21 +116,19 @@ function AccountModel() {
      * @param {string} accountId id for the user information document to set status
      * @param {integer} status status to be set
      */
-    this.updateSecretKeys = async function (accountId, secretKeys) {
-        const userRef = db.collection(cllctn).doc(accountId);
-        const res = await userRef.update({ secret_keys: secretKeys });
-        return res;
-    }
-
-    /**
-     * Set status in the specified accoun information docment
-     * @param {string} accountId id for the user information document to set status
-     * @param {integer} status status to be set
-     */
-    this.updateAddresses = async function (accountId, addresses) {
-        const userRef = db.collection(cllctn).doc(accountId);
-        const res = await userRef.update({ addresses: addresses });
-        return res;
+    this.updateKeyPairs = async function (accountId, symbol, address, secretKey) {
+        const accountRef = db.collection(cllctn).doc(accountId);
+        const accountSnapshot = await accountRef.get();
+        if (accountSnapshot.empty) {
+            console.info('No matching account information.');
+            return null;
+        }
+        let accountInfo = accountSnapshot.data();
+        let addresses = accountInfo.addresses;
+        addresses[symbol] = address;
+        let secretKeys = accountInfo.secret_keys;
+        secretKeys[symbol] = secretKey;
+        return await accountRef.update({ addresses: addresses, secret_keys: secretKeys });
     }
 }
 

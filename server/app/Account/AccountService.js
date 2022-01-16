@@ -62,11 +62,11 @@ class AccountService {
         console.log("********* Current chain name: '", this.chainName, "'");
     }
 
-    getPrivateKey() {
+    async getPrivateKey(password, ethAddress) {
         // Get private key for new account
-        var keyObject = keythereum.importFromFile(myEthAddress, GETH_DATA_DIR);
+        var keyObject = keythereum.importFromFile(ethAddress, GETH_DATA_DIR);
         // var privateKey = keythereum.recover(params.password, keyObject);
-        return keythereum.recover(newAccountInfo.accountPassword, keyObject);
+        return await keythereum.recover(password, keyObject);
     }
 
     async create(newAccountInfoObj, response) {
@@ -78,24 +78,28 @@ class AccountService {
         var newAccountInfo = await newAccountInfoObj.get();
         newAccountInfo = await newAccountInfo.data();
         var accountPassword = newAccountInfo.account_password;
-        var addresses = newAccountInfo.addresses;
-
+        // Generate public and private keys
+        // First, get public key
         var myEthAddress = await web3.eth.personal.newAccount(accountPassword);
         if (myEthAddress && myEthAddress.length !== 42) {
             return response.json({ error: -11, data: "Created account address invalid"});
         }
-        addresses['ETH'] = myEthAddress;
-        accountModel.updateAddresses(accountId, addresses).then(ret => {
-            return response.json({
-                error: 0,
-                data: {
-                    addresses: newAccountInfo.addresses,
-                    locked: newAccountInfo.locked
-                }
-            });
-        }).catch(error => {
-            let errorMessage = error.message.replace("Returned error: ", "");
-            return response.json({error: -200, data: "Error 10000: " + errorMessage});
+        // Next, get private key
+        var secretKey = await this.getPrivateKey(accountPassword, myEthAddress);
+        if (!secretKey) {
+            return response.json({ error : -12, data: "Invalid private key"});
+        }
+        // Final, Save them
+        const ret = await accountModel.updateKeyPairs(accountId, 'ETH', myEthAddress, secretKey);
+        if (!ret) {
+            return response.json({ error: -13, data: "Failed to save key paire" });
+        }
+        return response.json({
+            error: 0,
+            data: {
+                addresses: newAccountInfo.addresses,
+                locked: newAccountInfo.locked
+            }
         });
     }
 
@@ -244,15 +248,23 @@ class AccountService {
                     buySymbol: params.buySymbol,
                     sellAmount: amountToSwap,
                     acceptableMinRate: acceptableMinRate,
-                    deadline: deadline.valueOf() / 1000, // in ms -> in s
+                    deadline: deadline.valueOf(),
                     chainId: CHAIN_ID // Goerli
                 },
                 (error, result) => {
                     if (!error) {
                         resp.json({ error: 0 });
                     }
+                },
+                (message) => {
+                    resp.json({ error: -200, data: message })
                 }
-            );
+            ).then((error, ret) => {
+                console.log(error, ret);
+            }).catch(error => {
+                resp.json({ error: -201, data: error.message })
+                console.log(error.message);
+            });
         }).catch(error => {
             let errorMessage = error.message.replace("Returned error: ", "");
             return response.json({error: -200, data: "Error 10000: " + errorMessage});

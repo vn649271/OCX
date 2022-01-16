@@ -1,25 +1,30 @@
 const { ExchangeAbi, TokenAbi, ExchangeAddress, TokenAddress } = require("../Abi/Erc20Abi");
+const EthereumTx = require('ethereumjs-tx').Transaction;
 
 const DEFAULT_DEADLINE = 300; // 300s = 5min
 
-function sendSignedTx(web3, transactionObject, privateKeyString, callbackFunc) {
-    let transaction = new EthTx(transactionObject);
+function sendSignedTx(web3, transactionObject, privateKeyString, onCompleteCallback, ) {
+    const tx = new EthereumTx(transactionObject, { chain: 'goerli', hardfork: 'petersburg' });
     const privateKey = new Buffer.from(privateKeyString, "hex");
-    transaction.sign(privateKey);
-    const serializedEthTx = transaction.serialize().toString("hex");
-    web3.eth.sendSignedTransaction(`0x${serializedEthTx}`, callbackFunc);
+    tx.sign(privateKey);
+    const serializedethTx = tx.serialize().toString("hex");
+    web3.eth.sendSignedTransaction(`0x${serializedethTx}`, onCompleteCallback, onFailedCallback);
 }
 
-async function ETH2Token(web3, params, callbackFunc) {
+async function ETH2Token(web3, params, onCompleteCallback) {
     const exchangeContract = new web3.eth.Contract(
         JSON.parse(ExchangeAbi), 
         ExchangeAddress[params.buySymbol]
     );
     let transactionNonce = await web3.eth.getTransactionCount(params.address);
 
-    const ethToTokenSwapInputABI = exchangeContract.methods
-        .ethToTokenSwapInput(params.acceptableMinRate, params.deadline)
-        .encodeABI();
+    let ethToTokenSwapInputFunc = exchangeContract.methods
+        .ethToTokenSwapInput(params.acceptableMinRate, params.deadline);
+    if (!ethToTokenSwapInputFunc) {
+        onFailedCallback("Failed to get abi for swap function");
+        return;
+    }
+    const ethToTokenSwapInputABI = ethToTokenSwapInputFunc.encodeABI();
     const transactionObject = {
         chainId: params.chainId,
         nonce: web3.utils.toHex(transactionNonce),
@@ -30,7 +35,7 @@ async function ETH2Token(web3, params, callbackFunc) {
         data: ethToTokenSwapInputABI,
         value: params.sellAmount
     };
-    sendSignedTx(transactionObject, params.privateKey, callbackFunc)
+    sendSignedTx(transactionObject, params.privateKey, onCompleteCallback);
 }
 
 /**
