@@ -44,7 +44,9 @@ export default class Login extends Component {
     this.recaptchaComponent = new RecaptchaComponent();
 
     this.onChange = this.onChange.bind(this);
+    this.onKeyPressed = this.onKeyPressed.bind(this)
     this.onSubmit = this.onSubmit.bind(this);
+    this._onSubmit = this._onSubmit.bind(this);
     this.submitData = this.submitData.bind(this);
     this.responseGoogle = this.responseGoogle.bind(this);
     this.responseGoogleLoginFailed = this.responseGoogleLoginFailed.bind(this);
@@ -163,8 +165,12 @@ export default class Login extends Component {
     })
   }
 
-  onChange(e) {
-    this.setState({ [e.target.name]: e.target.value })
+  onChange(ev) {
+    this.setState({ [ev.target.name]: ev.target.value })
+  }
+
+  onKeyPressed(ev) {
+    this._onSubmit();
   }
 
   submitData = (params, token) => {
@@ -215,11 +221,7 @@ export default class Login extends Component {
     this.setState({ hide_link_to_signup: true });
   }
 
-  /**
-   * 
-   */
-  onSubmit(e) {
-    e.preventDefault();
+  _onSubmit() {
     if (this.state.email.trim() === "") {
       this.setState({ errors: { email: "Please input your Email" } });
       return;
@@ -237,8 +239,15 @@ export default class Login extends Component {
     }
     this.clearAllWarnings();
     this.setState({ loading: true });
-    me.setState({ disableGoogleButton: true });
+    this.setState({ disableGoogleButton: true });
     this.recaptchaComponent.run(this.submitData);
+  }
+  /**
+   * 
+   */
+  onSubmit(ev) {
+    ev.preventDefault();
+    this._onSubmit();
   }
 
   render() {
@@ -283,6 +292,7 @@ export default class Login extends Component {
               name="password"
               value={this.state.password}
               onChange={this.onChange}
+              onKeyPress={this.onKeyPressed}
               placeholder="Password"
               autoComplete="off" />
             <span className="help-block main-font text-red-400 font-16">{this.state.errors.password}</span>

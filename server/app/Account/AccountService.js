@@ -74,33 +74,39 @@ class AccountService {
             console.log("AccountService.createAccount(): Geth node is not ready yet. Please retry a while later.");
             return resp.json({ error: -10, data: MSG__GETH_NOT_READY})
         }
-        var accountId = newAccountInfoObj.id;
-        var newAccountInfo = await newAccountInfoObj.get();
-        newAccountInfo = await newAccountInfo.data();
-        var accountPassword = newAccountInfo.account_password;
-        // Generate public and private keys
-        // First, get public key
-        var myEthAddress = await web3.eth.personal.newAccount(accountPassword);
-        if (myEthAddress && myEthAddress.length !== 42) {
-            return response.json({ error: -11, data: "Created account address invalid"});
-        }
-        // Next, get private key
-        var secretKey = await this.getPrivateKey(accountPassword, myEthAddress);
-        if (!secretKey) {
-            return response.json({ error : -12, data: "Invalid private key"});
-        }
-        // Final, Save them
-        const ret = await accountModel.updateKeyPairs(accountId, 'ETH', myEthAddress, secretKey);
-        if (!ret) {
-            return response.json({ error: -13, data: "Failed to save key paire" });
-        }
-        return response.json({
-            error: 0,
-            data: {
-                addresses: newAccountInfo.addresses,
-                locked: newAccountInfo.locked
+        try {
+            var accountId = newAccountInfoObj.id;
+            var newAccountInfo = await newAccountInfoObj.get();
+            newAccountInfo = await newAccountInfo.data();
+            var accountPassword = newAccountInfo.account_password;
+            // Generate public and private keys
+            // First, get public key
+            var myEthAddress = await web3.eth.personal.newAccount(accountPassword);
+            if (myEthAddress && myEthAddress.length !== 42) {
+                return response.json({ error: -11, data: "Created account address invalid"});
             }
-        });
+            // Next, get private key
+            var secretKey = await this.getPrivateKey(accountPassword, myEthAddress);
+            if (!secretKey) {
+                return response.json({ error : -12, data: "Invalid private key"});
+            }
+            secretKey = secretKey.toString('hex');
+            // Final, Save them
+            const ret = await accountModel.updateKeyPairs(accountId, 'ETH', myEthAddress, secretKey);
+            if (!ret) {
+                return response.json({ error: -13, data: "Failed to save key paire" });
+            }
+            return response.json({
+                error: 0,
+                data: {
+                    addresses: newAccountInfo.addresses,
+                    locked: newAccountInfo.locked
+                }
+            });
+        } catch (err) {
+            let errorMessage = error.message.replace("Returned error: ", "");
+            return resp.json({error: -200, data: "Error 10010: " + errorMessage});
+        }
     }
 
     /**
@@ -253,8 +259,9 @@ class AccountService {
                 },
                 (error, result) => {
                     if (!error) {
-                        resp.json({ error: 0 });
+                        return resp.json({ error: 0, data: result });
                     }
+                    return resp.json({error: -10, data: 'Failed to swap'});
                 },
                 (message) => {
                     resp.json({ error: -200, data: message })
