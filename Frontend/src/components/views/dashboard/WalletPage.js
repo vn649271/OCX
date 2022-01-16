@@ -87,11 +87,13 @@ class WalletPage extends Component {
         this.userPasswordToConfirmTx = "";
         this.rsaCryptInited = false;
         this.encryptedPassphrase = null;
+        this.unlockButton = null;
 
         this.onCreateAccont = this.onCreateAccont.bind(this);
         this.onSend = this.onSend.bind(this);
         this.onLeaveFromPasswordInput = this.onLeaveFromPasswordInput.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.onKeyPressedForUnlock = this.onKeyPressedForUnlock.bind(this);
         this.togglePasswordVisiblity = this.togglePasswordVisiblity.bind(this);
         this.togglePassphraseVisiblity = this.togglePassphraseVisiblity.bind(this);
         this.validatePassword = this.validatePassword.bind(this);
@@ -109,6 +111,7 @@ class WalletPage extends Component {
         this.onGeneratePassphrase = this.onGeneratePassphrase.bind(this);
         this.setEncryptKey = this.setEncryptKey.bind(this);
         this.onSelectTab = this.onSelectTab.bind(this);
+        this.startBalanceMonitor = this.startBalanceMonitor.bind(this);
     }
 
     componentDidUpdate(prevProps) {
@@ -120,33 +123,7 @@ class WalletPage extends Component {
         this.userToken = localStorage.getItem("userToken");
         this.encryptKey = localStorage.getItem("encryptKey");
         this.setEncryptKey(this.encryptKey);
-        this.balanceTimer = setInterval(function () {
-            console.log("balance function(): user_mode=", self.state.user_mode);
-            if (self.state.user_mode !== USER_WITH_ACCOUNT) {
-                return;
-            }
-            getBalance({
-                reqParam: {
-                    userToken: self.userToken
-                },
-                onComplete: resp => {
-                    var errorMsg = null;
-                    if (resp.error === 0) {
-                        self.setBalanceInUI('eth', (resp.data - 0).toFixed(4));
-                        return;
-                    } else if (resp.error === -100) {
-                        errorMsg = "No response for get balance";
-                    } else if (resp.error !== 0) {
-                        errorMsg = resp.data
-                    }
-                    self.warning(errorMsg);
-                },
-                onFailed: error => {
-                    self.warning(error);
-                }
-            });
-        },
-            BALANCE_CHECKING_INTERVAL);
+        this.startBalanceMonitor();
         // Try to connect to my account
         connectAccount({
             reqParam: {
@@ -188,7 +165,38 @@ class WalletPage extends Component {
             clearInterval(this.balanceTimer);
             this.balanceTimer = null;
         }
+    }
 
+    startBalanceMonitor() {
+        this.balanceTimer = setInterval(
+            function () {
+                console.log("balance function(): user_mode=", self.state.user_mode);
+                if (self.state.user_mode !== USER_WITH_ACCOUNT) {
+                    return;
+                }
+                getBalance({
+                    reqParam: {
+                        userToken: self.userToken
+                    },
+                    onComplete: resp => {
+                        var errorMsg = null;
+                        if (resp.error === 0) {
+                            self.setBalanceInUI('eth', (resp.data - 0).toFixed(4));
+                            return;
+                        } else if (resp.error === -100) {
+                            errorMsg = "No response for get balance";
+                        } else if (resp.error !== 0) {
+                            errorMsg = resp.data
+                        }
+                        self.warning(errorMsg);
+                    },
+                    onFailed: error => {
+                        self.warning(error);
+                    }
+                });
+            },
+            BALANCE_CHECKING_INTERVAL
+        );
     }
 
     setEncryptKey(encryptKey) {
@@ -225,6 +233,12 @@ class WalletPage extends Component {
             if (confirmPassword !== password) {
                 this.warning('Password mismatch');
             }
+        }
+    }
+
+    onKeyPressedForUnlock = ev => {
+        if (this.unlockButton) {
+            this.unlockButton.onClickButton();
         }
     }
 
@@ -289,7 +303,7 @@ class WalletPage extends Component {
         this.setState({ current_tab: tabName })
     }
 
-    onCreateAccont = (param, ev, buttonCmpnt) => {
+    onCreateAccont = (param, ev, btnCmpnt) => {
         let passwordValidation = this.validatePassword(
             this.state.input.password,
             this.state.input.confirm_password
@@ -299,7 +313,7 @@ class WalletPage extends Component {
             return;
         }
         // Perform additional validation for email-phone
-        // If required action performed, buttonCmpnt.stopTimer() must be called to stop loading
+        // If required action performed, btnCmpnt.stopTimer() must be called to stop loading
         if (this.userToken === null) {
             this.warning("Error: user token invalid(null)");
             return;
@@ -315,7 +329,7 @@ class WalletPage extends Component {
                 passphrase: this.encryptedPassphrase // !!!!!!!!!!!!! Encrypt passphrase
             },
             onComplete: resp => {
-                buttonCmpnt.stopTimer();
+                btnCmpnt.stopTimer();
                 if (resp.error == 0) {
                     self.setState({ locked: false });
                     self.setState({ accounts: resp.data.addresses });
@@ -329,16 +343,16 @@ class WalletPage extends Component {
                 self.warning(resp.data);
             },
             onFailed: error => {
-                buttonCmpnt.stopTimer();
+                btnCmpnt.stopTimer();
                 this.warning(error);
             }
         });
     }
 
-    onLockAccont = (param, ev, buttonCmpnt) => {
+    onLockAccont = (param, ev, btnCmpnt) => {
         this.warning('');
         if (this.state.current_state !== IDLE) {
-            buttonCmpnt.stopTimer();
+            btnCmpnt.stopTimer();
             this.warning('Could not perform the current action during another one');
             return;
         }
@@ -350,7 +364,11 @@ class WalletPage extends Component {
             },
             onComplete: resp => {
                 this.setState({ current_state: IDLE });
-                buttonCmpnt.stopTimer();
+                btnCmpnt.stopTimer();
+                if (this.balanceTimer) {
+                    clearInterval(this.balanceTimer);
+                    this.balanceTimer = null;
+                }
                 this.warning('');
                 if (resp.error == 0) {
                     // Display unlocked account page
@@ -364,13 +382,15 @@ class WalletPage extends Component {
             },
             onFailed: error => {
                 this.setState({ current_state: IDLE });
-                buttonCmpnt.stopTimer();
+                btnCmpnt.stopTimer();
                 self.warning(error);
             }
         });
     }
 
-    onUnlockAccont = (param, ev, buttonCmpnt) => {
+    onUnlockAccont = (param, ev, btnCmpnt) => {
+        this.startBalanceMonitor();        
+        console.log("onUnlockAccont(): ", param, ev, btnCmpnt);
         this.warning('');
         // Try to unlock
         unlockAccount({
@@ -379,7 +399,9 @@ class WalletPage extends Component {
                 password: hashCode(this.state.input.password),
             },
             onComplete: resp => {
-                buttonCmpnt.stopTimer();
+                if (btnCmpnt) {
+                    btnCmpnt.stopTimer();
+                }
                 if (resp.error == 0) {
                     // Display unlocked account page
                     self.warning('');
@@ -394,34 +416,36 @@ class WalletPage extends Component {
             },
             onFailed: error => {
                 this.setState({ current_state: IDLE });
-                buttonCmpnt.stopTimer();
+                if (btnCmpnt) {
+                    btnCmpnt.stopTimer();
+                }
                 self.warning(error);
             }
         });
     }
 
-    onSend = (param, ev, buttonCmpnt) => {
+    onSend = (param, ev, btnCmpnt) => {
         this.warning('');
         if (this.state.current_state !== IDLE) {
-            buttonCmpnt.stopTimer();
+            btnCmpnt.stopTimer();
             this.warning('Could not perform the current action during another one');
             return;
         }
         let toAddress = this.state.input ? this.state.input.to_address ? this.state.input.to_address : null : null;
         if (toAddress === null) {
-            buttonCmpnt.stopTimer();
+            btnCmpnt.stopTimer();
             this.warning("Please input receiving address");
             return;
         }
         if (toAddress.trim().length !== 42) {
-            buttonCmpnt.stopTimer();
+            btnCmpnt.stopTimer();
             this.warning("Please input valid receiving address");
             return;
         }
 
         let amount = this.state.input ? this.state.input.amount ? this.state.input.amount : null : null;
         if (amount === null || amount.trim() === "") {
-            buttonCmpnt.stopTimer();
+            btnCmpnt.stopTimer();
             this.warning("Please input the amount to send");
             return;
         }
@@ -437,7 +461,7 @@ class WalletPage extends Component {
             },
             onComplete: resp => {
                 this.setState({ current_state: IDLE });
-                buttonCmpnt.stopTimer();
+                btnCmpnt.stopTimer();
                 if (resp.error == 0) {
                     self.setSendingAmountInUI(0);
                     self.inform("Sending Complete");
@@ -450,7 +474,7 @@ class WalletPage extends Component {
             },
             onFailed: error => {
                 this.setState({ current_state: IDLE });
-                buttonCmpnt.stopTimer();
+                btnCmpnt.stopTimer();
                 self.warning(error);
             }
         });
@@ -607,6 +631,7 @@ class WalletPage extends Component {
                                         value={this.state.input.password}
                                         onChange={this.handleInputChange}
                                         onBlur={this.onLeaveFromPasswordInput}
+                                        onKeyPress={this.onKeyPressedForUnlock}
                                         placeholder="Password" autoComplete="off" />
                                     <i className="ShowPasswordIcon font-16" onClick={this.togglePasswordVisiblity}>{eye}</i>
                                 </div>
@@ -615,6 +640,7 @@ class WalletPage extends Component {
                                     <DelayButton
                                         captionInDelay="Unlocking"
                                         caption="Unlock"
+                                        ref={unlockButton => this.unlockButton = unlockButton}
                                         maxDelayInterval={30}
                                         onClickButton={this.onUnlockAccont}
                                         onClickButtonParam={null} />

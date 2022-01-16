@@ -3,15 +3,25 @@ const EthereumTx = require('ethereumjs-tx').Transaction;
 
 const DEFAULT_DEADLINE = 300; // 300s = 5min
 
-function sendSignedTx(web3, transactionObject, privateKeyString, onCompleteCallback, ) {
-    const tx = new EthereumTx(transactionObject, { chain: 'goerli', hardfork: 'petersburg' });
-    const privateKey = new Buffer.from(privateKeyString, "hex");
-    tx.sign(privateKey);
-    const serializedethTx = tx.serialize().toString("hex");
-    web3.eth.sendSignedTransaction(`0x${serializedethTx}`, onCompleteCallback, onFailedCallback);
+async function sendSignedTx(web3, transactionObject, privateKeyString, onCompleteCallback, onFailedCallback) {
+    try {
+        const tx = new EthereumTx(transactionObject, { chain: 'goerli', hardfork: 'petersburg' });
+        const privateKey = new Buffer.from(privateKeyString, "hex");
+        tx.sign(privateKey);
+        const serializedethTx = tx.serialize().toString("hex");
+        var receipt = await web3.eth.sendSignedTransaction(`0x${serializedethTx}`);
+        onCompleteCallback(0, receipt);
+    } catch (error) {
+        var errMsg = error ? 
+            error.message ? 
+                error.message.replace('Returned error: ', '') : 
+                "Unknown error in send transaction for swap": 
+            error;
+        onFailedCallback(errMsg)
+    }
 }
 
-async function ETH2Token(web3, params, onCompleteCallback) {
+async function ETH2Token(web3, params, onCompleteCallback, onFailedCallback) {
     const exchangeContract = new web3.eth.Contract(
         JSON.parse(ExchangeAbi), 
         ExchangeAddress[params.buySymbol]
@@ -35,7 +45,13 @@ async function ETH2Token(web3, params, onCompleteCallback) {
         data: ethToTokenSwapInputABI,
         value: params.sellAmount
     };
-    sendSignedTx(transactionObject, params.privateKey, onCompleteCallback);
+    sendSignedTx(
+        web3, 
+        transactionObject, 
+        params.privateKey.toString('hex'), 
+        onCompleteCallback,
+        onFailedCallback
+    );
 }
 
 /**
