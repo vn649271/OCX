@@ -571,6 +571,10 @@ li.sc-gsDKAQ {
     font-size: 16px !important;
 }
 
+.page-tab-item {
+    cursor: pointer;
+}
+
 /* responsive */
 @media (max-width: 1024px) {
     html,

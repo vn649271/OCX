@@ -285,26 +285,43 @@ class AccountController {
      * @param {object} resp response object to the client
      */
     async swap (req, resp) {
-        var userToken = req.body ? req.body.userToken? req.body.userToken: null: null;
-        if (userToken === null) {
-            return resp.json({ error: -2, data: "Invalid request" });
+        try {
+            var userToken = req.body ? req.body.userToken? req.body.userToken: null: null;
+            if (userToken === null) {
+                return resp.json({ error: -2, data: "Invalid request" });
+            }
+            let accountInfo = await accountModel.findOne({ where: { user_token: userToken }});
+            if (!accountInfo) {
+                return resp.json({ error: -3, data: "Failed to get valid account information" });
+            }
+            let userPassword = req.body? req.body.password ? req.body.password : null : null;
+            let sellSymbol = req.body ? req.body.sellSymbol ? req.body.sellSymbol : 0: 0;
+            if (sellSymbol === null) {
+                return resp.json({error: -4, data: "Invalid token symbol to sell"});
+            }
+            let sellAmount = req.body ? req.body.sellAmount ? req.body.sellAmount : 0: 0;
+            if (sellAmount === 0) {
+                return resp.json({error: -4, data: "Invalid amount to be exchanged"});
+            }
+            let buySymbol = req.body ? req.body.buySymbol ? req.body.buySymbol : 0: 0;
+            if (buySymbol === 0) {
+                return resp.json({error: -5, data: "Invalid amount to exchange"});
+            }
+            accountService.swapEthToERC20(
+                {
+                    accountInfo:        accountInfo,
+                    sellSymbol:         sellSymbol,
+                    sellAmount:         sellAmount,
+                    buySymbol:          buySymbol,
+                    acceptableMinRate:  0.0003,   // 0.0003 DAI
+                    deadline:           600 // 600s = 10min
+                },
+                resp
+            );        
+        } catch(error) {
+            let errorMessage = error.message.replace("Returned error: ", "");
+            return resp.json({error: -200, data: "Error 1050: " + errorMessage});
         }
-        let userInfo = await userController.validateUserToken(userToken);
-        if (!userInfo) {
-            return resp.json({ error: -3, data: "Invalid user token" });
-        }
-        let userPassword = req.body? req.body.password ? req.body.password : null : null;
-
-        accountService.swapEthToERC20(
-            userInfo,
-            {
-                buySymbol:          "DAI",
-                sellAmount:         0.01,
-                acceptableMinRate:  0.0003,   // 0.0003 DAI
-                deadline:           600 // 600s = 10min
-            },
-            resp
-        );        
     }
 };
 

@@ -330,13 +330,13 @@ class WalletPage extends Component {
             },
             onComplete: resp => {
                 btnCmpnt.stopTimer();
-                if (resp.error == 0) {
+                if (resp.error === 0) {
                     self.setState({ locked: false });
                     self.setState({ accounts: resp.data.addresses });
                     self.warning('');
                     self.setState({ user_mode: USER_WITH_ACCOUNT });
                     return;
-                } else if (resp.error == -100) {
+                } else if (resp.error === -100) {
                     self.warning("Invalid response for creating account");
                     return;
                 }
@@ -370,11 +370,11 @@ class WalletPage extends Component {
                     this.balanceTimer = null;
                 }
                 this.warning('');
-                if (resp.error == 0) {
+                if (resp.error === 0) {
                     // Display unlocked account page
                     self.setState({ locked: true });
                     return;
-                } else if (resp.error == -100) {
+                } else if (resp.error === -100) {
                     self.warning("Invalid response for locking account");
                     return;
                 }
@@ -402,13 +402,13 @@ class WalletPage extends Component {
                 if (btnCmpnt) {
                     btnCmpnt.stopTimer();
                 }
-                if (resp.error == 0) {
+                if (resp.error === 0) {
                     // Display unlocked account page
                     self.warning('');
                     self.setPasswordInUI('');
                     self.setState({ locked: false });
                     return;
-                } else if (resp.error == -100) {
+                } else if (resp.error === -100) {
                     self.warning("Invalid response for locking account");
                     return;
                 }
@@ -462,11 +462,11 @@ class WalletPage extends Component {
             onComplete: resp => {
                 this.setState({ current_state: IDLE });
                 btnCmpnt.stopTimer();
-                if (resp.error == 0) {
+                if (resp.error === 0) {
                     self.setSendingAmountInUI(0);
                     self.inform("Sending Complete");
                     return;
-                } else if (resp.error == -100) {
+                } else if (resp.error === -100) {
                     self.warning("Invalid response for sending token");
                 } else {
                     self.warning(resp.data);
@@ -495,14 +495,14 @@ class WalletPage extends Component {
                 passphrase: self.encryptedPassphrase // ???????????? Encrypt
             },
             onComplete: resp => {
-                if (resp.error == 0) {
+                if (resp.error === 0) {
                     console.log("************* restoreAccount(): response=", resp);
                     self.setState({ locked: false });
                     self.setState({ accounts: resp.data });
                     self.warning('');
                     self.setState({ user_mode: USER_WITH_ACCOUNT });
                     return;
-                } else if (resp.error == -100) {
+                } else if (resp.error === -100) {
                     self.warning("Invalid response for creating account");
                     return;
                 }

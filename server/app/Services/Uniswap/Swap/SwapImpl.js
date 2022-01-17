@@ -38,8 +38,8 @@ async function ETH2Token(web3, params, onCompleteCallback, onFailedCallback) {
     const transactionObject = {
         chainId: params.chainId,
         nonce: web3.utils.toHex(transactionNonce),
-        gasLimit: web3.utils.toHex(6000000),
-        gasPrice: web3.utils.toHex(10000000000),
+        // gasLimit: web3.utils.toHex(6000000),
+        // gasPrice: web3.utils.toHex(10000000000),
         from: params.address,
         to: ExchangeAddress[params.buySymbol],
         data: ethToTokenSwapInputABI,

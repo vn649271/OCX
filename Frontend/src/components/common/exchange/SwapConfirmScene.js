@@ -1,12 +1,12 @@
 import { Component } from 'react';
 
-var self;
+// var self;
 
 export default class SwapConfirmScene extends Component {
 
     constructor(props) {
         super(props);
-        self = this;
+        // self = this;
 
         this.state = {
         }
