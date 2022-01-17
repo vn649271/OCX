@@ -4,9 +4,9 @@ import { BACKEND_BASE_URL } from "../Contants";
 const GET_REQ = 0;
 const POST_REQ = 1;
 
-function _sendRequest(params, reqType) {
+function _sendRequest(params, reqType = POST_REQ) {
     var reqCall = axios.post(params.url, params.reqParam); // Default reqType = POST_REQ
-    if (reqType !== undefined && reqType == GET_REQ) {
+    if (reqType === GET_REQ) {
         reqCall = axios.get(params.url, params.reqParam);
     }
     reqCall.then(response => {

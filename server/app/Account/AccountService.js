@@ -225,7 +225,7 @@ class AccountService {
      *      }
      * @param {object} resp response object to the client
      */
-    swapEthToERC20 = (userInfo, params, resp) => {
+    async swapEthToERC20 (params, resp) {
         if (web3 == null) {
             return resp.json({ error: -10, data: MSG__GETH_NOT_READY})
         }
@@ -236,45 +236,47 @@ class AccountService {
             DEFAULT_DEADLINE;
         let now = new Date();
         deadline = new Date(now.valueOf() + deadline * 1000);
-        var userToken = userInfo.token;
         var amountToSwap = web3.utils.toHex(params.sellAmount * 10 ** 18); // in ETH
         var acceptableMinRate = web3.utils.toHex(
             (params.acceptableMinRate - 0) * 10 ** 18    // 0.2 DAI
         );
-        accountModel.findOne({
-            where: {
-                user_token: userToken
-            }
-        }).then(accountInfo => {
-            ETH2Token(
-                web3,
-                {
-                    address: accountInfo.addresses['ETH'],
-                    privateKey: accountInfo.secret_keys['ETH'],
-                    buySymbol: params.buySymbol,
-                    sellAmount: amountToSwap,
-                    acceptableMinRate: acceptableMinRate,
-                    deadline: deadline.valueOf(),
-                    chainId: CHAIN_ID // Goerli
-                },
-                (error, result) => {
-                    if (!error) {
-                        return resp.json({ error: 0, data: result });
-                    }
-                    return resp.json({error: -10, data: 'Failed to swap'});
-                },
-                (message) => {
-                    resp.json({ error: -200, data: message })
+        let accountInfo = params ? params.accountInfo ? params.accountInfo : null : null;
+        if (accountInfo === null) {
+            return resp.json({error: -11, data: "Invalid account information"});
+        }
+        let sellSymbol = params ? params.sellSymbol ? params.sellSymbol : null : null;
+        if (sellSymbol === null) {
+            return resp.json({error: -11, data: "Invalid token to sell"});
+        }
+        let buySymbol = params ? params.buySymbol ? params.buySymbol : null : null;
+        if (buySymbol === null) {
+            return resp.json({error: -11, data: "Invalid token to buy"});
+        }
+        ETH2Token(
+            web3,
+            {
+                address: accountInfo.addresses[sellSymbol],
+                privateKey: accountInfo.secret_keys[sellSymbol],
+                buySymbol: buySymbol,
+                sellAmount: amountToSwap,
+                acceptableMinRate: acceptableMinRate,
+                deadline: deadline.valueOf(),
+                chainId: CHAIN_ID // Goerli
+            },
+            (error, result) => {
+                if (!error) {
+                    return resp.json({ error: 0, data: result });
                 }
-            ).then((error, ret) => {
-                console.log(error, ret);
-            }).catch(error => {
-                resp.json({ error: -201, data: error.message })
-                console.log(error.message);
-            });
+                return resp.json({error: -10, data: 'Failed to swap'});
+            },
+            (message) => {
+                resp.json({ error: -200, data: message })
+            }
+        ).then((error, ret) => {
+            console.log(error, ret);
         }).catch(error => {
-            let errorMessage = error.message.replace("Returned error: ", "");
-            return response.json({error: -200, data: "Error 10000: " + errorMessage});
+            resp.json({ error: -201, data: error.message })
+            console.log(error.message);
         });
     }
 

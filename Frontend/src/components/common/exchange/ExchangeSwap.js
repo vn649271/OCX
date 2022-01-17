@@ -6,9 +6,9 @@ import cake from '../assets/images/icons/cake.png';
 import SwapConfirmScene from '../../common/exchange/SwapConfirmScene';
 
 const SCENE_IDLE = 0,
-    SCENE_CONFIRM_SWAP = 1,
-    SCENE_DURING_SWAP = 2,
-    SCENE_COMPLETE_SWAP = 3;
+    SCENE_CONFIRM_SWAP = 1;
+    // SCENE_DURING_SWAP = 2,
+    // SCENE_COMPLETE_SWAP = 3;
 var self;
 
 export default class ExchangeSwap extends React.Component {
@@ -58,11 +58,15 @@ export default class ExchangeSwap extends React.Component {
         swap({
             reqParam: {
                 userToken: this.userToken,
+                sellSymbol: 'ETH',
+                sellAmount: this.state.input.fromAmount,
+                buySymbol: 'DAI',
             },
             onComplete: resp => {
                 var errorMsg = null;
                 if (resp.error === 0) {
                     self.inform("Swap success");
+                    console.log("Swap success: ", resp.data);
                     return;
                 } else if (resp.error === -100) {
                     errorMsg = "No response for get balance";
