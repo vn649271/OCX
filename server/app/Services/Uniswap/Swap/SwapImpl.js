@@ -31,7 +31,7 @@ async function ETH2Token(web3, params, onCompleteCallback, onFailedCallback) {
     let ethToTokenSwapInputFunc = exchangeContract.methods
         .ethToTokenSwapInput(params.acceptableMinRate, params.deadline);
     if (!ethToTokenSwapInputFunc) {
-        onFailedCallback("Failed to get abi for swap function");
+        onFailedCallback("Failed to get ABI for swap function");
         return;
     }
     const ethToTokenSwapInputABI = ethToTokenSwapInputFunc.encodeABI();
