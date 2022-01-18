@@ -125,7 +125,7 @@ class AccountService {
         let myEthAddress = addresses['ETH'];
         try {
             let balances = {};
-            fortokens.forEach(token => {
+            tokens.forEach(token => {
                 let balance = 0;
                 if (token === "ETH") {
                     let balanceEthInWei = await web3.eth.getBalance(myEthAddress);
