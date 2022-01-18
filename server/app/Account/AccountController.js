@@ -185,7 +185,7 @@ class AccountController {
         if (addresses == undefined || addresses == null || addresses == {}) {
             return resp.json({ error: -4, data: "No account for you"});
         }
-        accountService.balance(addresses, 'ETH', resp);
+        accountService.balance(addresses, ['ETH', 'UNI'], resp);
     }
 
     /**

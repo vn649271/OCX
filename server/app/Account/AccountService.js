@@ -8,6 +8,7 @@ var fs = require("fs");
 const { json } = require('body-parser');
 var keythereum = require("keythereum");
 const {
+    erc20BalanceOf,
     SwapEthForToken,
     DEFAULT_DEADLINE
 } = require('../Services/Uniswap/Swap/SwapImpl'); // Services/Uniswap/Swap
@@ -117,18 +118,28 @@ class AccountService {
      * @param {object} req request object from the client 
      * @param {object} resp response object to the client
      */
-    balance = (addresses, token, resp) => {
+    balance = async (addresses, tokens, resp) => {
         if (web3 == null) {
             return resp.json({ error: -10, data: MSG__GETH_NOT_READY })
         }
-        let myEthAddress = addresses[token];
-        web3.eth.getBalance(myEthAddress).then(function (balanceInWei) {
-            let balance = web3.utils.fromWei(balanceInWei, 'ether');
-            resp.json({ error: 0, data: balance });
-        }).catch(error => {
+        let myEthAddress = addresses['ETH'];
+        try {
+            let balances = {};
+            fortokens.forEach(token => {
+                let balance = 0;
+                if (token === "ETH") {
+                    let balanceEthInWei = await web3.eth.getBalance(myEthAddress);
+                    balance = web3.utils.fromWei(balanceEthInWei, 'ether');
+                } else {
+                    balance = await erc20BalanceOf(web3, myEthAddress, token);
+                }
+                balances.push({ [token]: balance });
+            });
+            resp.json({ error: 0, data: balances });
+        } catch (error) {
             let errorMessage = error.message.replace("Returned error: ", "");
             return resp.json({ error: -200, data: "Error 10010: " + errorMessage });
-        });
+        }
     }
 
     /**
@@ -277,7 +288,7 @@ class AccountService {
             }
 
             ret = await SwapEthForToken(
-                web3, 
+                web3,
                 {
                     chainId: 5,
                     sellAddress: myAddress,
