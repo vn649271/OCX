@@ -512,6 +512,7 @@ li.sc-gsDKAQ {
 
 .main-content-container {
     background: white;
+    padding: 2.5em;
 }
 
 /**/
@@ -544,9 +545,13 @@ li.sc-gsDKAQ {
     display: block
 }
 
-.account-info-container {
-    margin-bottom: 100px;
+.account-global-info-container {
+    border: 2px #c1c1cc solid;
+    border-radius: 10px;
+    padding: 1em;
+    margin-bottom: 10px;
 }
+
 
 /* .account-address-box {
     float: left;
@@ -559,7 +564,8 @@ li.sc-gsDKAQ {
 .lock-account-button-container {
     float: right;
     height: 30px;
-    margin-bottom: -40px
+    margin-bottom: -40px;
+    margin-right: 1em !important;
 }
 
 .import-passphrase-button {

@@ -389,7 +389,7 @@ class WalletPage extends Component {
     }
 
     onUnlockAccont = (param, ev, btnCmpnt) => {
-        this.startBalanceMonitor();        
+        this.startBalanceMonitor();
         console.log("onUnlockAccont(): ", param, ev, btnCmpnt);
         this.warning('');
         // Try to unlock
@@ -543,23 +543,16 @@ class WalletPage extends Component {
                     <p className="help-block main-font text-green-400 font-16">{this.state.info}</p>
                     <div className={this.state.user_mode === USER_WITH_ACCOUNT ? 'shownBox' : 'hiddenBox'}>
                         <div className={!this.state.locked ? 'shownBox' : 'hiddenBox'}>
-                            <div className="lock-account-button-container mr-20">
-                                {/* Lock Button */}
-                                <DelayButton
-                                    captionInDelay="Locking"
-                                    caption="Lock"
-                                    maxDelayInterval={30}
-                                    onClickButton={this.onLockAccont}
-                                    onClickButtonParam={null} />
-                            </div>
-                            <div className="pagetabbar-container mb-10">
-                                <PageTabBar
-                                    onClickItem={this.onSelectTab}
-                                    items={walletPageTabItems}
-                                    defaultActiveItem='transfer-tab'
-                                />
-                            </div>
-                            <div className={this.state.current_tab === 'transfer-tab' ? 'shownBox' : 'hiddenBox'}>
+                            <div className="account-global-info-container">
+                                <div className="lock-account-button-container mr-20">
+                                    {/* Lock Button */}
+                                    <DelayButton
+                                        captionInDelay="Locking"
+                                        caption="Lock"
+                                        maxDelayInterval={30}
+                                        onClickButton={this.onLockAccont}
+                                        onClickButtonParam={null} />
+                                </div>
                                 <div id="my-account-info-container" className="account-info-container help-block main-font font-16 mr-16">
                                     <p className="account-address-box help-block main-font text-green-400 font-16">
                                         {this.state.accounts ?
@@ -575,6 +568,15 @@ class WalletPage extends Component {
                                         Balance: {this.state.balance.eth} ETH
                                     </p>
                                 </div>
+                            </div>
+                            <div className="pagetabbar-container mb-10">
+                                <PageTabBar
+                                    onClickItem={this.onSelectTab}
+                                    items={walletPageTabItems}
+                                    defaultActiveItem='transfer-tab'
+                                />
+                            </div>
+                            <div className={this.state.current_tab === 'transfer-tab' ? 'shownBox' : 'hiddenBox'}>
                                 <div id="qr-account-container">
                                     <div id="qr-container">
                                         <QRCode value="hey" />

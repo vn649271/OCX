@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@studydefi/money-legos": "^2.4.2",
+    "@uniswap/v2-periphery": "^1.1.0-beta.0",
     "@uniswap/v3-periphery": "^1.4.0",
     "autoprefixer": "^9.8.6",
     "axios": "^0.19.0",
@@ -17,7 +19,7 @@
     "crypto": "^1.0.1",
     "dotenv": "^10.0.0",
     "ethereumjs-tx": "^2.1.2",
-    "ethers": "^5.5.2",
+    "ethers": "^5.5.3",
     "express": "^4.17.1",
     "express-favicon": "^2.0.1",
     "express-flash": "^0.0.2",
