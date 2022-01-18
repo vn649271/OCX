@@ -1,98 +1,153 @@
-const { ExchangeAbi, TokenAbi, ExchangeAddress, TokenAddress } = require("../Abi/Erc20Abi");
+const IERC20 = require('@uniswap/v2-periphery/build/IERC20.json')
+const IPair = require('@uniswap/v2-core/build/IUniswapV2Pair.json')
+const IFactory = require('@uniswap/v2-core/build/IUniswapV2Factory.json')
+const IRouter = require('@uniswap/v2-periphery/build/IUniswapV2Router02.json')
+
+const { ExchangeAbi, TokenAbi, UniswapV2Router02Address, GoerliTokenAddress } = require("../Abi/Erc20Abi");
 const EthereumTx = require('ethereumjs-tx').Transaction;
 
 const DEFAULT_DEADLINE = 300; // 300s = 5min
 
-async function sendSignedTx(web3, transactionObject, privateKeyString, onCompleteCallback, onFailedCallback) {
+// async function sendSignedTx(web3, transactionObject, privateKeyString) {
+//     try {
+//         const tx = new EthereumTx(
+//             transactionObject,
+//             { chain: 'goerli', hardfork: 'petersburg' }
+//         );
+//         const privateKey = new Buffer.from(privateKeyString, "hex");
+//         tx.sign(privateKey);
+//         const serializedethTx = tx.serialize().toString("hex");
+//         var receipt = await web3.eth.sendSignedTransaction(`0x${serializedethTx}`);
+//         return { error: 0, data: receipt };
+//     } catch (error) {
+//         var errMsg = error ?
+//             error.message ?
+//                 error.message.replace('Returned error: ', '') :
+//                 "Unknown error in send transaction for swap" :
+//             error;
+//         return { error: -200, data: errMsg };
+//     }
+// }
+//
+// async function getABI_EthToTokenSwapInput(web3, tokenSymbol, acceptableMinRate, deadline = DEFAULT_DEADLINE) {
+//     try {
+//         const exchangeContract = new web3.eth.Contract(
+//             JSON.parse(ExchangeAbi),
+//             UniswapV2Router02Address
+//         );
+//         if (!exchangeContract) {
+//             return { error: -1, data: null };
+//         }
+//         let ethToTokenSwapInputFunc = await exchangeContract.methods
+//             .ethToTokenSwapInput(acceptableMinRate, deadline);
+//         if (!ethToTokenSwapInputFunc) {
+//             return { error: -2, data: null };
+//         }
+//         let abi = ethToTokenSwapInputFunc.encodeABI();
+//         if (!abi) {
+//             return { error: -3, data: null };
+//         }
+//         return { error: 0, data: abi };
+//     } catch (error) {
+//         var errMsg = error ?
+//             error.message ?
+//                 error.message.replace('Returned error: ', '') :
+//                 "Unknown error in send transaction for swap" :
+//             error;
+//         return { error: -210, data: errMsg };
+//     }
+// }
+
+// function getExchangeContractAddress() {
+//     return UniswapV2Router02Address;
+// }
+
+// async function ETH2Token(web3, params) {
+//     try {
+//         let { error, data } = await getABI_EthToTokenSwapInput(web3, params.buySymbol, params.acceptableMinRate, params.deadline.valueOf());
+//         if (error < 0) {
+//             return { error: -30 + error, data: data.message };
+//         }
+//         let transactionNonce = await web3.eth.getTransactionCount(params.sellAddress);
+//         let ethToTokenSwapInputFuncAbi = data;
+//         const transactionObject = {
+//             // chainId: params.chainId,
+//             nonce: web3.utils.toHex(transactionNonce),
+//             gasLimit: web3.utils.toHex(6000000),
+//             gasPrice: web3.utils.toHex(10000000000),
+//             from: params.sellAddress,
+//             to: UniswapV2Router02Address,
+//             data: ethToTokenSwapInputFuncAbi,
+//             value: web3.utils.toHex(params.sellAmount)
+//         };
+//         let ret = await sendSignedTx(
+//             web3,
+//             transactionObject,
+//             params.privateKey.toString('hex')
+//         );
+//         if (ret.error < 0) {
+//             return { error: -40 + ret.error, data: ret.data };
+//         }
+//         return { error: 0, data: ret.data };
+//     } catch (error) {
+//         var errMsg = error ?
+//             error.message ?
+//                 error.message.replace('Returned error: ', '') :
+//                 "Unknown error in send transaction for swap" :
+//             error;
+//         return { error: -250, data: errMsg };
+//     }
+// }
+
+async function balanceOf(web3, address) {
     try {
-        const tx = new EthereumTx(transactionObject, { chain: 'goerli', hardfork: 'petersburg' });
-        const privateKey = new Buffer.from(privateKeyString, "hex");
-        tx.sign(privateKey);
-        const serializedethTx = tx.serialize().toString("hex");
-        var receipt = await web3.eth.sendSignedTransaction(`0x${serializedethTx}`);
-        onCompleteCallback(0, receipt);
-    } catch (error) {
-        var errMsg = error ? 
-            error.message ? 
-                error.message.replace('Returned error: ', '') : 
-                "Unknown error in send transaction for swap": 
+        const uniRouter02 = new web3.eth.Contract(IRouter.abi, UniswapV2Router02Address)
+        const ret = await uniRouter02.methods.balanceOf(address)
+        return { error: 0, data: ret };
+    }
+    catch (error) {
+        var errMsg = error ?
+            error.message ?
+                error.message.replace('Returned error: ', '') :
+                "Unknown error in send transaction for swap" :
             error;
-        onFailedCallback(errMsg)
+        return { error: -200, data: errMsg };
     }
 }
 
-async function ETH2Token(web3, params, onCompleteCallback, onFailedCallback) {
-    const exchangeContract = new web3.eth.Contract(
-        JSON.parse(ExchangeAbi), 
-        ExchangeAddress[params.buySymbol]
-    );
-    let transactionNonce = await web3.eth.getTransactionCount(params.address);
+async function SwapEthForToken(web3, params) {
+    try {
+        const WETH_ADDRESS = GoerliTokenAddress['WETH'];
+        const erc20TokenAddress = GoerliTokenAddress[params.buySymbol];
+        const path = [WETH_ADDRESS, erc20TokenAddress];        
+        const uniRouter02 = new web3.eth.Contract(IRouter.abi, UniswapV2Router02Address)
+        const nowInSeconds = Math.floor(Date.now() / 1000)
+        const expiryDate = nowInSeconds + 600; // 600s = 10min
+        const ethAmount = web3.utils.toHex(params.sellAmount);
 
-    let ethToTokenSwapInputFunc = exchangeContract.methods
-        .ethToTokenSwapInput(params.acceptableMinRate, params.deadline);
-    if (!ethToTokenSwapInputFunc) {
-        onFailedCallback("Failed to get ABI for swap function");
-        return;
+        const ret = await uniRouter02.methods.swapExactETHForTokens(
+            0,
+            path,
+            params.sellAddress,
+            expiryDate
+        ).send({ 
+            from: params.sellAddress, 
+            value: ethAmount
+        })
+        return { error: 0, data: ret };
     }
-    const ethToTokenSwapInputABI = ethToTokenSwapInputFunc.encodeABI();
-    const transactionObject = {
-        chainId: params.chainId,
-        nonce: web3.utils.toHex(transactionNonce),
-        // gasLimit: web3.utils.toHex(6000000),
-        // gasPrice: web3.utils.toHex(10000000000),
-        from: params.address,
-        to: ExchangeAddress[params.buySymbol],
-        data: ethToTokenSwapInputABI,
-        value: params.sellAmount
-    };
-    sendSignedTx(
-        web3, 
-        transactionObject, 
-        params.privateKey.toString('hex'), 
-        onCompleteCallback,
-        onFailedCallback
-    );
-}
-
-/**
- * params:
- *  {
- *      tokenContract: 
- *  }
- */
-async function Token2ETH(web3, params) {
-    // Exchange
-    const tokenContract = new web3.eth.Contract(TokenAbi["DAI"], TokenAddress["DAI"]);
-    const ADDRESS_SPENDER = ExchangeAddress["DAI"];
-    const TOKENS = web3.utils.toHex(1 * 10 ** 18); // 1 DAI
-    const approveABI = tokenContract.methods
-        .approve(ADDRESS_SPENDER, TOKENS)
-        .encodeABI();
-
-    transactionNonce = await web3.eth.getTransactionCount(params.address)
-    const transactionObject = {
-        chainId: 4,
-        nonce: web3.utils.toHex(transactionNonce),
-        gasLimit: web3.utils.toHex(42000),
-        gasPrice: web3.utils.toHex(5000000),
-        to: TokenAddress[params.buySymbol],
-        from: params.address,
-        data: approveABI
-    };
-    sendSignedTx(transactionObject, params.privateKey, function (error, result) {
-        if (error) return console.log("error ===>", error);
-        console.log("sent ===>", result);
-    })
-
-    const TOKENS_SOLD = web3.utils.toHex(0.4 * 10 ** 18); // 0.4DAI
-    const MIN_ETH = web3.utils.toHex(5000000000000000); // 0.005ETH
-    const tokenToEthSwapInputABI = daiExchangeContract.methods
-        .tokenToEthSwapInput(TOKENS_SOLD, MIN_ETH, params.deadline)
-        .encodeABI();
+    catch (error) {
+        var errMsg = error ?
+            error.message ?
+                error.message.replace('Returned error: ', '') :
+                "Unknown error in send transaction for swap" :
+            error;
+        return { error: -200, data: errMsg };
+    }
 }
 
 module.exports = {
-    ETH2Token,
-    Token2ETH,
+    // ETH2Token,
+    SwapEthForToken,
     DEFAULT_DEADLINE
 }

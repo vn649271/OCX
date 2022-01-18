@@ -54,13 +54,12 @@ export default class ExchangeSwap extends React.Component {
     onClickSwap() {
         // this.setState({ currentScene: SCENE_CONFIRM_SWAP });
         // this.inform(this.state.input.fromAmount + ", " + this.state.input.toAmount);
-        console.log("--------------------------", this.userToken);
         swap({
             reqParam: {
                 userToken: this.userToken,
                 sellSymbol: 'ETH',
                 sellAmount: this.state.input.fromAmount,
-                buySymbol: 'DAI',
+                buySymbol: 'UNI',
             },
             onComplete: resp => {
                 var errorMsg = null;

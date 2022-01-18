@@ -301,11 +301,11 @@ class AccountController {
             }
             let sellAmount = req.body ? req.body.sellAmount ? req.body.sellAmount : 0: 0;
             if (sellAmount === 0) {
-                return resp.json({error: -4, data: "Invalid amount to be exchanged"});
+                return resp.json({error: -5, data: "Invalid amount to be exchanged"});
             }
             let buySymbol = req.body ? req.body.buySymbol ? req.body.buySymbol : 0: 0;
             if (buySymbol === 0) {
-                return resp.json({error: -5, data: "Invalid amount to exchange"});
+                return resp.json({error: -6, data: "Invalid amount to exchange"});
             }
             accountService.swapEthToERC20(
                 {
@@ -313,7 +313,7 @@ class AccountController {
                     sellSymbol:         sellSymbol,
                     sellAmount:         sellAmount,
                     buySymbol:          buySymbol,
-                    acceptableMinRate:  0.0003,   // 0.0003 DAI
+                    acceptableMinRate:  0.0,   // 0.6 UNI
                     deadline:           600 // 600s = 10min
                 },
                 resp
