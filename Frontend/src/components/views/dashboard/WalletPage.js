@@ -181,7 +181,9 @@ class WalletPage extends Component {
                     onComplete: resp => {
                         var errorMsg = null;
                         if (resp.error === 0) {
-                            self.setBalanceInUI('eth', (resp.data - 0).toFixed(4));
+                            for (let i in resp.data) {
+                                self.setBalanceInUI(i, (resp.data[i] - 0).toFixed(4));
+                            }
                             return;
                         } else if (resp.error === -100) {
                             errorMsg = "No response for get balance";
@@ -563,9 +565,11 @@ class WalletPage extends Component {
                                                 null :
                                             null}
                                     </p>
-
                                     <p className="account-balance-box main-font text-black-400 mb-100 font-20">
-                                        Balance: {this.state.balance.eth} ETH
+                                        Balance: {this.state.balance['ETH']} ETH
+                                    </p>
+                                    <p className="account-balance-box main-font text-black-400 mb-100 font-20">
+                                        Balance: {this.state.balance['UNI']} UNI
                                     </p>
                                 </div>
                             </div>

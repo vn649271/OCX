@@ -99,10 +99,10 @@ const DEFAULT_DEADLINE = 300; // 300s = 5min
 //     }
 // }
 
-async function balanceOf(web3, address) {
+async function erc20BalanceOf(web3, address, symbol) {
     try {
-        const uniRouter02 = new web3.eth.Contract(IRouter.abi, UniswapV2Router02Address)
-        const ret = await uniRouter02.methods.balanceOf(address)
+        const tokenContract = new web3.eth.Contract(IRouter.abi, GoerliTokenAddress[symbol])
+        const ret = await tokenContract.methods.balanceOf(address)
         return { error: 0, data: ret };
     }
     catch (error) {
@@ -147,7 +147,7 @@ async function SwapEthForToken(web3, params) {
 }
 
 module.exports = {
-    // ETH2Token,
+    erc20BalanceOf,
     SwapEthForToken,
     DEFAULT_DEADLINE
 }
