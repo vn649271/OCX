@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
 import DelayButton from '../../common/DelayButton';
 import PasswordChecklistComponent from "../../common/PasswordChecklistComponent";
-import {
-    createAccount, restoreAccount, connectAccount,
-    getBalance, sendCryptoCurrency,
-    lockAccount, unlockAccount
-} from '../../../service/Account';
+import AccountService from '../../../service/Account';
 import { hashCode } from "../../../service/Utils";
 import QRCode from "react-qr-code";
 import { BALANCE_CHECKING_INTERVAL } from "../../../Contants";
@@ -21,6 +17,7 @@ import PageTabBar from '../../common/PageTabBar';
 import ExchangeSwap from '../../common/exchange/ExchangeSwap';
 
 var rsaCrypt = new JSEncrypt();
+const accountService = new AccountService();
 
 const eye = <FontAwesomeIcon icon={faEye} />;
 
@@ -73,12 +70,12 @@ class WalletPage extends Component {
             password: "",
             confirm_password: "",
             showPassword: false,
-            hidePasswordCheckList: true,
-            showPassphraseImportDialog: false,
-            showPasscodeConfirmDialog: false,
+            hide_password_checklist: true,
+            show_passphrase_import_dialog: false,
+            show_passcode_confirm_dialog: false,
             loading: false,
-            showPassphrase: false,
-            encryptKey: ''
+            show_passphrase: false,
+            token_list: null
         }
 
         this.userToken = null;
@@ -112,6 +109,7 @@ class WalletPage extends Component {
         this.setEncryptKey = this.setEncryptKey.bind(this);
         this.onSelectTab = this.onSelectTab.bind(this);
         this.startBalanceMonitor = this.startBalanceMonitor.bind(this);
+        this.buildTokenList = this.buildTokenList.bind(this);
     }
 
     componentDidUpdate(prevProps) {
@@ -119,45 +117,49 @@ class WalletPage extends Component {
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         this.userToken = localStorage.getItem("userToken");
         this.encryptKey = localStorage.getItem("encryptKey");
         this.setEncryptKey(this.encryptKey);
         this.startBalanceMonitor();
-        // Try to connect to my account
-        connectAccount({
-            reqParam: {
-                userToken: self.userToken
-            },
-            onComplete: resp => {
-                var errorMsg = null;
-                if (resp.error !== undefined) {
-                    switch (resp.error) {
-                        case 0:
-                            self.setState({ accounts: resp.data.addresses });
-                            self.setState({ user_mode: USER_WITH_ACCOUNT });
-                            self.setState({ locked: resp.data.locked });
-                            return;
-                        case 1:
-                            self.setState({ user_mode: NEW_USER });
-                            return;
-                        case -100:
-                            errorMsg = "No response for get balance";
-                            break;
-                        default:
-                            errorMsg = resp.data
-                            break;
-                    }
-                } else {
-                    errorMsg = "Invalid response for connecting to my account"
-                }
-                self.warning(errorMsg);
-            },
-            onFailed: error => {
-                self.warning(error);
-            }
+        let ret = await accountService.getTokenList({
+            userToken: self.userToken
         });
-        this.onGeneratePassphrase(null);
+        if (ret.error !== 0) {
+            self.warning("Failed to get token list");
+            return;
+        }
+        console.log("''''''''''''''''''''''''''''''", ret.data);
+        let tokenList = this.buildTokenList(ret.data);
+        this.setState({ token_list: tokenList });
+
+        // Try to connect to my account
+        let resp = await accountService.connectAccount({
+            userToken: self.userToken
+        });
+        var errorMsg = null;
+        if (resp.error !== undefined) {
+            switch (resp.error) {
+                case 0:
+                    self.setState({ accounts: resp.data.addresses });
+                    self.setState({ user_mode: USER_WITH_ACCOUNT });
+                    self.setState({ locked: resp.data.locked });
+                    this.onGeneratePassphrase(null);
+                    return;
+                case 51:
+                    self.setState({ user_mode: NEW_USER });
+                    return;
+                case -1000:
+                    errorMsg = "No response for get balance";
+                    break;
+                default:
+                    errorMsg = resp.data
+                    break;
+            }
+        } else {
+            errorMsg = "Invalid response for connecting to my account"
+        }
+        self.warning(errorMsg);
     }
 
     componentWillUnmount() {
@@ -167,35 +169,28 @@ class WalletPage extends Component {
         }
     }
 
-    startBalanceMonitor() {
+    async startBalanceMonitor() {
         this.balanceTimer = setInterval(
-            function () {
+            async function () {
                 console.log("balance function(): user_mode=", self.state.user_mode);
                 if (self.state.user_mode !== USER_WITH_ACCOUNT) {
                     return;
                 }
-                getBalance({
-                    reqParam: {
-                        userToken: self.userToken
-                    },
-                    onComplete: resp => {
-                        var errorMsg = null;
-                        if (resp.error === 0) {
-                            for (let i in resp.data) {
-                                self.setBalanceInUI(i, (resp.data[i] - 0).toFixed(4));
-                            }
-                            return;
-                        } else if (resp.error === -100) {
-                            errorMsg = "No response for get balance";
-                        } else if (resp.error !== 0) {
-                            errorMsg = resp.data
-                        }
-                        self.warning(errorMsg);
-                    },
-                    onFailed: error => {
-                        self.warning(error);
-                    }
+                let resp = await accountService.getBalance({
+                    userToken: self.userToken
                 });
+                var errorMsg = null;
+                if (resp.error === 0) {
+                    for (let i in resp.data) {
+                        self.setBalanceInUI(i, (resp.data[i] - 0).toFixed(4));
+                    }
+                    return;
+                } else if (resp.error === -1000) {
+                    errorMsg = "No response for get balance";
+                } else if (resp.error !== 0) {
+                    errorMsg = resp.data
+                }
+                self.warning(errorMsg);
             },
             BALANCE_CHECKING_INTERVAL
         );
@@ -213,7 +208,7 @@ class WalletPage extends Component {
 
     togglePassphraseVisiblity = event => {
         // let password = event.target.parentNode.parentNode.parentNode.firstElementChild.value;
-        this.setState({ showPassphrase: !this.state.showPassphrase });
+        this.setState({ show_passphrase: !this.state.show_passphrase });
     }
 
     handleInputChange = event => {
@@ -224,7 +219,7 @@ class WalletPage extends Component {
             input
         });
         if (event.target.name === 'password') {
-            this.setState({ hidePasswordCheckList: false });
+            this.setState({ hide_password_checklist: false });
             let password = input['password'] || "";
             if (password === null) {
                 password = "";
@@ -239,9 +234,9 @@ class WalletPage extends Component {
     }
 
     onKeyPressedForUnlock = ev => {
-        if (this.unlockButton) {
-            this.unlockButton.onClickButton();
-        }
+        // if (this.unlockButton) {
+        //     this.unlockButton.onClickButton();
+        // }
     }
 
     inform = (msg) => {
@@ -305,7 +300,7 @@ class WalletPage extends Component {
         this.setState({ current_tab: tabName })
     }
 
-    onCreateAccont = (param, ev, btnCmpnt) => {
+    onCreateAccont = async (param, ev, btnCmpnt) => {
         let passwordValidation = this.validatePassword(
             this.state.input.password,
             this.state.input.confirm_password
@@ -324,34 +319,26 @@ class WalletPage extends Component {
             this.warning("Invalid passphrase");
             return;
         }
-        createAccount({
-            reqParam: {
-                userToken: this.userToken,
-                password: hashCode(this.state.input.password),
-                passphrase: this.encryptedPassphrase // !!!!!!!!!!!!! Encrypt passphrase
-            },
-            onComplete: resp => {
-                btnCmpnt.stopTimer();
-                if (resp.error === 0) {
-                    self.setState({ locked: false });
-                    self.setState({ accounts: resp.data.addresses });
-                    self.warning('');
-                    self.setState({ user_mode: USER_WITH_ACCOUNT });
-                    return;
-                } else if (resp.error === -100) {
-                    self.warning("Invalid response for creating account");
-                    return;
-                }
-                self.warning(resp.data);
-            },
-            onFailed: error => {
-                btnCmpnt.stopTimer();
-                this.warning(error);
-            }
+        let resp = await accountService.createAccount({
+            userToken: this.userToken,
+            password: hashCode(this.state.input.password),
+            passphrase: this.encryptedPassphrase
         });
+        btnCmpnt.stopTimer();
+        if (resp.error === 0) {
+            self.setState({ locked: false });
+            self.setState({ accounts: resp.data });
+            self.warning('');
+            self.setState({ user_mode: USER_WITH_ACCOUNT });
+            return;
+        } else if (resp.error === -1000) {
+            self.warning("Invalid response for creating account");
+            return;
+        }
+        self.warning(resp.data);
     }
 
-    onLockAccont = (param, ev, btnCmpnt) => {
+    onLockAccont = async (param, ev, btnCmpnt) => {
         this.warning('');
         if (this.state.current_state !== IDLE) {
             btnCmpnt.stopTimer();
@@ -360,73 +347,61 @@ class WalletPage extends Component {
         }
         // Try to unlock
         this.setState({ current_state: LOCKING });
-        lockAccount({
-            reqParam: {
-                userToken: this.userToken,
-            },
-            onComplete: resp => {
-                this.setState({ current_state: IDLE });
-                btnCmpnt.stopTimer();
-                if (this.balanceTimer) {
-                    clearInterval(this.balanceTimer);
-                    this.balanceTimer = null;
-                }
-                this.warning('');
-                if (resp.error === 0) {
-                    // Display unlocked account page
-                    self.setState({ locked: true });
-                    return;
-                } else if (resp.error === -100) {
-                    self.warning("Invalid response for locking account");
-                    return;
-                }
-                self.warning(resp.data);
-            },
-            onFailed: error => {
-                this.setState({ current_state: IDLE });
-                btnCmpnt.stopTimer();
-                self.warning(error);
-            }
+        let resp = await accountService.lockAccount({
+            userToken: this.userToken,
         });
+        this.setState({ current_state: IDLE });
+        btnCmpnt.stopTimer();
+        if (this.balanceTimer) {
+            clearInterval(this.balanceTimer);
+            this.balanceTimer = null;
+        }
+        this.warning('');
+        if (resp.error === 0) {
+            // Display unlocked account page
+            self.setState({ locked: true });
+            return;
+        } else if (resp.error === -1000) {
+            self.warning("Invalid response for locking account");
+            return;
+        }
+        self.warning(resp.data);
+
     }
 
-    onUnlockAccont = (param, ev, btnCmpnt) => {
+    onUnlockAccont = async (param, ev, btnCmpnt) => {
         this.startBalanceMonitor();
         console.log("onUnlockAccont(): ", param, ev, btnCmpnt);
         this.warning('');
         // Try to unlock
-        unlockAccount({
-            reqParam: {
-                userToken: this.userToken,
-                password: hashCode(this.state.input.password),
-            },
-            onComplete: resp => {
-                if (btnCmpnt) {
-                    btnCmpnt.stopTimer();
-                }
-                if (resp.error === 0) {
-                    // Display unlocked account page
-                    self.warning('');
-                    self.setPasswordInUI('');
-                    self.setState({ locked: false });
-                    return;
-                } else if (resp.error === -100) {
-                    self.warning("Invalid response for locking account");
-                    return;
-                }
-                self.warning(resp.data);
-            },
-            onFailed: error => {
-                this.setState({ current_state: IDLE });
-                if (btnCmpnt) {
-                    btnCmpnt.stopTimer();
-                }
-                self.warning(error);
-            }
+        let resp = await accountService.unlockAccount({
+            userToken: this.userToken,
+            password: hashCode(this.state.input.password),
         });
+        if (btnCmpnt) {
+            btnCmpnt.stopTimer();
+        }
+        if (resp.error === 0) {
+            // Display unlocked account page
+            self.warning('');
+            self.setPasswordInUI('');
+            self.setState({ locked: false });
+            return;
+        } else if (resp.error === -1000) {
+            self.warning("Invalid response for locking account");
+            return;
+        }
+        self.warning(resp.data);
     }
 
-    onSend = (param, ev, btnCmpnt) => {
+    buildTokenList = tokenInfoArray => {
+        var tokenItems = tokenInfoArray.map((tokenInfo) =>
+            tokenInfo ? <div address={tokenInfo.address} className="main-font font-16"><img src={tokenInfo.logo.src} width="48" height="48" />{tokenInfo.symbol}</div> : <></>
+        );
+        return <li>{tokenItems}</li>;
+    }
+
+    onSend = async (param, ev, btnCmpnt) => {
         this.warning('');
         if (this.state.current_state !== IDLE) {
             btnCmpnt.stopTimer();
@@ -454,79 +429,63 @@ class WalletPage extends Component {
 
         this.setState({ current_state: SENDING });
 
-        sendCryptoCurrency({
-            reqParam: {
-                userToken: this.userToken,
-                toAddress: toAddress,
-                amount: amount,
-                password: hashCode(this.userPasswordToConfirmTx)
-            },
-            onComplete: resp => {
-                this.setState({ current_state: IDLE });
-                btnCmpnt.stopTimer();
-                if (resp.error === 0) {
-                    self.setSendingAmountInUI(0);
-                    self.inform("Sending Complete");
-                    return;
-                } else if (resp.error === -100) {
-                    self.warning("Invalid response for sending token");
-                } else {
-                    self.warning(resp.data);
-                }
-            },
-            onFailed: error => {
-                this.setState({ current_state: IDLE });
-                btnCmpnt.stopTimer();
-                self.warning(error);
-            }
+        let resp = await accountService.sendCryptoCurrency({
+            userToken: this.userToken,
+            toAddress: toAddress,
+            amount: amount,
+            password: hashCode(this.userPasswordToConfirmTx)
         });
+        this.setState({ current_state: IDLE });
+        btnCmpnt.stopTimer();
+        if (resp.error === 0) {
+            self.setSendingAmountInUI(0);
+            self.inform("Sending Complete");
+            return;
+        } else if (resp.error === -1000) {
+            self.warning("Invalid response for sending token");
+        } else {
+            self.warning(resp.data);
+        }
     }
 
     onClickImportPassphrase = (ev) => {
-        this.setState({ showPassphraseImportDialog: true });
+        this.setState({ show_passphrase_import_dialog: true });
     }
 
-    onClosePassphraseImportDialog = (param) => {
+    onClosePassphraseImportDialog = async (param) => {
         this.encryptedPassphrase = rsaCrypt.encrypt(param.passphrase);
         console.log("************* onClosePassphraseImportDialog(): param=", param);
-        this.setState({ showPassphraseImportDialog: false });
-        restoreAccount({
-            reqParam: {
-                userToken: this.userToken,
-                password: hashCode(param.password),
-                passphrase: self.encryptedPassphrase // ???????????? Encrypt
-            },
-            onComplete: resp => {
-                if (resp.error === 0) {
-                    console.log("************* restoreAccount(): response=", resp);
-                    self.setState({ locked: false });
-                    self.setState({ accounts: resp.data });
-                    self.warning('');
-                    self.setState({ user_mode: USER_WITH_ACCOUNT });
-                    return;
-                } else if (resp.error === -100) {
-                    self.warning("Invalid response for creating account");
-                    return;
-                }
-                self.warning(resp.data);
-            },
-            onFailed: error => {
-                this.warning(error);
-            }
+        this.setState({ show_passphrase_import_dialog: false });
+        let resp = await accountService.restoreAccount({
+            userToken: this.userToken,
+            password: hashCode(param.password),
+            passphrase: self.encryptedPassphrase
         });
+        if (resp.error === 0) {
+            console.log("************* restoreAccount(): response=", resp);
+            self.setState({ locked: false });
+            self.setState({ accounts: resp.data });
+            self.warning('');
+            self.setState({ user_mode: USER_WITH_ACCOUNT });
+            return;
+        } else if (resp.error === -1000) {
+            self.warning("Invalid response for creating account");
+            return;
+        }
+        self.warning(resp.data);
     }
 
     onOpenPasscodeConfirmDialog = (ev) => {
-        this.setState({ showPasscodeConfirmDialog: true });
+        this.setState({ show_passcode_confirm_dialog: true });
     }
 
     onClosePasscodeConfirmDialog = (userPasswordToConfirmTx) => {
-        this.setState({ showPasscodeConfirmDialog: false });
+        this.setState({ show_passcode_confirm_dialog: false });
         this.userPasswordToConfirmTx = userPasswordToConfirmTx;
     }
 
     onLeaveFromPasswordInput = event => {
-        this.setState({ hidePasswordCheckList: true });
+        this.setState({ hide_password_checklist: true });
     }
 
     onGeneratePassphrase = ev => {
@@ -543,6 +502,9 @@ class WalletPage extends Component {
                 <div className="my-account-page">
                     <p className="account-balance-box main-font text-red-400 mb-100 font-16">{this.state.error}</p>
                     <p className="help-block main-font text-green-400 font-16">{this.state.info}</p>
+                    <div>
+                        {this.state.token_list}
+                    </div>
                     <div className={this.state.user_mode === USER_WITH_ACCOUNT ? 'shownBox' : 'hiddenBox'}>
                         <div className={!this.state.locked ? 'shownBox' : 'hiddenBox'}>
                             <div className="account-global-info-container">
@@ -565,7 +527,7 @@ class WalletPage extends Component {
                                                 null :
                                             null}
                                     </p>
-                                    Balance: 
+                                    Balance:
                                     <p className="account-balance-box main-font text-black-400 mb-100 font-20">
                                         {this.state.balance['ETH']} ETH
                                     </p>
@@ -641,7 +603,7 @@ class WalletPage extends Component {
                                         value={this.state.input.password}
                                         onChange={this.handleInputChange}
                                         onBlur={this.onLeaveFromPasswordInput}
-                                        onKeyPress={this.onKeyPressedForUnlock}
+                                        // onKeyPress={this.onKeyPressedForUnlock}
                                         placeholder="Password" autoComplete="off" />
                                     <i className="ShowPasswordIcon font-16" onClick={this.togglePasswordVisiblity}>{eye}</i>
                                 </div>
@@ -695,7 +657,7 @@ class WalletPage extends Component {
                         <PasswordChecklistComponent
                             password={this.state.input['password'] || ""}
                             confirmPassword={this.state.input['confirm_password'] || ""}
-                            hidden={this.state.hidePasswordCheckList} />
+                            hidden={this.state.hide_password_checklist} />
                         <div className="mb-10">
                             <input
                                 type="password"
@@ -721,12 +683,12 @@ class WalletPage extends Component {
                 </div>
                 <PassphraseImportDialog
                     className="passphrase-import-dialog"
-                    show={this.state.showPassphraseImportDialog}
+                    show={this.state.show_passphrase_import_dialog}
                     onClose={this.onClosePassphraseImportDialog}
                 />
                 <PasscodeConfirmDialog
                     className="passcode-confirm-dialog"
-                    show={this.state.showPasscodeConfirmDialog}
+                    show={this.state.show_passcode_confirm_dialog}
                     onClose={this.onClosePasscodeConfirmDialog}
                 />
             </>

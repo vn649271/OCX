@@ -18,6 +18,7 @@
     "craco": "^0.0.3",
     "crypto": "^1.0.1",
     "dotenv": "^10.0.0",
+    "erc20-token-list": "0.0.3",
     "ethereumjs-tx": "^2.1.2",
     "ethers": "^5.5.3",
     "express": "^4.17.1",

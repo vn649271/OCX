@@ -7,16 +7,17 @@ const net = require('net');
 var fs = require("fs");
 const { json } = require('body-parser');
 var keythereum = require("keythereum");
-const {
-    erc20BalanceOf,
-    swapEthForToken,
-    swapTokenForEth,
-    swapTokenForToken,
-    DEFAULT_DEADLINE
-} = require('../Services/Uniswap/Swap/SwapImpl'); // Services/Uniswap/Swap
+// const {
+//     erc20BalanceOf,
+//     swapEthForToken,
+//     swapTokenForEth,
+//     swapTokenForToken,
+//     DEFAULT_DEADLINE
+// } = require('../Services/Uniswap/Swap/SwapImpl'); // Services/Uniswap/Swap
+const { ERC20TokenTransact, DEFAULT_DEADLINE } = require('../Services/Uniswap/Swap/ERC20TokenTransact');
+
 const { ethers } = require("ethers")
-const erc20 = require("@studydefi/money-legos/erc20")
-const uniswap = require("@studydefi/money-legos/uniswap")
+const { getTokenInfo } = require('erc20-token-list');
 
 const UNLOCK_ACCOUNT_INTERVAL = process.env.UNLOCK_ACCOUNT_INTERVAL || 15000; // 15s
 const CHAIN_NAME = process.env.CHAIN_NAME || "goerli";
@@ -62,6 +63,7 @@ var self = null;
  * Controller for user authentication
  */
 class AccountService {
+
     constructor() {
         self = this;
         this.gethError = null
@@ -69,17 +71,20 @@ class AccountService {
         console.log("********* Current chain name: '", this.chainName, "'");
     }
 
-    async getPrivateKey(password, ethAddress) {
+    async _getPrivateKey(password, ethAddress) {
         // Get private key for new account
         var keyObject = keythereum.importFromFile(ethAddress, GETH_DATA_DIR);
         // var privateKey = keythereum.recover(params.password, keyObject);
         return await keythereum.recover(password, keyObject);
     }
 
-    async create(newAccountInfoObj, response) {
+    /**
+     * @param {object} newAccountInfoObj list of symbols for getting info of
+     */
+    async create(newAccountInfoObj) {
         if (web3 == null) {
             console.log("AccountService.createAccount(): Geth node is not ready yet. Please retry a while later.");
-            return resp.json({ error: -10, data: MSG__GETH_NOT_READY })
+            return { error: -200, data: MSG__GETH_NOT_READY };
         }
         try {
             var accountId = newAccountInfoObj.id;
@@ -90,160 +95,154 @@ class AccountService {
             // First, get public key
             var myEthAddress = await web3.eth.personal.newAccount(accountPassword);
             if (myEthAddress && myEthAddress.length !== 42) {
-                return response.json({ error: -11, data: "Created account address invalid" });
+                return { error: -250, data: "Created account address invalid" };
             }
             // Next, get private key
-            var secretKey = await this.getPrivateKey(accountPassword, myEthAddress);
+            var secretKey = await this._getPrivateKey(accountPassword, myEthAddress);
             if (!secretKey) {
-                return response.json({ error: -12, data: "Invalid private key" });
+                return { error: -251, data: "Invalid private key" };
             }
             secretKey = secretKey.toString('hex');
             // Final, Save them
             const ret = await accountModel.updateKeyPairs(accountId, 'ETH', myEthAddress, secretKey);
             if (!ret) {
-                return response.json({ error: -13, data: "Failed to save key paire" });
+                return { error: -252, data: "Failed to save key paire" };
             }
-            return response.json({
-                error: 0,
-                data: {
-                    addresses: newAccountInfo.addresses,
-                    locked: newAccountInfo.locked
-                }
-            });
+            return { error: 0, data: newAccountInfo.addresses };
         } catch (err) {
             let errorMessage = error.message.replace("Returned error: ", "");
-            return resp.json({ error: -200, data: "Error 10000: " + errorMessage });
+            return { error: -300, data: "Error 10000: " + errorMessage };
         }
     }
 
     /**
-     * @param {object} req request object from the client 
-     * @param {object} resp response object to the client
+     * @param {object} symbolList list of symbols for getting info of
      */
-    async balance(addresses, tokens, resp) {
+    async getTokenInfoList(symbolList) {
+        if (symbolList === null) {
+            return { error: -200, data: null };
+        }
+        var tokenInfoList = [];
+        symbolList.forEach(symbol => {
+            let tokenInfo = getTokenInfo(symbol);
+            if (tokenInfo === null) {
+                return { error: -201, data: symbol };
+            }
+            if (!tokenInfo.logo.src) {
+                tokenInfo.logo.src = "https://raw.githubusercontent.com/compound-finance/token-list/master/assets/asset_" + symbol + ".svg";
+            }
+            tokenInfoList.push(tokenInfo);
+        });
+        return { error: 0, data: tokenInfoList }
+    }
+
+    /**
+     * @param {object} req request object from the client 
+     */
+    async balance(addresses, tokens) {
         if (web3 == null) {
-            return resp.json({ error: -10, data: MSG__GETH_NOT_READY })
+            return { error: -200, data: MSG__GETH_NOT_READY };
         }
         let myEthAddress = addresses['ETH'];
+        const erc20TokenTransact = new ERC20TokenTransact(web3, myEthAddress);
         try {
             let balances = {};
             for (let i in tokens) {
+                let symbol = tokens[i];
                 let balance = 0;
                 let balanceInWei = 0;
-                if (tokens[i] === "ETH") {
+                if (symbol === "ETH") {
                     balanceInWei = await web3.eth.getBalance(myEthAddress);
                 } else {
-                    let ret = await erc20BalanceOf(web3, myEthAddress, tokens[i]);
-                    if (ret.error == 0) {
-                        balanceInWei = ret.data;
+                    let ret = await erc20TokenTransact.getBalance(symbol);
+                    if (ret.error !== 0) {
+                        return { error: -250, data: "Failed to get balance for " + symbol };
                     }
+                    balanceInWei = ret.data;
                 }
                 balance = web3.utils.fromWei(balanceInWei, 'ether');
-                balances[tokens[i]] = balance;
+                balances[symbol] = balance;
             }
-            resp.json({ error: 0, data: balances });
+            return { error: 0, data: balances };
         } catch (error) {
             let errorMessage = error.message.replace("Returned error: ", "");
-            return resp.json({ error: -200, data: "Error 10010: " + errorMessage });
+            return { error: -300, data: errorMessage };
         }
     }
 
     /**
-     * @param {object} userInfo request object from the client
-     * @param {object} resp response object to the client
+     * @param {object} userToken request object from the client
      */
-    lock = (userInfo, resp) => {
-        let userToken = userInfo.token;
-        accountModel.findOne({
-            where: {
-                user_token: userToken
-            }
-        }).then(accountInfo => {
-            accountModel.setLock(accountInfo.id, true).then(ret => {
-                if (ret) {
-                    return resp.json({ error: 0 });
-                } else {
-                    return resp.json({ error: -10, data: "Failed to lock account" })
+    async setLock(userToken, lock = true, userPassword = null) {
+        try {
+            let accountInfo = await accountModel.findOne({
+                where: {
+                    user_token: userToken
                 }
-            }).catch(error => {
-                let errorMessage = error.message.replace("Returned error: ", "");
-                return resp.json({ error: -200, data: "Error 10020: " + errorMessage });
             });
-        }).catch(error => {
+            if (accountInfo === undefined || accountInfo === null) {
+                return { error: -250, data: 'No account' };
+            }
+            if (!lock) {
+                if (userPassword === null || userPassword != accountInfo.user_password) {
+                    return { error: -251, data: 'Invalid password for unlock' };
+                }
+            }
+            let ret = await accountModel.setLock(accountInfo.id, lock);
+            if (!ret) {
+                return { error: -252, data: "Failed to lock account" };
+            }
+            return { error: 0, data: ret };
+        } catch (error) {
             let errorMessage = error.message.replace("Returned error: ", "");
-            return resp.json({ error: -200, data: "Error 10021: " + errorMessage });
-        });
+            return { error: -300, data: errorMessage };
+        }
     }
 
     /**
-     * @param {object} req request object from the client 
-     * @param {object} resp response object to the client
+     * @param {object} accountInfo request object from the client
+     * @param {object} token response object to the client
+     * @param {object} toAddress response object to the client
+     * @param {object} toAmount response object to the client
      */
-    unlock = (userToken, resp) => {
-        accountModel.findOne({
-            where: {
-                user_token: userToken
-            }
-        }).then(accountInfo => {
-            accountModel.setLock(accountInfo.id, false).then(ret => {
-                if (ret) {
-                    return resp.json({ error: 0 });
-                } else {
-                    return resp.json({ error: -10, data: "Failed to unlock account" })
-                }
-            }).catch(error => {
-                let errorMessage = error.message.replace("Returned error: ", "");
-                return resp.json({ error: -200, data: "Error 10030: " + errorMessage });
-            });
-        }).catch(error => {
-            let errorMessage = error.message.replace("Returned error: ", "");
-            return resp.json({ error: -201, data: "Error 10031: " + errorMessage });
-        });
-    }
-
-    /**
-     * @param {object} req request object from the client
-     * @param {object} resp response object to the client
-     */
-    sendToken = (accountInfo, token, toAddress, toAmount, resp) => {
+    async sendToken(accountInfo, token, toAddress, toAmount) {
         if (web3 == null) {
-            return resp.json({ error: -10, data: "sendToken(): Geth node is not ready yet. Please retry a while later." })
+            return { error: -200, data: "sendToken(): Geth node is not ready yet. Please retry a while later." };
         }
         if (accountInfo == undefined || accountInfo.addresses == undefined || accountInfo.addresses == {}) {
-            return resp.json({ error: -11, data: "sendToken(): No account for you" });
+            return { error: -201, data: "sendToken(): No account for you" };
         }
         var addresses = accountInfo.addresses;
         myEthAddress = addresses[token];
         var amountToSend = web3.utils.toWei(toAmount.toString(), "ether");
-        web3.eth.personal.unlockAccount(myEthAddress, accountInfo.account_password, UNLOCK_ACCOUNT_INTERVAL)
-            .then(function (ret) {
-                if (!ret) {
-                    return resp.json({ error: -12, data: "Failed to unlock for sending" });
-                }
-                web3.eth.sendTransaction({
-                    "from": myEthAddress,
-                    "to": toAddress,
-                    "value": amountToSend
-                }).then(function (txHash) {
-                    return resp.json({ error: 0, data: txHash });
-                }).catch(error => {
-                    let errorMessage = error.message.replace("Returned error: ", "");
-                    return resp.json({ error: -200, data: "Error 10040: " + errorMessage });
-                });
-            }).catch(error => {
-                let errorMessage = error.message.replace("Returned error: ", "");
-                return resp.json({ error: -201, data: "Error 10041: " + errorMessage });
-            });
+        try {
+            let ret = await web3.eth.personal.unlockAccount(myEthAddress, accountInfo.account_password, UNLOCK_ACCOUNT_INTERVAL);
+            if (!ret) {
+                return { error: -250, data: "Failed to unlock for sending" };
+            }
+            let txHash = await web3.eth.sendTransaction({
+                "from": myEthAddress,
+                "to": toAddress,
+                "value": amountToSend
+            })
+            if (!txHash) {
+                return { error: -251, data: "Failed to send token" };
+            }
+            return { error: 0, data: txHash };
+        } catch (error) {
+            let errorMessage = error.message.replace("Returned error: ", "");
+            return { error: -300, data: errorMessage };
+        }
     }
 
-    getSigner = async (accountInfo, chain) => {
+    async _getSigner(accountInfo, chain) {
         try {
             const provider = new ethers.providers.Web3Provider(gethProvider)
             const wallet = new ethers.Wallet(accountInfo.secret_keys[chain], provider)
             return wallet;
         } catch (error) {
             let errorMessage = error.message.replace("Returned error: ", "");
-            return resp.json({ error: -201, data: "Error 10060: " + errorMessage });
+            return { error: -300, data: errorMessage };
         }
     }
 
@@ -251,9 +250,9 @@ class AccountService {
      * @param {object} req request object from the client
      * @param {object} resp response object to the client
      */
-    async swapBetweenERC20(params, resp) {
+    async swapBetweenERC20(params) {
         if (web3 == null) {
-            return resp.json({ error: -10, data: "Geth node is not ready yet. Please retry a while later." })
+            return { error: -200, data: "Geth node is not ready yet. Please retry a while later." }
         }
         var accountInfo = params ? params.accountInfo ? params.accountInfo : null : null,
             sellSymbol = params ? params.sellSymbol ? params.sellSymbol : null : null,
@@ -263,43 +262,44 @@ class AccountService {
             deadline = params ? params.deadline ? params.deadline : DEFAULT_DEADLINE : DEFAULT_DEADLINE;
 
         if (accountInfo.addresses == undefined || accountInfo.addresses == {}) {
-            return resp.json({ error: -11, data: "No account for you" });
+            return { error: -201, data: "No account for you" };
         }
         if (sellSymbol === null) {
-            return resp.json({ error: -12, data: "Invalid token to sell" });
+            return { error: -202, data: "Invalid token to sell" };
         }
         if (sellAmount === 0) {
-            return resp.json({ error: -13, data: "Invalid amount to sell" });
+            return { error: -203, data: "Invalid amount to sell" };
         }
         if (acceptableMinRate < 0) {
-            return resp.json({ error: -14, data: "Invalid slippage" });
+            return { error: -204, data: "Invalid slippage" };
         }
         if (buySymbol === null) {
-            return resp.json({ error: -15, data: "Invalid token to buy" });
+            return { error: -205, data: "Invalid token to buy" };
         }
 
         var addresses = accountInfo.addresses;
         if (addresses['ETH'] === undefined || addresses['ETH'] === null) {
-            return resp.json({ error: -16, data: "Invalid your address for swapping" });
+            return { error: -206, data: "Invalid your address for swapping" };
         }
         var myAddress = addresses['ETH'];
+        const erc20TokenTransact = new ERC20TokenTransact(web3, myAddress);
+
         sellAmount = web3.utils.toWei(sellAmount.toString(), "ether");
         const nowInSeconds = Math.floor(Date.now() / 1000)
         deadline = nowInSeconds + 600; // 600s = 10min
         acceptableMinRate = web3.utils.toHex((acceptableMinRate - 0) * 10 ** 18);
-        const signer = await this.getSigner(accountInfo, "ETH");
-
+        
         try {
+            // const signer = await this._getSigner(accountInfo, "ETH");
             let ret = await web3.eth.personal.unlockAccount(myAddress, accountInfo.account_password, UNLOCK_ACCOUNT_INTERVAL)
             if (!ret) {
-                return resp.json({ error: -20, data: "Failed to unlock for swapping" });
+                return { error: -250, data: "Failed to unlock for swapping" };
             }
 
             if (sellSymbol === 'ETH') {
-                ret = await swapEthForToken(
+                ret = await erc20TokenTransact.swapEthForToken(
                     web3,
                     {
-                        sellAddress: myAddress,
                         sellSymbol: sellSymbol,
                         sellAmount: sellAmount,
                         buySymbol: buySymbol,
@@ -308,11 +308,10 @@ class AccountService {
                         deadline: deadline
                     }
                 )
-            } else if(buySymbol === 'ETH') {
-                ret = await swapTokenForEth(
+            } else if (buySymbol === 'ETH') {
+                ret = await erc20TokenTransact.swapTokenForEth(
                     web3,
                     {
-                        sellAddress: myAddress,
                         sellSymbol: sellSymbol,
                         sellAmount: sellAmount,
                         buySymbol: buySymbol,
@@ -322,24 +321,23 @@ class AccountService {
                     }
                 )
             } else {
-                ret = await swapTokenForToken(
+                ret = await erc20TokenTransact.swapTokenForToken(
                     web3,
                     {
-                        sellAddress: myAddress,
                         sellSymbol: sellSymbol,
                         sellAmount: sellAmount,
                         buySymbol: buySymbol,
                         privateKey: accountInfo.secret_keys['ETH'],
                         acceptableMinRate: acceptableMinRate,
                         deadline: deadline,
-                        signer: signer
+                        // signer: signer
                     }
                 )
             }
-            return resp.json(ret);
+            return ret;
         } catch (error) {
             let errorMessage = error.message.replace("Returned error: ", "");
-            return resp.json({ error: -201, data: "Error 10051: " + errorMessage });
+            return { error: -300, data: errorMessage };
         }
     }
 };
