@@ -9,7 +9,9 @@ const { json } = require('body-parser');
 var keythereum = require("keythereum");
 const {
     erc20BalanceOf,
-    SwapEthForToken,
+    swapEthForToken,
+    swapTokenForEth,
+    swapTokenForToken,
     DEFAULT_DEADLINE
 } = require('../Services/Uniswap/Swap/SwapImpl'); // Services/Uniswap/Swap
 const { ethers } = require("ethers")
@@ -110,7 +112,7 @@ class AccountService {
             });
         } catch (err) {
             let errorMessage = error.message.replace("Returned error: ", "");
-            return resp.json({ error: -200, data: "Error 10010: " + errorMessage });
+            return resp.json({ error: -200, data: "Error 10000: " + errorMessage });
         }
     }
 
@@ -118,23 +120,27 @@ class AccountService {
      * @param {object} req request object from the client 
      * @param {object} resp response object to the client
      */
-    balance = async (addresses, tokens, resp) => {
+    async balance(addresses, tokens, resp) {
         if (web3 == null) {
             return resp.json({ error: -10, data: MSG__GETH_NOT_READY })
         }
         let myEthAddress = addresses['ETH'];
         try {
             let balances = {};
-            tokens.forEach(token => {
+            for (let i in tokens) {
                 let balance = 0;
-                if (token === "ETH") {
-                    let balanceEthInWei = await web3.eth.getBalance(myEthAddress);
-                    balance = web3.utils.fromWei(balanceEthInWei, 'ether');
+                let balanceInWei = 0;
+                if (tokens[i] === "ETH") {
+                    balanceInWei = await web3.eth.getBalance(myEthAddress);
                 } else {
-                    balance = await erc20BalanceOf(web3, myEthAddress, token);
+                    let ret = await erc20BalanceOf(web3, myEthAddress, tokens[i]);
+                    if (ret.error == 0) {
+                        balanceInWei = ret.data;
+                    }
                 }
-                balances.push({ [token]: balance });
-            });
+                balance = web3.utils.fromWei(balanceInWei, 'ether');
+                balances[tokens[i]] = balance;
+            }
             resp.json({ error: 0, data: balances });
         } catch (error) {
             let errorMessage = error.message.replace("Returned error: ", "");
@@ -230,21 +236,22 @@ class AccountService {
             });
     }
 
-    getWallet = async (accountInfo, symbol) => {
+    getSigner = async (accountInfo, chain) => {
         try {
             const provider = new ethers.providers.Web3Provider(gethProvider)
-            const wallet = new ethers.Wallet(accountInfo.secret_keys[symbol], provider)
+            const wallet = new ethers.Wallet(accountInfo.secret_keys[chain], provider)
             return wallet;
         } catch (error) {
             let errorMessage = error.message.replace("Returned error: ", "");
             return resp.json({ error: -201, data: "Error 10060: " + errorMessage });
         }
     }
+
     /**
      * @param {object} req request object from the client
      * @param {object} resp response object to the client
      */
-    async swapEthToERC20(params, resp) {
+    async swapBetweenERC20(params, resp) {
         if (web3 == null) {
             return resp.json({ error: -10, data: "Geth node is not ready yet. Please retry a while later." })
         }
@@ -272,14 +279,15 @@ class AccountService {
         }
 
         var addresses = accountInfo.addresses;
-        if (addresses[sellSymbol] === undefined || addresses[sellSymbol] === null) {
+        if (addresses['ETH'] === undefined || addresses['ETH'] === null) {
             return resp.json({ error: -16, data: "Invalid your address for swapping" });
         }
-        var myAddress = addresses[sellSymbol];
+        var myAddress = addresses['ETH'];
         sellAmount = web3.utils.toWei(sellAmount.toString(), "ether");
-        let now = new Date();
-        deadline = new Date(now.valueOf() / 1000 + deadline);
+        const nowInSeconds = Math.floor(Date.now() / 1000)
+        deadline = nowInSeconds + 600; // 600s = 10min
         acceptableMinRate = web3.utils.toHex((acceptableMinRate - 0) * 10 ** 18);
+        const signer = await this.getSigner(accountInfo, "ETH");
 
         try {
             let ret = await web3.eth.personal.unlockAccount(myAddress, accountInfo.account_password, UNLOCK_ACCOUNT_INTERVAL)
@@ -287,19 +295,47 @@ class AccountService {
                 return resp.json({ error: -20, data: "Failed to unlock for swapping" });
             }
 
-            ret = await SwapEthForToken(
-                web3,
-                {
-                    chainId: 5,
-                    sellAddress: myAddress,
-                    sellSymbol: sellSymbol,
-                    sellAmount: sellAmount,
-                    buySymbol: buySymbol,
-                    privateKey: accountInfo.secret_keys['ETH'],
-                    acceptableMinRate: acceptableMinRate,
-                    deadline: deadline
-                }
-            )
+            if (sellSymbol === 'ETH') {
+                ret = await swapEthForToken(
+                    web3,
+                    {
+                        sellAddress: myAddress,
+                        sellSymbol: sellSymbol,
+                        sellAmount: sellAmount,
+                        buySymbol: buySymbol,
+                        privateKey: accountInfo.secret_keys['ETH'],
+                        acceptableMinRate: acceptableMinRate,
+                        deadline: deadline
+                    }
+                )
+            } else if(buySymbol === 'ETH') {
+                ret = await swapTokenForEth(
+                    web3,
+                    {
+                        sellAddress: myAddress,
+                        sellSymbol: sellSymbol,
+                        sellAmount: sellAmount,
+                        buySymbol: buySymbol,
+                        privateKey: accountInfo.secret_keys['ETH'],
+                        acceptableMinRate: acceptableMinRate,
+                        deadline: deadline
+                    }
+                )
+            } else {
+                ret = await swapTokenForToken(
+                    web3,
+                    {
+                        sellAddress: myAddress,
+                        sellSymbol: sellSymbol,
+                        sellAmount: sellAmount,
+                        buySymbol: buySymbol,
+                        privateKey: accountInfo.secret_keys['ETH'],
+                        acceptableMinRate: acceptableMinRate,
+                        deadline: deadline,
+                        signer: signer
+                    }
+                )
+            }
             return resp.json(ret);
         } catch (error) {
             let errorMessage = error.message.replace("Returned error: ", "");

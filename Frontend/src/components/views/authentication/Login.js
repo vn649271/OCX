@@ -170,7 +170,7 @@ export default class Login extends Component {
   }
 
   onKeyPressed(ev) {
-    this._onSubmit();
+    // this._onSubmit();
   }
 
   submitData = (params, token) => {
