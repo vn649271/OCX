@@ -185,7 +185,7 @@ class AccountController {
         if (addresses == undefined || addresses == null || addresses == {}) {
             return resp.json({ error: -4, data: "No account for you"});
         }
-        accountService.balance(addresses, ['ETH', 'UNI'], resp);
+        accountService.balance(addresses, ['ETH', 'UNI', 'DAI'], resp);
     }
 
     /**
@@ -307,7 +307,7 @@ class AccountController {
             if (buySymbol === 0) {
                 return resp.json({error: -6, data: "Invalid amount to exchange"});
             }
-            accountService.swapEthToERC20(
+            accountService.swapBetweenERC20(
                 {
                     accountInfo:        accountInfo,
                     sellSymbol:         sellSymbol,

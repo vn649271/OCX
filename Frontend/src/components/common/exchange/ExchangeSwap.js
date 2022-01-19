@@ -4,11 +4,12 @@ import {
 } from '../../../service/Account';
 import cake from '../assets/images/icons/cake.png';
 import SwapConfirmScene from '../../common/exchange/SwapConfirmScene';
+import DelayButton from '../../common/DelayButton';
 
 const SCENE_IDLE = 0,
     SCENE_CONFIRM_SWAP = 1;
-    // SCENE_DURING_SWAP = 2,
-    // SCENE_COMPLETE_SWAP = 3;
+// SCENE_DURING_SWAP = 2,
+// SCENE_COMPLETE_SWAP = 3;
 var self;
 
 export default class ExchangeSwap extends React.Component {
@@ -21,9 +22,11 @@ export default class ExchangeSwap extends React.Component {
             error: '',
             showModal: false,
             currentScene: SCENE_IDLE,
+            sell_token: 'DAI',
+            buy_token: 'ETH',
             input: {
-                fromAmount: '',
-                toAmount: ''
+                sellAmount: '',
+                buyAmount: ''
             },
         }
 
@@ -51,20 +54,29 @@ export default class ExchangeSwap extends React.Component {
         }
     }
 
-    onClickSwap() {
+    setSellAmount(amount) {
+        let input = this.state.input;
+        input.sellAmount = amount;
+        this.setState({ input: input });
+    }
+
+    onClickSwap(params, ev, btnCmpnt) {
+        this.inform("");
         // this.setState({ currentScene: SCENE_CONFIRM_SWAP });
-        // this.inform(this.state.input.fromAmount + ", " + this.state.input.toAmount);
+        // this.inform(this.state.input.sellAmount + ", " + this.state.input.buyAmount);
         swap({
             reqParam: {
                 userToken: this.userToken,
-                sellSymbol: 'ETH',
-                sellAmount: this.state.input.fromAmount,
-                buySymbol: 'UNI',
+                sellSymbol: this.state.sell_token,
+                sellAmount: this.state.input.sellAmount,
+                buySymbol: this.state.buy_token,
             },
             onComplete: resp => {
+                btnCmpnt.stopTimer();
+                self.setSellAmount('');
                 var errorMsg = null;
                 if (resp.error === 0) {
-                    self.inform("Swap success");
+                    self.inform("Swap success: ", resp.data.transactionHash);
                     console.log("Swap success: ", resp.data);
                     return;
                 } else if (resp.error === -100) {
@@ -75,8 +87,9 @@ export default class ExchangeSwap extends React.Component {
                 self.warning(errorMsg);
             },
             onFailed: error => {
+                btnCmpnt.stopTimer();
                 self.warning(error);
-            }            
+            }
         });
     }
 
@@ -96,7 +109,7 @@ export default class ExchangeSwap extends React.Component {
                                     <path d="M5.01656 8.00006L3.79256 9.23256L2.56006 8.00006L3.79256 6.76756L5.01656 8.00006ZM8.00006 5.01656L10.1081 7.12456L11.3406 5.89206L9.23256 3.79256L8.00006 2.56006L6.76756 3.79256L4.66806 5.89206L5.90056 7.12456L8.00006 5.01656ZM12.2076 6.76756L10.9836 8.00006L12.2161 9.23256L13.4401 8.00006L12.2076 6.76756ZM8.00006 10.9836L5.89206 8.87556L4.66806 10.1081L6.77606 12.2161L8.00006 13.4401L9.23256 12.2076L11.3406 10.0996L10.1081 8.87556L8.00006 10.9836ZM8.00006 9.23256L9.23256 8.00006L8.00006 6.76756L6.76756 8.00006L8.00006 9.23256Z" fill="#FFFDFA">
                                     </path>
                                 </svg>
-                                <p className="main-font font-18 main-color mx-3">ETH</p>
+                                <p className="main-font font-18 main-color mx-3">{ this.state.sell_token }</p>
                                 <svg viewBox="0 0 24 24" color="text" width="20px" xmlns="http://www.w3.org/2000/svg" className="sc-bdnxRM kDWlca">
                                     <path d="M8.11997 9.29006L12 13.1701L15.88 9.29006C16.27 8.90006 16.9 8.90006 17.29 9.29006C17.68 9.68006 17.68 10.3101 17.29 10.7001L12.7 15.2901C12.31 15.6801 11.68 15.6801 11.29 15.2901L6.69997 10.7001C6.30997 10.3101 6.30997 9.68006 6.69997 9.29006C7.08997 8.91006 7.72997 8.90006 8.11997 9.29006Z"></path>
                                 </svg>
@@ -106,8 +119,8 @@ export default class ExchangeSwap extends React.Component {
                                     type="text"
                                     className="w-full text-right border border-gray-300 main-radius p-5 font-18 main-font focus:outline-none focus-visible:outline-none bg-gray-100"
                                     placeholder="0.0"
-                                    name='fromAmount'
-                                    value={this.state.input.fromAmount}
+                                    name='sellAmount'
+                                    value={this.state.input.sellAmount}
                                     onChange={this.handleInputChange}
                                 />
                             </div>
@@ -120,7 +133,7 @@ export default class ExchangeSwap extends React.Component {
                         <div>
                             <div className="flex items-center hover-transition ml-5 cursor-pointer">
                                 <img src={cake} alt="" width={24} />
-                                <p className="main-font font-18 main-color mx-3">UNI</p>
+                                <p className="main-font font-18 main-color mx-3">{ this.state.buy_token }</p>
                                 <svg viewBox="0 0 24 24" color="text" width="20px" xmlns="http://www.w3.org/2000/svg" className="sc-bdnxRM kDWlca">
                                     <path d="M8.11997 9.29006L12 13.1701L15.88 9.29006C16.27 8.90006 16.9 8.90006 17.29 9.29006C17.68 9.68006 17.68 10.3101 17.29 10.7001L12.7 15.2901C12.31 15.6801 11.68 15.6801 11.29 15.2901L6.69997 10.7001C6.30997 10.3101 6.30997 9.68006 6.69997 9.29006C7.08997 8.91006 7.72997 8.90006 8.11997 9.29006Z"></path>
                                 </svg>
@@ -130,15 +143,20 @@ export default class ExchangeSwap extends React.Component {
                                     type="text"
                                     className="w-full text-right border border-gray-300 main-radius p-5 font-18 main-font focus:outline-none focus-visible:outline-none bg-gray-100"
                                     placeholder="0.0"
-                                    name='toAmount'
-                                    value={this.state.input.toAmount}
+                                    name='buyAmount'
+                                    value={this.state.input.buyAmount}
                                     onChange={this.handleInputChange}
                                 />
                             </div>
                         </div>
                     </div>
                     <div className="px-5 pt-10 xl:pt-20">
-                        <div className="main-btn button-bg text-white py-5 text-center hover-transition mt-5" onClick={this.onClickSwap}>Swap</div>
+                        <DelayButton
+                            captionInDelay="Swapping"
+                            caption="Swap"
+                            maxDelayInterval={60}
+                            onClickButton={this.onClickSwap}
+                            onClickButtonParam={null} />
                     </div>
                 </div>
                 <div className={this.state.currentScene === SCENE_CONFIRM_SWAP ? "shownBox" : "hiddenBox"}>

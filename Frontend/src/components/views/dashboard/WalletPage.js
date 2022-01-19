@@ -565,11 +565,15 @@ class WalletPage extends Component {
                                                 null :
                                             null}
                                     </p>
+                                    Balance: 
                                     <p className="account-balance-box main-font text-black-400 mb-100 font-20">
-                                        Balance: {this.state.balance['ETH']} ETH
+                                        {this.state.balance['ETH']} ETH
                                     </p>
                                     <p className="account-balance-box main-font text-black-400 mb-100 font-20">
-                                        Balance: {this.state.balance['UNI']} UNI
+                                        {this.state.balance['UNI']} UNI
+                                    </p>
+                                    <p className="account-balance-box main-font text-black-400 mb-100 font-20">
+                                        {this.state.balance['DAI']} DAI
                                     </p>
                                 </div>
                             </div>
