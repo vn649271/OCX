@@ -61,13 +61,12 @@ async function swapTokenForEth(web3, params) {
         const erc20TokenAddress = GoerliTokenAddress[params.sellSymbol];
         const path = [erc20TokenAddress, WETH_ADDRESS];
         const sellAmount = web3.utils.toHex(params.sellAmount);
+
         let ret = null;
         const tokenContract = new web3.eth.Contract(Erc20TokenABI, erc20TokenAddress)
-        // let sellTokenApproveFunc = await tokenContract.methods.approve(erc20TokenAddress, params.sellAmount);
         ret = await tokenContract.methods.approve(UniswapV2Router02Address, sellAmount)
         .send({
             from: params.sellAddress,
-        //     to: UniswapV2Router02Address
         });
 
         // const amountsOut = await uniRouter02.methods.getAmountsOut(sellAmount, path).send({
@@ -85,8 +84,6 @@ async function swapTokenForEth(web3, params) {
         )
         .send({
             from: params.sellAddress,
-            // to: params.sellAddress,
-            // value: sellAmount
         })
         console.log(`Transaction hash: ${ret.transactionHash}`);
         return { error: 0, data: ret };
@@ -106,18 +103,25 @@ async function swapTokenForToken(web3, params) {
         const sellTokenAddress = GoerliTokenAddress[params.sellSymbol];
         const buyTokenAddress = GoerliTokenAddress[params.buySymbol];
         const path = [sellTokenAddress, buyTokenAddress];
-        const uniRouter02 = new web3.eth.Contract(IRouter.abi, UniswapV2Router02Address); //, params.signer
         const sellAmount = web3.utils.toHex(params.sellAmount);
 
-        const amountsOut = await uniRouter02.methods.getAmountsOut(sellAmount, path).send({
+        let ret = null;
+        const tokenContract = new web3.eth.Contract(Erc20TokenABI, sellTokenAddress)
+        ret = await tokenContract.methods.approve(UniswapV2Router02Address, sellAmount)
+        .send({
             from: params.sellAddress,
-            value: sellAmount
         });
-        const amountOutMin = amountsOut[1].mul(web3.utils.toBN(100 - SLIPPAGE_MAX)).div(web3.utils.toBN(100));
 
-        const ret = await uniRouter02.methods.swapExactTokensForTokens(
+        // const amountsOut = await uniRouter02.methods.getAmountsOut(sellAmount, path).send({
+        //     from: params.sellAddress,
+        //     value: sellAmount
+        // });
+        // const amountOutMin = amountsOut[1].mul(web3.utils.toBN(100 - SLIPPAGE_MAX)).div(web3.utils.toBN(100));
+
+        const uniRouter02 = new web3.eth.Contract(IRouter.abi, UniswapV2Router02Address); //, params.signer
+        ret = await uniRouter02.methods.swapExactTokensForTokens(
             sellAmount,
-            amountOutMin,
+            0, // amountOutMin,
             path,
             params.sellAddress,
             params.deadline
