@@ -27,7 +27,7 @@ const GoerliTokenAddress = {
     "WETH": "0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6",
     "UNI": "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
     // https://explorer.bitquery.io/ru/goerli/token/0x5d3a895cbb0b04e2ee5348ac42fd7da24c1fb4f6
-    "DAI": "0x5d3a895cbb0b04e2ee5348ac42fd7da24c1fb4f6"
+    "DAI": "0xdc31ee1784292379fbb2964b3b9c4124d8f89c60"
 }
 
 module.exports = {

@@ -4,116 +4,148 @@ import { BACKEND_BASE_URL } from "../Contants";
 const GET_REQ = 0;
 const POST_REQ = 1;
 
-function _sendRequest(params, reqType = POST_REQ) {
-    var reqCall = axios.post(params.url, params.reqParam); // Default reqType = POST_REQ
-    if (reqType === GET_REQ) {
-        reqCall = axios.get(params.url, params.reqParam);
+export default function AccountService() {
+
+    // AccountService = () => {}
+
+    this._sendRequest = async (params, reqType = POST_REQ) => {
+        var response = null;
+        try {
+            if (reqType === POST_REQ) {
+                response = await axios.post(params.url, params.data); // Default reqType = POST_REQ
+            } else if (reqType === GET_REQ) {
+                response = await axios.get(params.url, params.data);
+            }
+            let ret = response ? response.data ? response.data : null : null;
+            if (ret === null) {
+                ret = { error: -1000 }
+            }
+            return ret;
+        } catch (error) {
+            console.log("Failed to getBalance(): error: ", error)
+            return { error: -2000, data: error }
+        }
     }
-    reqCall.then(response => {
-        let ret = response ? response.data ? response.data: null: null;
-        if (ret === null) {
-            ret = { error: -100 }
-        }
-        if (params.onComplete) {
-            params.onComplete(ret);
-        }        
-    })
-    .catch(error => {
-        console.log("Failed to getBalance(): error: ", error)
-        if (params.onFailed) {
-            params.onFailed(error);
-        }
-    })
-}
 
-/**
- * Create a new account.
- * @param {string} userToken    user token
- * @param {string} account      account address
- * 
- * @returns new account address
- */
-export const createAccount = (params) => {
-    params.url = BACKEND_BASE_URL + "/account/create";
-    _sendRequest(params);
-}
+    /**
+     * Create a new account.
+     * @param {string} userToken    user token
+     * @param {string} account      account address
+     * 
+     * @returns new account address
+     */
+    this.createAccount = async (params) => {
+        let _params = {};
+        _params['data'] = params;
+        _params['url'] = BACKEND_BASE_URL + "/account/create";
+        return await this._sendRequest(_params);
+    }
 
-/**
- * Recovery exist account.
- * @param {string} userToken    user token
- * @param {string} account      account address
- * 
- * @returns new account address
- */
-export const restoreAccount = (params) => {
-    params.url = BACKEND_BASE_URL + "/account/restore";
-    _sendRequest(params);
-}
+    /**
+     * Recovery exist account.
+     * @param {string} userToken    user token
+     * @param {string} account      account address
+     * 
+     * @returns new account address
+     */
+    this.restoreAccount = async (params) => {
+        let _params = {};
+        _params['data'] = params;
+        _params['url'] = BACKEND_BASE_URL + "/account/restore";
+        return await this._sendRequest(_params);
+    }
 
-/**
- * Lock an account.
- * @param {string} userToken    user token
- * 
- * @returns locked status
- */
-export const lockAccount = (params) => {
-    params.url = BACKEND_BASE_URL + "/account/lock";
-    _sendRequest(params);
-}
+    /**
+     * Lock an account.
+     * @param {string} userToken    user token
+     * 
+     * @returns locked status
+     */
+    this.lockAccount = async (params) => {
+        let _params = {};
+        _params['data'] = params;
+        _params['url'] = BACKEND_BASE_URL + "/account/lock";
+        return await this._sendRequest(_params);
+    }
 
-/**
- * Unlock an account.
- * @param {string} userToken    user token
- * 
- * @returns unlocked status
- */
-export const unlockAccount = (params) => {
-    params.url = BACKEND_BASE_URL + "/account/unlock";
-    _sendRequest(params);
-}
+    /**
+     * Unlock an account.
+     * @param {string} userToken    user token
+     * 
+     * @returns unlocked status
+     */
+    this.unlockAccount = async (params) => {
+        let _params = {};
+        _params['data'] = params;
+        _params['url'] = BACKEND_BASE_URL + "/account/unlock";
+        return await this._sendRequest(_params);
+    }
 
-export const connectAccount = (params) => {
-    params.url = BACKEND_BASE_URL + "/account/connect";
-    _sendRequest(params);
-}
+    this.connectAccount = async (params) => {
+        let _params = {};
+        _params['data'] = params;
+        _params['url'] = BACKEND_BASE_URL + "/account/connect";
+        return await this._sendRequest(_params);
+    }
 
-/**
- * Connect to specified account.
- * @param {string} userToken    user token
- * @param {string} account      account address
- * 
- * @returns 
- */
-export const getBalance = (params) => {
-    params.url = BACKEND_BASE_URL + "/account/balance";
-    _sendRequest(params);
-}
+    /**
+     * Connect to specified account.
+     * @param {string} userToken    user token
+     * @param {string} account      account address
+     * 
+     * @returns 
+     */
+    this.getBalance = async (params) => {
+        let _params = {};
+        _params['data'] = params;
+        _params['url'] = BACKEND_BASE_URL + "/account/balance";
+        return await this._sendRequest(_params);
+    }
 
-/**
- * Send specified symbol of cryptocurrency from an account to another one.
- * @param {string} userToken    user token
- * @param {string} symbol       Cryptocurrency to send
- * @param {string} from         Account address to send from
- * @param {string} to           Account address to send to
- * @param {string} amount       Amount to send
- * @param {string} onComplete   Callback function when complete request
- * @param {string} onFailed     Callback function when failed request
- * 
- * @returns 
- */
-export const sendCryptoCurrency = (params) => {
-    params.url = BACKEND_BASE_URL + "/account/send";
-    _sendRequest(params);
-}
+    /**
+     * Send specified symbol of cryptocurrency from an account to another one.
+     * @param {string} userToken    user token
+     * @param {string} symbol       Cryptocurrency to send
+     * @param {string} from         Account address to send from
+     * @param {string} to           Account address to send to
+     * @param {string} amount       Amount to send
+     * @param {string} onComplete   Callback function when complete request
+     * @param {string} onFailed     Callback function when failed request
+     * 
+     * @returns 
+     */
+    this.sendCryptoCurrency = async (params) => {
+        let _params = {};
+        _params['data'] = params;
+        _params['url'] = BACKEND_BASE_URL + "/account/send";
+        return await this._sendRequest(_params);
+    }
 
-/**
- * Connect to specified account.
- * @param {string} userToken    user token
- * @param {string} account      account address
- * 
- * @returns 
- */
-export const swap = (params) => {
-    params.url = BACKEND_BASE_URL + "/account/swap";
-    _sendRequest(params);
+    /**
+     * Connect to specified account.
+     * @param {string} userToken    user token
+     * @param {string} account      account address
+     * 
+     * @returns 
+     */
+    this.swap = async (params) => {
+        let _params = {};
+        _params['data'] = params;
+        _params['url'] = BACKEND_BASE_URL + "/account/swap";
+        return await this._sendRequest(_params);
+    }
+
+    /**
+     * Connect to specified account.
+     * @param {string} userToken    user token
+     * @param {string} account      account address
+     * 
+     * @returns 
+     */
+    this.getTokenList = async (params) => {
+        let _params = {};
+        _params['data'] = params;
+        _params['url'] = BACKEND_BASE_URL + "/account/tokenList";
+        return await this._sendRequest(_params);
+    }
 }

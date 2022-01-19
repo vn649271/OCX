@@ -1,7 +1,5 @@
 import React from "react";
-import {
-    swap
-} from '../../../service/Account';
+import AccountService from '../../../service/Account';
 import cake from '../assets/images/icons/cake.png';
 import SwapConfirmScene from '../../common/exchange/SwapConfirmScene';
 import DelayButton from '../../common/DelayButton';
@@ -11,6 +9,7 @@ const SCENE_IDLE = 0,
 // SCENE_DURING_SWAP = 2,
 // SCENE_COMPLETE_SWAP = 3;
 var self;
+const accountService = new AccountService();
 
 export default class ExchangeSwap extends React.Component {
     constructor(props) {
@@ -23,7 +22,7 @@ export default class ExchangeSwap extends React.Component {
             showModal: false,
             currentScene: SCENE_IDLE,
             sell_token: 'DAI',
-            buy_token: 'ETH',
+            buy_token: 'UNI',
             input: {
                 sellAmount: '',
                 buyAmount: ''
@@ -39,6 +38,16 @@ export default class ExchangeSwap extends React.Component {
         this.handleInputChange = this.handleInputChange.bind(this);
     }
 
+    componentDidMount() {
+
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.userToken !== this.props.userToken) {
+            this.userToken = this.props.userToken;
+        }
+    }
+
     handleInputChange = ev => {
         this.warning('');
         let input = this.state.input;
@@ -46,12 +55,6 @@ export default class ExchangeSwap extends React.Component {
         this.setState({
             input
         });
-    }
-
-    componentDidUpdate(prevProps) {
-        if (prevProps.userToken !== this.props.userToken) {
-            this.userToken = this.props.userToken;
-        }
     }
 
     setSellAmount(amount) {
@@ -64,7 +67,7 @@ export default class ExchangeSwap extends React.Component {
         this.inform("");
         // this.setState({ currentScene: SCENE_CONFIRM_SWAP });
         // this.inform(this.state.input.sellAmount + ", " + this.state.input.buyAmount);
-        swap({
+        accountService.swap({
             reqParam: {
                 userToken: this.userToken,
                 sellSymbol: this.state.sell_token,
@@ -76,10 +79,10 @@ export default class ExchangeSwap extends React.Component {
                 self.setSellAmount('');
                 var errorMsg = null;
                 if (resp.error === 0) {
-                    self.inform("Swap success: ", resp.data.transactionHash);
+                    self.inform("Swap success: " + resp.data.transactionHash);
                     console.log("Swap success: ", resp.data);
                     return;
-                } else if (resp.error === -100) {
+                } else if (resp.error === -1000) {
                     errorMsg = "No response for get balance";
                 } else if (resp.error !== 0) {
                     errorMsg = resp.data
@@ -101,15 +104,68 @@ export default class ExchangeSwap extends React.Component {
                         <p className="main-font font-30 main-color text-center ">Swap</p>
                         <p className="main-font font-16 main-color text-center">Trade tokens in an instant</p>
                     </div>
+
                     <div className="swap-card_body px-10 pt-10 xl:pt-20">
+                        <div class="flex justify-center">
+                            <div>
+                                <div class="dropdown relative">
+                                    <button
+                                        class="dropdown-toggle px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0           active:bg-blue-800 active:shadow-lg active:text-white transition duration-150 ease-in-out flex items-center whitespace-nowrap"
+                                        type="button"
+                                        id="dropdownMenuButton1"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false"
+                                    >
+                                        Dropdown button
+                                        <svg
+                                            aria-hidden="true"
+                                            focusable="false"
+                                            data-prefix="fas"
+                                            data-icon="caret-down"
+                                            class="w-2 ml-2"
+                                            role="img"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 320 512"
+                                        >
+                                            <path
+                                                fill="currentColor"
+                                                d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                                            ></path>
+                                        </svg>
+                                    </button>
+                                    <ul
+                                        class="dropdown-menu min-w-max absolute hidden bg-white text-base z-50 float-left py-2 list-none text-left rounded-lg shadow-lg mt-1 hidden m-0 bg-clip-padding border-none"
+                                        aria-labelledby="dropdownMenuButton1"
+                                    >
+                                        <li>
+                                            <a
+                                                class="dropdown-item text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-gray-700 hover:bg-gray-100"
+                                                href="#"
+                                            >Action</a
+                                            >
+                                        </li>
+                                        <li>
+                                            <a
+                                                class="dropdown-item text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-gray-700 hover:bg-gray-100" href="#"
+                                            >Another action</a
+                                            >
+                                        </li>
+                                        <li>
+                                            <a
+                                                class="dropdown-item text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-gray-700 hover:bg-gray-100"
+                                                href="#"
+                                            >Something else here</a
+                                            >
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                         <div>
                             <div className="flex items-center hover-transition ml-5 cursor-pointer">
-                                <svg viewBox="0 0 16 16" width="24px" color="text" xmlns="http://www.w3.org/2000/svg" className="sc-bdnxRM kDWlca">
-                                    <circle cx="8" cy="8" r="8" fill="#F0B90B"></circle>
-                                    <path d="M5.01656 8.00006L3.79256 9.23256L2.56006 8.00006L3.79256 6.76756L5.01656 8.00006ZM8.00006 5.01656L10.1081 7.12456L11.3406 5.89206L9.23256 3.79256L8.00006 2.56006L6.76756 3.79256L4.66806 5.89206L5.90056 7.12456L8.00006 5.01656ZM12.2076 6.76756L10.9836 8.00006L12.2161 9.23256L13.4401 8.00006L12.2076 6.76756ZM8.00006 10.9836L5.89206 8.87556L4.66806 10.1081L6.77606 12.2161L8.00006 13.4401L9.23256 12.2076L11.3406 10.0996L10.1081 8.87556L8.00006 10.9836ZM8.00006 9.23256L9.23256 8.00006L8.00006 6.76756L6.76756 8.00006L8.00006 9.23256Z" fill="#FFFDFA">
-                                    </path>
-                                </svg>
-                                <p className="main-font font-18 main-color mx-3">{ this.state.sell_token }</p>
+                                <img width="24px" src="https://raw.githubusercontent.com/compound-finance/token-list/master/assets/asset_DAI.svg" color="text" xmlns="http://www.w3.org/2000/svg" className="sc-bdnxRM kDWlca">
+                                </img>
+                                <p className="main-font font-18 main-color mx-3">{this.state.sell_token}</p>
                                 <svg viewBox="0 0 24 24" color="text" width="20px" xmlns="http://www.w3.org/2000/svg" className="sc-bdnxRM kDWlca">
                                     <path d="M8.11997 9.29006L12 13.1701L15.88 9.29006C16.27 8.90006 16.9 8.90006 17.29 9.29006C17.68 9.68006 17.68 10.3101 17.29 10.7001L12.7 15.2901C12.31 15.6801 11.68 15.6801 11.29 15.2901L6.69997 10.7001C6.30997 10.3101 6.30997 9.68006 6.69997 9.29006C7.08997 8.91006 7.72997 8.90006 8.11997 9.29006Z"></path>
                                 </svg>
@@ -133,7 +189,7 @@ export default class ExchangeSwap extends React.Component {
                         <div>
                             <div className="flex items-center hover-transition ml-5 cursor-pointer">
                                 <img src={cake} alt="" width={24} />
-                                <p className="main-font font-18 main-color mx-3">{ this.state.buy_token }</p>
+                                <p className="main-font font-18 main-color mx-3">{this.state.buy_token}</p>
                                 <svg viewBox="0 0 24 24" color="text" width="20px" xmlns="http://www.w3.org/2000/svg" className="sc-bdnxRM kDWlca">
                                     <path d="M8.11997 9.29006L12 13.1701L15.88 9.29006C16.27 8.90006 16.9 8.90006 17.29 9.29006C17.68 9.68006 17.68 10.3101 17.29 10.7001L12.7 15.2901C12.31 15.6801 11.68 15.6801 11.29 15.2901L6.69997 10.7001C6.30997 10.3101 6.30997 9.68006 6.69997 9.29006C7.08997 8.91006 7.72997 8.90006 8.11997 9.29006Z"></path>
                                 </svg>
