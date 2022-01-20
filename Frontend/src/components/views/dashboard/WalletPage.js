@@ -170,6 +170,9 @@ class WalletPage extends Component {
     }
 
     async startBalanceMonitor() {
+        if (this.balanceTimer !== null || this.state.locked !== false) {
+            return;
+        }
         this.balanceTimer = setInterval(
             async function () {
                 console.log("balance function(): user_mode=", self.state.user_mode);
