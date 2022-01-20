@@ -74,3 +74,12 @@
   + Create Account
     - [FIXED] New account address is not shown after generated and unlocked
 
+-----------------------------------------------------------
+
+2022-01-19 (Recheck all - UI and Functionanities)
+ + Main page
+   - Fixed font-size and responsive on all devices.
+ + Athentication part
+   - On signup page - country code part
+	* When deployed on server, this position change.
+	* When login, the login button doesn't work because any event.

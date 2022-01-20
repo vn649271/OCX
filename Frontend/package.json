@@ -10,7 +10,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.16",
-    "@headlessui/react": "^1.4.2",
+    "@headlessui/react": "^1.4.3",
     "@heroicons/react": "^1.0.5",
     "@hookform/resolvers": "^2.8.4",
     "@material-tailwind/react": "^0.3.4",
