@@ -7,6 +7,7 @@ import QRCode from "react-qr-code";
 import { BALANCE_CHECKING_INTERVAL } from "../../../Contants";
 import PassphraseImportDialog from '../../common/PassphraseImportDialog';
 import PasscodeConfirmDialog from '../../common/PasscodeConfirmDialog';
+import SelectDropdown from '../../common/SelectDropdown';
 import Button from "@material-tailwind/react/Button";
 import randomWords from 'random-words';
 
@@ -139,22 +140,22 @@ class WalletPage extends Component {
         var errorMsg = null;
         if (resp.error !== undefined) {
             switch (resp.error) {
-            case 0:
-                self.setState({ accounts: resp.data.addresses });
-                self.setState({ user_mode: USER_WITH_ACCOUNT });
-                self.setState({ locked: resp.data.locked });
-                this.startBalanceMonitor();
-                this.onGeneratePassphrase(null);
-                return;
-            case 51:
-                self.setState({ user_mode: NEW_USER });
-                return;
-            case -1000:
-                errorMsg = "No response for get balance";
-                break;
-            default:
-                errorMsg = resp.data
-                break;
+                case 0:
+                    self.setState({ accounts: resp.data.addresses });
+                    self.setState({ user_mode: USER_WITH_ACCOUNT });
+                    self.setState({ locked: resp.data.locked });
+                    this.startBalanceMonitor();
+                    this.onGeneratePassphrase(null);
+                    return;
+                case 51:
+                    self.setState({ user_mode: NEW_USER });
+                    return;
+                case -1000:
+                    errorMsg = "No response for get balance";
+                    break;
+                default:
+                    errorMsg = resp.data
+                    break;
             }
         } else {
             errorMsg = "Invalid response for connecting to my account"
@@ -693,6 +694,9 @@ class WalletPage extends Component {
                     show={this.state.show_passcode_confirm_dialog}
                     onClose={this.onClosePasscodeConfirmDialog}
                 />
+                <div className='w-1/2'>
+                    <SelectDropdown />
+                </div>
             </>
         );
     }
