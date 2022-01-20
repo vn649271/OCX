@@ -7,6 +7,8 @@ const net = require('net');
 var fs = require("fs");
 const { json } = require('body-parser');
 var keythereum = require("keythereum");
+const axios = require('axios');
+
 // const {
 //     erc20BalanceOf,
 //     swapEthForToken,
@@ -22,6 +24,23 @@ const { getTokenInfo } = require('erc20-token-list');
 const UNLOCK_ACCOUNT_INTERVAL = process.env.UNLOCK_ACCOUNT_INTERVAL || 15000; // 15s
 const CHAIN_NAME = process.env.CHAIN_NAME || "goerli";
 const CHAIN_ID = process.env.CHAIN_ID || 5;
+
+var gTokenList = null;
+const ALL_TOKEN_INFO_URL = "https://tokens.coingecko.com/uniswap/all.json";
+async function getTokenList() {
+    try {
+        const response = await axios.get(ALL_TOKEN_INFO_URL);
+        if (response.status !== 200) {
+            console.error("Failed to get token list");
+            return;
+        }
+        gTokenList = response.data.tokens;
+        console.log(response);
+    } catch (error) {
+        console.error(error);
+    }
+}
+getTokenList();
 
 const MSG__GETH_NOT_READY = "Geth node is not ready yet. Please retry a while later.";
 
@@ -123,15 +142,42 @@ class AccountService {
             return { error: -200, data: null };
         }
         var tokenInfoList = [];
+        // ./node_modules/crypto-icons-plus-<size_of_icon>/src/<crypto_slug>.png
+        // First, get ERC20 token list
+
         symbolList.forEach(symbol => {
-            let tokenInfo = getTokenInfo(symbol);
+            let tokenInfo = {};
+            switch (symbol) {
+                case "BTC":
+                    tokenInfo = {
+                        symbol: "BTC",
+                        logo: "./node_modules/crypto-icons-plus-64/src/bitcoin.png"
+                    }
+                    break;
+                case "ETH":
+                    tokenInfo = {
+                        symbol: "ETC",
+                        logo: "./node_modules/crypto-icons-plus-64/src/ethereum.png"
+                    }
+                    break;
+                case "UNI":
+                    let _tokenInfo = getTokenInfo(symbol);
+                    tokenInfo = {
+                        symbol: "ETC",
+                        logo: "./node_modules/crypto-icons-plus-64/src/ethereum.png"
+                    }
+                    break;
+            }
             if (tokenInfo === null) {
                 return { error: -201, data: symbol };
             }
             if (!tokenInfo.logo.src) {
                 tokenInfo.logo.src = "https://raw.githubusercontent.com/compound-finance/token-list/master/assets/asset_" + symbol + ".svg";
             }
-            tokenInfoList.push(tokenInfo);
+            tokenInfoList.push({
+                symbol: tokenInfo.symbol,
+                logo: tokenInfo.logo.src,
+            });
         });
         return { error: 0, data: tokenInfoList }
     }
@@ -288,7 +334,7 @@ class AccountService {
         const nowInSeconds = Math.floor(Date.now() / 1000)
         deadline = nowInSeconds + 600; // 600s = 10min
         acceptableMinRate = web3.utils.toHex((acceptableMinRate - 0) * 10 ** 18);
-        
+
         try {
             // const signer = await this._getSigner(accountInfo, "ETH");
             let ret = await web3.eth.personal.unlockAccount(myAddress, accountInfo.account_password, UNLOCK_ACCOUNT_INTERVAL)

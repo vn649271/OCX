@@ -75,7 +75,7 @@ class WalletPage extends Component {
             show_passcode_confirm_dialog: false,
             loading: false,
             show_passphrase: false,
-            token_list: null
+            token_info_list: null
         }
 
         this.userToken = null;
@@ -130,8 +130,7 @@ class WalletPage extends Component {
             return;
         }
         console.log("''''''''''''''''''''''''''''''", ret.data);
-        let tokenList = this.buildTokenList(ret.data);
-        this.setState({ token_list: tokenList });
+        this.setState({token_info_list: ret.data});
 
         // Try to connect to my account
         let resp = await accountService.connectAccount({
@@ -506,7 +505,7 @@ class WalletPage extends Component {
                     <p className="account-balance-box main-font text-red-400 mb-100 font-16">{this.state.error}</p>
                     <p className="help-block main-font text-green-400 font-16">{this.state.info}</p>
                     <div>
-                        {this.state.token_list}
+                        {/* {this.state.token_info_list} */}
                     </div>
                     <div className={this.state.user_mode === USER_WITH_ACCOUNT ? 'shownBox' : 'hiddenBox'}>
                         <div className={!this.state.locked ? 'shownBox' : 'hiddenBox'}>
