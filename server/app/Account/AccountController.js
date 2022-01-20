@@ -253,7 +253,7 @@ class AccountController {
             return resp.json({ error: -1, data: "Invalid request" });
         }
         try {
-            let ret = await accountService.getTokenInfoList(["UNI", "DAI"]);
+            let ret = await accountService.getTokenInfoList(["BTC", "ETH", "UNI", "DAI"]);
             return resp.json(ret);
         } catch (error) {
             let errorMessage = error.message.replace("Returned error: ", "");
