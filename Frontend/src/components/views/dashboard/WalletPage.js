@@ -109,6 +109,7 @@ class WalletPage extends Component {
         this.setEncryptKey = this.setEncryptKey.bind(this);
         this.onSelectTab = this.onSelectTab.bind(this);
         this.startBalanceMonitor = this.startBalanceMonitor.bind(this);
+        this._startBalanceMonitor = this._startBalanceMonitor.bind(this);
         this.buildTokenList = this.buildTokenList.bind(this);
     }
 
@@ -121,7 +122,6 @@ class WalletPage extends Component {
         this.userToken = localStorage.getItem("userToken");
         this.encryptKey = localStorage.getItem("encryptKey");
         this.setEncryptKey(this.encryptKey);
-        this.startBalanceMonitor();
         let ret = await accountService.getTokenList({
             userToken: self.userToken
         });
@@ -140,21 +140,22 @@ class WalletPage extends Component {
         var errorMsg = null;
         if (resp.error !== undefined) {
             switch (resp.error) {
-                case 0:
-                    self.setState({ accounts: resp.data.addresses });
-                    self.setState({ user_mode: USER_WITH_ACCOUNT });
-                    self.setState({ locked: resp.data.locked });
-                    this.onGeneratePassphrase(null);
-                    return;
-                case 51:
-                    self.setState({ user_mode: NEW_USER });
-                    return;
-                case -1000:
-                    errorMsg = "No response for get balance";
-                    break;
-                default:
-                    errorMsg = resp.data
-                    break;
+            case 0:
+                self.setState({ accounts: resp.data.addresses });
+                self.setState({ user_mode: USER_WITH_ACCOUNT });
+                self.setState({ locked: resp.data.locked });
+                this.startBalanceMonitor();
+                this.onGeneratePassphrase(null);
+                return;
+            case 51:
+                self.setState({ user_mode: NEW_USER });
+                return;
+            case -1000:
+                errorMsg = "No response for get balance";
+                break;
+            default:
+                errorMsg = resp.data
+                break;
             }
         } else {
             errorMsg = "Invalid response for connecting to my account"
@@ -169,34 +170,33 @@ class WalletPage extends Component {
         }
     }
 
+    async _startBalanceMonitor() {
+        console.log("balance function(): user_mode=", self.state.user_mode);
+        if (self.state.user_mode !== USER_WITH_ACCOUNT) {
+            return;
+        }
+        let resp = await accountService.getBalance({
+            userToken: self.userToken
+        });
+        var errorMsg = null;
+        if (resp.error === 0) {
+            for (let i in resp.data) {
+                self.setBalanceInUI(i, (resp.data[i] - 0).toFixed(4));
+            }
+            return;
+        } else if (resp.error === -1000) {
+            errorMsg = "No response for get balance";
+        } else if (resp.error !== 0) {
+            errorMsg = resp.data
+        }
+        self.warning(errorMsg);
+    }
+
     async startBalanceMonitor() {
         if (this.balanceTimer !== null || this.state.locked !== false) {
             return;
         }
-        this.balanceTimer = setInterval(
-            async function () {
-                console.log("balance function(): user_mode=", self.state.user_mode);
-                if (self.state.user_mode !== USER_WITH_ACCOUNT) {
-                    return;
-                }
-                let resp = await accountService.getBalance({
-                    userToken: self.userToken
-                });
-                var errorMsg = null;
-                if (resp.error === 0) {
-                    for (let i in resp.data) {
-                        self.setBalanceInUI(i, (resp.data[i] - 0).toFixed(4));
-                    }
-                    return;
-                } else if (resp.error === -1000) {
-                    errorMsg = "No response for get balance";
-                } else if (resp.error !== 0) {
-                    errorMsg = resp.data
-                }
-                self.warning(errorMsg);
-            },
-            BALANCE_CHECKING_INTERVAL
-        );
+        this.balanceTimer = setInterval(this._startBalanceMonitor, BALANCE_CHECKING_INTERVAL);
     }
 
     setEncryptKey(encryptKey) {
