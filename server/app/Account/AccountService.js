@@ -8,14 +8,6 @@ var fs = require("fs");
 const { json } = require('body-parser');
 var keythereum = require("keythereum");
 const axios = require('axios');
-
-// const {
-//     erc20BalanceOf,
-//     swapEthForToken,
-//     swapTokenForEth,
-//     swapTokenForToken,
-//     DEFAULT_DEADLINE
-// } = require('../Services/Uniswap/Swap/SwapImpl'); // Services/Uniswap/Swap
 const { ERC20TokenTransact, DEFAULT_DEADLINE } = require('../Services/Uniswap/Swap/ERC20TokenTransact');
 
 const { ethers } = require("ethers")
@@ -25,17 +17,25 @@ const UNLOCK_ACCOUNT_INTERVAL = process.env.UNLOCK_ACCOUNT_INTERVAL || 15000; //
 const CHAIN_NAME = process.env.CHAIN_NAME || "goerli";
 const CHAIN_ID = process.env.CHAIN_ID || 5;
 
-var gTokenList = null;
-const ALL_TOKEN_INFO_URL = "https://tokens.coingecko.com/uniswap/all.json";
+var gTokenList = {};
+var gPriceList = {};
+
 async function getTokenList() {
     try {
-        const response = await axios.get(ALL_TOKEN_INFO_URL);
+        const response = await axios.get(process.env.ALL_TOKEN_INFO_URL);
         if (response.status !== 200) {
             console.error("Failed to get token list");
             return;
         }
-        gTokenList = response.data.tokens;
-        console.log(response);
+        let tokens = response.data.tokens;
+        if (tokens === undefined || tokens === null || tokens.length === 0) {
+            console.error("Got invalid token list");
+            return;
+        }
+        tokens.forEach(tokenInfo => {
+            gTokenList[tokenInfo.symbol] = [];
+            gTokenList[tokenInfo.symbol].push(tokenInfo);
+        })
     } catch (error) {
         console.error(error);
     }
@@ -146,40 +146,55 @@ class AccountService {
         // First, get ERC20 token list
 
         symbolList.forEach(symbol => {
-            let tokenInfo = {};
-            switch (symbol) {
-                case "BTC":
-                    tokenInfo = {
-                        symbol: "BTC",
-                        logo: "./node_modules/crypto-icons-plus-64/src/bitcoin.png"
-                    }
-                    break;
-                case "ETH":
-                    tokenInfo = {
-                        symbol: "ETC",
-                        logo: "./node_modules/crypto-icons-plus-64/src/ethereum.png"
-                    }
-                    break;
-                case "UNI":
-                    let _tokenInfo = getTokenInfo(symbol);
-                    tokenInfo = {
-                        symbol: "ETC",
-                        logo: "./node_modules/crypto-icons-plus-64/src/ethereum.png"
-                    }
-                    break;
+            if (gTokenList[symbol] === undefined || gTokenList[symbol] === null || gTokenList[symbol].length < 1) {
+                let name = null;
+                let address = null;
+                if (symbol === 'BTC') {
+                    name = 'bitcoin';
+                    address = 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh';
+                } else if (symbol === 'ETH') {
+                    name = 'ethereum';
+                    address = '';
+                }
+                tokenInfoList.push({
+                    address: '',
+                    chainId: 1,
+                    decimals: 18,
+                    logoURI: './node_modules/crypto-icons-plus-64/src/' + name + '.png',
+                    name: name,
+                    symbol: symbol
+                });
+            } else {
+                tokenInfoList.push(gTokenList[symbol][0]);
             }
-            if (tokenInfo === null) {
-                return { error: -201, data: symbol };
-            }
-            if (!tokenInfo.logo.src) {
-                tokenInfo.logo.src = "https://raw.githubusercontent.com/compound-finance/token-list/master/assets/asset_" + symbol + ".svg";
-            }
-            tokenInfoList.push({
-                symbol: tokenInfo.symbol,
-                logo: tokenInfo.logo.src,
-            });
         });
         return { error: 0, data: tokenInfoList }
+    }
+
+    async getPricePair(tokePair) {
+        try {
+            let url = process.env.PRICE_HISTORY_URL.replace('@@@', tokePair[0]);
+            url = url.replace('###', tokePair[1]);
+            const response = await axios.get(url);
+            if (response.status !== 200) {
+                return { error: -250, data: "Failed to get price pair" };
+            }
+            let prices = response.data ? 
+                response.data.Data ? 
+                    response.data.Data.Data ? 
+                        response.data.Data.Data : null 
+                    : null 
+                : null;
+            if (prices === undefined || prices === null || prices.length === 0) {
+                return { error: -251, data: "Got invalid price pair" };
+            }
+            let priceRate = (prices[0].open + prices[0].close) / 2;
+            gPriceList[tokePair[0] + "-" + tokePair[1]] = priceRate;
+            return { error: 0, data: priceRate };
+        } catch (error) {
+            console.error(error);
+            return { error: -300, data: null }
+        }
     }
 
     /**

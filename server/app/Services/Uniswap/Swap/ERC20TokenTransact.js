@@ -8,8 +8,8 @@ const IRouter = require('@uniswap/v2-periphery/build/IUniswapV2Router02.json')
 const { Erc20TokenABI, UniswapV2Router02Address, GoerliTokenAddress } = require("../Abi/Erc20Abi");
 const EthereumTx = require('ethereumjs-tx').Transaction;
 
-const DEFAULT_DEADLINE = 300; // 300s = 5min
-const SLIPPAGE_MAX = 3; // 3%
+const DEFAULT_DEADLINE = 300;   // 300s = 5min
+const SLIPPAGE_MAX = 3;         // 3%
 
 class ERC20TokenTransact {
 

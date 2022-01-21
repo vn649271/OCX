@@ -13,5 +13,6 @@ account.post("/lock", accountController.lock);
 account.post("/unlock", accountController.unlock);
 account.post("/swap", accountController.swap);
 account.post("/tokenList", accountController.tokenList);
+account.post("/tokenPriceRate", accountController.tokenPriceRate);
 
 module.exports = account;

@@ -260,6 +260,26 @@ class AccountController {
             return resp.json({ error: -100, data: errorMessage });
         }
     }
+
+    async tokenPriceRate(req, resp) {
+        var userToken = req.body ? req.body.userToken ? req.body.userToken : null : null;
+        if (userToken === null) {
+            return resp.json({ error: -1, data: "Invalid request" });
+        }
+        var tokenPair = req.body ? req.body.tokenPair ? req.body.tokenPair : null : null;
+        if (tokenPair === null) {
+            return resp.json({ error: -2, data: "Invalid token to sell" });
+        }
+        try {
+            let ret = await accountService.getPricePair(tokenPair);
+            return resp.json(ret);
+        } catch (error) {
+            let errorMessage = error.message.replace("Returned error: ", "");
+            return resp.json({ error: -100, data: errorMessage });
+        }
+    }
+
+    
     /**
      * @param {object} req request object from the client
      * @param {object} resp response object to the client
