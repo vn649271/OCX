@@ -52,7 +52,7 @@ class PageTabBar extends Component {
 
     buildMenuItem(param) {
         return (
-            <li className="mr-3 main-font font-16">
+            <li key={param.name} className="mr-3 main-font font-16">
                 <a name={param.name} className={inactive_class} href="#" onClick={this.onClickItem}>{param.title}</a>
             </li>
         );

@@ -329,16 +329,12 @@ class AccountController {
      * @param {object} req request object from the client
      * @param {object} resp response object to the client
      */
-    async swap(req, resp) {
+    async getBestPrice(req, resp) {
         var userToken = req.body ? req.body.userToken ? req.body.userToken : null : null;
         if (userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
         }
-        let userPassword = req.body ? req.body.password ? req.body.password : null : null;
-        if (userPassword === null) {
-            return resp.json({ error: -2, data: "Invalid password" });
-        }
-        let sellSymbol = req.body ? req.body.sellSymbol ? req.body.sellSymbol : 0 : 0;
+        let sellSymbol = req.body ? req.body.sellSymbol ? req.body.sellSymbol : null : null;
         if (sellSymbol === null) {
             return resp.json({ error: -3, data: "Invalid token symbol to sell" });
         }
@@ -355,13 +351,64 @@ class AccountController {
             if (!accountInfo) {
                 return resp.json({ error: -50, data: "Not found valid account" });
             }
+            let ret = await accountService.getBestPrice({
+                accountInfo: accountInfo,
+                sellSymbol: sellSymbol,
+                sellAmount: sellAmount,
+                buySymbol: buySymbol,
+            });
+            return resp.json(ret);
+        } catch (error) {
+            let errorMessage = error.message.replace("Returned error: ", "");
+            return resp.json({ error: -100, data: "Error 1050: " + errorMessage });
+        }
+    }
+
+    /**
+     * @param {object} req request object from the client
+     * @param {object} resp response object to the client
+     */
+    async swap(req, resp) {
+        var userToken = req.body ? req.body.userToken ? req.body.userToken : null : null;
+        if (userToken === null) {
+            return resp.json({ error: -1, data: "Invalid request" });
+        }
+        // let userPassword = req.body ? req.body.password ? req.body.password : null : null;
+        // if (userPassword === null) {
+        //     return resp.json({ error: -2, data: "Invalid password" });
+        // }
+        let sellSymbol = req.body ? req.body.sellSymbol ? req.body.sellSymbol : 0 : 0;
+        if (sellSymbol === null) {
+            return resp.json({ error: -3, data: "Invalid token symbol to sell" });
+        }
+        let sellAmount = req.body ? req.body.sellAmount ? req.body.sellAmount : 0 : 0;
+        if (sellAmount === 0) {
+            return resp.json({ error: -4, data: "Invalid amount to be exchanged" });
+        }
+        let buySymbol = req.body ? req.body.buySymbol ? req.body.buySymbol : 0 : 0;
+        if (buySymbol === 0) {
+            return resp.json({ error: -5, data: "Invalid amount to exchange" });
+        }
+        let slippage = req.body ? req.body.slippage ? req.body.slippage : 0 : 0;
+        if (slippage === 0) {
+            return resp.json({ error: -6, data: "Invalid slippage" });
+        }
+        let deadline = req.body ? req.body.deadline ? req.body.deadline : 0 : 0;
+        if (deadline === 0) {
+            return resp.json({ error: -7, data: "Invalid deadline" });
+        }
+        try {
+            let accountInfo = await accountModel.findOne({ where: { user_token: userToken } });
+            if (!accountInfo) {
+                return resp.json({ error: -50, data: "Not found valid account" });
+            }
             let ret = await accountService.swapBetweenERC20({
                 accountInfo: accountInfo,
                 sellSymbol: sellSymbol,
                 sellAmount: sellAmount,
                 buySymbol: buySymbol,
-                acceptableMinRate: 0.0,   // 0.6 UNI
-                deadline: 600 // 600s = 10min
+                slippage: slippage,   // 0.6 UNI
+                deadline: deadline // 600s = 10min
             });
             return resp.json(ret);
         } catch (error) {
