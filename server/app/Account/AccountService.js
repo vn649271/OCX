@@ -179,11 +179,11 @@ class AccountService {
             if (response.status !== 200) {
                 return { error: -250, data: "Failed to get price pair" };
             }
-            let prices = response.data ? 
-                response.data.Data ? 
-                    response.data.Data.Data ? 
-                        response.data.Data.Data : null 
-                    : null 
+            let prices = response.data ?
+                response.data.Data ?
+                    response.data.Data.Data ?
+                        response.data.Data.Data : null
+                    : null
                 : null;
             if (prices === undefined || prices === null || prices.length === 0) {
                 return { error: -251, data: "Got invalid price pair" };
@@ -311,6 +311,57 @@ class AccountService {
      * @param {object} req request object from the client
      * @param {object} resp response object to the client
      */
+    async getBestPrice(params) {
+        if (web3 == null) {
+            return { error: -200, data: "Geth node is not ready yet. Please retry a while later." }
+        }
+        var accountInfo = params ? params.accountInfo ? params.accountInfo : null : null,
+            sellSymbol = params ? params.sellSymbol ? params.sellSymbol : null : null,
+            sellAmount = params ? params.sellAmount ? params.sellAmount : 0 : 0,
+            buySymbol = params ? params.buySymbol ? params.buySymbol : null : null;
+
+        if (accountInfo.addresses == undefined || accountInfo.addresses == {}) {
+            return { error: -201, data: "No account for you" };
+        }
+        if (sellSymbol === null) {
+            return { error: -202, data: "Invalid token to sell" };
+        }
+        if (sellAmount === 0) {
+            return { error: -203, data: "Invalid amount to sell" };
+        }
+        if (buySymbol === null) {
+            return { error: -205, data: "Invalid token to buy" };
+        }
+        var addresses = accountInfo.addresses;
+        if (addresses['ETH'] === undefined || addresses['ETH'] === null) {
+            return { error: -206, data: "Invalid your address for swapping" };
+        }
+        var myAddress = addresses['ETH'];
+
+        sellAmount = web3.utils.toWei(sellAmount.toString(), "ether");
+        try {
+            let ret = await web3.eth.personal.unlockAccount(myAddress, accountInfo.account_password, UNLOCK_ACCOUNT_INTERVAL)
+            if (!ret) {
+                return { error: -250, data: "Failed to unlock for swapping" };
+            }
+            const erc20TokenTransact = new ERC20TokenTransact(web3, myAddress);
+            ret = await erc20TokenTransact.getBestPrice({
+                sellSymbol: sellSymbol,
+                sellAmount: sellAmount,
+                buySymbol: buySymbol,
+            });
+            ret.data = sellAmount = web3.utils.fromWei(ret.data.toString(), "ether");
+            return ret;
+        } catch (error) {
+            let errorMessage = error.message.replace("Returned error: ", "");
+            return { error: -300, data: errorMessage };
+        }
+    }
+
+    /**
+     * @param {object} req request object from the client
+     * @param {object} resp response object to the client
+     */
     async swapBetweenERC20(params) {
         if (web3 == null) {
             return { error: -200, data: "Geth node is not ready yet. Please retry a while later." }
@@ -343,7 +394,6 @@ class AccountService {
             return { error: -206, data: "Invalid your address for swapping" };
         }
         var myAddress = addresses['ETH'];
-        const erc20TokenTransact = new ERC20TokenTransact(web3, myAddress);
 
         sellAmount = web3.utils.toWei(sellAmount.toString(), "ether");
         const nowInSeconds = Math.floor(Date.now() / 1000)
@@ -356,39 +406,33 @@ class AccountService {
             if (!ret) {
                 return { error: -250, data: "Failed to unlock for swapping" };
             }
-
+            const erc20TokenTransact = new ERC20TokenTransact(web3, myAddress);
             if (sellSymbol === 'ETH') {
                 ret = await erc20TokenTransact.swapEthForToken(
-                    web3,
                     {
                         sellSymbol: sellSymbol,
                         sellAmount: sellAmount,
                         buySymbol: buySymbol,
-                        privateKey: accountInfo.secret_keys['ETH'],
                         acceptableMinRate: acceptableMinRate,
                         deadline: deadline
                     }
                 )
             } else if (buySymbol === 'ETH') {
                 ret = await erc20TokenTransact.swapTokenForEth(
-                    web3,
                     {
                         sellSymbol: sellSymbol,
                         sellAmount: sellAmount,
                         buySymbol: buySymbol,
-                        privateKey: accountInfo.secret_keys['ETH'],
                         acceptableMinRate: acceptableMinRate,
                         deadline: deadline
                     }
                 )
             } else {
                 ret = await erc20TokenTransact.swapTokenForToken(
-                    web3,
                     {
                         sellSymbol: sellSymbol,
                         sellAmount: sellAmount,
                         buySymbol: buySymbol,
-                        privateKey: accountInfo.secret_keys['ETH'],
                         acceptableMinRate: acceptableMinRate,
                         deadline: deadline,
                         // signer: signer

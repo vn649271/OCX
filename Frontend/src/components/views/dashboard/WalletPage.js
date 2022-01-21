@@ -120,6 +120,7 @@ class WalletPage extends Component {
     }
 
     async componentDidMount() {
+        console.log("*************componentDidMount()*************");
         this.userToken = localStorage.getItem("userToken");
         this.encryptKey = localStorage.getItem("encryptKey");
         this.setEncryptKey(this.encryptKey);
@@ -544,6 +545,7 @@ class WalletPage extends Component {
                             </div>
                             <div className="pagetabbar-container mb-10">
                                 <PageTabBar
+                                    key="transfer-tab"
                                     onClickItem={this.onSelectTab}
                                     items={walletPageTabItems}
                                     defaultActiveItem='transfer-tab'
@@ -640,9 +642,7 @@ class WalletPage extends Component {
                                 <Button
                                     className="main-button-type border border-grey-light button-bg p-5 hover-transition main-font focus:outline-none rounded text-white verify-button"
                                     onClick={this.onGeneratePassphrase}
-                                >
-                                    Generate
-                                </Button>
+                                >Generate</Button>
                             </div>
                             <hr></hr>
                             <div className="account-password-container block w-full">
@@ -694,9 +694,9 @@ class WalletPage extends Component {
                     show={this.state.show_passcode_confirm_dialog}
                     onClose={this.onClosePasscodeConfirmDialog}
                 />
-                <div className='w-1/2'>
+                {/* <div className='w-1/2'>
                     <SelectDropdown />
-                </div>
+                </div> */}
             </>
         );
     }

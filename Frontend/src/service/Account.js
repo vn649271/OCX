@@ -128,6 +128,20 @@ export default function AccountService() {
      * 
      * @returns 
      */
+     this.getBestPrice = async (params) => {
+        let _params = {};
+        _params['data'] = params;
+        _params['url'] = BACKEND_BASE_URL + "/account/getBestPrice";
+        return await this._sendRequest(_params);
+    }
+
+    /**
+     * Connect to specified account.
+     * @param {string} userToken    user token
+     * @param {string} account      account address
+     * 
+     * @returns 
+     */
     this.swap = async (params) => {
         let _params = {};
         _params['data'] = params;
