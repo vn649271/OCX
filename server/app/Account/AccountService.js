@@ -11,7 +11,6 @@ const axios = require('axios');
 const { ERC20TokenTransact, DEFAULT_DEADLINE } = require('../Services/Uniswap/Swap/ERC20TokenTransact');
 
 const { ethers } = require("ethers")
-const { getTokenInfo } = require('erc20-token-list');
 
 const UNLOCK_ACCOUNT_INTERVAL = process.env.UNLOCK_ACCOUNT_INTERVAL || 15000; // 15s
 const CHAIN_NAME = process.env.CHAIN_NAME || "goerli";
@@ -59,7 +58,7 @@ var myEthAddress = null;
 var accountModel = new AccountModel();
 var gethProvider = null;
 
-function attachToGethIPC() {
+async function attachToGethIPC(ipcPath) {
     fs.access(ipcPath, (err) => {
         if (!err) {
             console.log("Attached to Geth IPC successfully");
@@ -74,7 +73,7 @@ function attachToGethIPC() {
     });
 }
 
-gethIpcTimer = setTimeout(attachToGethIPC, 10000);
+gethIpcTimer = setTimeout(attachToGethIPC, 10000, ipcPath);
 
 var self = null;
 
