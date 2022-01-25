@@ -22,8 +22,8 @@ export default class ExchangeSwap extends React.Component {
             error: '',
             showModal: false,
             current_scene: SCENE_IDLE,
-            sell_token: 'DAI',
-            buy_token: 'UNI',
+            sell_token: 'ETH',
+            buy_token: 'DAI',
             input: {
                 sell_amount: '',
                 buy_amount: '',

@@ -46,6 +46,7 @@
     "request": "^2.88.2",
     "sequelize": "^5.15.1",
     "serve": "^13.0.2",
+    "solc": "^0.8.11",
     "source-map-loader": "^3.0.1",
     "twilio": "^3.71.3",
     "validator": "^13.7.0",

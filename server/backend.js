@@ -42,16 +42,19 @@ if (process.argv.length < 3 || process.argv[2] != 'dev') {
 
 app.listen(port, () => {
     console.info("server running at ", port);
-    var geth = spawn('geth', ['--goerli', '--syncmode', 'light']);
-    geth.stdout.on('data', (data) => {
-        console.log(`geth:stdout: ${data}`);
-    });
-    geth.stderr.on('data', (data) => {
-        console.log(`geth:stderr: ${data}`);
-    });
-    geth.on('close', (code) => {
-        console.log(`geth: child process exited with code ${code}`);
-    });
+    if (process.env.BLOCKCHAIN_EMULATOR == undefined ||
+    process.env.BLOCKCHAIN_EMULATOR === null) {
+        var geth = spawn('geth', ['--goerli', '--syncmode', 'light']);
+        geth.stdout.on('data', (data) => {
+            console.log(`geth:stdout: ${data}`);
+        });
+        geth.stderr.on('data', (data) => {
+            console.log(`geth:stderr: ${data}`);
+        });
+        geth.on('close', (code) => {
+            console.log(`geth: child process exited with code ${code}`);
+        });
+    }
 });
 
 
