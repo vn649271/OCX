@@ -46,8 +46,15 @@ const MSG__GETH_NOT_READY = "Geth node is not ready yet. Please retry a while la
 // For Linux
 var GETH_DATA_DIR = process.env.HOME + "/.ethereum/" + CHAIN_NAME
 var ipcPath = GETH_DATA_DIR + "/geth.ipc";
+// In case of Ganache
+if (process.env.BLOCKCHAIN_EMULATOR !== undefined &&
+process.env.BLOCKCHAIN_EMULATOR !== null &&
+process.env.BLOCKCHAIN_EMULATOR === "ganache") {
+    ipcPath = "HTTP://127.0.0.1:7545"; // Ganache
+}
+
+// For Windows
 if (process.platform.search('win32') >= 0) {
-    // For Windows
     GETH_DATA_DIR = process.env.LOCALAPPDATA + "\\Ethereum\\" + CHAIN_NAME;
     ipcPath = "\\\\.\\pipe\\geth.ipc";
 }

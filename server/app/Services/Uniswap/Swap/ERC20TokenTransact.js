@@ -5,7 +5,12 @@ const IRouter = require('@uniswap/v2-periphery/build/IUniswapV2Router02.json')
 // const erc20 = require("@studydefi/money-legos/erc20")
 // const uniswap = require("@studydefi/money-legos/uniswap")
 
-const { Erc20TokenABI, UniswapV2Router02Address, GoerliTokenAddress } = require("../Abi/Erc20Abi");
+const { 
+    Erc20TokenABI, 
+    OpenchainContractAbi, 
+    UniswapV2Router02Address, 
+    GoerliTokenAddress 
+} = require("../Abi/Erc20Abi");
 const EthereumTx = require('ethereumjs-tx').Transaction;
 
 const DEFAULT_DEADLINE = 300;   // 300s = 5min
@@ -40,17 +45,29 @@ class ERC20TokenTransact {
             const WETH_ADDRESS = GoerliTokenAddress['WETH'];
             const erc20TokenAddress = GoerliTokenAddress[params.buySymbol];
             const path = [WETH_ADDRESS, erc20TokenAddress];
-            const uniRouter02 = new this.web3.eth.Contract(IRouter.abi, UniswapV2Router02Address)
+            // const uniRouter02 = new this.web3.eth.Contract(IRouter.abi, UniswapV2Router02Address)
+            const uniRouter02 = new this.web3.eth.Contract(OpenchainContractAbi, OpenchainContractAddress)
             const sellAmount = this.web3.utils.toHex(params.sellAmount);
 
-            const ret = await uniRouter02.methods.swapExactETHForTokens(
+            // const ret = await uniRouter02.methods.swapExactETHForTokens(
+            //     0,
+            //     path,
+            //     this.myAddress,
+            //     params.deadline
+            // ).send({
+            //     from: this.myAddress,
+            //     value: sellAmount
+            // })
+            const ret = await uniRouter02.methods.swap(
+                WETH_ADDRESS,
+                params.sellAmount,
+                erc20TokenAddress,
                 0,
-                path,
                 this.myAddress,
                 params.deadline
             ).send({
                 from: this.myAddress,
-                value: sellAmount
+                // value: sellAmount
             })
             return { error: 0, data: ret };
         }

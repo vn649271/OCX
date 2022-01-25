@@ -28,15 +28,10 @@ if (process.platform.search('win32') >= 0) {
     ipcPath = "\\\\.\\pipe\\geth.ipc";
 }
 
-const myEthAddress = "0x91470c38c2397cb75381153b9595943570eabaf6";
+const myEthAddress = "0xc26de4dd0a5ccff5ee47f20b67e1f6adac53ad1f";
 var myPasswd = "";
 
-var CONTRACTS_FILE_INFO = [ 
-    {
-        source: './contracts/SwapERC20.sol',
-        targetPrefix: './contracts_SwapERC20_sol_SwapERC20'
-    }        
-]
+const BUILD_LIST = require("./build.json");
 
 var web3 = null;
 
@@ -74,15 +69,15 @@ const contract_creation_cb = function(error, contract) {
 }
 
 function compileContracts() {
-    for (var i in CONTRACTS_FILE_INFO) {
-        buildContractAbi(CONTRACTS_FILE_INFO[i]);
+    for (var i in BUILD_LIST) {
+        buildContractAbi(BUILD_LIST[i]);
     }
 }
 
 function buildContractAbi(contractFileInfo) {
     runExternalProgram(
         'solcjs', 
-        [contractFileInfo.source, '--abi'],
+        ["./" + contractFileInfo.source, '--abi'],
         compileContract,
         contractFileInfo
     );
@@ -91,7 +86,7 @@ function buildContractAbi(contractFileInfo) {
 function compileContract(contractFileInfo) {
     runExternalProgram(
         'solcjs', 
-        [contractFileInfo.source, '--bin'], 
+        ["./" + contractFileInfo.source, '--bin'], 
         deployContract, 
         contractFileInfo
     );
@@ -122,7 +117,11 @@ async function deployContract(contractFileInfo) {
                     gas: 0x47b760,
                 },
                 function(error, transactionHash) {
-                    console.log("Deploy Success: ", error, transactionHash);
+                    if (!error) {
+                        console.log("Deploy Success. transaction hash = ", transactionHash);
+                        return;
+                    }
+                    console.log("Deploy Failure. Error code = ", error);
                 }
             )
             .on('error', function(error) {
@@ -139,6 +138,7 @@ async function deployContract(contractFileInfo) {
             })
             .then(function(newContractInstance) {
                 console.log("New contract instance: ", newContractInstance.options.address); // instance with the new contract address
+                process.exit(0);
             });    
         });
         
@@ -157,9 +157,9 @@ async function deployContract(contractFileInfo) {
 
 async function readContractAbiAndBin(contractFileInfo) {
     try {
-        var abiData = fs.readFileSync(contractFileInfo.targetPrefix + '.abi');
+        var abiData = fs.readFileSync("./" + contractFileInfo.source.replace(".", "_") + '_' + contractFileInfo.contract + '.abi');
         contractFileInfo['abi'] = JSON.parse(abiData.toString());
-        var binaryData = fs.readFileSync(contractFileInfo.targetPrefix + '.bin')
+        var binaryData = fs.readFileSync("./" + contractFileInfo.source.replace(".", "_") + '_' + contractFileInfo.contract + '.bin')
         contractFileInfo['bin'] = "0x" + binaryData.toString();
     } catch (err) {
         console.error(err)
@@ -175,13 +175,14 @@ async function attachToGethIPC(ipcPath) {
                 return;
             }
             console.log("Attached to Geth IPC successfully");
-            clearTimeout(gethIpcTimer);
-            gethIpcTimer = null;
+            // clearTimeout(gethIpcTimer);
+            // gethIpcTimer = null;
             compileContracts();
         }
     });
 }
 
-var gethCmd = runExternalProgram('geth', ['--goerli', '--syncmode', 'light']);
+//var gethCmd = runExternalProgram('geth', ['--goerli', '--syncmode', 'light']);
 
-var gethIpcTimer = setTimeout(attachToGethIPC, 10000, ipcPath);
+// var gethIpcTimer = setTimeout(attachToGethIPC, 10000, ipcPath);
+attachToGethIPC(ipcPath);

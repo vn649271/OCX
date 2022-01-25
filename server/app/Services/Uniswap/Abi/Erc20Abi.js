@@ -15,7 +15,25 @@ const Erc20TokenABI = [
 ]
 
 // https://docs.uniswap.org/protocol/V2/reference/smart-contracts/router-02#Address
-const UniswapV2Router02Address = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D"
+const UniswapV2Router02Address = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
+
+const OpenchainContractAbi = [
+    {
+        "inputs":[
+            {"internalType":"address","name":"_tokenIn","type":"address"},
+            {"internalType":"uint256","name":"_amountIn","type":"uint256"},
+            {"internalType":"address","name":"_tokenOut","type":"address"},
+            {"internalType":"uint256","name":"_amountOutMin","type":"uint256"},
+            {"internalType":"address","name":"_to","type":"address"},
+            {"internalType":"uint256","name":"_deadline","type":"uint256"}
+        ],
+        "name":"swap",
+        "outputs":[],
+        "stateMutability":"nonpayable",
+        "type":"function"
+    }
+];
+const OpenchainContractAddress = "0x60549C0FF07d2eb75224C8181c4eD49eC144e370"; 
 
 // Uniswap V3: https://docs.uniswap.org/protocol/concepts/governance/overview#uni-address
 //      "UNI": "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
@@ -33,5 +51,7 @@ const GoerliTokenAddress = {
 module.exports = {
     Erc20TokenABI,
     UniswapV2Router02Address,
+    OpenchainContractAddress,
+    OpenchainContractAbi,
     GoerliTokenAddress
 };
