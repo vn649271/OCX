@@ -39,7 +39,7 @@ async function getTokenList() {
         console.error(error);
     }
 }
-getTokenList();
+// getTokenList();
 
 const MSG__GETH_NOT_READY = "Geth node is not ready yet. Please retry a while later.";
 
@@ -66,18 +66,31 @@ var accountModel = new AccountModel();
 var gethProvider = null;
 
 async function attachToGethIPC(ipcPath) {
-    fs.access(ipcPath, (err) => {
-        if (!err) {
-            console.log("Attached to Geth IPC successfully");
-            gethProvider = new Web3.providers.IpcProvider(ipcPath, net);
-            web3 = new Web3(gethProvider);
-            if (!web3) {
-                return;
-            }
-            clearTimeout(gethIpcTimer);
-            gethIpcTimer = null;
+    if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
+        gethProvider = new Web3.providers.HttpProvider(ipcPath, net);
+        web3 = new Web3(gethProvider);
+        if (!web3) {
+            return;
         }
-    });
+        clearTimeout(gethIpcTimer);
+        gethIpcTimer = null;
+        console.log("Attached to Geth IPC successfully");
+    } else {
+        fs.access(ipcPath, (err) => {
+            if (!err) {
+                gethProvider = new Web3.providers.IpcProvider(ipcPath, net);
+                web3 = new Web3(gethProvider);
+                if (!web3) {
+                    return;
+                }
+                clearTimeout(gethIpcTimer);
+                gethIpcTimer = null;
+                console.log("Attached to Geth IPC successfully");
+            } else {
+                console.log(err);
+            }
+        });
+    }
 }
 
 gethIpcTimer = setTimeout(attachToGethIPC, 10000, ipcPath);
@@ -92,8 +105,6 @@ class AccountService {
     constructor() {
         self = this;
         this.gethError = null
-        this.chainName = (CHAIN_NAME === '.' ? 'main' : CHAIN_NAME).trim();
-        console.log("********* Current chain name: '", this.chainName, "'");
     }
 
     async _getPrivateKey(password, ethAddress) {

@@ -29,6 +29,7 @@
     "cors": "^2.8.5",
     "craco": "^0.0.3",
     "date-fns": "^2.27.0",
+    "html-react-parser": "^1.4.8",
     "jsencrypt": "^3.2.1",
     "nodemon": "^1.19.4",
     "postcss": "^7.0.35",

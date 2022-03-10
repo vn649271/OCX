@@ -50,7 +50,9 @@ class PhoneVerifyController {
                 return res.json({ error: -2, message: "Failed to validate the phone number as connection failure." });
 			}
             const obj = JSON.parse(stdout);
-            if (!obj.valid) {
+            if (obj.code == 20003) {
+                return res.json({ error: -20003, message: "Failed to authenticate for the service" });
+            } else if (!obj.valid) {
                 let errorText = obj.validation_errors[0];
                 if (errorText == "TOO_SHORT") {
                     errorText = "The phone number is too short";
@@ -59,7 +61,7 @@ class PhoneVerifyController {
                 } else if (errorText == "INVALID_BUT_POSSIBLE") {
                     errorText = "The phone number is invalid but possible";
                 }
-                return res.json({ error: -3, message: errorText });
+                return res.json({ error: -4, message: errorText });
             }
             return res.json({ error: 0 });
         });
