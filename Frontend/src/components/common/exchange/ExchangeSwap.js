@@ -15,12 +15,16 @@ const accountService = new AccountService();
 
 const TOKENS = [
     {
-        iconUrl: "https://raw.githubusercontent.com/compound-finance/token-list/master/assets/asset_ETH.svg",
+        iconUrl: "images/asset_ETH.svg",
         title: "ETH"
     }, 
     {
-        iconUrl: "https://raw.githubusercontent.com/compound-finance/token-list/master/assets/asset_DAI.svg",
+        iconUrl: "images/asset_DAI.svg",
         title: "DAI"
+    }, 
+    {
+        iconUrl: "images/UNI.png",
+        title: "UNI"
     },
 ];
 
@@ -98,11 +102,11 @@ export default class ExchangeSwap extends React.Component {
     }
 
     onSelectSellToken = index => {
-        
+        this.setState({sell_token: TOKENS[index].title});
     }
 
     onSelectBuyToken = index => {
-        
+        this.setState({buy_token: TOKENS[index].title});
     }
 
     async fetchBestBuyAmount() {
@@ -149,8 +153,6 @@ export default class ExchangeSwap extends React.Component {
     }
 
     render() {
-        let sellTokenImg = "https://raw.githubusercontent.com/compound-finance/token-list/master/assets/asset_" + this.state.sell_token + ".svg";
-        let buyTokenImg = "https://raw.githubusercontent.com/compound-finance/token-list/master/assets/asset_" + this.state.buy_token + ".svg";
         return (
             <div className={this.topClass}>
                 <div className="swap-card_header pb-5 border-b-2 border-gray-200">
