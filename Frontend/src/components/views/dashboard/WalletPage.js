@@ -86,9 +86,10 @@ class WalletPage extends Component {
         this.rsaCryptInited = false;
         this.encryptedPassphrase = null;
         this.unlockButton = null;
+        this.tempStorage = {};
 
         this.onCreateAccont = this.onCreateAccont.bind(this);
-        this.onSend = this.onSend.bind(this);
+        this.onTransfer = this.onTransfer.bind(this);
         this.onLeaveFromPasswordInput = this.onLeaveFromPasswordInput.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.onKeyPressedForUnlock = this.onKeyPressedForUnlock.bind(this);
@@ -103,15 +104,19 @@ class WalletPage extends Component {
         this.onUnlockAccont = this.onUnlockAccont.bind(this);
         this.onLockAccont = this.onLockAccont.bind(this);
         this.onClickImportPassphrase = this.onClickImportPassphrase.bind(this);
-        this.onClosePassphraseImportDialog = this.onClosePassphraseImportDialog.bind(this);
-        this.onOpenPasscodeConfirmDialog = this.onOpenPasscodeConfirmDialog.bind(this);
-        this.onClosePasscodeConfirmDialog = this.onClosePasscodeConfirmDialog.bind(this);
+        this.onOkPassphraseImportDialog = this.onOkPassphraseImportDialog.bind(this);
+        this.onCancelPassphraseImportDialog = this.onCancelPassphraseImportDialog.bind(this);
+        this.openPasscodeConfirmDialog = this.openPasscodeConfirmDialog.bind(this);
+        this.onOkPasscodeConfirmDialog = this.onOkPasscodeConfirmDialog.bind(this);
+        this.onCancelPasscodeConfirmDialog = this.onCancelPasscodeConfirmDialog.bind(this);
         this.onGeneratePassphrase = this.onGeneratePassphrase.bind(this);
         this.setEncryptKey = this.setEncryptKey.bind(this);
         this.onSelectTab = this.onSelectTab.bind(this);
+        this.onClickEmptyAreaInPage = this.onClickEmptyAreaInPage.bind(this);
         this.startBalanceMonitor = this.startBalanceMonitor.bind(this);
         this._startBalanceMonitor = this._startBalanceMonitor.bind(this);
         this.buildTokenList = this.buildTokenList.bind(this);
+        this._transfer = this._transfer.bind(this);
     }
 
     componentDidUpdate(prevProps) {
@@ -304,6 +309,10 @@ class WalletPage extends Component {
         this.setState({ current_tab: tabName })
     }
 
+    onClickEmptyAreaInPage = ev => {
+        console.log(ev);
+    }
+
     onCreateAccont = async (param, ev, btnCmpnt) => {
         let passwordValidation = this.validatePassword(
             this.state.input.password,
@@ -405,7 +414,12 @@ class WalletPage extends Component {
         return <li>{tokenItems}</li>;
     }
 
-    onSend = async (param, ev, btnCmpnt) => {
+    onTransfer = async (param, ev, btnCmpnt) => {
+        this.openPasscodeConfirmDialog(param, ev, btnCmpnt);
+        return;
+    }
+
+    _transfer = async (param, ev, btnCmpnt) => {
         this.warning('');
         if (this.state.current_state !== IDLE) {
             btnCmpnt.stopTimer();
@@ -456,9 +470,13 @@ class WalletPage extends Component {
         this.setState({ show_passphrase_import_dialog: true });
     }
 
-    onClosePassphraseImportDialog = async (param) => {
+    onCancelPassphraseImportDialog = () => {
+        this.setState({ show_passphrase_import_dialog: false });
+    }
+
+    onOkPassphraseImportDialog = async (param) => {
         this.encryptedPassphrase = rsaCrypt.encrypt(param.passphrase);
-        console.log("************* onClosePassphraseImportDialog(): param=", param);
+        console.log("************* onOkPassphraseImportDialog(): param=", param);
         this.setState({ show_passphrase_import_dialog: false });
         let resp = await accountService.restoreAccount({
             userToken: this.userToken,
@@ -479,13 +497,23 @@ class WalletPage extends Component {
         self.warning(resp.data);
     }
 
-    onOpenPasscodeConfirmDialog = (ev) => {
+    openPasscodeConfirmDialog = (param, ev, btnCmpnt) => {
+        this.tempStorage = {param: param, ev: ev, btnCmpnt: btnCmpnt};
         this.setState({ show_passcode_confirm_dialog: true });
     }
 
-    onClosePasscodeConfirmDialog = (userPasswordToConfirmTx) => {
+    onOkPasscodeConfirmDialog = (userPasswordToConfirmTx) => {
         this.setState({ show_passcode_confirm_dialog: false });
         this.userPasswordToConfirmTx = userPasswordToConfirmTx;
+        let { param, ev, btnCmpnt } = this.tempStorage;
+        this.tempStorage = {};
+        this._transfer(param, ev, btnCmpnt);
+    }
+
+    onCancelPasscodeConfirmDialog = () => {
+        let { param, ev, btnCmpnt } = this.tempStorage;
+        this.tempStorage = {};
+        btnCmpnt.stopTimer();
     }
 
     onLeaveFromPasswordInput = event => {
@@ -503,7 +531,7 @@ class WalletPage extends Component {
     render() {
         return (
             <>
-                <div className="my-account-page">
+                <div className="my-account-page" onClick={this.onClickEmptyAreaInPage}>
                     <p className="account-balance-box main-font text-red-400 mb-100 font-16">{this.state.error}</p>
                     <p className="help-block main-font text-green-400 font-16">{this.state.info}</p>
                     <div>
@@ -583,7 +611,7 @@ class WalletPage extends Component {
                                         captionInDelay="Sending"
                                         caption="Send"
                                         maxDelayInterval={30}
-                                        onClickButton={this.onSend}
+                                        onClickButton={this.onTransfer}
                                         onClickButtonParam={null} />
                                 </div>
                             </div>
@@ -687,12 +715,14 @@ class WalletPage extends Component {
                 <PassphraseImportDialog
                     className="passphrase-import-dialog"
                     show={this.state.show_passphrase_import_dialog}
-                    onClose={this.onClosePassphraseImportDialog}
+                    onOk={this.onOkPassphraseImportDialog}
+                    onCancel={this.onCancelPassphraseImportDialog}
                 />
                 <PasscodeConfirmDialog
                     className="passcode-confirm-dialog"
                     show={this.state.show_passcode_confirm_dialog}
-                    onClose={this.onClosePasscodeConfirmDialog}
+                    onOk={this.onOkPasscodeConfirmDialog}
+                    onCancel={this.onCancelPasscodeConfirmDialog}
                 />
                 {/* <div className='w-1/2'>
                     <SelectDropdown />

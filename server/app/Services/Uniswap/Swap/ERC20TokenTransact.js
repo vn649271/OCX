@@ -82,10 +82,17 @@ class ERC20TokenTransact {
     }
 
     async getBestPrice(params) {
+        if (params.sellSymbol === params.buySymbol) {
+            return { error: -1, data: "Illegal operation. Selling token must be different than token to buy" };
+        }
         try {
             const WETH_ADDRESS = GoerliTokenAddress['WETH'];
-            const erc20TokenAddress = GoerliTokenAddress[params.sellSymbol];
-            const path = [erc20TokenAddress, WETH_ADDRESS];
+            let erc20TokenAddress = GoerliTokenAddress[params.sellSymbol];
+            let path = [erc20TokenAddress, WETH_ADDRESS];
+            if (params.sellSymbol === "ETH" && params.buySymbol !== "ETH") {
+                erc20TokenAddress = GoerliTokenAddress[params.buySymbol];
+                path = [WETH_ADDRESS, erc20TokenAddress];
+            }
             const sellAmount = this.web3.utils.toHex(params.sellAmount);
 
             const uniRouter02 = new this.web3.eth.Contract(IRouter.abi, UniswapV2Router02Address)
