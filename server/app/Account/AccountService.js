@@ -367,6 +367,10 @@ class AccountService {
                 sellAmount: sellAmount,
                 buySymbol: buySymbol,
             });
+            if (ret.error < 0) {
+                ret.error = -251;
+                return ret;
+            }
             ret.data = sellAmount = web3.utils.fromWei(ret.data.toString(), "ether");
             return ret;
         } catch (error) {

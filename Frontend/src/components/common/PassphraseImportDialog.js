@@ -22,13 +22,16 @@ class PassphraseImportDialog extends Component {
             showModal: false,
             showPassword: false,
             input: {
-                passphrase: '',
-                password: '',
+                importing_passphrase: '',
+                new_password: '',
                 confirm_password: ''
             },
             hidePasswordCheckList: true
         }
-        this.closeMe = props.onClose;
+        this.closeMeWithOk = props.onOk;
+        this.closeMeWithCancel = props.onCancel;
+        this.retVal = -1;
+        
         this.handleInputChange = this.handleInputChange.bind(this);
         this.onLeaveFromPasswordInput = this.onLeaveFromPasswordInput.bind(this);
         this.togglePasswordVisiblity = this.togglePasswordVisiblity.bind(this);
@@ -38,6 +41,7 @@ class PassphraseImportDialog extends Component {
         this.inform = this.inform.bind(this);
         this.warning = this.warning.bind(this);
         this.validatePassword = this.validatePassword.bind(this);
+        this.clearAllFields = this.clearAllFields.bind(this);
         // this.inform = this.inform.bind(this);
     }
 
@@ -58,14 +62,21 @@ class PassphraseImportDialog extends Component {
     }
 
     setShowModal = show => {
-        this.setState({showModal: show})
-        this.closeMe({
-            passphrase: this.state.input.passphrase,
-            password: this.state.input.password
-        });
+        this.setState({showModal: show});
+    }
+
+    clearAllFields = () => {
+        this.setState({input: {
+            new_password: '',
+            importing_passphrase: ''
+        }});
     }
 
     componentDidUpdate(prevProps) {
+        // Handle the case of outside clicking
+        // if (this.closeMeWithCancel && this.retVal < 0 && this.state.showModal === false) {
+        //     this.closeMeWithCancel();
+        // }
         if (prevProps.show !== this.props.show && this.state.showModal !== this.props.show) {
             this.setState({showModal: this.props.show});
         }
@@ -103,12 +114,12 @@ class PassphraseImportDialog extends Component {
         });
         if (ev.target.name === 'password') {
             this.setState({ hidePasswordCheckList: false });
-            let password = input['password'] || "";
+            let password = input['new_password'] || "";
             if (password === null) {
                 password = "";
             }
         } else if (ev.target.name === 'confirm_password') {
-            let password = input['password'];
+            let password = input['new_password'];
             let confirmPassword = input['confirm_password'];
             if (confirmPassword !== password) {
                 this.warning('Password mismatch');
@@ -126,92 +137,102 @@ class PassphraseImportDialog extends Component {
     }
 
     onRestoreAccount = (param, ev, btnCmp) => {
+        this.retVal = 1; // Ok
         btnCmp.stopTimer();
         let passwordValidation = this.validatePassword(
-            this.state.input.password, 
+            this.state.input.new_password, 
             this.state.input.confirm_password
         );
         if (passwordValidation < 0) {
             this.warning("Invalid password");
             return;
         }
-        this.setShowModal(false)
-        this.closeMe({
-            password: this.state.input.password,
-            passphrase: this.state.input.passphrase
-        });
+        this.setShowModal(false);
+        var formValues = {
+            password: this.state.input.new_password,
+            passphrase: this.state.input.importing_passphrase
+        };
+        this.clearAllFields();
+        this.closeMeWithOk(formValues);
     }
 
     onCancel = ev => {
+        this.retVal = 0; // Cancel
         this.setShowModal(false)
+        this.clearAllFields();
+        this.closeMeWithCancel();
     }
 
     render() {
         return (
-            <Modal size="regular" active={this.state.showModal} toggler={() => this.setShowModal(false)}>
-                    <ModalHeader toggler={() => this.setShowModal(false)}>
-                        <div className="dialog-title">
-                            Import Passphrase
-                        </div>
-                    </ModalHeader>
-                    <ModalBody>
-                        <input
-                            type="text"
-                            className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
-                            name="passphrase"
-                            id="passphrase"
-                            placeholder="Your passphrase"
-                            value={this.state.input.passphrase}
-                            onChange={this.handleInputChange}
-                            autoComplete="off" />
-                        <div className="mb-10">
-                            <div className="account-password-container block w-full">
-                                <input
-                                    type={this.state.showPassword ? "text" : "password"}
-                                    className="password-input border border-grey-light bg-gray-100 p-5 font-16 main-font focus:outline-none rounded "
-                                    name="password"
-                                    value={this.state.input.password}
-                                    onChange={this.handleInputChange}
-                                    onBlur={this.onLeaveFromPasswordInput}
-                                    placeholder="Password" autoComplete="off" />
-                                <i className="ShowPasswordIcon font-16" onClick={this.togglePasswordVisiblity}>{eye}</i>
-                            </div>
-                        </div>
-                        <PasswordChecklistComponent
-                            password={this.state.input['password'] || ""}
-                            confirmPassword={this.state.input['confirm_password'] || ""}
-                            hidden={this.state.hidePasswordCheckList} />
-                        <div className="mb-10">
+            <Modal 
+            size="regular" 
+            active={this.state.showModal} 
+            toggler={() => { this.onCancel(); }}
+            >
+                <ModalHeader toggler={() => this.setShowModal(false)}>
+                    <div className="dialog-title">
+                        Import Passphrase
+                    </div>
+                </ModalHeader>
+                <ModalBody>
+                    <input
+                        type="text"
+                        className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
+                        name="importing_passphrase"
+                        id="importing_passphrase"
+                        placeholder="Your passphrase"
+                        value={this.state.input.importing_passphrase}
+                        onChange={this.handleInputChange}
+                        autoComplete="off" />
+                    <div className="mb-10">
+                        <div className="account-password-container block w-full">
                             <input
-                                type="password"
-                                className="block border border-grey-light bg-gray-100 w-full p-5 font-16 main-font focus:outline-none rounded "
-                                name="confirm_password"
-                                id="confirm_password"
-                                value={this.state.input.confirm_password}
+                                type={this.state.showPassword ? "text" : "password"}
+                                className="password-input border border-grey-light bg-gray-100 p-5 font-16 main-font focus:outline-none rounded "
+                                name="new_password"
+                                value={this.state.input.new_password}
                                 onChange={this.handleInputChange}
-                                placeholder="Confirm Password" autoComplete="off" />
+                                onBlur={this.onLeaveFromPasswordInput}
+                                placeholder="Password" autoComplete="off" />
+                            <i className="ShowPasswordIcon font-16" onClick={this.togglePasswordVisiblity}>{eye}</i>
                         </div>
-                        <p className="account-balance-box main-font text-red-400 mb-100 font-16">{this.state.error}</p>
-                        <p className="help-block main-font text-green-400 font-16">{this.state.info}</p>
-                    </ModalBody>
-                    <ModalFooter>
-                        <DelayButton
-                            captionInDelay="Restoreing"
-                            caption="Restore"
-                            maxDelayInterval={30}
-                            onClickButton={this.onRestoreAccount}
-                            onClickButtonParam={null} />
-                        <Button 
-                            className="main-font dialog-button"
-                            color="red"
-                            buttonType="link"
-                            onClick={(e) => this.onCancel()}
-                            ripple="dark"
-                        >
-                            Cancel
-                        </Button>
-                    </ModalFooter>
-                </Modal>
+                    </div>
+                    <PasswordChecklistComponent
+                        password={this.state.input['new_password'] || ""}
+                        confirmPassword={this.state.input['confirm_password'] || ""}
+                        hidden={this.state.hidePasswordCheckList} />
+                    <div className="mb-10">
+                        <input
+                            type="password"
+                            className="block border border-grey-light bg-gray-100 w-full p-5 font-16 main-font focus:outline-none rounded "
+                            name="confirm_password"
+                            id="confirm_password"
+                            value={this.state.input.confirm_password}
+                            onChange={this.handleInputChange}
+                            placeholder="Confirm Password" autoComplete="off" />
+                    </div>
+                    <p className="account-balance-box main-font text-red-400 mb-100 font-16">{this.state.error}</p>
+                    <p className="help-block main-font text-green-400 font-16">{this.state.info}</p>
+                </ModalBody>
+                <ModalFooter>
+                    <DelayButton
+                        captionInDelay="Restoreing"
+                        caption="Restore"
+                        maxDelayInterval={30}
+                        onClickButton={this.onRestoreAccount}
+                        onClickButtonParam={null} />
+                    <Button 
+                        className="main-font dialog-button"
+                        color="red"
+                        buttonType="link"
+                        onClick={(e) => this.onCancel()}
+                        ripple="dark"
+                    >
+                        Cancel
+                    </Button>
+                </ModalFooter>
+            </Modal>
         );
     }
 }

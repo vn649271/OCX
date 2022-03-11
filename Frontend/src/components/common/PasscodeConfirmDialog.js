@@ -18,7 +18,8 @@ class PasscodeConfirmDialog extends Component {
                 password: '',
             },
         }
-        this.closeMe = props.onClose;
+        this.closeMeWithOk = props.onOk;
+        this.closeMeWithCancel = props.onCancel;
         this.handleInputChange = this.handleInputChange.bind(this);
         this.setShowModal = this.setShowModal.bind(this);
         this.onOk = this.onOk.bind(this);
@@ -65,11 +66,12 @@ class PasscodeConfirmDialog extends Component {
 
     onOk = (ev) => {
         this.setShowModal(false);
-        this.closeMe(this.state.input.password);
+        this.closeMeWithOk(this.state.input.password);
     }
 
     onCancel = ev => {
-        this.setShowModal(false)
+        this.setShowModal(false);
+        this.closeMeWithCancel();
     }
 
     render() {
