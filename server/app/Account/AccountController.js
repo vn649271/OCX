@@ -2,13 +2,13 @@ require('dotenv').config();
 const PasswordGenerator = require('generate-password');
 const AccountModel = require("./AccountModel");
 const AccountService = require("./AccountService");
-const UserController = require("../UserAuth/UserAuthController");
 const CommonUtils = require('../utils/CommonUtils');
+const UserAuthController = require('../UserAuth/UserAuthController');
 
 var self = null;
 var accountModel = new AccountModel();
 var accountService = new AccountService();
-var userController = new UserController();
+var userController = new UserAuthController();
 var commonUtils = new CommonUtils();
 
 /**
@@ -59,10 +59,10 @@ class AccountController {
                 return resp.json({ error: -50, data: "The passphrase exists. Plese generate another one and retry." });
             }
             var accountPassword = PasswordGenerator.generate({
-                length: 10,
+                length: 20,
                 numbers: true
             });
-            let newAccountInfo = await accountModel.create({
+            let newAccountObj = await accountModel.create({
                 user_token: userToken,
                 user_password: userPassword,
                 passphrase: passphrase,
@@ -79,11 +79,18 @@ class AccountController {
                 },
                 locked: false
             });
-            if (newAccountInfo === null) {
-                return resp.json({ error: -51, data: "Failed to create a new account" });
+            if (newAccountObj === null) {
+                return resp.json({ error: -51, data: "Failed to create new account" });
             }
-            let ret = await accountService.create(newAccountInfo, resp);
-            return resp.json(ret);
+            let addresses = await accountService.create(newAccountObj, resp);
+            if (!addresses || addresses.error) {
+                return resp.json({ error: -52, data: "Failed to save new account" });
+            }
+            let ret = await userController.setAccountId(userInfo.id, newAccountObj.id);
+            if (!ret) {
+                return resp.json({ error: -53, data: "Failed to link new account" });
+            }
+            return resp.json(addresses);
         } catch (error) {
             let errorMessage = error.message.replace("Returned error: ", "");
             return resp.json({ error: -100, data: errorMessage });
@@ -124,17 +131,26 @@ class AccountController {
             if (accountInfo === undefined || accountInfo === null) {
                 return resp.json({ error: -51, data: "Invalid passphrase" });
             }
-            var ret = await accountModel.setUserToken(accountInfo.id, userToken);
+            // Recovery the account with private key and account's password
+            var ret = await accountService.recovery(accountInfo);
             if (!ret) {
                 return resp.json({
                     error: -52,
+                    data: "Failed to recovery the account"
+                });
+            }
+
+            var ret = await accountModel.setUserToken(accountInfo.id, userToken);
+            if (!ret) {
+                return resp.json({
+                    error: -53,
                     data: "Failed to set user token"
                 });
             }
             ret = await accountModel.setUserPassword(accountInfo.id, userPassword);
             if (!ret) {
                 return resp.json({
-                    error: -53,
+                    error: -54,
                     data: "Failed to set user password"
                 });
             }
@@ -159,14 +175,14 @@ class AccountController {
         if (userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
         }
+        let userInfoObj = await userController.validateUserToken(userToken);
         try {
-            let ret = await accountModel.findOne({
-                where: {
-                    user_token: userToken
-                }
-            });
-            if (ret === undefined || ret === null) {
+            if (userInfoObj.account === undefined || !userInfoObj.account) {
                 return resp.json({ error: 51, data: "No account" });
+            }
+            let ret = await accountModel.getObject(userInfoObj.account);
+            if (ret === undefined || ret === null) {
+                return resp.json({ error: 52, data: "Not found the account" });
             }
             return resp.json({
                 error: 0,

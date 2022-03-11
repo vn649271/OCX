@@ -22,7 +22,6 @@ class UserAuthController {
         me = this;
     }
 
-
     /**
      * Internal function - Validate specified user token
      * Handle the request to resend the pin-code from client
@@ -178,6 +177,10 @@ class UserAuthController {
         }).catch(err => {
             res.json({ error: -5, message: err + " --> " + req.body.password + " ++error" });
         });
+    }
+
+    async setAccountId (userId, accountId) {
+        return await userModel.setAccountId(userId, accountId);
     }
 
     /**
