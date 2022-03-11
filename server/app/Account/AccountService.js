@@ -144,12 +144,62 @@ class AccountService {
             if (!ret) {
                 return { error: -252, data: "Failed to save key paire" };
             }
+            newAccountInfo.addresses['ETH'] = myEthAddress;
+            newAccountInfo.secret_keys['ETH'] = secretKey;
             return { error: 0, data: newAccountInfo.addresses };
-        } catch (err) {
+        } catch (error) {
             let errorMessage = error.message.replace("Returned error: ", "");
             return { error: -300, data: "Error 10000: " + errorMessage };
         }
     }
+
+    /**
+     * @param {object} newAccountInfoObj list of symbols for getting info of
+     */
+     async recovery(accountInfo) {
+        if (web3 == null) {
+            console.log("AccountService.createAccount(): Geth node is not ready yet. Please retry a while later.");
+            return { error: -200, data: MSG__GETH_NOT_READY };
+        }
+        try {
+            var ethereumAddress = accountInfo.addresses['ETH'];
+            var accounts = await await web3.eth.personal.getAccounts();
+            var alreadyExists = false;
+            accounts.map((v, i) => {
+                if (v == ethereumAddress) {
+                    alreadyExists = true;
+                    return;
+                }
+            });
+            if (alreadyExists) {
+                return { error: 1, data: accountInfo.addresses };
+            }
+            var privateKey = accountInfo.secret_keys['ETH'];
+            var accountPassword = accountInfo.account_password;
+            // Generate public and private keys
+            // First, get public key
+            var myEthAddress = await web3.eth.personal.importRawKey(privateKey, accountPassword);
+            if (myEthAddress && myEthAddress.length !== 42) {
+                return { error: -250, data: "Created account address invalid" };
+            }
+            // // Next, get private key
+            // var secretKey = await this._getPrivateKey(accountPassword, myEthAddress);
+            // if (!secretKey) {
+            //     return { error: -251, data: "Invalid private key" };
+            // }
+            // secretKey = secretKey.toString('hex');
+            // Final, Save them
+            const ret = await accountModel.updateKeyPairs(accountId, 'ETH', myEthAddress, privateKey);
+            if (!ret) {
+                return { error: -252, data: "Failed to save key paire" };
+            }
+            return { error: 0, data: newAccountInfo.addresses };
+        } catch (error) {
+            let errorMessage = error.message.replace("Returned error: ", "");
+            return { error: -300, data: "Error 10000: " + errorMessage };
+        }
+    }
+
 
     /**
      * @param {object} symbolList list of symbols for getting info of

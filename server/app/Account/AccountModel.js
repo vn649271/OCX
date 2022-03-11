@@ -23,6 +23,16 @@ Data Model
  */
 function AccountModel() {
 
+    this.getObject = async function(accountId) {
+        const snapshot = await db.collection(cllctn).doc(accountId).get();
+        if (snapshot.empty) {
+            console.info('No matching user information.');
+            return null;
+        }
+        ret = snapshot.data();
+        return ret;
+    }
+
     /**
      * Find user information document by the specified conditions
      * @param {json} jsonWhere search condition to be used

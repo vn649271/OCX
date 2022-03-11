@@ -80,6 +80,19 @@ function UserAuth() {
         const res = await userRef.update({ token: token, updated_at: now });
         return res;
     }
+
+    /**
+     * Set account id to the user information docment
+     * @param {string} userId id for the user information document to set status
+     * @param {token} token token to be set
+     */
+     this.setAccountId = async function (userId, accountId) {
+        const userRef = db.collection(cllctn).doc(userId);
+        let now = new Date();
+        const res = await userRef.update({ account: accountId, updated_at: now });
+        return res;
+    }
+
     /**
      * Set status in the specified user information docment
      * @param {string} userId id for the user information document to set status

@@ -154,6 +154,7 @@ class WalletPage extends Component {
                     this.onGeneratePassphrase(null);
                     return;
                 case 51:
+                case 52:
                     self.setState({ user_mode: NEW_USER });
                     return;
                 case -1000:
@@ -181,21 +182,22 @@ class WalletPage extends Component {
         if (self.state.user_mode !== USER_WITH_ACCOUNT) {
             return;
         }
-        let resp = await accountService.getBalance({
+        accountService.getBalance({
             userToken: self.userToken
-        });
-        var errorMsg = null;
-        if (resp.error === 0) {
-            for (let i in resp.data) {
-                self.setBalanceInUI(i, (resp.data[i] - 0).toFixed(4));
+        }).then(resp => {
+            var errorMsg = null;
+            if (resp.error === 0) {
+                for (let i in resp.data) {
+                    self.setBalanceInUI(i, (resp.data[i] - 0).toFixed(4));
+                }
+                return;
+            } else if (resp.error === -1000) {
+                errorMsg = "No response for get balance";
+            } else if (resp.error !== 0) {
+                errorMsg = resp.data
             }
-            return;
-        } else if (resp.error === -1000) {
-            errorMsg = "No response for get balance";
-        } else if (resp.error !== 0) {
-            errorMsg = resp.data
-        }
-        self.warning(errorMsg);
+            self.warning(errorMsg);
+        });
     }
 
     async startBalanceMonitor() {
@@ -203,6 +205,7 @@ class WalletPage extends Component {
             return;
         }
         this.balanceTimer = setInterval(this._startBalanceMonitor, BALANCE_CHECKING_INTERVAL);
+        this._startBalanceMonitor();
     }
 
     setEncryptKey(encryptKey) {
