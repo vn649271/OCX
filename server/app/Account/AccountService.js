@@ -478,12 +478,21 @@ class AccountService {
                 return { error: -250, data: "Failed to unlock for swapping" };
             }
             const erc20TokenTransact = new ERC20TokenTransact(web3, myAddress);
+            ret = await erc20TokenTransact.getBestPrice({
+                sellSymbol: sellSymbol,
+                sellAmount: sellAmount,
+                buySymbol: buySymbol,
+            });
+            if (!ret || ret.data === undefined) {
+                return { error: -251, data: "Failed to calculate minimum amount out" };
+            }
             if (sellSymbol === 'ETH') {
                 ret = await erc20TokenTransact.swapEthForToken(
                     {
                         sellSymbol: sellSymbol,
                         sellAmount: sellAmount,
                         buySymbol: buySymbol,
+                        buyAmountMin: ret.data,
                         acceptableMinRate: acceptableMinRate,
                         deadline: deadline
                     }

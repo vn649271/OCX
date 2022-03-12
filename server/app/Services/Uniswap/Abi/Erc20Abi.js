@@ -33,7 +33,7 @@ const OpenchainContractAbi = [
         "type":"function"
     }
 ];
-const OpenchainContractAddress = "0x60549C0FF07d2eb75224C8181c4eD49eC144e370"; 
+const OpenchainContractAddress = "0xf9A7A80793122252260A06e4661AaE3a91435986"; // "0x60549C0FF07d2eb75224C8181c4eD49eC144e370"; 
 
 // Uniswap V3: https://docs.uniswap.org/protocol/concepts/governance/overview#uni-address
 //      "UNI": "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
@@ -52,6 +52,5 @@ module.exports = {
     Erc20TokenABI,
     UniswapV2Router02Address,
     OpenchainContractAddress,
-    OpenchainContractAbi,
     GoerliTokenAddress
 };
