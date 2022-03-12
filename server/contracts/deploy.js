@@ -28,7 +28,7 @@ if (process.platform.search('win32') >= 0) {
     ipcPath = "\\\\.\\pipe\\geth.ipc";
 }
 
-const myEthAddress = "0xc26de4dd0a5ccff5ee47f20b67e1f6adac53ad1f";
+const myEthAddress = "0xADB366C070DFB857DC63ebF797EFE615B0567C1B";
 var myPasswd = "";
 
 const BUILD_LIST = require("./build.json");

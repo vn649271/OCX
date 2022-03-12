@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@studydefi/money-legos": "^2.4.2",
+    "@truffle/hdwallet-provider": "^2.0.4",
     "@uniswap/v2-periphery": "^1.1.0-beta.0",
     "@uniswap/v3-periphery": "^1.4.0",
     "autoprefixer": "^9.8.6",
