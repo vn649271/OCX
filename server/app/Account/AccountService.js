@@ -503,6 +503,7 @@ class AccountService {
                         sellSymbol: sellSymbol,
                         sellAmount: sellAmount,
                         buySymbol: buySymbol,
+                        buyAmountMin: ret.data,
                         acceptableMinRate: acceptableMinRate,
                         deadline: deadline
                     }
