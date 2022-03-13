@@ -17,7 +17,7 @@ const Erc20TokenABI = [
 // https://docs.uniswap.org/protocol/V2/reference/smart-contracts/router-02#Address
 const UniswapV2Router02Address = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
 
-const OpenchainContractAddress = "0x69FCba97EF0C31da9897dB9128C0592875F30d64"; // "0x60549C0FF07d2eb75224C8181c4eD49eC144e370"; 
+const OpenchainContractAddress = "0xaF5775443bD338A3C07186f706086F3672B9c947"; // "0x60549C0FF07d2eb75224C8181c4eD49eC144e370"; 
 
 // Uniswap V3: https://docs.uniswap.org/protocol/concepts/governance/overview#uni-address
 //      "UNI": "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
@@ -27,7 +27,7 @@ const OpenchainContractAddress = "0x69FCba97EF0C31da9897dB9128C0592875F30d64"; /
 const GoerliTokenAddress = {
     // https://docs.uniswap.org/protocol/reference/deployments
     "WETH": "0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6",
-    "UNI": "0x6Be1a99C215872Cea33217B0f4bAd63f186ddFac", //"0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984
+    "UNI": "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984", //"0x6Be1a99C215872Cea33217B0f4bAd63f186ddFac", 0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984
     // https://explorer.bitquery.io/ru/goerli/token/0x5d3a895cbb0b04e2ee5348ac42fd7da24c1fb4f6
     "DAI": "0xdc31ee1784292379fbb2964b3b9c4124d8f89c60" // 0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844
 }
