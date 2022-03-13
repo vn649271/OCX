@@ -39,46 +39,6 @@ class ERC20TokenTransact {
         }
     }
 
-    async swapEthForToken(params) {
-        try {
-            const WETH_ADDRESS = GoerliTokenAddress['WETH'];
-            const erc20TokenAddress = GoerliTokenAddress[params.buySymbol];
-            const path = [WETH_ADDRESS, erc20TokenAddress];
-            // const uniRouter02 = new this.web3.eth.Contract(IRouter.abi, UniswapV2Router02Address)
-            const uniRouter02 = new this.web3.eth.Contract(openchainContractAbi, OpenchainContractAddress)
-            const sellAmountInHex = this.web3.utils.toHex(params.sellAmount);
-            const buyAmountInHex = this.web3.utils.toHex(params.buyAmountMin); // 10 DAI at least
-
-            // const ret = await uniRouter02.methods.swapExactETHForTokens(
-            //     0,
-            //     path,
-            //     this.myAddress,
-            //     params.deadline
-            // ).send({
-            //     from: this.myAddress,
-            //     value: sellAmountInHex
-            // })
-            const ret = await uniRouter02.methods.swapETH(
-                erc20TokenAddress,
-                buyAmountInHex,
-                this.myAddress,
-                params.deadline
-            ).send({
-                from: this.myAddress,
-                value: sellAmountInHex
-            })
-            return { error: 0, data: ret };
-        }
-        catch (error) {
-            var errMsg = error ?
-                error.message ?
-                    error.message.replace('Returned error: ', '') :
-                    "Unknown error in send transaction for swap" :
-                error;
-            return { error: -400, data: errMsg };
-        }
-    }
-
     async getBestPrice(params) {
         if (params.sellSymbol === params.buySymbol) {
             return { error: -1, data: "Illegal operation. Selling token must be different than token to buy" };
@@ -111,38 +71,63 @@ class ERC20TokenTransact {
         }
     }
 
-    async swapTokenForEth(params) {
+    async swapEthForToken(params) {
         try {
             const WETH_ADDRESS = GoerliTokenAddress['WETH'];
+            const erc20TokenAddress = GoerliTokenAddress[params.buySymbol];
+            const path = [WETH_ADDRESS, erc20TokenAddress];
+            // const uniRouter02 = new this.web3.eth.Contract(IRouter.abi, UniswapV2Router02Address)
+            const openchainSwap = new this.web3.eth.Contract(openchainContractAbi, OpenchainContractAddress);
+            const sellAmountInHex = this.web3.utils.toHex(params.sellAmount);
+            const buyAmountInHex = this.web3.utils.toHex(params.buyAmountMin);
+
+            let ret = await openchainSwap.methods.swapFromETH(
+                erc20TokenAddress,
+                buyAmountInHex,
+                params.deadline
+            ).send({
+                from: this.myAddress,
+                value: sellAmountInHex
+            })
+            return { error: 0, data: ret };
+        }
+        catch (error) {
+            var errMsg = error ?
+                error.message ?
+                    error.message.replace('Returned error: ', '') :
+                    "Unknown error in send transaction for swap" :
+                error;
+            return { error: -400, data: errMsg };
+        }
+    }
+
+    async swapTokenForEth(params) {
+        try {
+            const openchainSwap = new this.web3.eth.Contract(openchainContractAbi, OpenchainContractAddress);
             const erc20TokenAddress = GoerliTokenAddress[params.sellSymbol];
-            const path = [erc20TokenAddress, WETH_ADDRESS];
-            const sellAmount = this.web3.utils.toHex(params.sellAmount);
+            const sellAmountInHex = this.web3.utils.toHex(params.sellAmount);
+            const buyAmountInHex = this.web3.utils.toHex(params.buyAmountMin);
             let ret = null;
 
-            const uniRouter02 = new this.web3.eth.Contract(IRouter.abi, UniswapV2Router02Address)
-
-            const amountsOut = await uniRouter02.methods.getAmountsOut(sellAmount, path).call();
-            const amountOutMin = this.web3.utils.toBN(amountsOut[1])
-                .mul(this.web3.utils.toBN(100 - SLIPPAGE_MAX))
-                .div(this.web3.utils.toBN(100))
-                .toString();
-            const minBuyAmount = this.web3.utils.toHex(amountOutMin);
-
-            const tokenContract = new this.web3.eth.Contract(Erc20TokenABI, erc20TokenAddress)
-            ret = await tokenContract.methods.approve(UniswapV2Router02Address, sellAmount)
+            const tokenContract = new this.web3.eth.Contract(Erc20TokenABI, erc20TokenAddress);
+            ret = await tokenContract.methods.approve(OpenchainContractAddress, sellAmountInHex)
                 .send({
                     from: this.myAddress,
                 });
-
-            ret = await uniRouter02.methods.swapExactTokensForETH(
-                sellAmount, minBuyAmount,
-                path,
-                this.myAddress,
+            if (!ret) {
+                return { error: -250, data: "Failed to approve the ERC20 token for the contract" };
+            }
+            ret = await openchainSwap.methods.swapToETH(
+                erc20TokenAddress,
+                sellAmountInHex,
+                buyAmountInHex,
                 params.deadline
-            )
-                .send({
-                    from: this.myAddress,
-                })
+            ).send({
+                from: this.myAddress
+            })
+            if (!ret) {
+                return { error: -251, data: "Failed to swap from ERC20 token to ETH" };
+            }
             console.log(`Transaction hash: ${ret.transactionHash}`);
             return { error: 0, data: ret };
         }
@@ -161,7 +146,7 @@ class ERC20TokenTransact {
             const sellTokenAddress = GoerliTokenAddress[params.sellSymbol];
             const buyTokenAddress = GoerliTokenAddress[params.buySymbol];
             const path = [sellTokenAddress, buyTokenAddress];
-            const sellAmount = this.web3.utils.toHex(params.sellAmount);
+            const sellAmountInHex = this.web3.utils.toHex(params.sellAmount);
             let ret = null;
             const uniRouter02 = new this.web3.eth.Contract(IRouter.abi, UniswapV2Router02Address); //, params.signer
 
@@ -170,23 +155,42 @@ class ERC20TokenTransact {
                 .mul(this.web3.utils.toBN(100 - SLIPPAGE_MAX))
                 .div(this.web3.utils.toBN(100))
                 .toString();
-            const minBuyAmount = this.web3.utils.toHex(amountOutMin);
+            const buyAmountMinInHex = this.web3.utils.toHex(amountOutMin);
 
-            const tokenContract = new this.web3.eth.Contract(Erc20TokenABI, sellTokenAddress)
-            ret = await tokenContract.methods.approve(UniswapV2Router02Address, sellAmount)
+            const sellTokenContract = new this.web3.eth.Contract(Erc20TokenABI, sellTokenAddress)
+            // ret = await sellTokenContract.methods.approve(UniswapV2Router02Address, sellAmountInHex)
+            //     .send({
+            //         from: this.myAddress,
+            //     });
+
+            // ret = await uniRouter02.methods.swapExactTokensForTokens(
+            //     sellAmountInHex,
+            //     buyAmountMinInHex,
+            //     path,
+            //     this.myAddress,
+            //     params.deadline
+            // ).send({
+            //     from: this.myAddress,
+            // });
+            ret = await sellTokenContract.methods.approve(OpenchainContractAddress, sellAmountInHex)
                 .send({
                     from: this.myAddress,
                 });
-
-            ret = await uniRouter02.methods.swapExactTokensForTokens(
-                sellAmount,
-                minBuyAmount,
-                path,
-                this.myAddress,
+            if (!ret) {
+                return { error: -250, data: "Failed to approve the ERC20 token for the contract" };
+            }
+            ret = await openchainSwap.methods.swapForERC20(
+                sellTokenAddress,
+                sellAmountInHex,
+                buyTokenAddress,
+                buyAmountMinInHex,
                 params.deadline
             ).send({
-                from: this.myAddress,
-            });
+                from: this.myAddress
+            })
+            if (!ret) {
+                return { error: -251, data: "Failed to swap from ERC20 token to ETH" };
+            }
             return { error: 0, data: ret };
         }
         catch (error) {

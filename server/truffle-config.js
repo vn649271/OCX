@@ -75,7 +75,7 @@ module.exports = {
       provider: () => new HDWalletProvider(mnemonic, `http://127.0.0.1:8545`),
       // host: "127.0.0.1",     // Localhost (default: none)
       // port: 8545,            // Standard Ethereum port (default: none)
-      network_id: "*",       // Any network (default: none)
+      network_id: "5",       // Any network (default: none)
       gas: 4465030,             // Gas for goerli
       gasPrice: 10000000000,
       confirmations: 2,    // # of confs to wait between deployments. (default: 0)
@@ -94,7 +94,12 @@ module.exports = {
   mocha: {
     // timeout: 100000
   },
-
+  plugins: [
+    'truffle-plugin-verify'
+  ],
+  api_keys: {
+    etherscan: '176SIW38GNBFI7TMP9473PJVIJU3TSQYZV'
+  },
   // Configure your compilers
   compilers: {
     solc: {
