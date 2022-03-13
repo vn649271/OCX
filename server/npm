@@ -1,0 +1,5 @@
+
+> openchainx-backend@0.1.0 deploy-contract
+> echo OpenchainContract@`truffle migrate --network goerli | grep 'contract address:' | awk '{ print $4 }'` "run" "verify-contract"
+
+OpenchainContract@0x55aBcaE6460E24C5C18b34fad1f7e45deEeebC99 run verify-contract
