@@ -45,17 +45,23 @@ class ERC20TokenTransact {
         }
         try {
             const WETH_ADDRESS = GoerliTokenAddress['WETH'];
-            let erc20TokenAddress = GoerliTokenAddress[params.sellSymbol];
-            let path = [erc20TokenAddress, WETH_ADDRESS];
-            if (params.sellSymbol === "ETH" && params.buySymbol !== "ETH") {
-                erc20TokenAddress = GoerliTokenAddress[params.buySymbol];
-                path = [WETH_ADDRESS, erc20TokenAddress];
+            let sellTokenAddress = GoerliTokenAddress[params.sellSymbol];
+            let buyTokenAddress = GoerliTokenAddress[params.buySymbol];
+            let path = [];
+            if (params.sellSymbol !== "ETH" && params.buySymbol !== "ETH") {
+                path = [sellTokenAddress, WETH_ADDRESS, buyTokenAddress];
+            } else if (params.sellSymbol === "ETH" && params.buySymbol !== "ETH") {
+                path = [WETH_ADDRESS, buyTokenAddress];
+            } else if (params.sellSymbol !== "ETH" && params.buySymbol === "ETH") {
+                path = [sellTokenAddress, WETH_ADDRESS];
+            } else {
+                return { error: -2, data: "Illegal Swap Pair. Selling token must be different than token to buy" };
             }
             const sellAmount = this.web3.utils.toHex(params.sellAmount);
 
             const uniRouter02 = new this.web3.eth.Contract(IRouter.abi, UniswapV2Router02Address)
             const amountsOut = await uniRouter02.methods.getAmountsOut(sellAmount, path).call();
-            const amountOutMin = this.web3.utils.toBN(amountsOut[1])
+            const amountOutMin = this.web3.utils.toBN(amountsOut[amountsOut.length - 1])
                 .mul(this.web3.utils.toBN(100 - SLIPPAGE_MAX))
                 .div(this.web3.utils.toBN(100))
                 .toString();
@@ -143,35 +149,18 @@ class ERC20TokenTransact {
 
     async swapTokenForToken(params) {
         try {
+            const openchainSwap = new this.web3.eth.Contract(openchainContractAbi, OpenchainContractAddress);
             const sellTokenAddress = GoerliTokenAddress[params.sellSymbol];
             const buyTokenAddress = GoerliTokenAddress[params.buySymbol];
             const path = [sellTokenAddress, buyTokenAddress];
             const sellAmountInHex = this.web3.utils.toHex(params.sellAmount);
             let ret = null;
-            const uniRouter02 = new this.web3.eth.Contract(IRouter.abi, UniswapV2Router02Address); //, params.signer
 
-            const amountsOut = await uniRouter02.methods.getAmountsOut(sellAmount, path).call();
-            const amountOutMin = this.web3.utils.toBN(amountsOut[1])
-                .mul(this.web3.utils.toBN(100 - SLIPPAGE_MAX))
-                .div(this.web3.utils.toBN(100))
-                .toString();
-            const buyAmountMinInHex = this.web3.utils.toHex(amountOutMin);
+            // const buyAmountMinInHex = this.web3.utils.toHex(params.buyAmountMin);
+            const buyAmountMinInHex = this.web3.utils.toHex("0");
 
             const sellTokenContract = new this.web3.eth.Contract(Erc20TokenABI, sellTokenAddress)
-            // ret = await sellTokenContract.methods.approve(UniswapV2Router02Address, sellAmountInHex)
-            //     .send({
-            //         from: this.myAddress,
-            //     });
 
-            // ret = await uniRouter02.methods.swapExactTokensForTokens(
-            //     sellAmountInHex,
-            //     buyAmountMinInHex,
-            //     path,
-            //     this.myAddress,
-            //     params.deadline
-            // ).send({
-            //     from: this.myAddress,
-            // });
             ret = await sellTokenContract.methods.approve(OpenchainContractAddress, sellAmountInHex)
                 .send({
                     from: this.myAddress,

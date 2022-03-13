@@ -100,10 +100,8 @@ contract OpenchainContract {
         uint _deadline
     ) public {
         // transferFrom
-        IERC20 sellTokenContract = IERC20(_tokenIn);
-        IERC20 buyTokenContract = IERC20(_tokenOut);
-        //     Check for allowance
-        uint256 allowance = sellTokenContract.allowance(msg.sender, address(this));
+        //    Check for allowance
+        uint256 allowance = IERC20(_tokenIn).allowance(msg.sender, address(this));
         string memory errorText = Strings.toString(allowance);
         errorText = strConcat("Not enough allowance for the ERC20 token. allowance: ", errorText);
         require(allowance >= _amountIn, errorText);
@@ -111,12 +109,15 @@ contract OpenchainContract {
         TransferHelper.safeTransferFrom(_tokenIn, msg.sender, address(this), _amountIn);
 
         // approve
-        require(sellTokenContract.approve(address(UNISWAP_ROUTER_ADDRESS), _amountIn), 'approve for the router failed.');
+        require(
+            IERC20(_tokenIn).approve(address(UNISWAP_ROUTER_ADDRESS), _amountIn), 
+            'approve for the router failed.'
+        );
 
         address[] memory path = new address[](3);
-        path[0] = address(_tokenIn);
+        path[0] = _tokenIn;
         path[1] = uniswapRouter.WETH();
-        path[2] = address(_tokenOut);
+        path[2] = _tokenOut;
         uniswapRouter.swapExactTokensForTokens(_amountIn, _amountOutMin, path, msg.sender, _deadline);
     }
 }
