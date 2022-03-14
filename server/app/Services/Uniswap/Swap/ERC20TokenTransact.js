@@ -6,7 +6,7 @@ const openchainContractAbi = OpenchainContractAbi.abi;
 
 const { 
     Erc20TokenABI,
-    OpenchainContractAddress,
+    ERC20SwapAddress,
     UniswapV2Router02Address, 
     GoerliTokenAddress 
 } = require("../Abi/Erc20Abi");
@@ -83,7 +83,7 @@ class ERC20TokenTransact {
             const erc20TokenAddress = GoerliTokenAddress[params.buySymbol];
             const path = [WETH_ADDRESS, erc20TokenAddress];
             // const uniRouter02 = new this.web3.eth.Contract(IRouter.abi, UniswapV2Router02Address)
-            const openchainSwap = new this.web3.eth.Contract(openchainContractAbi, OpenchainContractAddress);
+            const openchainSwap = new this.web3.eth.Contract(openchainContractAbi, ERC20SwapAddress);
             const sellAmountInHex = this.web3.utils.toHex(params.sellAmount);
             const buyAmountInHex = this.web3.utils.toHex(params.buyAmountMin);
 
@@ -109,14 +109,14 @@ class ERC20TokenTransact {
 
     async swapTokenForEth(params) {
         try {
-            const openchainSwap = new this.web3.eth.Contract(openchainContractAbi, OpenchainContractAddress);
+            const openchainSwap = new this.web3.eth.Contract(openchainContractAbi, ERC20SwapAddress);
             const erc20TokenAddress = GoerliTokenAddress[params.sellSymbol];
             const sellAmountInHex = this.web3.utils.toHex(params.sellAmount);
             const buyAmountInHex = this.web3.utils.toHex(params.buyAmountMin);
             let ret = null;
 
             const tokenContract = new this.web3.eth.Contract(Erc20TokenABI, erc20TokenAddress);
-            ret = await tokenContract.methods.approve(OpenchainContractAddress, sellAmountInHex)
+            ret = await tokenContract.methods.approve(ERC20SwapAddress, sellAmountInHex)
                 .send({
                     from: this.myAddress,
                 });
@@ -149,7 +149,7 @@ class ERC20TokenTransact {
 
     async swapTokenForToken(params) {
         try {
-            const openchainSwap = new this.web3.eth.Contract(openchainContractAbi, OpenchainContractAddress);
+            const openchainSwap = new this.web3.eth.Contract(openchainContractAbi, ERC20SwapAddress);
             const sellTokenAddress = GoerliTokenAddress[params.sellSymbol];
             const buyTokenAddress = GoerliTokenAddress[params.buySymbol];
             const path = [sellTokenAddress, buyTokenAddress];
@@ -161,7 +161,7 @@ class ERC20TokenTransact {
 
             const sellTokenContract = new this.web3.eth.Contract(Erc20TokenABI, sellTokenAddress)
 
-            ret = await sellTokenContract.methods.approve(OpenchainContractAddress, sellAmountInHex)
+            ret = await sellTokenContract.methods.approve(ERC20SwapAddress, sellAmountInHex)
                 .send({
                     from: this.myAddress,
                 });
@@ -183,6 +183,35 @@ class ERC20TokenTransact {
             return { error: 0, data: ret };
         }
         catch (error) {
+            var errMsg = error ?
+                error.message ?
+                    error.message.replace('Returned error: ', '') :
+                    "Unknown error in send transaction for swap" :
+                error;
+            return { error: -400, data: errMsg };
+        }
+    }
+    
+    mintPawnNft = async params => {
+        let owner = params ? params.owner ? params.owner : null : null;
+        if (!owner) {
+            return { error: -1, data: "Invalid owner" };
+        }
+        let pawningData = params ? params.data ? params.data : null : null;
+        if (!pawningData) {
+            return { error: -2, data: "Invalid pawning data" };
+        }
+        try {
+            const pawnNftContract = new this.web3.eth.Contract(pawnNftAbi, PawnNftAddress);
+            ret = await pawnNftContract.methods.mint(owner, pawningData).send({
+                from: this.myAddress
+            })
+            if (!ret) {
+                return { error: -251, data: "Failed to mint pawning NFT" };
+            }
+            return { error: 0, data: ret };
+
+        } catch (error) {
             var errMsg = error ?
                 error.message ?
                     error.message.replace('Returned error: ', '') :

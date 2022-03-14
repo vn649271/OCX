@@ -527,6 +527,29 @@ class AccountService {
             return { error: -300, data: errorMessage };
         }
     }
+
+    mintPawnNft = async params => {
+        var accountInfo = params ? params.accountInfo ? params.accountInfo : null : null;
+        if (accountInfo.addresses == undefined || accountInfo.addresses == {}) {
+            return { error: -201, data: "No account for you" };
+        }
+        var addresses = accountInfo.addresses;
+        if (addresses['ETH'] === undefined || addresses['ETH'] === null) {
+            return { error: -206, data: "Invalid your address for swapping" };
+        }
+        var myAddress = addresses['ETH'];
+        // Get Uri for uploaded item
+        var itemUri = params ? params.itemUri : null;
+
+        const erc20TokenTransact = new ERC20TokenTransact(web3, myAddress);
+        try {
+            let ret = await erc20TokenTransact.mintPawnNft({owner: myAddress, data: itemUri});
+            return { error: 0, data: ret };
+        } catch (error) {
+            let errorMessage = error.message.replace("Returned error: ", "");
+            return { error: -300, data: errorMessage };
+        }
+    }
 };
 
 module.exports = AccountService;

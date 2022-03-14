@@ -19,14 +19,9 @@
  */
 
 const HDWalletProvider = require('@truffle/hdwallet-provider');
-const Web3 = require('web3');
-const net = require('net');
 const fs = require('fs');
 const mnemonic = fs.readFileSync(".secret").toString().trim();
-
-const ipcPath = '/home/vn/.ethereum/goerli/geth.ipc';
-
-const gethProvider = new HDWalletProvider(mnemonic, `http://127.0.0.1:8545`);
+const mnemonic_development = fs.readFileSync(".secret-ganache").toString().trim();
 
 module.exports = {
   /**
@@ -47,9 +42,8 @@ module.exports = {
     // options below to some value.
     //
     development: {
-     host: "127.0.0.1",     // Localhost (default: none)
-     port: 7545,            // Standard Ethereum port (default: none)
-     network_id: "*",       // Any network (default: none)
+      provider: () => new HDWalletProvider(mnemonic_development, `http://127.0.0.1:7545`),
+      network_id: "5777",       // Any network (default: none)
     },
     // Another network with more advanced options...
     // advanced: {
@@ -71,10 +65,7 @@ module.exports = {
       skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
     },
     goerli: {
-      // provider: () =>  new Web3.providers.IpcProvider(ipcPath, net),
       provider: () => new HDWalletProvider(mnemonic, `http://127.0.0.1:8545`),
-      // host: "127.0.0.1",     // Localhost (default: none)
-      // port: 8545,            // Standard Ethereum port (default: none)
       network_id: "5",       // Any network (default: none)
       gas: 4465030,             // Gas for goerli
       gasPrice: 10000000000,

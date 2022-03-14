@@ -17,7 +17,8 @@ const Erc20TokenABI = [
 // https://docs.uniswap.org/protocol/V2/reference/smart-contracts/router-02#Address
 const UniswapV2Router02Address = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
 
-const OpenchainContractAddress = "0xaF5775443bD338A3C07186f706086F3672B9c947"; // "0x60549C0FF07d2eb75224C8181c4eD49eC144e370"; 
+const ERC20SwapAddress = "0xF250AF655EB54111fC9853a0c19a8520f6887CAd"; // "0x60549C0FF07d2eb75224C8181c4eD49eC144e370"; 
+const PawnNFTAddress = "0x8061C32cBa2B39bA3c440acbFcD09f1296d757C6";
 
 // Uniswap V3: https://docs.uniswap.org/protocol/concepts/governance/overview#uni-address
 //      "UNI": "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
@@ -35,6 +36,6 @@ const GoerliTokenAddress = {
 module.exports = {
     Erc20TokenABI,
     UniswapV2Router02Address,
-    OpenchainContractAddress,
+    ERC20SwapAddress,
     GoerliTokenAddress
 };
