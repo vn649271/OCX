@@ -30,7 +30,7 @@ contract PawnExchange{
         uint amountSellPrice;
     }
     
-    mapping (address=>Token) tokenList;
+    mapping (address=> Token) tokenList;
     
     mapping (address => uint) ethBalance;
     

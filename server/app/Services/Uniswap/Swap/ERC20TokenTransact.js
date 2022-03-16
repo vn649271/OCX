@@ -1,7 +1,7 @@
 const IRouter = require('@uniswap/v2-periphery/build/IUniswapV2Router02.json')
 // const erc20 = require("@studydefi/money-legos/erc20")
 // const uniswap = require("@studydefi/money-legos/uniswap")
-const OpenchainContractAbi = require('../../../../build/contracts/OpenchainContract.json');
+const OpenchainContractAbi = require('../../../../build/contracts/ERC20Swap.json');
 const openchainContractAbi = OpenchainContractAbi.abi;
 
 const { 
@@ -10,6 +10,7 @@ const {
     UniswapV2Router02Address, 
     GoerliTokenAddress 
 } = require("../Abi/Erc20Abi");
+
 const EthereumTx = require('ethereumjs-tx').Transaction;
 
 const DEFAULT_DEADLINE = 300;   // 300s = 5min

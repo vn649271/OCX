@@ -29,15 +29,29 @@ export default class DropdownList extends Component {
     }
 
     render() {
-        let selectedIcon = this.state.selectedItem ? this.state.selectedItem.iconUrl: "";
+        let selectedIcon = 
+            this.state.selectedItem ? 
+                this.state.selectedItem.iconUrl ? 
+                    <img 
+                        width="24px" 
+                        src={this.state.selectedItem.iconUrl} 
+                        color="text" 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        className="inline-block sc-bdnxRM kDWlca"
+                    ></img>
+                : ""
+            : "";
         let selectedText = this.state.selectedItem ? this.state.selectedItem.title: "";
+        if (selectedText == "" && this.props.placeholder && this.props.placeholder !== "") {
+            selectedText = this.props.placeholder;
+        }
         return (
             <Menu as="div" className="relative inline-block text-left">
                 <div>                
-                    <Menu.Button className="inline-flex justify-center w-full shadow-sm px-4 py-2 bg-white main-font font-18 main-color text-gray-700 hover:bg-gray-50">
-                        <img width="24px" src={selectedIcon} alt={selectedText} color="text" xmlns="http://www.w3.org/2000/svg" className="sc-bdnxRM kDWlca"></img>
-                        <p className="pl-5">{selectedText}</p>
-                        <ChevronDownIcon className="-mr-1 ml-5 mt-3 h-5 w-5" aria-hidden="true" />
+                    <Menu.Button className="justify-center w-full shadow-sm px-4 py-2 bg-white main-font font-16 text-gray-500 hover:bg-gray-50">
+                        {selectedIcon}
+                        <p className="inline-flex pl-5 main-font main-color" text-align="right">{selectedText}</p>
+                        <ChevronDownIcon className="inline-flex -mr-1 ml-5 h-5 w-5" aria-hidden="true" />
                     </Menu.Button>
                 </div>
                 <Menu.Items className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none">
@@ -53,7 +67,11 @@ export default class DropdownList extends Component {
                                         )}
                                         onClick={this.onItemClicked}
                                     >
-                                        <img width="24px" src={value.iconUrl} alt={value.title} color="text" xmlns="http://www.w3.org/2000/svg" className="sc-bdnxRM kDWlca inline-block"></img>
+                                        {
+                                            value.iconUrl?
+                                                <img width="24px" src={value.iconUrl} alt={value.title} color="text" xmlns="http://www.w3.org/2000/svg" className="sc-bdnxRM kDWlca inline-block"></img>
+                                            : ""
+                                        }
                                         <p className="inline-block pl-5">{value.title}</p>
                                     </li>
                                 )}
