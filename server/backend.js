@@ -1,4 +1,5 @@
 var express = require("express");
+const fileupload = require("express-fileupload");
 var cors = require("cors");
 var bodyParser = require("body-parser");
 var app = express();
@@ -7,8 +8,10 @@ require('dotenv').config();
 
 var port = process.env.BACKEND_PORT;
 
-app.use(bodyParser.json());
 app.use(cors());
+app.use(fileupload());
+app.use(express.static("files"));
+app.use(bodyParser.json());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -25,6 +28,12 @@ var Account = require("./app/routes/Account");
 app.use("/api/account", Account);
 
 /**
+ * Router for pawnshop management
+ */
+ var Pawnshop = require("./app/routes/Pawnshop");
+ app.use("/api/pawnshop", Pawnshop);
+ 
+ /**
  * Router for recaptcha
  */
 var recaptchaRouter = require('./app/routes/Recaptcha');

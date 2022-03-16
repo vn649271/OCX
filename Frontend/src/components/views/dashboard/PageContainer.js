@@ -8,7 +8,7 @@ import HomeDashPage from './HomeDashPage';
 import GamePage from './GamePage';
 import HelpPage from './HelpPage';
 import PaymentPage from './PaymentPage';
-import ShopPage from './ShopPage';
+import PawnShopPage from './PawnShopPage';
 
 class PageContainer extends Component {
 
@@ -49,7 +49,7 @@ class PageContainer extends Component {
                     this.setState({ currentPageComponent: <PaymentPage /> });
                     break;
                 case 'shop-page':
-                    this.setState({ currentPageComponent: <ShopPage /> });
+                    this.setState({ currentPageComponent: <PawnShopPage /> });
                     break;
                 default:
                     break;

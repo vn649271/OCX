@@ -41,7 +41,7 @@ module.exports = {
     // tab if you use this network and you must also set the `host`, `port` and `network_id`
     // options below to some value.
     //
-    development: {
+    ganache: {
       provider: () => new HDWalletProvider(mnemonic_development, `http://127.0.0.1:7545`),
       network_id: "5777",       // Any network (default: none)
     },
