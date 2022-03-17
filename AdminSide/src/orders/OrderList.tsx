@@ -62,19 +62,19 @@ interface TabbedDatagridProps extends DatagridProps {}
 
 const useGetTotals = (filterValues: any) => {
     const { total: totalOrdered } = useGetList(
-        'commands',
+        'pawnshop',
         { perPage: 1, page: 1 },
         { field: 'id', order: 'ASC' },
         { ...filterValues, status: 'ordered' }
     );
     const { total: totalDelivered } = useGetList(
-        'commands',
+        'pawnshop',
         { perPage: 1, page: 1 },
         { field: 'id', order: 'ASC' },
         { ...filterValues, status: 'delivered' }
     );
     const { total: totalCancelled } = useGetList(
-        'commands',
+        'pawnshop',
         { perPage: 1, page: 1 },
         { field: 'id', order: 'ASC' },
         { ...filterValues, status: 'cancelled' }
@@ -179,11 +179,11 @@ const TabbedDatagrid = (props: TabbedDatagridProps) => {
                                     source="customer_id"
                                     reference="customers"
                                     link={false}
-                                    label="resources.commands.fields.address"
+                                    label="resources.pawnshop.fields.address"
                                 >
                                     <AddressField />
                                 </ReferenceField>
-                                <NbItemsField />
+                                {/* <NbItemsField /> */}
                                 <NumberField
                                     source="total"
                                     options={{
@@ -207,11 +207,11 @@ const TabbedDatagrid = (props: TabbedDatagridProps) => {
                                     source="customer_id"
                                     reference="customers"
                                     link={false}
-                                    label="resources.commands.fields.address"
+                                    label="resources.pawnshop.fields.address"
                                 >
                                     <AddressField />
                                 </ReferenceField>
-                                <NbItemsField />
+                                {/* <NbItemsField /> */}
                                 <NumberField
                                     source="total"
                                     options={{
@@ -236,11 +236,11 @@ const TabbedDatagrid = (props: TabbedDatagridProps) => {
                                     source="customer_id"
                                     reference="customers"
                                     link={false}
-                                    label="resources.commands.fields.address"
+                                    label="resources.pawnshop.fields.address"
                                 >
                                     <AddressField />
                                 </ReferenceField>
-                                <NbItemsField />
+                                {/* <NbItemsField /> */}
                                 <NumberField
                                     source="total"
                                     options={{

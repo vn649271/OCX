@@ -59,7 +59,7 @@ const Dashboard = () => {
     const fetchOrders = useCallback(async () => {
         const aMonthAgo = subDays(new Date(), 30);
         const { data: recentOrders } = await dataProvider.getList<Order>(
-            'commands',
+            'pawnshop',
             {
                 filter: { date_gte: aMonthAgo.toISOString() },
                 sort: { field: 'date', order: 'DESC' },
