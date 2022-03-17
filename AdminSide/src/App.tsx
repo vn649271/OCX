@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Admin, Resource } from 'react-admin';
+import { fetchUtils, Admin, Resource } from 'react-admin';
 import polyglotI18nProvider from 'ra-i18n-polyglot';
 
 import authProvider from './authProvider';
@@ -16,6 +16,8 @@ import invoices from './invoices';
 import categories from './categories';
 import reviews from './reviews';
 import dataProviderFactory from './dataProvider';
+import simpleRestProvider from 'ra-data-simple-rest';
+import Constants from './Constants';
 
 const i18nProvider = polyglotI18nProvider(locale => {
     // if (locale === 'fr') {
@@ -26,13 +28,24 @@ const i18nProvider = polyglotI18nProvider(locale => {
     return englishMessages;
 }, 'en');
 
+const httpClient = (url: string, options: any = {}) => {
+    if (!options.headers) {
+        options.headers = new Headers({ Accept: 'application/json' });
+    }
+    // add your own headers here
+    options.headers.set('X-Custom-Header', 'foobar');
+    options.headers.set('Content-Range', 'pawnshop 0-2/3');
+    return fetchUtils.fetchJson(url, options);
+};
+
+const dataProvider = simpleRestProvider(Constants.API_BASE_URL, httpClient);
+
+
 const App = () => {
     return (
         <Admin
             title=""
-            dataProvider={dataProviderFactory(
-                process.env.REACT_APP_DATA_PROVIDER || ''
-            )}
+            dataProvider={dataProvider}
             customReducers={{ theme: themeReducer }}
             customRoutes={customRoutes}
             authProvider={authProvider}
@@ -44,7 +57,7 @@ const App = () => {
         >
             <Resource name="customers" {...visitors} />
             <Resource
-                name="commands"
+                name="pawnshop"
                 {...orders}
                 options={{ label: 'Orders' }}
             />

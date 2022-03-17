@@ -56,10 +56,10 @@ const Menu = ({ dense = false }: MenuProps) => {
             >
                 <MenuItemLink
                     to={{
-                        pathname: '/commands',
+                        pathname: '/pawnshop',
                         state: { _scrollToTop: true },
                     }}
-                    primaryText={translate(`resources.commands.name`, {
+                    primaryText={translate(`resources.pawnshop.name`, {
                         smart_count: 2,
                     })}
                     leftIcon={<orders.icon />}

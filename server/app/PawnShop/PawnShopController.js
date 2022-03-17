@@ -40,25 +40,35 @@ class PawnShopController {
         });
     }
 
+    getList = async (req, resp) => {
+        // resp.set('X-Total-Count', '3');
+        resp.set('Content-Range', 'pawnshop 0-2/3');
+        resp.set('Access-Control-Expose-Headers', 'Content-Range');
+        return resp.json([
+            { "id": 0, "date": "03/18/2022", "reference": "1ewf23", "customer_id": "123" },
+            { "id": 1, "date": "03/18/2022", "reference": "1ewf34", "customer_id": "234" },
+            { "id": 2, "date": "03/18/2022", "reference": "1ewf45", "customer_id": "345" },
+        ]);
+    }
     /**
      * 
      * @param {*} req 
      *  data: {
-            assetName: '',
-            assetType: '',
-            assetDescription: '',
-            assetAddress: '',
-            city: '',
-            street: '',
-            zipcode: '',
-            country: '',
-            valuationReport: '',
-            price: 0,
-            price_percentage: 0,
-            quote_price: 0,
-            estimated_ocat: 0,
-            estimated_fee: '',
-        }
+        assetName: '',
+        assetType: '',
+        assetDescription: '',
+        assetAddress: '',
+        city: '',
+        street: '',
+        zipcode: '',
+        country: '',
+        valuationReport: '',
+        price: 0,
+        price_percentage: 0,
+        quote_price: 0,
+        estimated_ocat: 0,
+        estimated_fee: '',
+     }
      * @param {*} resp 
      * @returns 
      */

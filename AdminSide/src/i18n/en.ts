@@ -37,7 +37,7 @@ const customEnglishMessages: TranslationMessages = {
             sales: 'Sales',
             catalog: 'Catalog',
             customers: 'Customers',
-            pawnshop: 'Pawn Shop',
+            pawnshop: 'PawnShop',
         },
     },
     resources: {
@@ -83,8 +83,8 @@ const customEnglishMessages: TranslationMessages = {
                     'The password confirmation is not the same as the password.',
             },
         },
-        commands: {
-            name: 'Order |||| Orders',
+        pawnshop: {
+            name: 'Pawn Items |||| Pawn Items',
             amount: '1 order |||| %{smart_count} orders',
             title: 'Order %{reference}',
             fields: {

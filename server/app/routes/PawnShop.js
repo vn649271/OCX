@@ -4,6 +4,7 @@ let pawnshop = express.Router();
 const PawnShopController = require("../PawnShop/PawnShopController");
 var pawnShopController = new PawnShopController();
 
+pawnshop.get("/", pawnShopController.getList);
 pawnshop.post("/create", pawnShopController.create);
 pawnshop.post("/upload", pawnShopController.upload);
 
