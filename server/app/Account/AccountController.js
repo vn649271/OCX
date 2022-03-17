@@ -432,6 +432,15 @@ class AccountController {
             return resp.json({ error: -100, data: "Error 1050: " + errorMessage });
         }
     }
+
+    async getModelInJson(accountId) {
+        let accountInfo = await accountModel.getObject(accountId);
+        if (ret === undefined || ret === null) {
+            return { error: -1, data: "Not found the account" };
+        }
+        return { error: 0, data: accountInfo };
+    }
+
 };
 
 module.exports = AccountController;

@@ -9,20 +9,29 @@ function classNames(...classes) {
 
 
 export default class DropdownList extends Component {
+
     constructor(props) {
         super(props);
         
-        this.itemList = props.items;
         this.onSelectItem = props.onSelectItem ? props.onSelectItem : null;
         this.state = {
+            itemList: props.items,
             selectedItem: null
         }
         this.onItemClicked = this.onItemClicked.bind(this);
     }
 
+    componentDidUpdate(prevProps) {
+        if (prevProps.target !== this.props.target) {
+        }
+        if (prevProps.items != this.props.items) {
+            this.setState({itemList: this.props.items});
+        }
+    }
+
     onItemClicked = ev => {
         let itemIndex = ev.target.nodeName == "LI" ? ev.target.attributes[0].value - 0: ev.target.parentNode.attributes[0].value - 0;
-        this.setState({selectedItem: this.itemList[itemIndex]})
+        this.setState({selectedItem: this.state.itemList[itemIndex]})
         if (this.onSelectItem) {
             this.onSelectItem(itemIndex);
         }
@@ -54,8 +63,8 @@ export default class DropdownList extends Component {
                         <ChevronDownIcon className="inline-flex -mr-1 ml-5 h-5 w-5" aria-hidden="true" />
                     </Menu.Button>
                 </div>
-                <Menu.Items className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none">
-                    {this.itemList.map((value, index) => {
+                <Menu.Items className="origin-top-right absolute right-0 mt-2 w-120 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none">
+                    {this.state.itemList.map((value, index) => {
                         return <div key={index} className="py-1">
                             <Menu.Item>
                                 {({ active }) => (

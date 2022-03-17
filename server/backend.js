@@ -30,8 +30,8 @@ app.use("/api/account", Account);
 /**
  * Router for pawnshop management
  */
- var Pawnshop = require("./app/routes/Pawnshop");
- app.use("/api/pawnshop", Pawnshop);
+ var PawnShop = require("./app/routes/PawnShop");
+ app.use("/api/pawnshop", PawnShop);
  
  /**
  * Router for recaptcha
