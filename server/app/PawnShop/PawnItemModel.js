@@ -87,6 +87,7 @@ function PawnItemModel() {
      this.create = async function (jsonPawnItem) {
         // Add a new document in collection "users"
         let now = new Date();
+        now = now.toISOString();
         jsonPawnItem.created_at = now;
         jsonPawnItem.updated_at = now;
 
@@ -98,7 +99,7 @@ function PawnItemModel() {
         let data = params.data;
 
         let now = new Date();
-        data.updated_at = now;
+        data.updated_at = now.toISOString();
 
         const pawnItemRef = db.collection(collection).doc(id);
         const ret = await pawnItemRef.update(data);

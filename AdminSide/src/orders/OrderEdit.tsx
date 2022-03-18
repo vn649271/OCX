@@ -10,6 +10,7 @@ import {
     SelectInput,
     BooleanField,
     TextField,
+    TextInput,
     Link as RALink,
     Toolbar,
     useTranslate,
@@ -250,30 +251,20 @@ const OrderForm = (props: any) => {
                                             </Labeled>
                                         </Grid>
                                         <Grid item xs={12} sm={12} md={3}>
-                                            <Labeled
-                                                label="Price"
-                                                source="price"
-                                                resource="pawnshop"
-                                            >
-                                                <TextField
+                                            <Box>
+                                                <TextInput
                                                     source="price"
                                                     resource="pawnshop"
                                                     record={formProps.record}
                                                 />
-                                            </Labeled>
+                                            </Box>
                                         </Grid>
                                         <Grid item xs={12} sm={12} md={2}>
-                                            <Labeled
-                                                label="Price percentage"
+                                            <TextInput
                                                 source="price_percentage"
                                                 resource="pawnshop"
-                                            >
-                                                <TextField
-                                                    source="price_percentage"
-                                                    resource="pawnshop"
-                                                    record={formProps.record}
-                                                />
-                                            </Labeled>
+                                                record={formProps.record}
+                                            />
                                         </Grid>
                                         <Grid item xs={12} sm={12} md={3}>
                                             <Labeled
@@ -349,6 +340,7 @@ const OrderForm = (props: any) => {
                                     <Grid container>
                                         <Grid item xs={12} sm={12} md={6}>
                                             {
+                                                // Once verified, never can be reverted
                                                 formProps.record.verified? 
                                                     <BooleanField
                                                         resource="pawnshop"

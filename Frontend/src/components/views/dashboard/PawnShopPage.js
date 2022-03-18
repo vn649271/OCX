@@ -373,12 +373,12 @@ class PawnShopPage extends Component {
             // Then submit to mint a new pawn NFT
             let submitData = this.state.inputs;
             submitData.valuation_report = ret.data;
-            // ret = await pawnShopService.create({userToken: this.userToken, data: submitData});
-            // if (ret.error - 0 !== 0) {
-            //     btnCmpnt.stopTimer();
-            //     alert("Failed to create new pawn NFT: " + ret.data);
-            //     return;
-            // }
+            ret = await pawnShopService.create({userToken: this.userToken, data: submitData});
+            if (ret.error - 0 !== 0) {
+                btnCmpnt.stopTimer();
+                alert("Failed to create new pawn NFT: " + ret.data);
+                return;
+            }
             btnCmpnt.stopTimer();
             this.clearAllFields();
             alert("Success: " + ret.data);
@@ -483,7 +483,7 @@ class PawnShopPage extends Component {
                 </div>
                 <div className="mt-20">
                     <div className="inline-flex w-full">
-                        <div className="w-6/12">
+                        <div className="w-4/12">
                             <input
                                 type="text"
                                 className="inline-flex border border-grey-light bg-gray-100 w-full mt-5 p-5 font-16 main-font focus:outline-none rounded "
@@ -494,7 +494,7 @@ class PawnShopPage extends Component {
                                 onChange={this.handleInputChange} autoComplete="off" 
                             />                    
                         </div>
-                        <div className="w-6/12">
+                        <div className="w-4/12">
                             <input
                                 type="text"
                                 className="inline-flex block border border-grey-light bg-gray-100 w-full mt-5 p-5 font-16 main-font focus:outline-none rounded "
@@ -503,8 +503,20 @@ class PawnShopPage extends Component {
                                 placeholder="Asset Address"
                                 value={this.state.asset_address_street}
                                 onChange={this.handleInputChange} autoComplete="off" 
-                            />                    
+                            />
                         </div>
+                        <div className="w-4/12">
+                            {/* <label>City</label> */}
+                            <input
+                                type="text"
+                                className="block border border-grey-light bg-gray-100 w-100 mt-5 p-5 font-16 main-font focus:outline-none rounded "
+                                name="asset_address_city"
+                                id="asset_address_city"
+                                placeholder="City"
+                                value={this.state.asset_address_city}
+                                onChange={this.handleInputChange} autoComplete="off"
+                            />
+                        </div>                    
                     </div>
                 </div>
                 <div>
@@ -530,18 +542,7 @@ class PawnShopPage extends Component {
                                     />
                                 </div>
                             </div>
-                            <div className="w-3/12">
-                                {/* <label>City</label> */}
-                                <input
-                                    type="text"
-                                    className="block border border-grey-light bg-gray-100 w-100 p-5 font-16 main-font focus:outline-none rounded "
-                                    name="asset_address_city"
-                                    id="asset_address_city"
-                                    placeholder="City"
-                                    value={this.state.asset_address_city}
-                                    onChange={this.handleInputChange} autoComplete="off"
-                                />
-                            </div>
+
                             <div className="w-3/12">
                                 {/* <label>Zip Code</label> */}
                                 <input
