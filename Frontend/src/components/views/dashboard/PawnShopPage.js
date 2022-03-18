@@ -6,6 +6,8 @@ import PreFileUploadForm from '../../common/PreFileUploadForm';
 import PawnShopService from '../../../service/PawnShop';
 import { JSEncrypt } from 'jsencrypt'
 import DelayButton from '../../common/DelayButton';
+import Card from '../../common/Card';
+import SimpleTable from '../../common/SimpleTable';
 
 var rsaCrypt = new JSEncrypt();
 var pawnShopService = new PawnShopService();
@@ -182,6 +184,101 @@ const STATES = {
         },
     ]
 };
+
+const TRACKING_TABLE_SCHEMA = {
+    headers: [
+        {
+            title: 'Date'
+        },
+        {
+            title: 'Asset ID'
+        },
+        {
+            title: 'Asset Type'
+        },
+        {
+            title: 'Asset Name'
+        },
+        {
+            title: 'Status'
+        },
+        {
+            title: 'Management Fees'
+        },
+    ]
+}
+
+const TRACKING_TABLE_SAMPLE_DATA = [
+    {
+        id: '0',
+        data: [
+            {
+                value: '2021-1-12'
+            },
+            {
+                value: <div className="text-gray-900">Jon doe</div>
+            },
+            {
+                value: <div className="text-gray-500">jhondoe@example.com</div>
+            },
+            {
+                value: <a href="#" className="px-4 py-1 text-white bg-blue-400 rounded">Edit</a>
+            },
+            {
+                value: <a href="#" className="px-4 py-1 text-white bg-red-400 rounded">Delete</a>
+            },
+            {
+                value: '1'
+            },
+        ]
+    },
+    {
+        id: '1',
+        data: [
+            {
+                value: '2021-1-12'
+            },
+            {
+                value: <div className="text-gray-900">bbbbbbbbbbbbbb</div>
+            },
+            {
+                value: <div className="text-gray-500">jhondoe@example.com</div>
+            },
+            {
+                value: <a href="#" className="px-4 py-1 text-white bg-blue-400 rounded">Edit</a>
+            },
+            {
+                value: <a href="#" className="px-4 py-1 text-white bg-red-400 rounded">Delete</a>
+            },
+            {
+                value: '1'
+            },
+        ]
+    },
+    {
+        id: '2',
+        data: [
+            {
+                value: '2021-1-12'
+            },
+            {
+                value: <div className="text-gray-900">aaaaaaaaaaaaaaa</div>
+            },
+            {
+                value: <div className="text-gray-500">jhondoe@example.com</div>
+            },
+            {
+                value: <a href="#" className="px-4 py-1 text-white bg-blue-400 rounded">Edit</a>
+            },
+            {
+                value: <a href="#" className="px-4 py-1 text-white bg-red-400 rounded">Delete</a>
+            },
+            {
+                value: '1'
+            },
+        ]
+    },
+]
 
 var self = null;
 
@@ -454,216 +551,223 @@ class PawnShopPage extends Component {
 
     render() {
         return (
-            <div className="my-pawnshop-page main-font main-color font-16 m-8">
-                <p className="account-balance-box main-font text-red-400 mb-100 font-16">{this.state.error}</p>
-                <p className="main-font font-24 mb-10">Pawn your assets into cryptos</p>
-
-                <div>
-                    <div className="inline-flex w-full">
-                        <div className="w-4/12" text-align="right">
-                            {/* <p className="block">Asset Type:</p> */}
-                            <DropdownList 
-                                items={ASSET_TYPES} 
-                                onSelectItem={this.onChangeAssetType} 
-                                placeholder="Asset Type"
-                            />
-                        </div>
-                        <div className="w-4/12">
-                            <input
-                                type="text"
-                                className="inline-flex block border border-grey-light ml-10 bg-gray-100 w-200 p-5 font-16 main-font focus:outline-none rounded "
-                                name="asset_name"
-                                id="asset_name"
-                                placeholder="Asset Name"
-                                value={this.state.asset_name}
-                                onChange={this.handleInputChange} autoComplete="off" 
-                            />                    
-                        </div>
-                    </div>
-                </div>
-                <div className="mt-20">
-                    <div className="inline-flex w-full">
-                        <div className="w-4/12">
-                            <input
-                                type="text"
-                                className="inline-flex border border-grey-light bg-gray-100 w-full mt-5 p-5 font-16 main-font focus:outline-none rounded "
-                                name="asset_description"
-                                id="asset_description"
-                                placeholder="Asset Description"
-                                value={this.state.asset_description}
-                                onChange={this.handleInputChange} autoComplete="off" 
-                            />                    
-                        </div>
-                        <div className="w-4/12">
-                            <input
-                                type="text"
-                                className="inline-flex block border border-grey-light bg-gray-100 w-full mt-5 p-5 font-16 main-font focus:outline-none rounded "
-                                name="asset_address_street"
-                                id="asset_address_street"
-                                placeholder="Asset Address"
-                                value={this.state.asset_address_street}
-                                onChange={this.handleInputChange} autoComplete="off" 
-                            />
-                        </div>
-                        <div className="w-4/12">
-                            {/* <label>City</label> */}
-                            <input
-                                type="text"
-                                className="block border border-grey-light bg-gray-100 w-100 mt-5 p-5 font-16 main-font focus:outline-none rounded "
-                                name="asset_address_city"
-                                id="asset_address_city"
-                                placeholder="City"
-                                value={this.state.asset_address_city}
-                                onChange={this.handleInputChange} autoComplete="off"
-                            />
-                        </div>                    
-                    </div>
-                </div>
-                <div>
-                    <div className="mt-20">
-                        <div className="inline-flex w-full">
-                            <div className="w-3/12">
-                                {/* <label>Country</label> */}
-                                <div>
+            <div>
+                <div className="my-pawnshop-page main-font main-color font-16 m-8">
+                    <p className="account-balance-box main-font text-red-400 mb-100 font-16">{this.state.error}</p>
+                    <Card title='Pawn your assets into cryptos'>
+                        <div>
+                            <div className="inline-flex w-full">
+                                <div className="w-4/12" text-align="right">
+                                    {/* <p className="block">Asset Type:</p> */}
                                     <DropdownList 
-                                        items={COUNTRIES} 
-                                        onSelectItem={this.onChangeCountry} 
-                                        placeholder="Country"
+                                        items={ASSET_TYPES} 
+                                        onSelectItem={this.onChangeAssetType} 
+                                        placeholder="Asset Type"
                                     />
                                 </div>
-                            </div>
-                            <div className="w-3/12">
-                                {/* <label>States</label> */}
-                                <div>
-                                    <DropdownList 
-                                        items={STATES[this.state.inputs.asset_address_country]}
-                                        onSelectItem={this.onChangeStateName} 
-                                        placeholder="States"
-                                    />
+                                <div className="w-4/12">
+                                    <input
+                                        type="text"
+                                        className="inline-flex block border border-grey-light ml-10 bg-gray-100 w-200 p-5 font-16 main-font focus:outline-none rounded "
+                                        name="asset_name"
+                                        id="asset_name"
+                                        placeholder="Asset Name"
+                                        value={this.state.asset_name}
+                                        onChange={this.handleInputChange} autoComplete="off" 
+                                    />                    
                                 </div>
                             </div>
+                        </div>
+                        <div className="mt-20">
+                            <div className="inline-flex w-full">
+                                <div className="w-4/12">
+                                    <input
+                                        type="text"
+                                        className="inline-flex border border-grey-light bg-gray-100 w-full mt-5 p-5 font-16 main-font focus:outline-none rounded "
+                                        name="asset_description"
+                                        id="asset_description"
+                                        placeholder="Asset Description"
+                                        value={this.state.asset_description}
+                                        onChange={this.handleInputChange} autoComplete="off" 
+                                    />                    
+                                </div>
+                                <div className="w-4/12">
+                                    <input
+                                        type="text"
+                                        className="inline-flex block border border-grey-light bg-gray-100 w-full mt-5 p-5 font-16 main-font focus:outline-none rounded "
+                                        name="asset_address_street"
+                                        id="asset_address_street"
+                                        placeholder="Asset Address"
+                                        value={this.state.asset_address_street}
+                                        onChange={this.handleInputChange} autoComplete="off" 
+                                    />
+                                </div>
+                                <div className="w-4/12">
+                                    {/* <label>City</label> */}
+                                    <input
+                                        type="text"
+                                        className="block border border-grey-light bg-gray-100 w-100 mt-5 p-5 font-16 main-font focus:outline-none rounded "
+                                        name="asset_address_city"
+                                        id="asset_address_city"
+                                        placeholder="City"
+                                        value={this.state.asset_address_city}
+                                        onChange={this.handleInputChange} autoComplete="off"
+                                    />
+                                </div>                    
+                            </div>
+                        </div>
+                        <div>
+                            <div className="mt-20">
+                                <div className="inline-flex w-full">
+                                    <div className="w-3/12">
+                                        {/* <label>Country</label> */}
+                                        <div>
+                                            <DropdownList 
+                                                items={COUNTRIES} 
+                                                onSelectItem={this.onChangeCountry} 
+                                                placeholder="Country"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="w-3/12">
+                                        {/* <label>States</label> */}
+                                        <div>
+                                            <DropdownList 
+                                                items={STATES[this.state.inputs.asset_address_country]}
+                                                onSelectItem={this.onChangeStateName} 
+                                                placeholder="States"
+                                            />
+                                        </div>
+                                    </div>
 
-                            <div className="w-3/12">
-                                {/* <label>Zip Code</label> */}
-                                <input
-                                    type="number"
-                                    className="block border border-grey-light bg-gray-100 w-100 p-5 font-16 main-font focus:outline-none rounded "
-                                    name="asset_address_zipcode"
-                                    id="asset_address_zipcode"
-                                    placeholder="Zip Code"
-                                    value={this.state.asset_address_zipcode}
-                                    onChange={this.handleInputChange} autoComplete="off"
-                                />
+                                    <div className="w-3/12">
+                                        {/* <label>Zip Code</label> */}
+                                        <input
+                                            type="number"
+                                            className="block border border-grey-light bg-gray-100 w-100 p-5 font-16 main-font focus:outline-none rounded "
+                                            name="asset_address_zipcode"
+                                            id="asset_address_zipcode"
+                                            placeholder="Zip Code"
+                                            value={this.state.asset_address_zipcode}
+                                            onChange={this.handleInputChange} autoComplete="off"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="mt-20">
+                                <div className="inline-flex w-full">
+                                    <div>
+                                        {/* <label>Valuation Price</label> */}
+                                        <input
+                                            type="number"
+                                            className="block border border-grey-light bg-gray-100 w-100 p-5 font-16 main-font focus:outline-none rounded "
+                                            name="price"
+                                            id="price"
+                                            placeholder="Valuation Price"
+                                            value={this.state.price}
+                                            onChange={this.handleInputChange} autoComplete="off"
+                                        />
+                                    </div>
+                                    <div>
+                                        {/* <label>Percentage of value</label> */}
+                                        <input
+                                            type="number"
+                                            text-align="right"
+                                            className="block border border-grey-light bg-gray-100 w-100 p-5 font-16 main-font focus:outline-none rounded "
+                                            name="price_percentage"
+                                            id="price_percentage"
+                                            placeholder="Percentage of value"
+                                            value={this.state.price_percentage}
+                                            onChange={this.handleInputChange} autoComplete="off"
+                                        />
+                                    </div>
+                                    <div>
+                                        {/* <label>Quote Price</label> */}
+                                        <input
+                                            type="number"
+                                            text-align="right"
+                                            className="block border border-grey-light bg-gray-100 w-100 p-5 font-16 main-font focus:outline-none rounded "
+                                            name="quote_price"
+                                            id="quote_price"
+                                            placeholder="Quote Price"
+                                            value={this.state.quote_price}
+                                            onChange={this.handleInputChange} autoComplete="off"
+                                        />
+                                    </div>
+                                    <div>
+                                        {/* <label>Estimated OCAT</label> */}
+                                        <input
+                                            type="number"
+                                            text-align="right"
+                                            className="block border border-grey-light bg-gray-100 w-100 p-5 font-16 main-font focus:outline-none rounded "
+                                            name="estimated_ocat"
+                                            id="estimated_ocat"
+                                            placeholder="Estimated OCAT"
+                                            value={this.state.estimated_ocat}
+                                            onChange={this.handleInputChange} 
+                                            autoComplete="off"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="mt-20">
+                                <div className="inline-flex w-full">
+                                    <div className="w-3/12 mr-5">
+                                        <PreFileUploadForm
+                                            title="Upload your valuation report"
+                                            onSelectFile={this.onSelectValuationReport}
+                                            uploadURL={UPLOAD_URL}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="mt-20">
+                                <div className="inline-flex w-full">
+                                    <div className="w-4/12 mr-5">
+                                        <label>You don't have a valuation report book a valuation time and date</label>
+                                        <button
+                                            className="block border border-grey-light button-bg p-5 hover-transition main-font focus:outline-none rounded text-white verify-button"
+                                            onClick={this.onClickBooking}
+                                        >Booking me</button>
+                                    </div>
+                                    <div className="w-4/12 mr-5">
+                                        <label>Estimated Fee</label>
+                                        <input
+                                            type="number"
+                                            className="block border border-grey-light bg-gray-100 w-100 p-5 font-16 main-font focus:outline-none rounded "
+                                            name="estimated_fee"
+                                            id="estimated_fee"
+                                            placeholder="Estimated Fee"
+                                            value={this.state.estimated_fee}
+                                            onChange={this.handleInputChange} autoComplete="off"
+                                        />
+                                    </div>
+                                    <div className="w-4/12 mr-5">
+                                        <a href="#" className="px-4 py-1  text-blue-500 bg-blue-200 rounded-lg">Click here to download legal contract</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="mt-10 flex justify-end	">
+                                {/* <button
+                                    className="border border-grey-light button-bg p-5 hover-transition main-font focus:outline-none rounded text-white verify-button"
+                                    onClick={this.onClickSubmit}
+                                >Submit</button> */}
+                                <DelayButton
+                                    captionInDelay="Submitting"
+                                    caption="Submit"
+                                    maxDelayInterval={30}
+                                    onClickButton={this.onClickSubmit}
+                                    onClickButtonParam={null} />
                             </div>
                         </div>
-                    </div>
-                    <div className="mt-20">
-                        <div className="inline-flex w-full">
-                            <div>
-                                {/* <label>Valuation Price</label> */}
-                                <input
-                                    type="number"
-                                    className="block border border-grey-light bg-gray-100 w-100 p-5 font-16 main-font focus:outline-none rounded "
-                                    name="price"
-                                    id="price"
-                                    placeholder="Valuation Price"
-                                    value={this.state.price}
-                                    onChange={this.handleInputChange} autoComplete="off"
-                                />
-                            </div>
-                            <div>
-                                {/* <label>Percentage of value</label> */}
-                                <input
-                                    type="number"
-                                    text-align="right"
-                                    className="block border border-grey-light bg-gray-100 w-100 p-5 font-16 main-font focus:outline-none rounded "
-                                    name="price_percentage"
-                                    id="price_percentage"
-                                    placeholder="Percentage of value"
-                                    value={this.state.price_percentage}
-                                    onChange={this.handleInputChange} autoComplete="off"
-                                />
-                            </div>
-                            <div>
-                                {/* <label>Quote Price</label> */}
-                                <input
-                                    type="number"
-                                    text-align="right"
-                                    className="block border border-grey-light bg-gray-100 w-100 p-5 font-16 main-font focus:outline-none rounded "
-                                    name="quote_price"
-                                    id="quote_price"
-                                    placeholder="Quote Price"
-                                    value={this.state.quote_price}
-                                    onChange={this.handleInputChange} autoComplete="off"
-                                />
-                            </div>
-                            <div>
-                                {/* <label>Estimated OCAT</label> */}
-                                <input
-                                    type="number"
-                                    text-align="right"
-                                    className="block border border-grey-light bg-gray-100 w-100 p-5 font-16 main-font focus:outline-none rounded "
-                                    name="estimated_ocat"
-                                    id="estimated_ocat"
-                                    placeholder="Estimated OCAT"
-                                    value={this.state.estimated_ocat}
-                                    onChange={this.handleInputChange} 
-                                    autoComplete="off"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="mt-20">
-                        <div className="inline-flex w-full">
-                            <div className="w-3/12 mr-5">
-                                <PreFileUploadForm
-                                    title="Upload your valuation report"
-                                    onSelectFile={this.onSelectValuationReport}
-                                    uploadURL={UPLOAD_URL}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="mt-20">
-                        <div className="inline-flex w-full">
-                            <div className="w-4/12 mr-5">
-                                <label>You don't have a valuation report book a valuation time and date</label>
-                                <button
-                                    className="block border border-grey-light button-bg p-5 hover-transition main-font focus:outline-none rounded text-white verify-button"
-                                    onClick={this.onClickBooking}
-                                >Booking me</button>
-                            </div>
-                            <div className="w-4/12 mr-5">
-                                <label>Estimated Fee</label>
-                                <input
-                                    type="number"
-                                    className="block border border-grey-light bg-gray-100 w-100 p-5 font-16 main-font focus:outline-none rounded "
-                                    name="estimated_fee"
-                                    id="estimated_fee"
-                                    placeholder="Estimated Fee"
-                                    value={this.state.estimated_fee}
-                                    onChange={this.handleInputChange} autoComplete="off"
-                                />
-                            </div>
-                            <div className="w-4/12 mr-5">
-                                <a href="#" className="px-4 py-1  text-blue-500 bg-blue-200 rounded-lg">Click here to download legal contract</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="mt-10" text-align="right">
-                        {/* <button
-                            className="border border-grey-light button-bg p-5 hover-transition main-font focus:outline-none rounded text-white verify-button"
-                            onClick={this.onClickSubmit}
-                        >Submit</button> */}
-                        <DelayButton
-                            captionInDelay="Submitting"
-                            caption="Submit"
-                            maxDelayInterval={30}
-                            onClickButton={this.onClickSubmit}
-                            onClickButtonParam={null} />
-                    </div>
+                    </Card>
                 </div>
-
+                <div className="my-pawnshop-page main-font main-color font-16 m-8 mt-16">
+                    <Card title='Tracking'>
+                        <SimpleTable def={TRACKING_TABLE_SCHEMA} data={TRACKING_TABLE_SAMPLE_DATA}>
+                        </SimpleTable>                        
+                    </Card>
+                </div>
             </div>
         );
     }

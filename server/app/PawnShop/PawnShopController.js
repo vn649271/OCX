@@ -51,7 +51,7 @@ class PawnShopController {
         if (process.env.RUN_MODE == 0) { // in local machine
             hostIp = "http://localhost";
         }
-        let uploadedUrl = hostIp + "/" + process.env.PAWNSHOP_ASSET_UPLOAD_PATH + filename;
+        let uploadedUrl = hostIp + process.env.PAWNSHOP_ASSET_UPLOAD_PATH + filename;
         var savePath = `${newpath}${filename}`;
 
         file.mv(savePath, (err, data) => {
