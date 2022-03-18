@@ -45,9 +45,9 @@ class PawnShopController {
         resp.set('Content-Range', 'pawnshop 0-2/3');
         resp.set('Access-Control-Expose-Headers', 'Content-Range');
         return resp.json([
-            { "id": 0, "date": "03/18/2022", "reference": "1ewf23", "customer_id": "123" },
-            { "id": 1, "date": "03/18/2022", "reference": "1ewf34", "customer_id": "234" },
-            { "id": 2, "date": "03/18/2022", "reference": "1ewf45", "customer_id": "345" },
+            { "id": 0, "date": "03/18/2022", "reference": "1ewf23", "customer_id": "123", total: "123123" },
+            { "id": 1, "date": "03/18/2022", "reference": "1ewf34", "customer_id": "234", total: "11111" },
+            { "id": 2, "date": "03/18/2022", "reference": "1ewf45", "customer_id": "345", total: "222222" },
         ]);
     }
     /**
