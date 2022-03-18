@@ -20,6 +20,7 @@ import {
     TextInput,
     useGetList,
     useListContext,
+    EditButton,
 } from 'react-admin';
 import { useMediaQuery, Divider, Tabs, Tab, Theme } from '@material-ui/core';
 
@@ -172,9 +173,52 @@ const TabbedDatagrid = (props: TabbedDatagridProps) => {
                             value={{ ...listContext, ids: ordered }}
                         >
                             <Datagrid {...props} optimized rowClick="edit">
-                                <DateField source="date" showTime />
-                                <TextField source="reference" />
-                                <CustomerReferenceField />
+                                {/* 
+                                data: {
+                                    asset_name: '',
+                                    asset_type: '',
+                                    asset_description: '',
+                                    asset_address: '',
+                                    asset_address_street: '',
+                                    asset_address_city: '',
+                                    asset_address_state: '',
+                                    asset_address_zipcode: '',
+                                    asset_address_country: '',
+                                    valuation_report: '',
+                                    price: 0,
+                                    price_percentage: 0,
+                                    quote_price: 0,
+                                    estimated_ocat: 0,
+                                    estimated_fee: '',
+                                    verified: false
+                                } */}
+                                <TextField label="Name" source="asset_name" />
+                                <TextField label="Type" source="asset_type" />
+                                <NumberField label="Zip Code" source="asset_address_zipcode" />
+                                <TextField label="Country" source="asset_address_country" />
+                                <NumberField 
+                                    label="Price" 
+                                    source="price" 
+                                    options={{
+                                        style: 'currency',
+                                        currency: 'AUD',
+                                    }}
+                                />
+                                <NumberField label="Price Percentage" source="price_percentage" />
+                                <NumberField 
+                                    label="Quote Price" 
+                                    source="quote_price" 
+                                    options={{
+                                        style: 'currency',
+                                        currency: 'AUD',
+                                    }}
+                                />
+                                <NumberField label="Estimated OCAT" source="estimated_ocat" />
+                                <TextField label="Estimated Fee" source="estimated_fee" />
+                                <DateField source="created_at" showTime />
+                                <BooleanField label="Approved" source="verified"/>
+                                <EditButton label="Edit" basePath="/pawnshop" />
+                                {/* <CustomerReferenceField />
                                 <ReferenceField
                                     source="customer_id"
                                     reference="customers"
@@ -182,16 +226,8 @@ const TabbedDatagrid = (props: TabbedDatagridProps) => {
                                     label="resources.pawnshop.fields.address"
                                 >
                                     <AddressField />
-                                </ReferenceField>
+                                </ReferenceField> */}
                                 {/* <NbItemsField /> */}
-                                <NumberField
-                                    source="total"
-                                    options={{
-                                        style: 'currency',
-                                        currency: 'USD',
-                                    }}
-                                    className={classes.total}
-                                />
                             </Datagrid>
                         </ListContextProvider>
                     )}

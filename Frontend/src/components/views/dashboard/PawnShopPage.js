@@ -5,6 +5,7 @@ import AccountService from '../../../service/Account';
 import PreFileUploadForm from '../../common/PreFileUploadForm';
 import PawnShopService from '../../../service/PawnShop';
 import { JSEncrypt } from 'jsencrypt'
+import DelayButton from '../../common/DelayButton';
 
 var rsaCrypt = new JSEncrypt();
 var pawnShopService = new PawnShopService();
@@ -191,20 +192,19 @@ class PawnShopPage extends Component {
         connected_hotwallet: 0,
         error: '',
         inputs: {
-            assetName: '',
-            assetType: '',
-            assetDescription: '',
-            assetAddressStreet: '',
-            assetAddressCity: '',
-            assetAddressState: '',
-            assetAddressStreet: '',
-            assetAddressZipcode: '',
-            assetAddressCountry: '',
-            valuationReport: {},
+            asset_name: '',
+            asset_type: '',
+            asset_description: '',
+            asset_address_street: '',
+            asset_address_city: '',
+            asset_address_state: '',
+            asset_address_zipcode: '',
+            asset_address_country: '',
+            valuation_report: {},
             price: 0,
-            pricePercentage: 0,
+            price_percentage: 0,
             quote_price: 0,
-            estimatedOcat: 0,
+            estimated_ocat: 0,
             estimated_fee: '',
         }
     }
@@ -213,9 +213,11 @@ class PawnShopPage extends Component {
         super(props);
         self = this;
 
-        this.valuationReport = null;
+        this.valuation_report = null;
 
         // State Helper
+        this.clearAllFields = this.clearAllFields.bind(this);
+
         this.setAssetName = this.setAssetName.bind(this);
         this.setAssetType = this.setAssetType.bind(this);
         this.setAssetDescription = this.setAssetDescription.bind(this);
@@ -244,43 +246,43 @@ class PawnShopPage extends Component {
 
     setAssetName = name => {
         let inputs = this.state.inputs;
-        inputs.assetName = name;
+        inputs.asset_name = name;
         this.setState({inputs}) 
     }
 
     setAssetType = _type => {
         let inputs = this.state.inputs;
-        inputs.assetType = _type;
+        inputs.asset_type = _type;
         this.setState({inputs}) 
     }
 
-    setAssetDescription = assetDescription => {
+    setAssetDescription = asset_description => {
         let inputs = this.state.inputs;
-        inputs.assetDescription = assetDescription;
+        inputs.asset_description = asset_description;
         this.setState({inputs}) 
     }
 
     setStreet = street => {
         let inputs = this.state.inputs;
-        inputs.assetAddressStreet = street;
+        inputs.asset_address_street = street;
         this.setState({inputs}) 
     }
 
     setCity = city => {
         let inputs = this.state.inputs;
-        inputs.assetAddressCity = city;
+        inputs.asset_address_city = city;
         this.setState({inputs}) 
     }
 
     setStateName = state_name => {
         let inputs = this.state.inputs;
-        inputs.assetAddressState = state_name;
+        inputs.asset_address_state = state_name;
         this.setState({inputs}) 
     }
 
     setCountry = country => {
         let inputs = this.state.inputs;
-        inputs.assetAddressCountry = country;
+        inputs.asset_address_country = country;
         this.setState({inputs});
     }
 
@@ -290,15 +292,15 @@ class PawnShopPage extends Component {
         this.setState({inputs}) 
     }
 
-    setValuationReport = valuationReport => {
+    setValuationReport = valuation_report => {
         let inputs = this.state.inputs;
-        inputs.valuationReport = valuationReport;
+        inputs.valuation_report = valuation_report;
         this.setState({inputs}) 
     }
 
-    setPricePercentage = pricePercentage => {
+    setPricePercentage = price_percentage => {
         let inputs = this.state.inputs;
-        inputs.pricePercentage = pricePercentage;
+        inputs.price_percentage = price_percentage;
         this.setState({inputs}) 
     }
 
@@ -308,9 +310,9 @@ class PawnShopPage extends Component {
         this.setState({inputs}) 
     }
 
-    setEstimatedOcat = estimatedOcat => {
+    setEstimatedOcat = estimated_ocat => {
         let inputs = this.state.inputs;
-        inputs.estimatedOcat = estimatedOcat;
+        inputs.estimated_ocat = estimated_ocat;
         this.setState({inputs}) 
     }
 
@@ -329,9 +331,26 @@ class PawnShopPage extends Component {
     }
 
     onChangeStateName = stateIndex => {
-        if (this.state.inputs.assetAddressCountry === "") 
+        if (this.state.inputs.asset_address_country === "") 
             return;
-        this.setStateName(STATES[this.state.inputs.assetAddressCountry][stateIndex].title);
+        this.setStateName(STATES[this.state.inputs.asset_address_country][stateIndex].title);
+    }
+
+    clearAllFields = () => {
+        this.setState({ 'asset_name': '' });
+        this.setState({ 'asset_type': '' });
+        this.setState({ 'asset_description': ''});
+        this.setState({ 'asset_address_street': ''});
+        this.setState({ 'asset_address_city': ''});
+        this.setState({ 'asset_address_state': ''});
+        this.setState({ 'asset_address_zipcode': ''});
+        this.setState({ 'asset_address_country': ''});
+        this.setState({ 'valuation_report': ''});
+        this.setState({ 'price': 0 });
+        this.setState({ 'price_percentage': 0 });
+        this.setState({ 'quote_price': 0 });
+        this.setState({ 'estimated_ocat': 0 });
+        this.setState({ 'estimated_fee': '' });
     }
 
     onSelectValuationReport = fileInfo => {
@@ -341,23 +360,27 @@ class PawnShopPage extends Component {
     onClickBooking = ev => {
     }
 
-    onClickSubmit = async ev => {
+    onClickSubmit = async (param, ev, btnCmpnt) => {
         try {
             // First upload valuation report
-            let ret = await pawnShopService.upload(this.state.inputs.valuationReport);
+            let ret = await pawnShopService.upload(this.state.inputs.valuation_report);
             if (ret.error - 0 !== 0) {
+                btnCmpnt.stopTimer();
                 alert("Failed to save valuation report: " + ret.data);
                 return;
             }
             console.log("Uploading valuation report: ", ret)
             // Then submit to mint a new pawn NFT
             let submitData = this.state.inputs;
-            submitData.valuationReport = ret.data;
+            submitData.valuation_report = ret.data;
             ret = await pawnShopService.create({userToken: this.userToken, data: submitData});
             if (ret.error - 0 !== 0) {
+                btnCmpnt.stopTimer();
                 alert("Failed to create new pawn NFT: " + ret.data);
                 return;
             }
+            btnCmpnt.stopTimer();
+            this.clearAllFields();
             alert("Success: " + ret.data);
         } catch(error) {
             alert(error)
@@ -373,7 +396,9 @@ class PawnShopPage extends Component {
         this.setState({
           inputs
         });
-        if (ev.target.name === 'asset_name') {
+        if (ev.target.name === 'price_percentage' || ev.target.name === 'price') {
+            // this.setState({'quote_price': this.state.price_percentage * this.state.price / 100});
+            this.setQuotePrice(this.state.price_percentage * this.state.price / 100);
         }
     }
 
@@ -450,71 +475,41 @@ class PawnShopPage extends Component {
                                 name="asset_name"
                                 id="asset_name"
                                 placeholder="Asset Name"
-                                value={this.state.assetName}
+                                value={this.state.asset_name}
+                                onChange={this.handleInputChange} autoComplete="off" 
+                            />                    
+                        </div>
+                    </div>
+                </div>
+                <div className="mt-20">
+                    <div className="inline-flex w-full">
+                        <div className="w-6/12">
+                            <input
+                                type="text"
+                                className="inline-flex border border-grey-light bg-gray-100 w-full mt-5 p-5 font-16 main-font focus:outline-none rounded "
+                                name="asset_description"
+                                id="asset_description"
+                                placeholder="Asset Description"
+                                value={this.state.asset_description}
+                                onChange={this.handleInputChange} autoComplete="off" 
+                            />                    
+                        </div>
+                        <div className="w-6/12">
+                            <input
+                                type="text"
+                                className="inline-flex block border border-grey-light bg-gray-100 w-full mt-5 p-5 font-16 main-font focus:outline-none rounded "
+                                name="asset_address_street"
+                                id="asset_address_street"
+                                placeholder="Asset Address"
+                                value={this.state.asset_address_street}
                                 onChange={this.handleInputChange} autoComplete="off" 
                             />                    
                         </div>
                     </div>
                 </div>
                 <div>
-                    <input
-                        type="text"
-                        className="inline-flex border border-grey-light bg-gray-100 w-full mt-5 p-5 font-16 main-font focus:outline-none rounded "
-                        name="asset_desc"
-                        id="asset_desc"
-                        placeholder="Asset Description"
-                        value={this.state.assetDescription}
-                        onChange={this.handleInputChange} autoComplete="off" 
-                    />                    
-                </div>
-                <div>
-                    <input
-                        type="text"
-                        className="inline-flex block border border-grey-light bg-gray-100 w-full mt-5 p-5 font-16 main-font focus:outline-none rounded "
-                        name="assetAddressStreet"
-                        id="assetAddressStreet"
-                        placeholder="Asset Address"
-                        value={this.state.assetAddressStreet}
-                        onChange={this.handleInputChange} autoComplete="off" 
-                    />                    
-                </div>
-                <div>
                     <div className="mt-20">
-                        <div className="inline-flex">
-                            <div className="w-3/12">
-                                {/* <label>City</label> */}
-                                <input
-                                    type="text"
-                                    className="block border border-grey-light bg-gray-100 w-100 p-5 font-16 main-font focus:outline-none rounded "
-                                    name="assetAddressCity"
-                                    id="assetAddressCity"
-                                    placeholder="City"
-                                    value={this.state.assetAddressCity}
-                                    onChange={this.handleInputChange} autoComplete="off"
-                                />
-                            </div>
-                            <div className="w-3/12">
-                                {/* <label>States</label> */}
-                                <div>
-                                    <DropdownList 
-                                        items={STATES[this.state.inputs.assetAddressCountry]}
-                                        onSelectItem={this.onChangeStateName} 
-                                        placeholder="States"
-                                    />
-                                </div>
-                            </div>
-                            <div className="w-3/12">
-                                {/* <label>Zip Code</label> */}
-                                <input
-                                    type="number"
-                                    className="block border border-grey-light bg-gray-100 w-100 p-5 font-16 main-font focus:outline-none rounded "
-                                    name="assetAddressZipcode"
-                                    id="assetAddressZipcode"
-                                    placeholder="Zip Code"
-                                    value={this.state.assetAddressZipcode}
-                                    onChange={this.handleInputChange} autoComplete="off"
-                                />
-                            </div>
+                        <div className="inline-flex w-full">
                             <div className="w-3/12">
                                 {/* <label>Country</label> */}
                                 <div>
@@ -525,10 +520,44 @@ class PawnShopPage extends Component {
                                     />
                                 </div>
                             </div>
+                            <div className="w-3/12">
+                                {/* <label>States</label> */}
+                                <div>
+                                    <DropdownList 
+                                        items={STATES[this.state.inputs.asset_address_country]}
+                                        onSelectItem={this.onChangeStateName} 
+                                        placeholder="States"
+                                    />
+                                </div>
+                            </div>
+                            <div className="w-3/12">
+                                {/* <label>City</label> */}
+                                <input
+                                    type="text"
+                                    className="block border border-grey-light bg-gray-100 w-100 p-5 font-16 main-font focus:outline-none rounded "
+                                    name="asset_address_city"
+                                    id="asset_address_city"
+                                    placeholder="City"
+                                    value={this.state.asset_address_city}
+                                    onChange={this.handleInputChange} autoComplete="off"
+                                />
+                            </div>
+                            <div className="w-3/12">
+                                {/* <label>Zip Code</label> */}
+                                <input
+                                    type="number"
+                                    className="block border border-grey-light bg-gray-100 w-100 p-5 font-16 main-font focus:outline-none rounded "
+                                    name="asset_address_zipcode"
+                                    id="asset_address_zipcode"
+                                    placeholder="Zip Code"
+                                    value={this.state.asset_address_zipcode}
+                                    onChange={this.handleInputChange} autoComplete="off"
+                                />
+                            </div>
                         </div>
                     </div>
                     <div className="mt-20">
-                        <div className="inline-flex">
+                        <div className="inline-flex w-full">
                             <div>
                                 {/* <label>Valuation Price</label> */}
                                 <input
@@ -547,10 +576,10 @@ class PawnShopPage extends Component {
                                     type="number"
                                     text-align="right"
                                     className="block border border-grey-light bg-gray-100 w-100 p-5 font-16 main-font focus:outline-none rounded "
-                                    name="pricePercentage"
-                                    id="pricePercentage"
+                                    name="price_percentage"
+                                    id="price_percentage"
                                     placeholder="Percentage of value"
-                                    value={this.state.pricePercentage}
+                                    value={this.state.price_percentage}
                                     onChange={this.handleInputChange} autoComplete="off"
                                 />
                             </div>
@@ -563,7 +592,7 @@ class PawnShopPage extends Component {
                                     name="quote_price"
                                     id="quote_price"
                                     placeholder="Quote Price"
-                                    value={this.state.price * this.state.pricePercentage / 100}
+                                    value={this.state.quote_price}
                                     onChange={this.handleInputChange} autoComplete="off"
                                 />
                             </div>
@@ -573,10 +602,10 @@ class PawnShopPage extends Component {
                                     type="number"
                                     text-align="right"
                                     className="block border border-grey-light bg-gray-100 w-100 p-5 font-16 main-font focus:outline-none rounded "
-                                    name="estimatedOcat"
-                                    id="estimatedOcat"
+                                    name="estimated_ocat"
+                                    id="estimated_ocat"
                                     placeholder="Estimated OCAT"
-                                    value={this.state.estimatedOcat}
+                                    value={this.state.estimated_ocat}
                                     onChange={this.handleInputChange} 
                                     autoComplete="off"
                                 />
@@ -584,7 +613,7 @@ class PawnShopPage extends Component {
                         </div>
                     </div>
                     <div className="mt-20">
-                        <div>
+                        <div className="inline-flex w-full">
                             <div className="w-3/12 mr-5">
                                 <PreFileUploadForm
                                     title="Upload your valuation report"
@@ -595,15 +624,15 @@ class PawnShopPage extends Component {
                         </div>
                     </div>
                     <div className="mt-20">
-                        <div className="inline-flex">
-                            <div className="w-3/12 mr-5">
+                        <div className="inline-flex w-full">
+                            <div className="w-4/12 mr-5">
                                 <label>You don't have a valuation report book a valuation time and date</label>
                                 <button
                                     className="block border border-grey-light button-bg p-5 hover-transition main-font focus:outline-none rounded text-white verify-button"
                                     onClick={this.onClickBooking}
                                 >Booking me</button>
                             </div>
-                            <div className="w-2/12 mr-5">
+                            <div className="w-4/12 mr-5">
                                 <label>Estimated Fee</label>
                                 <input
                                     type="number"
@@ -625,6 +654,12 @@ class PawnShopPage extends Component {
                             className="border border-grey-light button-bg p-5 hover-transition main-font focus:outline-none rounded text-white verify-button"
                             onClick={this.onClickSubmit}
                         >Submit</button>
+                        <DelayButton
+                            captionInDelay="Submitting"
+                            caption="Submit"
+                            maxDelayInterval={30}
+                            onClickButton={this.onClickSubmit}
+                            onClickButtonParam={null} />
                     </div>
                 </div>
 

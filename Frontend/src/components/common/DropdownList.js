@@ -55,7 +55,7 @@ export default class DropdownList extends Component {
             selectedText = this.props.placeholder;
         }
         return (
-            <Menu as="div" className="relative inline-block text-left">
+            <Menu as="div" className="relative inline-block text-left mt-3">
                 <div>                
                     <Menu.Button className="justify-center w-full shadow-sm px-4 py-2 bg-white main-font font-16 text-gray-500 hover:bg-gray-50">
                         {selectedIcon}

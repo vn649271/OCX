@@ -39,6 +39,23 @@ function PawnItemModel() {
         return ret;
     }
 
+    this.all = async function() {
+        let retArray = [];
+        const usersRef = db.collection(collection);
+        const snapshot = await usersRef.get();
+        if (snapshot.empty) {
+            console.info('No matching user information.');
+            return null;
+        }
+        let ret = null;
+        snapshot.forEach(doc => {
+            ret = doc.data();
+            ret.id = doc.id;
+            retArray.push(ret);
+        });
+        return retArray;
+    }
+
     /**
      * Find user information document by the specified conditions
      * @param {json} jsonWhere search condition to be used
