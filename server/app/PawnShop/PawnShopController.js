@@ -78,6 +78,7 @@ class PawnShopController {
         if (!ret) {
             return resp.json({error: -2, data: "Failed to find user info"});
         }
+        // ret.created_at = new Date(ret.created_at._seconds * 1000);
         ret.id = id;
         return resp.json(ret);
     }
