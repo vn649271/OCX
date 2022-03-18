@@ -18,23 +18,19 @@ const USER_WITH_ACCOUNT = 2;
 const ASSET_TYPES = [
     {
         iconUrl: null,
-        title: "Wines"
-    }, 
-    {
-        iconUrl: null,
         title: "Watches"
     }, 
     {
         iconUrl: null,
-        title: "Equipments"
+        title: "Artworks"
     }, 
     {
         iconUrl: null,
-        title: "------------"
+        title: "Gold"
     }, 
     {
         iconUrl: null,
-        title: "Warehousing"
+        title: "Solar panel"
     },
 ];
 
