@@ -25,7 +25,7 @@ class PawnShopController {
      * @returns 
      */
     upload = async(req, resp) => {
-        const newpath = __dirname + process.env.PAWNSHOP_ASSET_UPLOAD_PATH;
+        const newpath = process.env.HOME + process.env.PAWNSHOP_ASSET_UPLOAD_PATH;
         const file = req.files ? req.files.file ? req.files.file : null : null;
         if (!file) {
             return resp.json({ error: -1, data: "Invalid request paramter for PawnShop" });
@@ -41,28 +41,68 @@ class PawnShopController {
     }
 
     getList = async (req, resp) => {
-        // resp.set('X-Total-Count', '3');
-        resp.set('Content-Range', 'pawnshop 0-2/3');
+        let ret = await pawnItemModel.all();
+    // resp.set('X-Total-Count', '3');
+        resp.set('Content-Range', 'pawnshop 0-9/3');
         resp.set('Access-Control-Expose-Headers', 'Content-Range');
+        return resp.json(ret);
         return resp.json([
-            { "id": 0, "date": "03/18/2022", "reference": "1ewf23", "customer_id": "123", total: "123123" },
-            { "id": 1, "date": "03/18/2022", "reference": "1ewf34", "customer_id": "234", total: "11111" },
-            { "id": 2, "date": "03/18/2022", "reference": "1ewf45", "customer_id": "345", total: "222222" },
+            { 
+                "id": 0, 
+                "date": "03/18/2022", 
+                "reference": "1ewf23123123123", 
+                "customer_id": "123", 
+                "status": 'delivered',
+                "total": "123123",
+                "returned": false
+            },
+            { 
+                "id": 1, 
+                "date": "03/18/2022", 
+                "reference": "1ewf34", 
+                // "customer_id": "234", 
+                "status": 'delivered',
+                "total": "11111", 
+                "returned": true
+            },
+            { 
+                "id": 2, 
+                "date": "03/18/2022", 
+                "reference": "1ewf45", 
+                "customer_id": "345", 
+                "status": 'cancelled',
+                "total": "222222", 
+                "returned": true
+            },
         ]);
+    }
+
+    get = async (req, resp) => {
+        return resp.json(
+            { 
+                "id": 0, 
+                "date": "03/18/2022", 
+                "reference": "1ewf23123123123", 
+                "customer_id": "123", 
+                "status": 'delivered',
+                "total": "123123",
+                "returned": false
+            });
     }
     /**
      * 
      * @param {*} req 
      *  data: {
-        assetName: '',
-        assetType: '',
-        assetDescription: '',
-        assetAddress: '',
-        city: '',
-        street: '',
-        zipcode: '',
-        country: '',
-        valuationReport: '',
+        asset_name: '',
+        asset_type: '',
+        asset_description: '',
+        asset_address: '',
+        asset_address_street: '',
+        asset_address_city: '',
+        asset_address_state: '',
+        asset_address_zipcode: '',
+        asset_address_country: '',
+        valuation_report: '',
         price: 0,
         price_percentage: 0,
         quote_price: 0,
@@ -96,8 +136,33 @@ class PawnShopController {
             }
             let accountInfo = ret.data;
             data.verified = false;
-            data.ownerToken = userToken;
+            data.owner_token = userToken;
             // Save the pawn item data into firestore
+            /**
+             * 
+                {
+                    asset_name: "aaa",
+                    asset_type: "",
+                    asset_description: "aaaaaaa",
+                    asset_address_street: "aaaaaaaaaa",
+                    asset_address_city: "aaaaaaaa",
+                    asset_address_state: "New South Wales",
+                    asset_address_zipcode: "345345345",
+                    asset_address_country: "Australia",
+                    valuation_report: "/home/vn/Public/openchaindex/pawnshop/files/PolarBear.org.jpg",
+                    price: "1000",
+                    price_percentage: "70",
+                    quote_price: "700",
+                    estimated_ocat: "700",
+                    estimated_fee: "",
+                    verified: false,
+                    owner_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6IkZmVUZpZzgzSUt3WDlzWGd6bkVsIiwiaWF0IjoxNjQ2OTk2MjMwLCJleHAiOjE2NDY5OTc2NzB9.KE8zOOfoebrZx-DmLUBT93quRtiUnEwoMidDM-s5TKw",
+                    created_at: {
+                    },
+                    updated_at: {
+                    },
+                }
+             */
             ret = await pawnItemModel.create(data);
             if (!ret) {
                 return resp.json({ error: -2, data: "Failed to save pawn item" });
