@@ -16,6 +16,17 @@ const cllctn = 'users';
  * Declaration of model object for user information
  */
 function UserAuth() {
+
+    this.getObject = async function(userId) {
+        const snapshot = await db.collection(cllctn).doc(userId).get();
+        if (snapshot.empty) {
+            console.info('No matching user information.');
+            return null;
+        }
+        ret = snapshot.data();
+        return ret;
+    }
+
     /**
      * Find user information document by the specified conditions
      * @param {json} jsonWhere search condition to be used

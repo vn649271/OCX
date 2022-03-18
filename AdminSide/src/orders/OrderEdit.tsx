@@ -8,7 +8,9 @@ import {
     Labeled,
     ReferenceField,
     SelectInput,
+    BooleanField,
     TextField,
+    Link as RALink,
     Toolbar,
     useTranslate,
 } from 'react-admin';
@@ -161,6 +163,7 @@ const OrderForm = (props: any) => {
                                             </Labeled>
                                         </Grid>
                                     </Grid>
+                                    <Spacer />
                                     <Grid container>
                                         <Grid item xs={12} sm={12} md={2}>
                                             <Labeled
@@ -228,6 +231,7 @@ const OrderForm = (props: any) => {
                                             </Labeled>
                                         </Grid>
                                     </Grid>
+                                    <Spacer />
                                     <Grid container>
                                         <Grid item xs={12} sm={12} md={3}>
                                             <Labeled
@@ -235,11 +239,14 @@ const OrderForm = (props: any) => {
                                                 source="valuation_report"
                                                 resource="pawnshop"
                                             >
-                                                <TextField
+                                                <RALink to="http://localhost/openchaindex/pawnshop/files/Screenshot_from_2022-03-18_20-38-37.png">
+                                                    xxxxxxxxxxxx
+                                                </RALink>
+                                                {/* <TextField
                                                     source="valuation_report"
                                                     resource="pawnshop"
                                                     record={formProps.record}
-                                                />
+                                                /> */}
                                             </Labeled>
                                         </Grid>
                                         <Grid item xs={12} sm={12} md={3}>
@@ -282,6 +289,7 @@ const OrderForm = (props: any) => {
                                             </Labeled>
                                         </Grid>
                                     </Grid>
+                                    <Spacer />
                                     <Grid container>
                                         <Grid item xs={12} sm={12} md={6}>
                                             <Labeled
@@ -310,6 +318,7 @@ const OrderForm = (props: any) => {
                                             </Labeled>
                                         </Grid>
                                     </Grid>
+                                    <Spacer />
                                     <Grid container>
                                         <Grid item xs={12} sm={12} md={6}>
                                             <Labeled
@@ -336,33 +345,23 @@ const OrderForm = (props: any) => {
                                             </Labeled>
                                         </Grid> */}
                                     </Grid>
+                                    <Spacer />
                                     <Grid container>
                                         <Grid item xs={12} sm={12} md={6}>
-                                            <SelectInput
-                                                resource="pawnshop"
-                                                source="status"
-                                                choices={[
-                                                    {
-                                                        id: 'delivered',
-                                                        name: 'delivered',
-                                                    },
-                                                    {
-                                                        id: 'ordered',
-                                                        name: 'ordered',
-                                                    },
-                                                    {
-                                                        id: 'cancelled',
-                                                        name: 'cancelled',
-                                                    },
-                                                    {
-                                                        id: 'unknown',
-                                                        name: 'unknown',
-                                                        disabled: true,
-                                                    },
-                                                ]}
-                                            />
+                                            {
+                                                formProps.record.verified? 
+                                                    <BooleanField
+                                                        resource="pawnshop"
+                                                        source="verified"
+                                                    />:
+                                                    <BooleanInput
+                                                        row={true}
+                                                        resource="pawnshop"
+                                                        source="verified"
+                                                    />
+                                            }
                                         </Grid>
-                                        <Grid item xs={12} sm={12} md={6}>
+                                        {/* <Grid item xs={12} sm={12} md={6}>
                                             <Box mt={2}>
                                                 <BooleanInput
                                                     row={true}
@@ -370,7 +369,7 @@ const OrderForm = (props: any) => {
                                                     source="returned"
                                                 />
                                             </Box>
-                                        </Grid>
+                                        </Grid> */}
                                     </Grid>
                                 </Grid>
                             </Grid>

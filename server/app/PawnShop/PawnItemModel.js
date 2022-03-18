@@ -29,7 +29,7 @@ const collection = 'pawnitems';
  */
 function PawnItemModel() {
 
-    this.getObject = async function(pawnItemId) {
+    this.getObjectById = async function(pawnItemId) {
         const snapshot = await db.collection(collection).doc(pawnItemId).get();
         if (snapshot.empty) {
             console.info('No matching user information.');
@@ -84,13 +84,26 @@ function PawnItemModel() {
      * Create a new user information document
      * @param {object} jsonPawnItem parameter object presenting new user information
      */
-    this.create = async function (jsonPawnItem) {
+     this.create = async function (jsonPawnItem) {
         // Add a new document in collection "users"
         let now = new Date();
         jsonPawnItem.created_at = now;
         jsonPawnItem.updated_at = now;
 
         return await db.collection(collection).add(jsonPawnItem);
+    }
+
+    this.save = async function (params) {
+        let id = params.id;
+        let data = params.data;
+
+        let now = new Date();
+        data.updated_at = now;
+
+        const pawnItemRef = db.collection(collection).doc(id);
+        const ret = await pawnItemRef.update(data);
+
+        return ret;
     }
 
     /**

@@ -2,6 +2,9 @@ const fs = require('fs');
 const crypto = require('crypto');
 const JSEncrypt = require('node-jsencrypt');
 const crypt = new JSEncrypt();
+const { networkInterfaces } = require('os');
+
+const nets = networkInterfaces();
 
 const GLOBAL_SETTINGS_FILE_NAME = "global-settings.json";
 
@@ -50,6 +53,22 @@ class CommonUtils {
         crypt.setPrivateKey(privateKey);
         var decrypted = await crypt.decrypt(encrypted);
         return decrypted;
+    }
+
+    async getIpList() {
+        const results = Object.create(null); // Or just '{}', an empty object
+        for (const name of Object.keys(nets)) {
+            for (const net of nets[name]) {
+                // Skip over non-IPv4 and internal (i.e. 127.0.0.1) addresses
+                if (net.family === 'IPv4' && !net.internal) {
+                    if (!results[name]) {
+                        results[name] = [];
+                    }
+                    results[name].push(net.address);
+                }
+            }
+        }        
+        return results;
     }
 }
 

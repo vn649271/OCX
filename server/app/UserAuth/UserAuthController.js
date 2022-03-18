@@ -290,6 +290,14 @@ class UserAuthController {
             }
         });
     }
+
+    getById = async userId => {
+        let userInfo = await userModel.getObject(userId);
+        if (ret === undefined || ret === null) {
+            return { error: -1, data: "Not found the account" };
+        }
+        return { error: 0, data: userInfo };
+    }
 };
 
 module.exports = UserAuthController;

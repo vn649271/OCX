@@ -373,12 +373,12 @@ class PawnShopPage extends Component {
             // Then submit to mint a new pawn NFT
             let submitData = this.state.inputs;
             submitData.valuation_report = ret.data;
-            ret = await pawnShopService.create({userToken: this.userToken, data: submitData});
-            if (ret.error - 0 !== 0) {
-                btnCmpnt.stopTimer();
-                alert("Failed to create new pawn NFT: " + ret.data);
-                return;
-            }
+            // ret = await pawnShopService.create({userToken: this.userToken, data: submitData});
+            // if (ret.error - 0 !== 0) {
+            //     btnCmpnt.stopTimer();
+            //     alert("Failed to create new pawn NFT: " + ret.data);
+            //     return;
+            // }
             btnCmpnt.stopTimer();
             this.clearAllFields();
             alert("Success: " + ret.data);
@@ -650,10 +650,10 @@ class PawnShopPage extends Component {
                         </div>
                     </div>
                     <div className="mt-10" text-align="right">
-                        <button
+                        {/* <button
                             className="border border-grey-light button-bg p-5 hover-transition main-font focus:outline-none rounded text-white verify-button"
                             onClick={this.onClickSubmit}
-                        >Submit</button>
+                        >Submit</button> */}
                         <DelayButton
                             captionInDelay="Submitting"
                             caption="Submit"
