@@ -433,7 +433,7 @@ class AccountController {
         }
     }
 
-    async getModelInJson(accountId) {
+    async getById(accountId) {
         let accountInfo = await accountModel.getObject(accountId);
         if (ret === undefined || ret === null) {
             return { error: -1, data: "Not found the account" };

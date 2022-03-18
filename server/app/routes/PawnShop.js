@@ -6,6 +6,7 @@ var pawnShopController = new PawnShopController();
 
 pawnshop.get("/", pawnShopController.getList);
 pawnshop.get("/:id", pawnShopController.get);
+pawnshop.put("/:id", pawnShopController.update);
 pawnshop.post("/create", pawnShopController.create);
 pawnshop.post("/upload", pawnShopController.upload);
 
