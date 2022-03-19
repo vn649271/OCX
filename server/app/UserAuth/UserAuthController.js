@@ -39,7 +39,7 @@ class UserAuthController {
      * @returns {boolean} 0 - No error or errors
      */
     async validateUserToken(userToken) {
-        let userId = g_userTokenMap[userToken];
+        let userId = g_userTokenMap ? g_userTokenMap[userToken] ? g_userTokenMap[userToken] : null : null;
         if (!userId) {
             return null;
         }
@@ -47,7 +47,7 @@ class UserAuthController {
     }
 
     async getUserIdFor(userToken) {
-        let userId = g_userTokenMap[userToken];
+        let userId = g_userTokenMap ? g_userTokenMap[userToken] ? g_userTokenMap[userToken] : null : null;
         if (!userId) {
             return null;
         }

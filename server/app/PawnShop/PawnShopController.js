@@ -143,14 +143,14 @@ class PawnShopController {
         if (userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
         }
-        let userInfo = await userController.validateUserToken(userToken);
-        if (!userInfo) {
+        let userId = await userController.getUserIdFor(userToken);
+        if (!userId) {
             return resp.json({ error: -2, data: "Invalid user token" });
         }
 
         try {
             data.verified = false;
-            data.owner_id = userInfo.id;
+            data.owner_id = userId;
             // Save the pawn item data into firestore
             ret = await pawnItemModel.create(data);
             if (!ret || ret.error === undefined) {
@@ -159,7 +159,7 @@ class PawnShopController {
             if (ret.error != 0) {
                 return resp.json({ error: -3, data: ret.data });
             }
-            let allAssetsForThisUser = await pawnItemModel.findAllFor(userInfo.id);
+            let allAssetsForThisUser = await pawnItemModel.findAllFor(userId);
             if (!allAssetsForThisUser) {
                 return resp.json({ error: -4, data: "Failed to get all pawn assets for you" });
             }

@@ -8,6 +8,7 @@ import { JSEncrypt } from 'jsencrypt'
 import DelayButton from '../../common/DelayButton';
 import Card from '../../common/Card';
 import SimpleTable from '../../common/SimpleTable';
+import CheckBox from '../../common/CheckBox';
 
 var rsaCrypt = new JSEncrypt();
 var pawnShopService = new PawnShopService();
@@ -187,24 +188,12 @@ const STATES = {
 
 const TRACKING_TABLE_SCHEMA = {
     headers: [
-        {
-            title: 'Date'
-        },
-        {
-            title: 'Asset ID'
-        },
-        {
-            title: 'Asset Type'
-        },
-        {
-            title: 'Asset Name'
-        },
-        {
-            title: 'Status'
-        },
-        {
-            title: 'Management Fees'
-        },
+        { title: 'Date' },
+        { title: 'Asset ID' },
+        { title: 'Asset Type' },
+        { title: 'Asset Name' },
+        { title: 'Status' },
+        { title: 'Management Fees' },
     ]
 }
 
@@ -212,24 +201,12 @@ const TRACKING_TABLE_SAMPLE_DATA = [
     {
         id: '0',
         data: [
-            {
-                value: '2021-1-12'
-            },
-            {
-                value: <div className="text-gray-900">Jon doe</div>
-            },
-            {
-                value: <div className="text-gray-500">jhondoe@example.com</div>
-            },
-            {
-                value: <a href="#" className="px-4 py-1 text-white bg-blue-400 rounded">Edit</a>
-            },
-            {
-                value: <a href="#" className="px-4 py-1 text-white bg-red-400 rounded">Delete</a>
-            },
-            {
-                value: '1'
-            },
+            { value: '2021-1-12' },
+            { value: <div className="text-gray-900">Jon doe</div> },
+            { value: <div className="text-gray-500">jhondoe@example.com</div> },
+            { value: <a href="#" className="px-4 py-1 text-white bg-blue-400 rounded">Edit</a> },
+            { value: <a href="#" className="px-4 py-1 text-white bg-red-400 rounded">Delete</a> },
+            { value: '1' },
         ]
     },
     {
@@ -422,7 +399,7 @@ class PawnShopPage extends Component {
     }
 
     onChangeAssetType = itemIndex => {
-        console.log("onChangeAssetType(): ", itemIndex);
+        this.setAssetType(ASSET_TYPES[itemIndex].title);
     }
 
     onChangeCountry = itemIndex => {
@@ -505,7 +482,23 @@ class PawnShopPage extends Component {
     }
 
     updateTrackTable = (assets) => {
-        console.log("updateTrackTable(): ", assets);
+        let trackTableData = [];
+        assets.forEach(record => {
+            let row = {
+                id: record.id,
+                data: [
+                    { value: new Date(record.created_at).toLocaleString() },
+                    { value: record.id },
+                    { value: record.asset_type },
+                    { value: record.asset_name },
+                    { value: record.verified ? "Verified": "Submitted" },
+                    { value: record.estimated_fee },
+                ]
+            };
+            trackTableData.push(row);
+        });
+        this.setState({track_table_data: trackTableData})
+        console.log("updateTrackTable(): ", trackTableData);
     }
 
     async componentDidMount() {
@@ -784,7 +777,7 @@ class PawnShopPage extends Component {
                 </div>
                 <div className="my-pawnshop-page main-font main-color font-16 m-8 mt-16">
                     <Card title='Tracking'>
-                        <SimpleTable def={TRACKING_TABLE_SCHEMA} data={TRACKING_TABLE_SAMPLE_DATA}>
+                        <SimpleTable def={TRACKING_TABLE_SCHEMA} data={this.state.track_table_data}>
                         </SimpleTable>                        
                     </Card>
                 </div>
