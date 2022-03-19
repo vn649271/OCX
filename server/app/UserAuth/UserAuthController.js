@@ -13,13 +13,23 @@ var NUM_OF_CHARS_FOR_PIN_CODE = process.env.NUM_OF_CHARS_FOR_PIN_CODE || 5;
 var me;
 var userModel = new UserAuth();
 var commonUtils = new CommonUtils();
+var g_userTokenMap = null;
 
 /**
  * Controller for user authentication
  */
 class UserAuthController {
+    
     constructor() {
         me = this;
+        userModel.all().then((allRecords) => {
+            if (!g_userTokenMap) {
+                g_userTokenMap = {};
+            }
+            allRecords.map((r, i) => {
+                g_userTokenMap[r.token] = r.id;
+            });
+        });
     }
 
     /**
@@ -29,13 +39,20 @@ class UserAuthController {
      * @returns {boolean} 0 - No error or errors
      */
     async validateUserToken(userToken) {
-        return await userModel.findOne({
-            where: {
-                token: userToken
-            }
-        });
+        let userId = g_userTokenMap[userToken];
+        if (!userId) {
+            return null;
+        }
+        return await userModel.getObject(userId);
     }
 
+    async getUserIdFor(userToken) {
+        let userId = g_userTokenMap[userToken];
+        if (!userId) {
+            return null;
+        }
+        return userId;
+    }
     /**
      * Handle the request to resend the pin-code from client
      * @param {object} req request object from the client 

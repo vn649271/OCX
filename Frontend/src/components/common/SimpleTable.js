@@ -3,8 +3,26 @@ import { Component } from "react";
 
 export default class SimpleTable extends Component {
 
+    state = {
+        def: null,
+        data: null
+    };
+
     constructor(props) {
         super(props);
+        this.setState({def: this.props.def});
+        this.setState({data: this.props.data});
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.target !== this.props.target) {
+        }
+        if (prevProps.def !== this.props.def) {
+            this.setState({def: this.props.def});
+        }
+        if (prevProps.data !== this.props.data) {
+            this.setState({data: this.props.data});
+        }
     }
 
     render() {
@@ -17,17 +35,17 @@ export default class SimpleTable extends Component {
                                 <thead className="bg-gray-50">
                                     <tr>
                                     {
-                                        this.props.def.headers.map((v, i) => {
+                                        this.state.def ? this.state.def.headers ? this.state.def.headers.map((v, i) => {
                                             return <th className="px-6 py-2 text-gray-500 text-left">
                                                 {v.title}
                                             </th>
-                                        })
+                                        }): null : null
                                     }
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white">
                                 {
-                                    this.props.data.map((r, i) => {
+                                    this.state.data ? this.state.data.map((r, i) => {
                                         return <tr id={"tr" + r.id} className="whitespace-nowrap">
                                             {
                                                 r.data.map((c, j) => {
@@ -35,7 +53,7 @@ export default class SimpleTable extends Component {
                                                 })
                                             }
                                         </tr>
-                                    })
+                                    }): null
                                 }
                                 </tbody>
                             </table>

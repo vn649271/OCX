@@ -32,7 +32,7 @@ function PawnItemModel() {
     this.getObjectById = async function(pawnItemId) {
         const snapshot = await db.collection(collection).doc(pawnItemId).get();
         if (snapshot.empty) {
-            console.info('No matching user information.');
+            console.info('No matching pawn asset information.');
             return null;
         }
         ret = snapshot.data();
@@ -41,10 +41,10 @@ function PawnItemModel() {
 
     this.all = async function() {
         let retArray = [];
-        const usersRef = db.collection(collection);
-        const snapshot = await usersRef.get();
+        const pawnAssetsRef = db.collection(collection);
+        const snapshot = await pawnAssetsRef.get();
         if (snapshot.empty) {
-            console.info('No matching user information.');
+            console.info('No matching pawn asset information.');
             return null;
         }
         let ret = null;
@@ -57,18 +57,18 @@ function PawnItemModel() {
     }
 
     /**
-     * Find user information document by the specified conditions
+     * Find pawn asset information document by the specified conditions
      * @param {json} jsonWhere search condition to be used
      */
     this.findOne = async function (jsonWhere) {
 
-        const usersRef = db.collection(collection);
+        const pawnAssetsRef = db.collection(collection);
         var ret = null;
 
         for (let field in jsonWhere.where) {
-            const snapshot = await usersRef.where(field, '==', jsonWhere.where[field]).get();
+            const snapshot = await pawnAssetsRef.where(field, '==', jsonWhere.where[field]).get();
             if (snapshot.empty) {
-                console.info('No matching user information.');
+                console.info('No matching pawn asset information.');
                 return null;
             }
             snapshot.forEach(doc => {
@@ -81,17 +81,47 @@ function PawnItemModel() {
     }
 
     /**
-     * Create a new user information document
-     * @param {object} jsonPawnItem parameter object presenting new user information
+     * Find pawn asset information document by the specified conditions
+     * @param {json} jsonWhere search condition to be used
+     */
+    this.findAllFor = async function (usesrId) {
+
+        const pawnAssetsRef = db.collection(collection);
+        var ret = null;
+
+        const snapshot = await pawnAssetsRef.where('owner_id', '==', usesrId).get();
+        if (snapshot.empty) {
+            console.info('No matching pawn asset information.');
+            return null;
+        }
+        snapshot.forEach(doc => {
+            if (!ret) {
+                ret = [];
+            }
+            let r = doc.data();
+            r.id = doc.id;
+            ret.push(r);
+        });
+        return ret;
+    }
+
+    /**
+     * Create a new pawn asset information document
+     * @param {object} jsonPawnItem parameter object presenting new pawn asset information
      */
      this.create = async function (jsonPawnItem) {
-        // Add a new document in collection "users"
+        // Add a new document in collection "pawn assets"
         let now = new Date();
         now = now.toISOString();
         jsonPawnItem.created_at = now;
         jsonPawnItem.updated_at = now;
 
-        return await db.collection(collection).add(jsonPawnItem);
+        let ret = await db.collection(collection).add(jsonPawnItem);
+        if (!ret || ret.id === undefined || !ret.id) {
+            return {error: -1, data: "Failed to register new pawn item"};
+        }
+        // Get all submitted assets for the user
+        return {error: 0, data: ret.id };
     }
 
     this.save = async function (params) {
@@ -104,24 +134,6 @@ function PawnItemModel() {
         const pawnItemRef = db.collection(collection).doc(id);
         const ret = await pawnItemRef.update(data);
 
-        return ret;
-    }
-
-    /**
-     * Get address for pawnItem
-     * @param {object} jsonPawnItem parameter object presenting new user information
-     */
-    this.getAddresses = async function (userToken) {
-        const usersRef = db.collection(collection);
-        var ret = null;
-        const snapshot = await usersRef.where('user_token', '==', userToken).get();
-        if (snapshot.empty) {
-            console.info('No matching pawnItem information.');
-            return null;
-        }
-        snapshot.forEach(doc => {
-            ret = doc.data().addresses;
-        });
         return ret;
     }
 

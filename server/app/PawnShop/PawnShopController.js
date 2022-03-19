@@ -69,6 +69,22 @@ class PawnShopController {
         return resp.json(ret);
     }
 
+    getAssetsFor = async (req, resp) => {
+        const userToken = req.body ? req.body.userToken ? req.body.userToken : null : null;
+        if (userToken === null) {
+            return resp.json({ error: -1, data: "Invalid request" });
+        }
+        let userId = await userController.getUserIdFor(userToken);
+        if (!userId) {
+            return resp.json({ error: -2, data: "Invalid user token" });
+        }
+        let ret = await pawnItemModel.findAllFor(userId);
+        if (!ret || ret.length === undefined || ret.length < 0) {
+            return resp.json({ error: -3, data: "No result for the assets for this user" });
+        }
+        return resp.json({error: 0, data: ret});        
+    }
+
     get = async (req, resp) => {
         let id = req.params ? req.params.id ? req.params.id : null : null;
         if (!id) {
@@ -127,15 +143,27 @@ class PawnShopController {
         if (userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
         }
+        let userInfo = await userController.validateUserToken(userToken);
+        if (!userInfo) {
+            return resp.json({ error: -2, data: "Invalid user token" });
+        }
+
         try {
             data.verified = false;
-            data.owner_token = userToken;
+            data.owner_id = userInfo.id;
             // Save the pawn item data into firestore
             ret = await pawnItemModel.create(data);
-            if (!ret) {
+            if (!ret || ret.error === undefined) {
                 return resp.json({ error: -2, data: "Failed to save pawn item" });
             }
-            return resp.json({ error: 0, data: ret.id });
+            if (ret.error != 0) {
+                return resp.json({ error: -3, data: ret.data });
+            }
+            let allAssetsForThisUser = await pawnItemModel.findAllFor(userInfo.id);
+            if (!allAssetsForThisUser) {
+                return resp.json({ error: -4, data: "Failed to get all pawn assets for you" });
+            }
+            return resp.json({ error: 0, data: { new_id: ret.data, all_assets: allAssetsForThisUser } });
 
         } catch (error) {
             return resp.json({ error: -100, data: error.message });
