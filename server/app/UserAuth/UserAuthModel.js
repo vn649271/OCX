@@ -27,6 +27,23 @@ function UserAuth() {
         return ret;
     }
 
+    this.all = async () => {
+        let retArray = [];
+        const userAuthRef = db.collection(cllctn);
+        const snapshot = await userAuthRef.get();
+        if (snapshot.empty) {
+            console.info('No matching pawn asset information.');
+            return null;
+        }
+        let ret = null;
+        snapshot.forEach(doc => {
+            ret = doc.data();
+            ret.id = doc.id;
+            retArray.push(ret);
+        });
+        return retArray;
+    }
+
     /**
      * Find user information document by the specified conditions
      * @param {json} jsonWhere search condition to be used

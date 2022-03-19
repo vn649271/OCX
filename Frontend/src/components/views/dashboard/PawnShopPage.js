@@ -285,6 +285,7 @@ var self = null;
 class PawnShopPage extends Component {
     
     state = {
+        new_asset_id: "",
         accounts: null,
         connected_hotwallet: 0,
         error: '',
@@ -339,6 +340,7 @@ class PawnShopPage extends Component {
         this.onSelectValuationReport = this.onSelectValuationReport.bind(this);
 
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.updateTrackTable = this.updateTrackTable.bind(this);
     }
 
     setAssetName = name => {
@@ -476,8 +478,11 @@ class PawnShopPage extends Component {
                 alert("Failed to create new pawn NFT: " + ret.data);
                 return;
             }
+
+            this.setState({new_asset_id: ret.data.new_id});
             btnCmpnt.stopTimer();
             this.clearAllFields();
+            this.updateTrackTable(ret.data.all_assets);
             alert("Success: " + ret.data);
         } catch(error) {
             alert(error)
@@ -499,6 +504,10 @@ class PawnShopPage extends Component {
         }
     }
 
+    updateTrackTable = (assets) => {
+        console.log("updateTrackTable(): ", assets);
+    }
+
     async componentDidMount() {
         this.userToken = localStorage.getItem("userToken");
         this.encryptKey = localStorage.getItem("encryptKey");
@@ -514,7 +523,7 @@ class PawnShopPage extends Component {
                 case 0:
                     this.setState({ accounts: resp.data.addresses });
                     this.setState({ connected_hotwallet: USER_WITH_ACCOUNT });
-                    return;
+                    break;
                 case 51:
                 case 52:
                     this.setState({ connected_hotwallet: NEW_USER });
@@ -530,6 +539,14 @@ class PawnShopPage extends Component {
             errorMsg = "Invalid response for connecting to my account"
         }
         this.warning(errorMsg);
+        // Get all pawn assets items for this user
+        let ret = await pawnShopService.getPawnAssets({userToken: this.userToken});
+        if (ret.error - 0 !== 0) {
+            alert("Failed to create new pawn NFT: " + ret.data);
+            return;
+        }
+
+        this.updateTrackTable(ret.data);
     }
 
     componentDidUpdate(prevProps) {
@@ -543,6 +560,9 @@ class PawnShopPage extends Component {
     }
 
     warning = (msg) => {
+        if (!msg) {
+            return;
+        }
         if (typeof msg === 'object') {
             msg = msg.toString();
         }

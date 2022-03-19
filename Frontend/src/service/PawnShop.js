@@ -58,4 +58,18 @@ export default function PawnShopService() {
             console.log("Uploading valuation report: ", ex)
         }
     }
+
+    /**
+     * Connect to specified account.
+     * @param {string} userToken    user token
+     * @param {string} account      account address
+     * 
+     * @returns 
+     */
+     this.getPawnAssets = async (params) => {
+        let _params = {};
+        _params['data'] = params;
+        _params['url'] = BACKEND_BASE_URL + "/pawnshop/assets";
+        return await this._sendRequest(_params);
+    }
 }
