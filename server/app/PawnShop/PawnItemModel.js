@@ -32,7 +32,7 @@ function PawnItemModel() {
     this.getObjectById = async function(pawnItemId) {
         const snapshot = await db.collection(collection).doc(pawnItemId).get();
         if (snapshot.empty) {
-            console.info('No matching user information.');
+            console.info('No matching asset information.');
             return null;
         }
         ret = snapshot.data();
