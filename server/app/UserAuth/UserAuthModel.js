@@ -10,7 +10,7 @@
 const { Firestore } = require('@google-cloud/firestore');
 
 const db = new Firestore();
-const cllctn = 'users';
+const collection = 'users';
 
 /**
  * Declaration of model object for user information
@@ -18,7 +18,7 @@ const cllctn = 'users';
 function UserAuth() {
 
     this.getObject = async function(userId) {
-        const snapshot = await db.collection(cllctn).doc(userId).get();
+        const snapshot = await db.collection(collection).doc(userId).get();
         if (snapshot.empty) {
             console.info('No matching user information.');
             return null;
@@ -29,7 +29,7 @@ function UserAuth() {
 
     this.all = async () => {
         let retArray = [];
-        const userAuthRef = db.collection(cllctn);
+        const userAuthRef = db.collection(collection);
         const snapshot = await userAuthRef.get();
         if (snapshot.empty) {
             console.info('No matching pawn asset information.');
@@ -50,7 +50,7 @@ function UserAuth() {
      */
     this.findOne = async function (jsonWhere) {
 
-        const usersRef = db.collection(cllctn);
+        const usersRef = db.collection(collection);
         var ret = null;
 
         for (let field in jsonWhere.where) {
@@ -78,7 +78,7 @@ function UserAuth() {
         jsonUser.created_at = now;
         jsonUser.updated_at = now;
 
-        const res = await db.collection(cllctn).add(jsonUser);
+        const res = await db.collection(collection).add(jsonUser);
         if (res !== null) {
             return res.id;
         }
@@ -91,7 +91,7 @@ function UserAuth() {
      * @param {string} pinCode pin code to be set
      */
     this.setPinCode = async function (userId, pinCode) {
-        const userRef = db.collection(cllctn).doc(userId);
+        const userRef = db.collection(collection).doc(userId);
         let now = new Date();
         const res = await userRef.update({ pin_code: pinCode, updated_at: now });
         return res;
@@ -103,7 +103,7 @@ function UserAuth() {
      * @param {token} token token to be set
      */
     this.setToken = async function (userId, token) {
-        const userRef = db.collection(cllctn).doc(userId);
+        const userRef = db.collection(collection).doc(userId);
         let now = new Date();
         const res = await userRef.update({ token: token, updated_at: now });
         return res;
@@ -115,7 +115,7 @@ function UserAuth() {
      * @param {token} token token to be set
      */
      this.setAccountId = async function (userId, accountId) {
-        const userRef = db.collection(cllctn).doc(userId);
+        const userRef = db.collection(collection).doc(userId);
         let now = new Date();
         const res = await userRef.update({ account: accountId, updated_at: now });
         return res;
@@ -127,7 +127,7 @@ function UserAuth() {
      * @param {integer} status status to be set
      */
     this.setStatus = async function (userId, status) {
-        const userRef = db.collection(cllctn).doc(userId);
+        const userRef = db.collection(collection).doc(userId);
         const res = await userRef.update({ status: status });
         return res;
     }

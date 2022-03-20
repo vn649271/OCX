@@ -32,10 +32,31 @@ export default function PawnShopService() {
      * 
      * @returns new account address
      */
-    this.create = async (params) => {
+     this.create = async (params) => {
         let _params = {};
         _params['data'] = params;
         _params['url'] = BACKEND_BASE_URL + "/pawnshop/create";
+        return await this._sendRequest(_params);
+    }
+
+    /**
+     * Submit to create a new pawn item.
+     * @param {string} userToken    user token
+     * @param {string} account      account address
+     * 
+     * @returns new account address
+     */
+     this.mint = async (params) => {
+        let _params = {};
+        _params['data'] = params;
+        _params['url'] = BACKEND_BASE_URL + "/pawnshop/mint";
+        return await this._sendRequest(_params);
+    }
+
+    this.swap = async (params) => {
+        let _params = {};
+        _params['data'] = params;
+        _params['url'] = BACKEND_BASE_URL + "/pawnshop/swap";
         return await this._sendRequest(_params);
     }
 

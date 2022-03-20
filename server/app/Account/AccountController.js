@@ -15,6 +15,7 @@ var commonUtils = new CommonUtils();
  * Controller for user authentication
  */
 class AccountController {
+    
     constructor() {
         self = this;
         this.gethError = null
@@ -201,7 +202,7 @@ class AccountController {
      * @param {object} req request object from the client 
      * @param {object} resp response object to the client
      */
-    async balance(req, resp) {
+    async balances(req, resp) {
         var userToken = req.body ? req.body.userToken ? req.body.userToken : null : null;
         if (userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
@@ -215,7 +216,7 @@ class AccountController {
             if (addresses == undefined || addresses == null || addresses == {}) {
                 return resp.json({ error: -51, data: "No account for you" });
             }
-            let ret = await accountService.balance(addresses, ['ETH', 'UNI', 'DAI']);
+            let ret = await accountService.getBalances(addresses);
             return resp.json(ret);
         } catch (error) {
             let errorMessage = error.message.replace("Returned error: ", "");
@@ -269,7 +270,7 @@ class AccountController {
             return resp.json({ error: -1, data: "Invalid request" });
         }
         try {
-            let ret = await accountService.getTokenInfoList(["BTC", "ETH", "UNI", "DAI"]);
+            let ret = await accountService.getTokenInfoList();
             return resp.json(ret);
         } catch (error) {
             let errorMessage = error.message.replace("Returned error: ", "");
@@ -441,6 +442,25 @@ class AccountController {
         return { error: 0, data: accountInfo };
     }
 
+    async addAsset(accountId, assetId) {
+        return await accountModel.addAsset(accountId, assetId);
+    }
+
+    async removeAsset(accountId, assetId) {
+        return await accountModel.removeAsset(accountId, assetId);
+    }
+
+    /**
+     * Find pawn asset information document by the specified conditions
+     * @param {json} jsonWhere search condition to be used
+     */
+    async allAsset(accountId) {
+        let accountInfo = await accountModel.getObject(accountId);
+        if (ret === undefined || ret === null) {
+            return null;
+        }
+        return accountInfo.assets;
+    }
 };
 
 module.exports = AccountController;

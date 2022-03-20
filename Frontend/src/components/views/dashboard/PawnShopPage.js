@@ -192,70 +192,11 @@ const TRACKING_TABLE_SCHEMA = {
         { title: 'Asset ID' },
         { title: 'Asset Type' },
         { title: 'Asset Name' },
-        { title: 'Status' },
+        { title: 'Quoted Pricce' },
         { title: 'Management Fees' },
+        { title: 'Status' },
     ]
 }
-
-const TRACKING_TABLE_SAMPLE_DATA = [
-    {
-        id: '0',
-        data: [
-            { value: '2021-1-12' },
-            { value: <div className="text-gray-900">Jon doe</div> },
-            { value: <div className="text-gray-500">jhondoe@example.com</div> },
-            { value: <a href="#" className="px-4 py-1 text-white bg-blue-400 rounded">Edit</a> },
-            { value: <a href="#" className="px-4 py-1 text-white bg-red-400 rounded">Delete</a> },
-            { value: '1' },
-        ]
-    },
-    {
-        id: '1',
-        data: [
-            {
-                value: '2021-1-12'
-            },
-            {
-                value: <div className="text-gray-900">bbbbbbbbbbbbbb</div>
-            },
-            {
-                value: <div className="text-gray-500">jhondoe@example.com</div>
-            },
-            {
-                value: <a href="#" className="px-4 py-1 text-white bg-blue-400 rounded">Edit</a>
-            },
-            {
-                value: <a href="#" className="px-4 py-1 text-white bg-red-400 rounded">Delete</a>
-            },
-            {
-                value: '1'
-            },
-        ]
-    },
-    {
-        id: '2',
-        data: [
-            {
-                value: '2021-1-12'
-            },
-            {
-                value: <div className="text-gray-900">aaaaaaaaaaaaaaa</div>
-            },
-            {
-                value: <div className="text-gray-500">jhondoe@example.com</div>
-            },
-            {
-                value: <a href="#" className="px-4 py-1 text-white bg-blue-400 rounded">Edit</a>
-            },
-            {
-                value: <a href="#" className="px-4 py-1 text-white bg-red-400 rounded">Delete</a>
-            },
-            {
-                value: '1'
-            },
-        ]
-    },
-]
 
 var self = null;
 
@@ -315,6 +256,7 @@ class PawnShopPage extends Component {
         this.onClickBooking = this.onClickBooking.bind(this);
         this.onClickSubmit = this.onClickSubmit.bind(this);
         this.onSelectValuationReport = this.onSelectValuationReport.bind(this);
+        this.onClickMint = this.onClickMint.bind(this);
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.updateTrackTable = this.updateTrackTable.bind(this);
@@ -469,6 +411,26 @@ class PawnShopPage extends Component {
     onClickDownloadLegalContract = ev => {
     }
 
+    onClickMint = async ev => {
+        let assetId = ev.target.id.replace("tracking-item-mint-", "");
+        let ret = await pawnShopService.mint({ownerToken: this.userToken, assetId: assetId});
+        if (ret.error - 0 !== 0) {
+            // btnCmpnt.stopTimer();
+            console.log("Failed to save valuation report: " + ret.data);
+            return;
+        }
+    }
+
+    onClickSwap = async ev => {
+        let assetId = ev.target.id.replace("tracking-item-swap-", "");
+        let ret = await pawnShopService.swap({ownerToken: this.userToken, assetId: assetId});
+        if (ret.error - 0 !== 0) {
+            // btnCmpnt.stopTimer();
+            alert("Failed to save valuation report: " + ret.data);
+            return;
+        }
+    }
+
     handleInputChange = ev => {
         let inputs = this.state.inputs;
         inputs[ev.target.name] = ev.target.value;
@@ -484,6 +446,32 @@ class PawnShopPage extends Component {
     updateTrackTable = (assets) => {
         let trackTableData = [];
         assets.forEach(record => {
+            let statusCol = <span></span>;
+            switch (record.status) {
+            case 1:
+                statusCol = <span>Submitted</span>;
+                break;
+            case 2:
+                statusCol = <span>Rejected</span>;
+                break;
+            case 3: // Once verified, can mint
+                statusCol = <a 
+                                id={"tracking-item-mint-" + record.id} 
+                                className="px-4 py-1 text-white bg-blue-400 rounded cursor-pointer" 
+                                onClick={this.onClickMint} 
+                            >Mint</a>;
+                break;
+            case 4:// Once minted, can swap into OCAT
+                statusCol = <a 
+                                id={"tracking-item-swap-" + record.id} 
+                                className="px-4 py-1 text-white bg-blue-400 rounded cursor-pointer" 
+                                onClick={this.onClickSwap} 
+                            >Convert to OCAT</a>;
+                break;
+            default:
+                break;
+            }
+
             let row = {
                 id: record.id,
                 data: [
@@ -491,8 +479,9 @@ class PawnShopPage extends Component {
                     { value: record.id },
                     { value: record.asset_type },
                     { value: record.asset_name },
-                    { value: record.verified ? "Verified": "Submitted" },
+                    { value: record.quote_price },
                     { value: record.estimated_fee },
+                    { value: statusCol },
                 ]
             };
             trackTableData.push(row);

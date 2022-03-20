@@ -17,31 +17,28 @@ const Erc20TokenABI = [
 // https://docs.uniswap.org/protocol/V2/reference/smart-contracts/router-02#Address
 const UniswapV2Router02Address = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
 
-const ERC20SwapAddress = "0x2DFAC62865068a03CC2d4d1508D80139f115b4Af";
-const PawnNFTsAddress = "0x98Fa8A610414aD582C5284546c10A5A19E071b36";
-const OcatTokenAddress = "0xE790fa8Ac87b57580077C82c47F6800F81c34607";
-const PawnExchangeAddress = "0x2a927527A7ae3e7D1eeb9b1A626aD0753322302D";
-const PawningContractAddress = "0x7bA710EfD71a229620A49422Bb5D1a10edCA4D8B";
+const GOERLI_CONTRACTS = {
+    ERC20_SWAP: "0xBdB3A8eb0E38176B2011dBdBBbA9Cc6B56334cc7",
+    // Our Tokens
+    PNFT: "0x3cf931676bD9B970f4B29b9d9E7F7891B632d326",
+    OCAT: "0x5FC6a5e6592351071645F6d7b492222790F0e435", // "0x0b8dF9B22806E2042cc4d84D9835625F90e4d9ec";
+    // https://docs.uniswap.org/protocol/reference/deployments
+    WETH: "0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6",
+    UNI: "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984", //"0x6Be1a99C215872Cea33217B0f4bAd63f186ddFac", 0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984
+    // https://explorer.bitquery.io/ru/goerli/token/0x5d3a895cbb0b04e2ee5348ac42fd7da24c1fb4f6
+    DAI: "0xdc31ee1784292379fbb2964b3b9c4124d8f89c60" // 0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844
+}
+// const PawnExchangeAddress = "0x2a927527A7ae3e7D1eeb9b1A626aD0753322302D";
+const PawningContractAddress = "0xf50D3e6AB3539D994b8D44bD3cfA8c4F8E61971E";
 
 // Uniswap V3: https://docs.uniswap.org/protocol/concepts/governance/overview#uni-address
 //      "UNI": "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
 // https://goerli.etherscan.io/token/0x6be1a99c215872cea33217b0f4bad63f186ddfac
 // Goerli DAI: https://goerli.etherscan.io/token/0x78ae714dc2ac1d00b33da9e392a9ee851ed48e5a
-//         
-const GoerliTokenAddress = {
-    // https://docs.uniswap.org/protocol/reference/deployments
-    "WETH": "0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6",
-    "UNI": "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984", //"0x6Be1a99C215872Cea33217B0f4bAd63f186ddFac", 0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984
-    // https://explorer.bitquery.io/ru/goerli/token/0x5d3a895cbb0b04e2ee5348ac42fd7da24c1fb4f6
-    "DAI": "0xdc31ee1784292379fbb2964b3b9c4124d8f89c60" // 0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844
-}
+//
 
 module.exports = {
     Erc20TokenABI,
     UniswapV2Router02Address,
-    ERC20SwapAddress,
-    GoerliTokenAddress,
-    PawnNFTsAddress,
-    OcatTokenAddress,
-    PawningContractAddress
+    GOERLI_CONTRACTS,
 };

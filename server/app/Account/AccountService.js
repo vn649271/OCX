@@ -13,12 +13,15 @@ const { OpenchainTransactions, DEFAULT_DEADLINE } = require('../Services/Uniswap
 
 const { ethers } = require("ethers")
 
+const OUR_TOKENS = ["ETH", "UNI", "DAI", "PNFT", "OCAT"];
+
 const UNLOCK_ACCOUNT_INTERVAL = process.env.UNLOCK_ACCOUNT_INTERVAL || 15000; // 15s
 const CHAIN_NAME = process.env.CHAIN_NAME || "goerli";
 const CHAIN_ID = process.env.CHAIN_ID || 5;
 
 var gTokenList = {};
 var gPriceList = {};
+var gBalances = {};
 
 async function getTokenList() {
     try {
@@ -113,7 +116,7 @@ class AccountService {
         setTimeout(getWeb3Obj, 12000, initWeb3);
     }
 
-    async _getPrivateKey(password, ethAddress) {
+    async _getPrivateKey(ethAddress, password) {
         // Get private key for new account
         var keyObject = keythereum.importFromFile(ethAddress, GETH_DATA_DIR);
         // var privateKey = keythereum.recover(params.password, keyObject);
@@ -140,7 +143,7 @@ class AccountService {
                 return { error: -250, data: "Created account address invalid" };
             }
             // Next, get private key
-            var secretKey = await this._getPrivateKey(accountPassword, myEthAddress);
+            var secretKey = await this._getPrivateKey(myEthAddress, accountPassword);
             if (!secretKey) {
                 return { error: -251, data: "Invalid private key" };
             }
@@ -189,7 +192,7 @@ class AccountService {
                 return { error: -250, data: "Created account address invalid" };
             }
             // // Next, get private key
-            // var secretKey = await this._getPrivateKey(accountPassword, myEthAddress);
+            // var secretKey = await this._getPrivateKey(myEthAddress, accountPassword);
             // if (!secretKey) {
             //     return { error: -251, data: "Invalid private key" };
             // }
@@ -210,15 +213,13 @@ class AccountService {
     /**
      * @param {object} symbolList list of symbols for getting info of
      */
-    async getTokenInfoList(symbolList) {
-        if (symbolList === null) {
-            return { error: -200, data: null };
-        }
+    async getTokenInfoList() {
+
         var tokenInfoList = [];
         // ./node_modules/crypto-icons-plus-<size_of_icon>/src/<crypto_slug>.png
         // First, get ERC20 token list
 
-        symbolList.forEach(symbol => {
+        OUR_TOKENS.forEach(symbol => {
             if (gTokenList[symbol] === undefined || gTokenList[symbol] === null || gTokenList[symbol].length < 1) {
                 let name = null;
                 let address = null;
@@ -227,6 +228,9 @@ class AccountService {
                     address = 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh';
                 } else if (symbol === 'ETH') {
                     name = 'ethereum';
+                    address = '';
+                } else {
+                    name = symbol;
                     address = '';
                 }
                 tokenInfoList.push({
@@ -273,31 +277,29 @@ class AccountService {
     /**
      * @param {object} req request object from the client 
      */
-    async balance(addresses, tokens) {
+    async getBalances(addresses) {
         if (web3 == null) {
             return { error: -200, data: MSG__GETH_NOT_READY };
         }
-        let myEthAddress = addresses['ETH'];
+        var myEthAddress = addresses['ETH'];
         const openchainTransactions = new OpenchainTransactions(web3, myEthAddress);
         try {
-            let balances = {};
-            for (let i in tokens) {
-                let symbol = tokens[i];
-                let balance = 0;
+            OUR_TOKENS.forEach(async symbol => {
+                var balance = 0;
                 let balanceInWei = 0;
                 if (symbol === "ETH") {
                     balanceInWei = await web3.eth.getBalance(myEthAddress);
+                    balance = web3.utils.fromWei(balanceInWei, 'ether');
                 } else {
                     let ret = await openchainTransactions.getBalance(symbol);
                     if (ret.error !== 0) {
                         return { error: -250, data: "Failed to get balance for " + symbol };
                     }
-                    balanceInWei = ret.data;
+                    balance = ret.data;
                 }
-                balance = web3.utils.fromWei(balanceInWei, 'ether');
-                balances[symbol] = balance;
-            }
-            return { error: 0, data: balances };
+                gBalances[symbol] = balance;
+            });
+            return { error: 0, data: gBalances };
         } catch (error) {
             let errorMessage = error.message.replace("Returned error: ", "");
             return { error: -300, data: errorMessage };
@@ -528,29 +530,6 @@ class AccountService {
                 )
             }
             return ret;
-        } catch (error) {
-            let errorMessage = error.message.replace("Returned error: ", "");
-            return { error: -300, data: errorMessage };
-        }
-    }
-
-    mintPawnNft = async params => {
-        var accountInfo = params ? params.accountInfo ? params.accountInfo : null : null;
-        if (accountInfo.addresses == undefined || accountInfo.addresses == {}) {
-            return { error: -201, data: "No account for you" };
-        }
-        var addresses = accountInfo.addresses;
-        if (addresses['ETH'] === undefined || addresses['ETH'] === null) {
-            return { error: -206, data: "Invalid your address for swapping" };
-        }
-        var myAddress = addresses['ETH'];
-        // Get Uri for uploaded item
-        var itemUri = params ? params.itemUri : null;
-
-        const openchainTransactions = new OpenchainTransactions(web3, myAddress);
-        try {
-            let ret = await openchainTransactions.mintPawnNft({owner: myAddress, data: itemUri});
-            return { error: 0, data: ret };
         } catch (error) {
             let errorMessage = error.message.replace("Returned error: ", "");
             return { error: -300, data: errorMessage };

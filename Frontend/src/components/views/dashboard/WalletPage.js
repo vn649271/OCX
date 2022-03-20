@@ -182,7 +182,7 @@ class WalletPage extends Component {
         if (self.state.user_mode !== USER_WITH_ACCOUNT) {
             return;
         }
-        accountService.getBalance({
+        accountService.getBalances({
             userToken: self.userToken
         }).then(resp => {
             var errorMsg = null;
@@ -571,6 +571,12 @@ class WalletPage extends Component {
                                     </p>
                                     <p className="account-balance-box main-font text-black-400 mb-100 font-20">
                                         {this.state.balance['DAI']} DAI
+                                    </p>
+                                    <p className="account-balance-box main-font text-black-400 mb-100 font-20">
+                                        {this.state.balance['OCAT']} OCAT
+                                    </p>
+                                    <p className="account-balance-box main-font text-black-400 mb-100 font-20">
+                                        {this.state.balance['PNFT']} PNFT
                                     </p>
                                 </div>
                             </div>

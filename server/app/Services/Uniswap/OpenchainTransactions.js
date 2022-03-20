@@ -8,11 +8,8 @@ const pawnNftAbi = PawnNFTsAbi.abi;
 
 const { 
     Erc20TokenABI,
-    ERC20SwapAddress,
     UniswapV2Router02Address, 
-    GoerliTokenAddress,
-    PawnNFTsAddress,
-    OcatTokenAddress,
+    GOERLI_CONTRACTS,
     PawningContractAddress
 } = require("./Abi/Erc20Abi");
 
@@ -30,9 +27,10 @@ class OpenchainTransactions {
 
     async getBalance(symbol) {
         try {
-            const tokenContract = new this.web3.eth.Contract(Erc20TokenABI, GoerliTokenAddress[symbol]);
-            let balance = 0;
-            balance = await tokenContract.methods.balanceOf(this.myAddress).call();
+            const tokenContract = new this.web3.eth.Contract(Erc20TokenABI, GOERLI_CONTRACTS[symbol]);
+            let balanceInWei = await tokenContract.methods.balanceOf(this.myAddress).call();
+            let decimals = await tokenContract.methods.decimals().call();
+            let balance = balanceInWei / (10 ** (decimals - 0));
             return { error: 0, data: balance };
         }
         catch (error) {
@@ -50,9 +48,9 @@ class OpenchainTransactions {
             return { error: -1, data: "Illegal operation. Selling token must be different than token to buy" };
         }
         try {
-            const WETH_ADDRESS = GoerliTokenAddress['WETH'];
-            let sellTokenAddress = GoerliTokenAddress[params.sellSymbol];
-            let buyTokenAddress = GoerliTokenAddress[params.buySymbol];
+            const WETH_ADDRESS = GOERLI_CONTRACTS['WETH'];
+            let sellTokenAddress = GOERLI_CONTRACTS[params.sellSymbol];
+            let buyTokenAddress = GOERLI_CONTRACTS[params.buySymbol];
             let path = [];
             if (params.sellSymbol !== "ETH" && params.buySymbol !== "ETH") {
                 path = [sellTokenAddress, WETH_ADDRESS, buyTokenAddress];
@@ -85,11 +83,11 @@ class OpenchainTransactions {
 
     async swapEthForToken(params) {
         try {
-            const WETH_ADDRESS = GoerliTokenAddress['WETH'];
-            const erc20TokenAddress = GoerliTokenAddress[params.buySymbol];
+            const WETH_ADDRESS = GOERLI_CONTRACTS['WETH'];
+            const erc20TokenAddress = GOERLI_CONTRACTS[params.buySymbol];
             const path = [WETH_ADDRESS, erc20TokenAddress];
             // const uniRouter02 = new this.web3.eth.Contract(IRouter.abi, UniswapV2Router02Address)
-            const openchainSwap = new this.web3.eth.Contract(openchainContractAbi, ERC20SwapAddress);
+            const openchainSwap = new this.web3.eth.Contract(openchainContractAbi, GOERLI_CONTRACTS.ERC20_SWAP);
             const sellAmountInHex = this.web3.utils.toHex(params.sellAmount);
             const buyAmountInHex = this.web3.utils.toHex(params.buyAmountMin);
 
@@ -115,14 +113,14 @@ class OpenchainTransactions {
 
     async swapTokenForEth(params) {
         try {
-            const openchainSwap = new this.web3.eth.Contract(openchainContractAbi, ERC20SwapAddress);
-            const erc20TokenAddress = GoerliTokenAddress[params.sellSymbol];
+            const openchainSwap = new this.web3.eth.Contract(openchainContractAbi, GOERLI_CONTRACTS.ERC20_SWAP);
+            const erc20TokenAddress = GOERLI_CONTRACTS[params.sellSymbol];
             const sellAmountInHex = this.web3.utils.toHex(params.sellAmount);
             const buyAmountInHex = this.web3.utils.toHex(params.buyAmountMin);
             let ret = null;
 
             const tokenContract = new this.web3.eth.Contract(Erc20TokenABI, erc20TokenAddress);
-            ret = await tokenContract.methods.approve(ERC20SwapAddress, sellAmountInHex)
+            ret = await tokenContract.methods.approve(GOERLI_CONTRACTS.ERC20_SWAP, sellAmountInHex)
                 .send({
                     from: this.myAddress,
                 });
@@ -155,9 +153,9 @@ class OpenchainTransactions {
 
     async swapTokenForToken(params) {
         try {
-            const openchainSwap = new this.web3.eth.Contract(openchainContractAbi, ERC20SwapAddress);
-            const sellTokenAddress = GoerliTokenAddress[params.sellSymbol];
-            const buyTokenAddress = GoerliTokenAddress[params.buySymbol];
+            const openchainSwap = new this.web3.eth.Contract(openchainContractAbi, GOERLI_CONTRACTS.ERC20_SWAP);
+            const sellTokenAddress = GOERLI_CONTRACTS[params.sellSymbol];
+            const buyTokenAddress = GOERLI_CONTRACTS[params.buySymbol];
             const path = [sellTokenAddress, buyTokenAddress];
             const sellAmountInHex = this.web3.utils.toHex(params.sellAmount);
             let ret = null;
@@ -167,7 +165,7 @@ class OpenchainTransactions {
 
             const sellTokenContract = new this.web3.eth.Contract(Erc20TokenABI, sellTokenAddress)
 
-            ret = await sellTokenContract.methods.approve(ERC20SwapAddress, sellAmountInHex)
+            ret = await sellTokenContract.methods.approve(GOERLI_CONTRACTS.ERC20_SWAP, sellAmountInHex)
                 .send({
                     from: this.myAddress,
                 });
@@ -197,8 +195,89 @@ class OpenchainTransactions {
             return { error: -400, data: errMsg };
         }
     }
-    
+
+    async buildOpenchainLiquidity(params) {
+        try {
+            const uniRouter02 = new this.web3.eth.Contract(IRouter.abi, UniswapV2Router02Address)
+            let ret = await uniRouter02.addLiquidityETH(
+                GOERLI_CONTRACTS.OCAT, 
+                web3.utils.toWei('1000'), 
+                web3.utils.toWei('980'), 
+                web3.utils.toWei('1'), 
+                this.myAddress, 
+                params.deadline,
+                {
+                    value: web3.utils.toWei('1')
+                }
+            );
+            if (!ret) {
+                return { error: -251, data: "Failed to swap from ERC20 token to ETH" };
+            }
+            return { error: 0, data: ret };
+        }
+        catch (error) {
+            var errMsg = error ?
+                error.message ?
+                    error.message.replace('Returned error: ', '') :
+                    "Unknown error in send transaction for swap" :
+                error;
+            return { error: -400, data: errMsg };
+        }
+    }
+
     mintPawnNft = async params => {
+        let owner = params ? params.owner ? params.owner : null : null;
+        if (!owner) {
+            return { error: -1, data: "Invalid owner" };
+        }
+        let assetId = params ? params.assetId ? params.assetId : null : null;
+        if (!assetId) {
+            return { error: -1, data: "Invalid asset id" };
+        }
+        let assetInfo = params ? params.assetInfo ? params.assetInfo : null : null;
+        if (!assetInfo) {
+            return { error: -2, data: "Invalid asset data" };
+        }
+        try {
+            let pawnNftContract = new this.web3.eth.Contract(pawnNftAbi, GOERLI_CONTRACTS['PNFT']);
+            let priceInWei = this.web3.utils.toWei(assetInfo.quote_price, "ether");
+            let ret = await pawnNftContract.methods.mintPawnNFT(
+                assetInfo.asset_name, 
+                assetId, 
+                priceInWei
+            ).send({
+                from: this.myAddress,
+                // gasLimit: "70000"
+                gas: "500000" // on ganache
+            })
+            if (!ret) {
+                return { error: -251, data: "Failed to mint pawning NFT" };
+            }
+            let newTokenId = ret.events ?
+                                ret.events.Transfer ?
+                                    ret.events.Transfer.returnValues ?
+                                        ret.events.Transfer.returnValues.tokenId ?
+                                            ret.events.Transfer.returnValues.tokenId
+                                        : null
+                                    : null
+                                : null
+                            : null;
+            if (!newTokenId) {
+                return { error: -252, data: "Invalid new token ID for pawning NFT" };
+            }
+            return { error: 0, data: newTokenId };
+
+        } catch (error) {
+            var errMsg = error ?
+                error.message ?
+                    error.message.replace('Returned error: ', '') :
+                    "Unknown error in send transaction for swap" :
+                error;
+            return { error: -400, data: errMsg };
+        }
+    }
+
+    swapToOcat = async params => {
         let owner = params ? params.owner ? params.owner : null : null;
         if (!owner) {
             return { error: -1, data: "Invalid owner" };
@@ -208,10 +287,10 @@ class OpenchainTransactions {
             return { error: -2, data: "Invalid pawning data" };
         }
         try {
-            let pawnNftContract = new this.web3.eth.Contract(pawnNftAbi, PawnNFTsAddress);
+            let pawnNftContract = new this.web3.eth.Contract(pawnNftAbi, GOERLI_CONTRACTS['PNFT']);
             let ret = await pawnNftContract.methods.mintPawnNFT(
-                assetInfo.name, 
-                assetInfo.itemUri, 
+                assetInfo.asset_name, 
+                assetInfo.valuation_report, 
                 assetInfo.price,
             ).send({
                 from: this.myAddress,
