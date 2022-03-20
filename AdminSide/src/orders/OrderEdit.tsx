@@ -341,16 +341,16 @@ const OrderForm = (props: any) => {
                                         <Grid item xs={12} sm={12} md={6}>
                                             {
                                                 // Once verified, never can be reverted
-                                                formProps.record.verified? 
-                                                    <BooleanField
-                                                        resource="pawnshop"
-                                                        source="verified"
-                                                    />:
-                                                    <BooleanInput
-                                                        row={true}
-                                                        resource="pawnshop"
-                                                        source="verified"
-                                                    />
+                                                // formProps.record.status > 1 ? 
+                                                <SelectInput
+                                                    source="status"
+                                                    choices={[
+                                                        { id: 1, name: 'Submitted' },
+                                                        { id: 2, name: 'Rejected' },
+                                                        { id: 3, name: 'Verified' },
+                                                        { id: 4, name: 'Minted' },
+                                                    ]}
+                                                />
                                             }
                                         </Grid>
                                         {/* <Grid item xs={12} sm={12} md={6}>

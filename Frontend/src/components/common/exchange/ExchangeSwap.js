@@ -25,6 +25,14 @@ const TOKENS = [
     {
         iconUrl: "images/UNI.png",
         title: "UNI"
+    }, 
+    {
+        iconUrl: "",
+        title: "PNFT"
+    }, 
+    {
+        iconUrl: "",
+        title: "OCAT"
     },
 ];
 

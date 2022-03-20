@@ -32,7 +32,7 @@ function PawnItemModel() {
     this.getObjectById = async function(pawnItemId) {
         const snapshot = await db.collection(collection).doc(pawnItemId).get();
         if (snapshot.empty) {
-            console.info('No matching pawn asset information.');
+            console.info('No matching user information.');
             return null;
         }
         ret = snapshot.data();
@@ -81,31 +81,6 @@ function PawnItemModel() {
     }
 
     /**
-     * Find pawn asset information document by the specified conditions
-     * @param {json} jsonWhere search condition to be used
-     */
-    this.findAllFor = async function (usesrId) {
-
-        const pawnAssetsRef = db.collection(collection);
-        var ret = null;
-
-        const snapshot = await pawnAssetsRef.where('owner_id', '==', usesrId).get();
-        if (snapshot.empty) {
-            console.info('No matching pawn asset information.');
-            return null;
-        }
-        snapshot.forEach(doc => {
-            if (!ret) {
-                ret = [];
-            }
-            let r = doc.data();
-            r.id = doc.id;
-            ret.push(r);
-        });
-        return ret;
-    }
-
-    /**
      * Create a new pawn asset information document
      * @param {object} jsonPawnItem parameter object presenting new pawn asset information
      */
@@ -137,16 +112,24 @@ function PawnItemModel() {
         return ret;
     }
 
-    // /**
-    //  * Set status in the specified pawnItem information document
-    //  * @param {string} pawnItemId id for the pawn item document to set status
-    //  * @param {integer} status status to be set
-    //  */
-    // this.setLock = async function (pawnItemId, lock) {
-    //     const pawnItemRef = db.collection(collection).doc(pawnItemId);
-    //     const res = await pawnItemRef.update({ locked: lock });
-    //     return res;
-    // }
+    /**
+     * Set status in the specified pawnItem information document
+     * @param {string} pawnItemId id for the pawn item document to set status
+     * @param {integer} status status to be set
+     */
+    this.setStatus = async function (pawnItemId, status) {
+        const pawnitemsRef = db.collection(collection).doc(pawnItemId);
+        const res = await pawnitemsRef.update({ status: status });
+        return res;
+    }
+
+    this.getStatus = async function(assetId) {
+        let assetInfo = await this.getObjectById(assetId);
+        if (!assetInfo) {
+            return -1;
+        }
+        return assetInfo.status;
+    }
 }
 
 module.exports = PawnItemModel;

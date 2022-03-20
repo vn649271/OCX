@@ -67,7 +67,7 @@ module.exports = {
     goerli: {
       provider: () => new HDWalletProvider(mnemonic, `http://127.0.0.1:8545`),
       network_id: "5",       // Any network (default: none)
-      gas: 4465030,             // Gas for goerli
+      gas: 8700000,          // Gas for goerli
       gasPrice: 10000000000,
       confirmations: 2,    // # of confs to wait between deployments. (default: 0)
       timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)

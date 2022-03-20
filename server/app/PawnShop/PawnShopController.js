@@ -7,8 +7,8 @@ const CommonUtils = require("../utils/CommonUtils");
 var pawnItemModel = new PawnItemModel();
 var pawnItemService = new PawnItemService();
 var userController = new UserAuthController();
-var accountController = new AccountController();
 var commonUtils = new CommonUtils();
+var accountController = new AccountController();
 
 var self = null;
 
@@ -74,15 +74,26 @@ class PawnShopController {
         if (userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
         }
-        let userId = await userController.getUserIdFor(userToken);
-        if (!userId) {
+        let userInfo = await userController.validateUserToken(userToken);
+        if (!userInfo) {
             return resp.json({ error: -2, data: "Invalid user token" });
         }
-        let ret = await pawnItemModel.findAllFor(userId);
-        if (!ret || ret.length === undefined || ret.length < 0) {
-            return resp.json({ error: -3, data: "No result for the assets for this user" });
+        if (userInfo.account === undefined || !userInfo.account) {
+            return resp.json({ error: -3, data: "No account for you" });
         }
-        return resp.json({error: 0, data: ret});        
+        let allAssetIDs = await accountController.allAsset(userInfo.account);
+        if (!allAssetIDs) {
+            return resp.json({ error: -4, data: "No result for the assets for this user(1)" });
+        }
+        let allAssetsForUser = [];
+        for (let i in allAssetIDs) {
+            let assetInfo = await pawnItemModel.getObjectById(allAssetIDs[i]);
+            allAssetsForUser.push(assetInfo);
+        }
+        if (allAssetsForUser.length < 1) {
+            return resp.json({ error: -5, data: "No result for the assets for this user(2)" });
+        }
+        return resp.json({error: 0, data: allAssetsForUser});        
     }
 
     get = async (req, resp) => {
@@ -143,14 +154,16 @@ class PawnShopController {
         if (userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
         }
-        let userId = await userController.getUserIdFor(userToken);
-        if (!userId) {
+        let userInfo = await userController.validateUserToken(userToken);
+        if (!userInfo) {
             return resp.json({ error: -2, data: "Invalid user token" });
+        }
+        if (userInfo.account === undefined || !userInfo.account) {
+            return resp.json({ error: -3, data: "No account for you" });
         }
 
         try {
-            data.verified = false;
-            data.owner_id = userId;
+            data.status = 1; // Submitted
             // Save the pawn item data into firestore
             ret = await pawnItemModel.create(data);
             if (!ret || ret.error === undefined) {
@@ -159,30 +172,41 @@ class PawnShopController {
             if (ret.error != 0) {
                 return resp.json({ error: -3, data: ret.data });
             }
-            let allAssetsForThisUser = await pawnItemModel.findAllFor(userId);
-            if (!allAssetsForThisUser) {
+            let newAssetId = ret.data;
+            await accountController.addAsset(userInfo.account, newAssetId);
+            let allAssetIDs = await accountController.allAsset(userInfo.account);
+            let allAssetsForUser = [];
+            allAssetIDs.forEach(async assetId => {
+                let assetInfo = await pawnshopController.getById(assetId);
+                allAssetsForUser.push(assetInfo);
+            });
+       
+            if (!allAssetsForUser) {
                 return resp.json({ error: -4, data: "Failed to get all pawn assets for you" });
             }
-            return resp.json({ error: 0, data: { new_id: ret.data, all_assets: allAssetsForThisUser } });
-
+            return resp.json({ error: 0, data: { new_id: newAssetId, all_assets: allAssetsForUser } });
         } catch (error) {
             return resp.json({ error: -100, data: error.message });
         }
     }
 
-    verified = async(req, resp) => {
-        let data = req.body ? req.body.data ? req.body.data : null : null;
-        if (!data) {
-            return resp.json({ error: -1, data: "Invalid request paramter for PawnShop" });
-        }
+    mint = async(req, resp) => {
         const ownerToken = req.body ? req.body.ownerToken ? req.body.ownerToken : null : null;
         if (ownerToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
         }
+        let assetId = req.body ? req.body.assetId ? req.body.assetId : null : null;
+        if (!assetId) {
+            return resp.json({ error: -2, data: "Invalid request paramter for issuing NFT token" });
+        }
+        let assetStatus = await pawnItemModel.getStatus(assetId);
+        if (assetStatus !== 3) { // 3: verified
+            return resp.json({ error: -3, data: "Invalid status" });
+        }
         try {
             let ownerInfoObj = await userController.validateUserToken(ownerToken);
             if (!ownerInfoObj) {
-                return resp.json({ error: -2, data: "Invalid user token" });
+                return resp.json({ error: -4, data: "Invalid user token" });
             }
             if (ownerInfoObj.account === undefined || !ownerInfoObj.account) {
                 return resp.json({ error: 51, data: "No account" });
@@ -194,15 +218,57 @@ class PawnShopController {
             }
             let accountInfo = ret.data;
             // 
-            ret = pawnItemService.create({
+            ret = await pawnItemService.mint({
                 accountInfo: accountInfo,
-                assetInfo: {
-                    name: data.asset_name,
-                    itemUri: ret.id,
-                    price: data.price
-                }
+                assetId: assetId
             });
-            return resp.json({ error: 0, data: ret.id });
+            if (ret.error !== 0) {
+                return resp.json({ error: -5, data: ret.data });
+            }
+            let minted = ret.data;
+            return resp.json({ error: 0, data: minted });
+        } catch (error) {
+            return resp.json({ error: -100, data: error.message });
+        }
+    }
+
+    swap = async(req, resp) => {
+        const ownerToken = req.body ? req.body.ownerToken ? req.body.ownerToken : null : null;
+        if (ownerToken === null) {
+            return resp.json({ error: -1, data: "Invalid request" });
+        }
+        let assetId = req.body ? req.body.assetId ? req.body.assetId : null : null;
+        if (!assetId) {
+            return resp.json({ error: -2, data: "Invalid request paramter for issuing NFT token" });
+        }
+        let assetStatus = await pawnItemModel.getStatus(assetId);
+        if (assetStatus !== 4) { // 4: minted
+            return resp.json({ error: -3, data: "Invalid status" });
+        }
+        try {
+            let ownerInfoObj = await userController.validateUserToken(ownerToken);
+            if (!ownerInfoObj) {
+                return resp.json({ error: -4, data: "Invalid user token" });
+            }
+            if (ownerInfoObj.account === undefined || !ownerInfoObj.account) {
+                return resp.json({ error: 51, data: "No account" });
+            }
+
+            let ret = await accountController.getById(ownerInfoObj.account);
+            if (ret === undefined || ret === null || ret.data === undefined || ret.data === null) {
+                return resp.json({ error: 52, data: "Not found the account" });
+            }
+            let accountInfo = ret.data;
+            // 
+            ret = await pawnItemService.swap({
+                accountInfo: accountInfo,
+                assetId: assetId
+            });
+            if (ret.error !== 0) {
+                return resp.json({ error: -5, data: ret.data });
+            }
+            let minted = ret.data;
+            return resp.json({ error: 0, data: minted });
         } catch (error) {
             return resp.json({ error: -100, data: error.message });
         }
