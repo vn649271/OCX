@@ -35,7 +35,7 @@ class AccountController {
         if (userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
         }
-        let userInfo = await userController.validateUserToken(userToken);
+        let userInfo = userController.validateUserToken(userToken);
         if (!userInfo) {
             return resp.json({ error: -2, data: "Invalid user token" });
         }
@@ -117,7 +117,7 @@ class AccountController {
             return resp.json({ error: -3, data: "Invalid passphrase" });
         }
         try {
-            let userInfo = await userController.validateUserToken(userToken);
+            let userInfo = userController.validateUserToken(userToken);
             if (!userInfo) {
                 return resp.json({ error: -50, data: "Invalid user token" });
             }
@@ -176,12 +176,12 @@ class AccountController {
         if (userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
         }
-        let userInfoObj = await userController.validateUserToken(userToken);
+        let userInfoObj = userController.validateUserToken(userToken);
         try {
             if (userInfoObj.account === undefined || !userInfoObj.account) {
                 return resp.json({ error: 51, data: "No account" });
             }
-            let ret = await accountModel.getObject(userInfoObj.account);
+            let ret = await accountModel.getById(userInfoObj.account);
             if (ret === undefined || ret === null) {
                 return resp.json({ error: 52, data: "Not found the account" });
             }
@@ -208,7 +208,7 @@ class AccountController {
             return resp.json({ error: -1, data: "Invalid request" });
         }
         try {
-            let userInfo = await userController.validateUserToken(userToken);
+            let userInfo = userController.validateUserToken(userToken);
             if (!userInfo) {
                 return resp.json({ error: -50, data: "Invalid user token" });
             }
@@ -319,7 +319,7 @@ class AccountController {
             return resp.json({ error: -4, data: "Wrong password" });
         }
         try {
-            let userInfo = await userController.validateUserToken(userToken);
+            let userInfo = userController.validateUserToken(userToken);
             if (!userInfo) {
                 return resp.json({ error: -50, data: "Invalid user token" });
             }
@@ -435,7 +435,7 @@ class AccountController {
     }
 
     async getById(accountId) {
-        let accountInfo = await accountModel.getObject(accountId);
+        let accountInfo = await accountModel.getById(accountId);
         if (ret === undefined || ret === null) {
             return { error: -1, data: "Not found the account" };
         }
@@ -455,7 +455,7 @@ class AccountController {
      * @param {json} jsonWhere search condition to be used
      */
     async allAsset(accountId) {
-        let accountInfo = await accountModel.getObject(accountId);
+        let accountInfo = await accountModel.getById(accountId);
         if (ret === undefined || ret === null) {
             return null;
         }

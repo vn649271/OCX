@@ -29,7 +29,7 @@ const collection = 'pawnitems';
  */
 function PawnItemModel() {
 
-    this.getObjectById = async function(pawnItemId) {
+    this.getById = async function(pawnItemId) {
         const snapshot = await db.collection(collection).doc(pawnItemId).get();
         if (snapshot.empty) {
             console.info('No matching asset information.');
@@ -112,6 +112,18 @@ function PawnItemModel() {
         return ret;
     }
 
+    
+    /**
+     * Set NFT ID in the specified pawnItem information document
+     * @param {string} pawnItemId id for the pawn item document to set status
+     * @param {integer} nftId NFT ID to be set
+     */
+     this.setNftId = async function (pawnItemId, nftId) {
+        const pawnitemsRef = db.collection(collection).doc(pawnItemId);
+        const res = await pawnitemsRef.update({ nft_id: nftId });
+        return res;
+    }
+
     /**
      * Set status in the specified pawnItem information document
      * @param {string} pawnItemId id for the pawn item document to set status
@@ -124,7 +136,7 @@ function PawnItemModel() {
     }
 
     this.getStatus = async function(assetId) {
-        let assetInfo = await this.getObjectById(assetId);
+        let assetInfo = await this.getById(assetId);
         if (!assetInfo) {
             return -1;
         }

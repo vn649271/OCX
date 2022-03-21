@@ -27,7 +27,7 @@ class UserAuthController {
                 g_userTokenMap = {};
             }
             allRecords.map((r, i) => {
-                g_userTokenMap[r.token] = r.id;
+                g_userTokenMap[r.token] = r;
             });
         });
     }
@@ -38,21 +38,14 @@ class UserAuthController {
      * @param {object} userToken user's token for the requestor
      * @returns {boolean} 0 - No error or errors
      */
-    async validateUserToken(userToken) {
-        let userId = g_userTokenMap ? g_userTokenMap[userToken] ? g_userTokenMap[userToken] : null : null;
-        if (!userId) {
+    validateUserToken(userToken) {
+        let userInfo = g_userTokenMap ? g_userTokenMap[userToken] ? g_userTokenMap[userToken] : null : null;
+        if (!userInfo) {
             return null;
         }
-        return await userModel.getObject(userId);
+        return userInfo;
     }
 
-    async getUserIdFor(userToken) {
-        let userId = g_userTokenMap ? g_userTokenMap[userToken] ? g_userTokenMap[userToken] : null : null;
-        if (!userId) {
-            return null;
-        }
-        return userId;
-    }
     /**
      * Handle the request to resend the pin-code from client
      * @param {object} req request object from the client 
@@ -309,7 +302,7 @@ class UserAuthController {
     }
 
     getById = async userId => {
-        let userInfo = await userModel.getObject(userId);
+        let userInfo = await userModel.getById(userId);
         if (ret === undefined || ret === null) {
             return { error: -1, data: "Not found the account" };
         }

@@ -69,31 +69,37 @@ class PawnShopController {
         return resp.json(ret);
     }
 
+    _getAssetFor = async assetId => {
+        let allAssetIDs = await accountController.allAsset(assetId);
+        if (!allAssetIDs || allAssetIDs.length === undefined || allAssetIDs.length < 1) {
+            return resp.json({ error: -4, data: "No result for the assets for this user(1)" });
+        }
+        var allAssetsForUser = [];
+        for (let i in allAssetIDs) {
+            let assetInfo = await pawnItemModel.getById(allAssetIDs[i]);
+            assetInfo.id = allAssetIDs[i];
+            allAssetsForUser.push(assetInfo);
+        }
+        return allAssetsForUser;
+    }
+
     getAssetsFor = async (req, resp) => {
         const userToken = req.body ? req.body.userToken ? req.body.userToken : null : null;
         if (userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
         }
-        let userInfo = await userController.validateUserToken(userToken);
+        let userInfo = userController.validateUserToken(userToken);
         if (!userInfo) {
             return resp.json({ error: -2, data: "Invalid user token" });
         }
         if (userInfo.account === undefined || !userInfo.account) {
             return resp.json({ error: -3, data: "No account for you" });
         }
-        let allAssetIDs = await accountController.allAsset(userInfo.account);
-        if (!allAssetIDs) {
-            return resp.json({ error: -4, data: "No result for the assets for this user(1)" });
-        }
-        let allAssetsForUser = [];
-        for (let i in allAssetIDs) {
-            let assetInfo = await pawnItemModel.getObjectById(allAssetIDs[i]);
-            allAssetsForUser.push(assetInfo);
-        }
-        if (allAssetsForUser.length < 1) {
+        let hisAllAssets = await this._getAssetFor(userInfo.account);
+        if (!hisAllAssets || hisAllAssets.length === undefined || hisAllAssets.length < 1) {
             return resp.json({ error: -5, data: "No result for the assets for this user(2)" });
         }
-        return resp.json({error: 0, data: allAssetsForUser});        
+        return resp.json({error: 0, data: hisAllAssets});        
     }
 
     get = async (req, resp) => {
@@ -101,7 +107,7 @@ class PawnShopController {
         if (!id) {
             return resp.json({error: -1, data: "Invalid user id to find user info"});
         }
-        let ret = await pawnItemModel.getObjectById(id);
+        let ret = await pawnItemModel.getById(id);
         if (!ret) {
             return resp.json({error: -2, data: "Failed to find user info"});
         }
@@ -146,15 +152,15 @@ class PawnShopController {
      * @returns 
      */
     create = async(req, resp) => {
-        let data = req.body ? req.body.data ? req.body.data : null : null;
-        if (!data) {
+        let assetData = req.body ? req.body.data ? req.body.data : null : null;
+        if (!assetData) {
             return resp.json({ error: -1, data: "Invalid request paramter for PawnShop" });
         }
         const userToken = req.body ? req.body.userToken ? req.body.userToken : null : null;
         if (userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
         }
-        let userInfo = await userController.validateUserToken(userToken);
+        let userInfo = userController.validateUserToken(userToken);
         if (!userInfo) {
             return resp.json({ error: -2, data: "Invalid user token" });
         }
@@ -163,9 +169,9 @@ class PawnShopController {
         }
 
         try {
-            data.status = 1; // Submitted
+            assetData.status = 1; // Submitted
             // Save the pawn item data into firestore
-            ret = await pawnItemModel.create(data);
+            ret = await pawnItemModel.create(assetData);
             if (!ret || ret.error === undefined) {
                 return resp.json({ error: -2, data: "Failed to save pawn item" });
             }
@@ -174,17 +180,11 @@ class PawnShopController {
             }
             let newAssetId = ret.data;
             await accountController.addAsset(userInfo.account, newAssetId);
-            let allAssetIDs = await accountController.allAsset(userInfo.account);
-            let allAssetsForUser = [];
-            allAssetIDs.forEach(async assetId => {
-                let assetInfo = await pawnshopController.getById(assetId);
-                allAssetsForUser.push(assetInfo);
-            });
-       
-            if (!allAssetsForUser) {
+            let hisAllAssets = await this._getAssetFor(userInfo.account);
+            if (!hisAllAssets || hisAllAssets.length === undefined || hisAllAssets.length < 1) {
                 return resp.json({ error: -4, data: "Failed to get all pawn assets for you" });
             }
-            return resp.json({ error: 0, data: { new_id: newAssetId, all_assets: allAssetsForUser } });
+            return resp.json({ error: 0, data: { new_id: newAssetId, all_assets: hisAllAssets } });
         } catch (error) {
             return resp.json({ error: -100, data: error.message });
         }
@@ -204,7 +204,7 @@ class PawnShopController {
             return resp.json({ error: -3, data: "Invalid status" });
         }
         try {
-            let ownerInfoObj = await userController.validateUserToken(ownerToken);
+            let ownerInfoObj = userController.validateUserToken(ownerToken);
             if (!ownerInfoObj) {
                 return resp.json({ error: -4, data: "Invalid user token" });
             }
@@ -246,7 +246,7 @@ class PawnShopController {
             return resp.json({ error: -3, data: "Invalid status" });
         }
         try {
-            let ownerInfoObj = await userController.validateUserToken(ownerToken);
+            let ownerInfoObj = userController.validateUserToken(ownerToken);
             if (!ownerInfoObj) {
                 return resp.json({ error: -4, data: "Invalid user token" });
             }
