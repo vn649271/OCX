@@ -34,11 +34,14 @@ class DelayButton extends Component {
         if (this.state.in_delay && this.state.delay_interval > 0) {
             return;
         }
+        if (ev.target.nodeName == "SPAN") {
+            ev.target = ev.target.parentNode;
+        }
 
         this.setState({ in_delay: true });
 
         /* Start counting for loading data */
-        this.delayTimer = setInterval(
+        this.delayTimer = setTimeout(
             function () {
                 let delayInterval = me.state.delay_interval;
                 delayInterval--;
@@ -61,6 +64,7 @@ class DelayButton extends Component {
     render() {
         return (
             <button
+                id={this.props.id}
                 className="spinner-button border border-grey-light button-bg p-5 hover-transition main-font focus:outline-none rounded text-white verify-button"
                 onClick={this.onClicked}
                 disabled={this.state.in_delay}>
