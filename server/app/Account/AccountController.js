@@ -37,7 +37,7 @@ class AccountController {
         }
         let userInfo = userController.validateUserToken(userToken);
         if (!userInfo) {
-            return resp.json({ error: -2, data: "Invalid user token" });
+            return resp.json({ error: -2, data: "Invalid user token or internet disconnected" });
         }
         const userPassword = req.body ? req.body.password ? req.body.password : null : null;
         if (userPassword === null) {
@@ -119,7 +119,7 @@ class AccountController {
         try {
             let userInfo = userController.validateUserToken(userToken);
             if (!userInfo) {
-                return resp.json({ error: -50, data: "Invalid user token" });
+                return resp.json({ error: -50, data: "Invalid user token or internet disconnected" });
             }
             // !!!!!!!!!!!!! Decrypt passphrase
             passphrase = await commonUtils.decrypt(passphrase, userInfo.decrypt_key);
@@ -177,6 +177,9 @@ class AccountController {
             return resp.json({ error: -1, data: "Invalid request" });
         }
         let userInfoObj = userController.validateUserToken(userToken);
+        if (!userInfoObj) {
+            return resp.json({ error: -2, data: "Invalid user token or internet disconnected" });
+        }
         try {
             if (userInfoObj.account === undefined || !userInfoObj.account) {
                 return resp.json({ error: 51, data: "No account" });
@@ -210,7 +213,7 @@ class AccountController {
         try {
             let userInfo = userController.validateUserToken(userToken);
             if (!userInfo) {
-                return resp.json({ error: -50, data: "Invalid user token" });
+                return resp.json({ error: -50, data: "Invalid user token or internet disconnected" });
             }
             var addresses = await accountModel.getAddresses(userToken);
             if (addresses == undefined || addresses == null || addresses == {}) {
@@ -321,7 +324,7 @@ class AccountController {
         try {
             let userInfo = userController.validateUserToken(userToken);
             if (!userInfo) {
-                return resp.json({ error: -50, data: "Invalid user token" });
+                return resp.json({ error: -50, data: "Invalid user token or internet disconnected" });
             }
             let accountInfo = await accountModel.findOne({
                 where: {

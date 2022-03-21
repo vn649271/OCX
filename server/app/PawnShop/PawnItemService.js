@@ -1,7 +1,7 @@
 var util = require('util');
 require('dotenv').config();
 const PawnItemModel = require("./PawnItemModel");
-const { OpenchainTransactions, DEFAULT_DEADLINE } = require('../Services/Uniswap/OpenchainTransactions');
+const { openchainRouterInstance, DEFAULT_DEADLINE } = require('../Services/Uniswap/OpenchainRouter');
 var { getWeb3Obj, MSG__GETH_NOT_READY } = require('../Services/geth/init');
 
 var self = null;
@@ -40,11 +40,7 @@ class PawnItemService {
             return { error: -206, data: "Invalid your address for swapping" };
         }
         var myAddress = addresses['ETH'];
-        if (process.env.BLOCKCHAIN_EMULATOR == "ganache") {
-            var accounts = await web3.eth.personal.getAccounts();
-            myAddress = accounts[0];
-        }
-
+        
         // Get Uri for uploaded item
         var assetId = params ? params.assetId : null;
         if (!assetId) {
@@ -58,9 +54,9 @@ class PawnItemService {
         if (!assetInfo) {
             return { error: -208, data: "Invalid asset information to the specified ID" };
         }
-        const openchainTransactions = new OpenchainTransactions(web3, myAddress);
+        const ocRouter = await openchainRouterInstance(web3, myAddress);
         try {
-            let ret = await openchainTransactions.mintPawnNft({
+            let ret = await ocRouter.mintPawnNft({
                 owner: myAddress, 
                 assetId: assetId, 
                 assetInfo: assetInfo 
@@ -98,31 +94,33 @@ class PawnItemService {
         }
         var addresses = accountInfo.addresses;
         if (addresses['ETH'] === undefined || addresses['ETH'] === null) {
-            return { error: -206, data: "Invalid your address for swapping" };
+            return { error: -202, data: "Invalid your address for swapping" };
         }
         var myAddress = addresses['ETH'];
-        if (process.env.BLOCKCHAIN_EMULATOR == "ganache") {
-            var accounts = await web3.eth.personal.getAccounts();
-            myAddress = accounts[0];
-        }
 
         // Get Uri for uploaded item
         var assetId = params ? params.assetId : null;
         if (!assetId) {
-            return { error: -207, data: "Invalid asset information to mint pawn NFT" };
+            return { error: -203, data: "Invalid asset information to mint pawn NFT" };
         }
         var assetInfo = await pawnItemModel.getById(assetId);
 
-        await web3.eth.accounts.wallet.add({
+        let ret = await web3.eth.accounts.wallet.add({
             privateKey: accountInfo.secret_keys['ETH'], // ownerPrivKey,
             address: myAddress, // ownerAddr,
         });
-        const openchainTransactions = new OpenchainTransactions(web3, myAddress);
+        if (ret.error) {
+            return { error: -204, data: "Failed to add account" };
+        }
+        const ocRouter = await openchainRouterInstance(web3, myAddress);
         try {
-            let ret = await openchainTransactions.swapToOcat({owner: myAddress, assetInfo: assetInfo});
+            ret = await ocRouter.swapToOcat({owner: myAddress, assetInfo: assetInfo});
+            if (ret.error) {
+                return { error: -205, data: ret.data };
+            }
             ret = await pawnItemModel.setStatus(4); // 4: Minted
             if (ret.error !== 0) {
-                return resp.json({ error: -6, data: "Failed to change status of the pawn asset" });
+                return { error: -206, data: "Failed to change status of the pawn asset" };
             }
             return { error: 0, data: ret };
         } catch (error) {
