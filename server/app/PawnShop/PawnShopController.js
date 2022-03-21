@@ -232,7 +232,7 @@ class PawnShopController {
         }
     }
 
-    swap = async(req, resp) => {
+    loan = async(req, resp) => {
         const ownerToken = req.body ? req.body.ownerToken ? req.body.ownerToken : null : null;
         if (ownerToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
@@ -260,7 +260,49 @@ class PawnShopController {
             }
             let accountInfo = ret.data;
             // 
-            ret = await pawnItemService.swap({
+            ret = await pawnItemService.exchangeToOcat({
+                accountInfo: accountInfo,
+                assetId: assetId
+            });
+            if (ret.error !== 0) {
+                return resp.json({ error: -5, data: ret.data });
+            }
+            let minted = ret.data;
+            return resp.json({ error: 0, data: minted });
+        } catch (error) {
+            return resp.json({ error: -100, data: error.message });
+        }
+    }
+
+    restore = async(req, resp) => {
+        const ownerToken = req.body ? req.body.ownerToken ? req.body.ownerToken : null : null;
+        if (ownerToken === null) {
+            return resp.json({ error: -1, data: "Invalid request" });
+        }
+        let assetId = req.body ? req.body.assetId ? req.body.assetId : null : null;
+        if (!assetId) {
+            return resp.json({ error: -2, data: "Invalid request paramter for issuing NFT token" });
+        }
+        let assetStatus = await pawnItemModel.getStatus(assetId);
+        if (assetStatus !== 5) { // 5: converted to OCAT
+            return resp.json({ error: -3, data: "Invalid status" });
+        }
+        try {
+            let ownerInfoObj = userController.validateUserToken(ownerToken);
+            if (!ownerInfoObj) {
+                return resp.json({ error: -4, data: "Invalid user token or internet disconnected" });
+            }
+            if (ownerInfoObj.account === undefined || !ownerInfoObj.account) {
+                return resp.json({ error: 51, data: "No account" });
+            }
+
+            let ret = await accountController.getById(ownerInfoObj.account);
+            if (ret === undefined || ret === null || ret.data === undefined || ret.data === null) {
+                return resp.json({ error: 52, data: "Not found the account" });
+            }
+            let accountInfo = ret.data;
+            // 
+            ret = await pawnItemService.exchangeFromOcat({
                 accountInfo: accountInfo,
                 assetId: assetId
             });

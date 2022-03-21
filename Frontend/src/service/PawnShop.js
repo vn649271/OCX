@@ -53,10 +53,17 @@ export default function PawnShopService() {
         return await this._sendRequest(_params);
     }
 
-    this.swap = async (params) => {
+    this.loan = async (params) => {
         let _params = {};
         _params['data'] = params;
-        _params['url'] = BACKEND_BASE_URL + "/pawnshop/swap";
+        _params['url'] = BACKEND_BASE_URL + "/pawnshop/loan";
+        return await this._sendRequest(_params);
+    }
+
+    this.restore = async (params) => {
+        let _params = {};
+        _params['data'] = params;
+        _params['url'] = BACKEND_BASE_URL + "/pawnshop/restore";
         return await this._sendRequest(_params);
     }
 

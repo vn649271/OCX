@@ -257,6 +257,8 @@ class PawnShopPage extends Component {
         this.onClickSubmit = this.onClickSubmit.bind(this);
         this.onSelectValuationReport = this.onSelectValuationReport.bind(this);
         this.onClickMint = this.onClickMint.bind(this);
+        this.onClickLoan = this.onClickLoan.bind(this);
+        this.onClickRestore = this.onClickRestore.bind(this);
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.buildTrackTable = this.buildTrackTable.bind(this);
@@ -433,15 +435,30 @@ class PawnShopPage extends Component {
         this.buildTrackTable(ret.data);        
     }
 
-    onClickSwap = async (params, ev, buttonComponent) => {
-        let assetId = ev.target.id.replace("tracking-item-swap-", "");
-        let ret = await pawnShopService.swap({ownerToken: this.userToken, assetId: assetId});
+    onClickLoan = async (params, ev, buttonComponent) => {
+        let assetId = ev.target.id.replace("tracking-item-loan-", "");
+        let ret = await pawnShopService.loan({ownerToken: this.userToken, assetId: assetId});
         buttonComponent.stopTimer();
         if (ret.error - 0 !== 0) {
             // btnCmpnt.stopTimer();
             alert("Failed to save valuation report: " + ret.data);
             return;
         }
+    }
+
+    onClickRestore = async (params, ev, buttonComponent) => {
+        let assetId = ev.target.id.replace("tracking-item-restore-", "");
+        let ret = await pawnShopService.restore({ownerToken: this.userToken, assetId: assetId});
+        buttonComponent.stopTimer();
+        if (ret.error - 0 !== 0) {
+            // btnCmpnt.stopTimer();
+            alert("Failed to save valuation report: " + ret.data);
+            return;
+        }
+    }
+
+    onClickWithdraw = async (params, ev, buttonComponent) => {
+        buttonComponent.stopTimer();
     }
 
     handleInputChange = ev => {
@@ -480,11 +497,22 @@ class PawnShopPage extends Component {
                 break;
             case 4:// Once minted, can swap into OCAT
                 statusCol = <DelayButton 
-                                id={"tracking-item-swap-" + record.id} 
-                                captionInDelay="Swapping"
-                                caption="Swap"
+                                id={"tracking-item-loan-" + record.id} 
+                                captionInDelay="Loaning"
+                                caption="Loan"
                                 className="px-4 py-1 text-white bg-blue-400 rounded cursor-pointer" 
-                                onClickButton={this.onClickSwap} 
+                                onClickButton={this.onClickLoan} 
+                                maxDelayInterval={30}
+                                onClickButtonParam={null} 
+                            />
+                break;
+            case 5:
+                statusCol = <DelayButton
+                                id={"tracking-item-restore-" + record.id} 
+                                captionInDelay="Restoring"
+                                caption="Restore"
+                                className="px-4 py-1 text-white bg-blue-400 rounded cursor-pointer" 
+                                onClickButton={this.onClickRestore}
                                 maxDelayInterval={30}
                                 onClickButtonParam={null} 
                             />

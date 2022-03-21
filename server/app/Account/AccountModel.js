@@ -162,24 +162,6 @@ function AccountModel() {
         assets.push(assetId);
         return await accountRef.update({ assets: assets });
     }
-
-    /**
-     * Set status in the specified account information document
-     * @param {string} accountId id for the user information document to set status
-     * @param {integer} status status to be set
-     */
-    this.removeAsset = async function (accountId, assetId) {
-        const accountRef = db.collection(collection).doc(accountId);
-        const accountSnapshot = await accountRef.get();
-        if (accountSnapshot.empty) {
-            console.info('No matching account information.');
-            return null;
-        }
-        let accountInfo = accountSnapshot.data();
-        let assets = accountInfo.assets;
-        assets = assets.filter(item => item !== assetId)
-        return await accountRef.update({ assets: assets });
-    }
 }
 
 module.exports = AccountModel;
