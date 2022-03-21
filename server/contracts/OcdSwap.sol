@@ -117,10 +117,10 @@ contract OcdSwap {
         return this.onERC721Received.selector;
     }
 
-    function swapToOCAT(uint256 nftID) public {
-        require(msg.sender != address(this), "swapPNFTtoOCAT(): Error: Caller couldn't be same to this address");
-        require(msg.sender != address(0), "swapPNFTtoOCAT(): Invalid caller");
-        require(nftID > 0, "swapPNFTtoOCAT(): Invalid NFT ID");
+    function exchangeToOcat(uint256 nftID) public {
+        require(msg.sender != address(this), "exchangeToOcat(): Error: Caller couldn't be same to this address");
+        require(msg.sender != address(0), "exchangeToOcat(): Invalid caller");
+        require(nftID > 0, "exchangeToOcat(): Invalid NFT ID");
         uint256 ocatBalance = IERC20(ocatAddress).balanceOf(address(this));
         // Get price for the NFT
         (,,,,,,uint256 price,,) = PawnNFTs(payable(address(pnftAddress))).allPawnNFTs(nftID);
@@ -130,6 +130,23 @@ contract OcdSwap {
         IERC721(pnftAddress).safeTransferFrom(msg.sender, address(this), nftID);
         // Pay OCAT for the NFT
         IERC20(ocatAddress).transfer(msg.sender, price);
+        //   Then transfer OCATs from the address to caller
+        // TransferHelper.safeTransferFrom(ocatAddress, address(this), msg.sender, price);
+    }
+
+    function exchangeFromOcat(uint256 nftID) public {
+        require(msg.sender != address(this), "exchangeToOcat(): Error: Caller couldn't be same to this address");
+        require(msg.sender != address(0), "exchangeToOcat(): Invalid caller");
+        require(nftID > 0, "exchangeToOcat(): Invalid NFT ID");
+        uint256 ocatBalance = IERC20(ocatAddress).balanceOf(msg.sender);
+        // Get price for the NFT
+        (,,,,,,uint256 price,,) = PawnNFTs(payable(address(pnftAddress))).allPawnNFTs(nftID);
+        // uint256 price = nftItem.price;
+        require(ocatBalance >= price, "Insufficient balance of OCAT in the account");
+        // safeTransferFrom: send NFT from caller to the address
+        TransferHelper.safeTransferFrom(ocatAddress, msg.sender, address(this), price);
+        // Pay OCAT for the NFT
+        IERC721(pnftAddress).safeTransferFrom(address(this), msg.sender, nftID);
         //   Then transfer OCATs from the address to caller
         // TransferHelper.safeTransferFrom(ocatAddress, address(this), msg.sender, price);
     }

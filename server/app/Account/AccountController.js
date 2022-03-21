@@ -449,10 +449,6 @@ class AccountController {
         return await accountModel.addAsset(accountId, assetId);
     }
 
-    async removeAsset(accountId, assetId) {
-        return await accountModel.removeAsset(accountId, assetId);
-    }
-
     /**
      * Find pawn asset information document by the specified conditions
      * @param {json} jsonWhere search condition to be used

@@ -83,9 +83,9 @@ class PawnItemService {
     /**
      * @param {object} newPawnItemObj list of symbols for getting info of
      */
-     async swap(params) {
+     async exchangeToOcat(params) {
         if (web3 == null) {
-            console.log("PawnItemService.swap(): Geth node is not ready yet. Please retry a while later.");
+            console.log("PawnItemService.exchangeToOcat(): Geth node is not ready yet. Please retry a while later.");
             return { error: -200, data: MSG__GETH_NOT_READY };
         }
         var accountInfo = params ? params.accountInfo ? params.accountInfo : null : null;
@@ -94,7 +94,7 @@ class PawnItemService {
         }
         var addresses = accountInfo.addresses;
         if (addresses['ETH'] === undefined || addresses['ETH'] === null) {
-            return { error: -202, data: "Invalid your address for swapping" };
+            return { error: -202, data: "Invalid your address for loaning" };
         }
         var myAddress = addresses['ETH'];
 
@@ -112,17 +112,68 @@ class PawnItemService {
         if (ret.error) {
             return { error: -204, data: "Failed to add account" };
         }
-        const ocRouter = await openchainRouterInstance(web3, myAddress);
         try {
-            ret = await ocRouter.swapToOcat({owner: myAddress, assetInfo: assetInfo});
+            const ocRouter = await openchainRouterInstance(web3, myAddress);
+            ret = await ocRouter.exchangeToOcat({owner: myAddress, assetInfo: assetInfo});
             if (ret.error) {
                 return { error: -205, data: ret.data };
             }
-            ret = await pawnItemModel.setStatus(4); // 4: Minted
-            if (ret.error !== 0) {
+            let result = ret.data;
+            ret = await pawnItemModel.setStatus(assetId, 5); // 5: Swapped to OCAT
+            if (!ret) {
                 return { error: -206, data: "Failed to change status of the pawn asset" };
             }
-            return { error: 0, data: ret };
+            return { error: 0, data: result };
+        } catch (error) {
+            let errorMessage = error.message.replace("Returned error: ", "");
+            return { error: -300, data: errorMessage };
+        }
+    }
+
+    /**
+     * @param {object} newPawnItemObj list of symbols for getting info of
+     */
+     async exchangeFromOcat(params) {
+        if (web3 == null) {
+            console.log("PawnItemService.exchangeToOcat(): Geth node is not ready yet. Please retry a while later.");
+            return { error: -200, data: MSG__GETH_NOT_READY };
+        }
+        var accountInfo = params ? params.accountInfo ? params.accountInfo : null : null;
+        if (accountInfo.addresses == undefined || accountInfo.addresses == {}) {
+            return { error: -201, data: "No account for you" };
+        }
+        var addresses = accountInfo.addresses;
+        if (addresses['ETH'] === undefined || addresses['ETH'] === null) {
+            return { error: -202, data: "Invalid your address for loaning" };
+        }
+        var myAddress = addresses['ETH'];
+
+        // Get Uri for uploaded item
+        var assetId = params ? params.assetId : null;
+        if (!assetId) {
+            return { error: -203, data: "Invalid asset information to mint pawn NFT" };
+        }
+        var assetInfo = await pawnItemModel.getById(assetId);
+
+        let ret = await web3.eth.accounts.wallet.add({
+            privateKey: accountInfo.secret_keys['ETH'], // ownerPrivKey,
+            address: myAddress, // ownerAddr,
+        });
+        if (ret.error) {
+            return { error: -204, data: "Failed to add account" };
+        }
+        try {
+            const ocRouter = await openchainRouterInstance(web3, myAddress);
+            ret = await ocRouter.exchangeFromOcat({owner: myAddress, assetInfo: assetInfo});
+            if (ret.error) {
+                return { error: -205, data: ret.data };
+            }
+            let result = ret.data;
+            ret = await pawnItemModel.setStatus(assetId, 4); // 4: Swapped from OCAT
+            if (!ret) {
+                return { error: -206, data: "Failed to change status of the pawn asset" };
+            }
+            return { error: 0, data: result };
         } catch (error) {
             let errorMessage = error.message.replace("Returned error: ", "");
             return { error: -300, data: errorMessage };

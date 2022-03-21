@@ -8,7 +8,7 @@ contract OcatToken is ERC20 {
     receive() external payable {}
 
     constructor() ERC20("OpenchainDex Stable Coin", "OCAT") {
-        super._mint(msg.sender, (10 ** 6) * (10 ** 18));
+        super._mint(msg.sender, (10 ** 8) * (10 ** 18));
     }
 
     /**
