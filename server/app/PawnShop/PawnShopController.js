@@ -90,7 +90,7 @@ class PawnShopController {
         }
         let userInfo = userController.validateUserToken(userToken);
         if (!userInfo) {
-            return resp.json({ error: -2, data: "Invalid user token" });
+            return resp.json({ error: -2, data: "Invalid user token or internet disconnected" });
         }
         if (userInfo.account === undefined || !userInfo.account) {
             return resp.json({ error: -3, data: "No account for you" });
@@ -162,7 +162,7 @@ class PawnShopController {
         }
         let userInfo = userController.validateUserToken(userToken);
         if (!userInfo) {
-            return resp.json({ error: -2, data: "Invalid user token" });
+            return resp.json({ error: -2, data: "Invalid user token or internet disconnected" });
         }
         if (userInfo.account === undefined || !userInfo.account) {
             return resp.json({ error: -3, data: "No account for you" });
@@ -206,7 +206,7 @@ class PawnShopController {
         try {
             let ownerInfoObj = userController.validateUserToken(ownerToken);
             if (!ownerInfoObj) {
-                return resp.json({ error: -4, data: "Invalid user token" });
+                return resp.json({ error: -4, data: "Invalid user token or internet disconnected" });
             }
             if (ownerInfoObj.account === undefined || !ownerInfoObj.account) {
                 return resp.json({ error: 51, data: "No account" });
@@ -248,7 +248,7 @@ class PawnShopController {
         try {
             let ownerInfoObj = userController.validateUserToken(ownerToken);
             if (!ownerInfoObj) {
-                return resp.json({ error: -4, data: "Invalid user token" });
+                return resp.json({ error: -4, data: "Invalid user token or internet disconnected" });
             }
             if (ownerInfoObj.account === undefined || !ownerInfoObj.account) {
                 return resp.json({ error: 51, data: "No account" });

@@ -108,6 +108,14 @@ contract OcdSwap {
         uniswapRouter.swapExactTokensForTokens(_amountIn, _amountOutMin, path, msg.sender, _deadline);
     }
 
+    function onERC721Received(
+        address operator,
+        address from,
+        uint256 tokenId,
+        bytes calldata data
+    ) external returns (bytes4) {
+        return this.onERC721Received.selector;
+    }
 
     function swapToOCAT(uint256 nftID) public {
         require(msg.sender != address(this), "swapPNFTtoOCAT(): Error: Caller couldn't be same to this address");
@@ -118,12 +126,12 @@ contract OcdSwap {
         (,,,,,,uint256 price,,) = PawnNFTs(payable(address(pnftAddress))).allPawnNFTs(nftID);
         // uint256 price = nftItem.price;
         require(ocatBalance >= price, "Insufficient balance of OCAT in the contract");
-        // Pay OCAT for the NFT
-        IERC20(ocatAddress).approve(msg.sender, price);
-        //   Then transfer OCATs from the address to caller
-        TransferHelper.safeTransferFrom(ocatAddress, address(this), msg.sender, price);
         // safeTransferFrom: send NFT from caller to the address
         IERC721(pnftAddress).safeTransferFrom(msg.sender, address(this), nftID);
+        // Pay OCAT for the NFT
+        IERC20(ocatAddress).transfer(msg.sender, price);
+        //   Then transfer OCATs from the address to caller
+        // TransferHelper.safeTransferFrom(ocatAddress, address(this), msg.sender, price);
     }
 
 

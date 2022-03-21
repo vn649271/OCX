@@ -9,7 +9,7 @@ var { getWeb3Obj, MSG__GETH_NOT_READY } = require('../Services/geth/init');
 // const { json } = require('body-parser');
 var keythereum = require("keythereum");
 const axios = require('axios');
-const { OpenchainTransactions, DEFAULT_DEADLINE } = require('../Services/Uniswap/OpenchainTransactions');
+const { openchainRouterInstance, DEFAULT_DEADLINE } = require('../Services/Uniswap/OpenchainRouter');
 
 const { ethers } = require("ethers")
 
@@ -43,58 +43,6 @@ async function getTokenList() {
         console.error(error);
     }
 }
-// getTokenList();
-
-
-// // For Linux
-// var GETH_DATA_DIR = process.env.HOME + "/.ethereum/" + CHAIN_NAME
-// var ipcPath = GETH_DATA_DIR + "/geth.ipc";
-// // In case of Ganache
-// if (process.env.BLOCKCHAIN_EMULATOR !== undefined &&
-// process.env.BLOCKCHAIN_EMULATOR !== null &&
-// process.env.BLOCKCHAIN_EMULATOR === "ganache") {
-//     ipcPath = "HTTP://127.0.0.1:7545"; // Ganache
-// }
-
-// // For Windows
-// if (process.platform.search('win32') >= 0) {
-//     GETH_DATA_DIR = process.env.LOCALAPPDATA + "\\Ethereum\\" + CHAIN_NAME;
-//     ipcPath = "\\\\.\\pipe\\geth.ipc";
-// }
-
-// var gethIpcTimer = null;
-// var web3 = null;
-// var gethProvider = null;
-
-// async function attachToGethIPC(ipcPath) {
-//     if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
-//         gethProvider = new Web3.providers.HttpProvider(ipcPath, net);
-//         web3 = new Web3(gethProvider);
-//         if (!web3) {
-//             return;
-//         }
-//         clearTimeout(gethIpcTimer);
-//         gethIpcTimer = null;
-//         console.log("Attached to Geth IPC successfully");
-//     } else {
-//         fs.access(ipcPath, (err) => {
-//             if (!err) {
-//                 gethProvider = new Web3.providers.IpcProvider(ipcPath, net);
-//                 web3 = new Web3(gethProvider);
-//                 if (!web3) {
-//                     return;
-//                 }
-//                 clearTimeout(gethIpcTimer);
-//                 gethIpcTimer = null;
-//                 console.log("Attached to Geth IPC successfully");
-//             } else {
-//                 console.log(err);
-//             }
-//         });
-//     }
-// }
-
-// gethIpcTimer = setTimeout(attachToGethIPC, 10000, ipcPath);
 
 var myEthAddress = null;
 var accountModel = new AccountModel();
@@ -114,6 +62,10 @@ class AccountService {
         self = this;
         this.gethError = null;
         setTimeout(getWeb3Obj, 12000, initWeb3);
+    }
+
+    async init() {
+        
     }
 
     async _getPrivateKey(ethAddress, password) {
@@ -282,7 +234,7 @@ class AccountService {
             return { error: -200, data: MSG__GETH_NOT_READY };
         }
         var myEthAddress = addresses['ETH'];
-        const openchainTransactions = new OpenchainTransactions(web3, myEthAddress);
+        const ocRouter = await openchainRouterInstance(web3, myEthAddress);
         try {
             OUR_TOKENS.forEach(async symbol => {
                 var balance = 0;
@@ -291,7 +243,7 @@ class AccountService {
                     balanceInWei = await web3.eth.getBalance(myEthAddress);
                     balance = web3.utils.fromWei(balanceInWei, 'ether');
                 } else {
-                    let ret = await openchainTransactions.getBalance(symbol);
+                    let ret = await ocRouter.getBalance(symbol);
                     if (ret.error !== 0) {
                         return { error: -250, data: "Failed to get balance for " + symbol };
                     }
@@ -419,8 +371,8 @@ class AccountService {
             if (!ret) {
                 return { error: -250, data: "Failed to unlock for swapping" };
             }
-            const openchainTransactions = new OpenchainTransactions(web3, myAddress);
-            ret = await openchainTransactions.getBestPrice({
+            const ocRouter = await openchainRouterInstance(web3, myAddress);
+            ret = await ocRouter.getBestPrice({
                 sellSymbol: sellSymbol,
                 sellAmount: sellAmount,
                 buySymbol: buySymbol,
@@ -485,8 +437,8 @@ class AccountService {
             if (!ret) {
                 return { error: -250, data: "Failed to unlock for swapping" };
             }
-            const openchainTransactions = new OpenchainTransactions(web3, myAddress);
-            ret = await openchainTransactions.getBestPrice({
+            const ocRouter = await openchainRouterInstance(web3, myAddress);
+            ret = await ocRouter.getBestPrice({
                 sellSymbol: sellSymbol,
                 sellAmount: sellAmount,
                 buySymbol: buySymbol,
@@ -495,7 +447,7 @@ class AccountService {
                 return { error: -251, data: "Failed to calculate minimum amount out" };
             }
             if (sellSymbol === 'ETH') {
-                ret = await openchainTransactions.swapEthForToken(
+                ret = await ocRouter.swapEthForToken(
                     {
                         sellSymbol: sellSymbol,
                         sellAmount: sellAmount,
@@ -506,7 +458,7 @@ class AccountService {
                     }
                 )
             } else if (buySymbol === 'ETH') {
-                ret = await openchainTransactions.swapTokenForEth(
+                ret = await ocRouter.swapTokenForEth(
                     {
                         sellSymbol: sellSymbol,
                         sellAmount: sellAmount,
@@ -517,7 +469,7 @@ class AccountService {
                     }
                 )
             } else {
-                ret = await openchainTransactions.swapTokenForToken(
+                ret = await ocRouter.swapTokenForToken(
                     {
                         sellSymbol: sellSymbol,
                         sellAmount: sellAmount,

@@ -433,9 +433,10 @@ class PawnShopPage extends Component {
         this.buildTrackTable(ret.data);        
     }
 
-    onClickSwap = async ev => {
+    onClickSwap = async (params, ev, buttonComponent) => {
         let assetId = ev.target.id.replace("tracking-item-swap-", "");
         let ret = await pawnShopService.swap({ownerToken: this.userToken, assetId: assetId});
+        buttonComponent.stopTimer();
         if (ret.error - 0 !== 0) {
             // btnCmpnt.stopTimer();
             alert("Failed to save valuation report: " + ret.data);
