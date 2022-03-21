@@ -412,14 +412,16 @@ class PawnShopPage extends Component {
     onClickDownloadLegalContract = ev => {
     }
 
-    onClickMint = async ev => {
-        let assetId = ev.target.id.replace("tracking-item-mint-", "");
+    onClickMint = async (params, ev, buttonComponent) => {
+        let targetElement = ev.target;
+        let assetId = targetElement.id.replace("tracking-item-mint-", "");
         let ret = await pawnShopService.mint({ownerToken: this.userToken, assetId: assetId});
         if (ret.error - 0 !== 0) {
-            // btnCmpnt.stopTimer();
+            buttonComponent.stopTimer();
             console.log("Failed to save valuation report: " + ret.data);
             return;
         }
+        buttonComponent.stopTimer();
         console.log("Success to mint: ", ret.data);
         // Get all pawn assets items for this user
         console.log("Get all pawn assets items for the user");
@@ -466,18 +468,25 @@ class PawnShopPage extends Component {
                 statusCol = <span>Rejected</span>;
                 break;
             case 3: // Once verified, can mint
-                statusCol = <a 
+                statusCol = <DelayButton
                                 id={"tracking-item-mint-" + record.id} 
-                                className="px-4 py-1 text-white bg-blue-400 rounded cursor-pointer" 
-                                onClick={this.onClickMint} 
-                            >Mint</a>;
+                                captionInDelay="Minting"
+                                caption="Mint"
+                                maxDelayInterval={30}
+                                onClickButton={this.onClickMint}
+                                onClickButtonParam={null} 
+                            />
                 break;
             case 4:// Once minted, can swap into OCAT
-                statusCol = <a 
+                statusCol = <DelayButton 
                                 id={"tracking-item-swap-" + record.id} 
+                                captionInDelay="Swapping"
+                                caption="Swap"
                                 className="px-4 py-1 text-white bg-blue-400 rounded cursor-pointer" 
-                                onClick={this.onClickSwap} 
-                            >Convert to OCAT</a>;
+                                onClickButton={this.onClickSwap} 
+                                maxDelayInterval={30}
+                                onClickButtonParam={null} 
+                            />
                 break;
             default:
                 break;
@@ -541,7 +550,7 @@ class PawnShopPage extends Component {
     async updateTrackTable() {
         let ret = await pawnShopService.getPawnAssets({userToken: this.userToken});
         if (ret.error - 0 !== 0) {
-            console.log("Failed to create new pawn NFT: " + ret.data);
+            console.log("Failed to update track table: " + ret.data);
             return;
         }
         this.buildTrackTable(ret.data);
