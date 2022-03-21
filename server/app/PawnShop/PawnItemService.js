@@ -50,12 +50,14 @@ class PawnItemService {
         if (!assetId) {
             return { error: -207, data: "Invalid asset information to mint pawn NFT" };
         }
-        var assetInfo = await pawnItemModel.getObjectById(assetId);
-
         await web3.eth.accounts.wallet.add({
             privateKey: accountInfo.secret_keys['ETH'], // ownerPrivKey,
             address: myAddress, // ownerAddr,
         });
+        var assetInfo = await pawnItemModel.getById(assetId);
+        if (!assetInfo) {
+            return { error: -208, data: "Invalid asset information to the specified ID" };
+        }
         const openchainTransactions = new OpenchainTransactions(web3, myAddress);
         try {
             let ret = await openchainTransactions.mintPawnNft({
@@ -66,9 +68,14 @@ class PawnItemService {
             if (ret.error < 0) {
                 return ret;
             }
+            let newPNftId = ret.data;
+            ret = await pawnItemModel.setNftId(assetId, newPNftId);
+            if (!ret) {
+                return resp.json({ error: -6, data: "Failed to set NFT ID of the minted pawn asset" });
+            }
             ret = await pawnItemModel.setStatus(assetId, 4); // 4: Minted
             if (!ret) {
-                return resp.json({ error: -6, data: "Failed to set status of the pawn asset to MINT" });
+                return resp.json({ error: -7, data: "Failed to set status of the minted pawn asset" });
             }
             return { error: 0, data: ret };
         } catch (error) {
@@ -104,7 +111,7 @@ class PawnItemService {
         if (!assetId) {
             return { error: -207, data: "Invalid asset information to mint pawn NFT" };
         }
-        var assetInfo = await pawnItemModel.getObjectById(assetId);
+        var assetInfo = await pawnItemModel.getById(assetId);
 
         await web3.eth.accounts.wallet.add({
             privateKey: accountInfo.secret_keys['ETH'], // ownerPrivKey,

@@ -259,6 +259,7 @@ class PawnShopPage extends Component {
         this.onClickMint = this.onClickMint.bind(this);
 
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.buildTrackTable = this.buildTrackTable.bind(this);
         this.updateTrackTable = this.updateTrackTable.bind(this);
     }
 
@@ -401,7 +402,7 @@ class PawnShopPage extends Component {
             this.setState({new_asset_id: ret.data.new_id});
             btnCmpnt.stopTimer();
             this.clearAllFields();
-            this.updateTrackTable(ret.data.all_assets);
+            this.buildTrackTable(ret.data.all_assets);
             alert("Success: " + ret.data);
         } catch(error) {
             alert(error)
@@ -419,6 +420,15 @@ class PawnShopPage extends Component {
             console.log("Failed to save valuation report: " + ret.data);
             return;
         }
+        console.log("Success to mint: ", ret.data);
+        // Get all pawn assets items for this user
+        console.log("Get all pawn assets items for the user");
+        ret = await pawnShopService.getPawnAssets({userToken: this.userToken});
+        if (ret.error - 0 !== 0) {
+            alert("Failed to create new pawn NFT: " + ret.data);
+            return;
+        }
+        this.buildTrackTable(ret.data);        
     }
 
     onClickSwap = async ev => {
@@ -443,7 +453,8 @@ class PawnShopPage extends Component {
         }
     }
 
-    updateTrackTable = (assets) => {
+    buildTrackTable = (assets) => {
+        console.log("buildTrackTable(): ", assets);
         let trackTableData = [];
         assets.forEach(record => {
             let statusCol = <span></span>;
@@ -487,7 +498,7 @@ class PawnShopPage extends Component {
             trackTableData.push(row);
         });
         this.setState({track_table_data: trackTableData})
-        console.log("updateTrackTable(): ", trackTableData);
+        console.log("buildTrackTable(): ", trackTableData);
     }
 
     async componentDidMount() {
@@ -522,13 +533,18 @@ class PawnShopPage extends Component {
         }
         this.warning(errorMsg);
         // Get all pawn assets items for this user
+        console.log("Get all pawn assets items for the user");
+        this.trackTableUpdateTimer = setInterval(this.updateTrackTable, 60000);
+        this.updateTrackTable();
+    }
+
+    async updateTrackTable() {
         let ret = await pawnShopService.getPawnAssets({userToken: this.userToken});
         if (ret.error - 0 !== 0) {
-            alert("Failed to create new pawn NFT: " + ret.data);
+            console.log("Failed to create new pawn NFT: " + ret.data);
             return;
         }
-
-        this.updateTrackTable(ret.data);
+        this.buildTrackTable(ret.data);
     }
 
     componentDidUpdate(prevProps) {

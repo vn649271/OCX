@@ -17,7 +17,7 @@ const collection = 'users';
  */
 function UserAuth() {
 
-    this.getObject = async function(userId) {
+    this.getById = async function(userId) {
         const snapshot = await db.collection(collection).doc(userId).get();
         if (snapshot.empty) {
             console.info('No matching user information.');

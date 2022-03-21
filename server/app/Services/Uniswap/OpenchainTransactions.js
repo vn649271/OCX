@@ -1,7 +1,7 @@
 const IRouter = require('@uniswap/v2-periphery/build/IUniswapV2Router02.json')
 // const erc20 = require("@studydefi/money-legos/erc20")
 // const uniswap = require("@studydefi/money-legos/uniswap")
-const OpenchainContractAbi = require('../../../build/contracts/ERC20Swap.json');
+const OpenchainContractAbi = require('../../../build/contracts/OcdSwap.json');
 const PawnNFTsAbi = require('../../../build/contracts/PawnNFTs.json');
 const openchainContractAbi = OpenchainContractAbi.abi;
 const pawnNftAbi = PawnNFTsAbi.abi;
@@ -10,7 +10,8 @@ const {
     Erc20TokenABI,
     UniswapV2Router02Address, 
     GOERLI_CONTRACTS,
-    PawningContractAddress
+    GANACHE_CONTRACTS,
+    PawningContractAddress,
 } = require("./Abi/Erc20Abi");
 
 const EthereumTx = require('ethereumjs-tx').Transaction;
@@ -27,7 +28,11 @@ class OpenchainTransactions {
 
     async getBalance(symbol) {
         try {
-            const tokenContract = new this.web3.eth.Contract(Erc20TokenABI, GOERLI_CONTRACTS[symbol]);
+            let tokenContractAddress = GOERLI_CONTRACTS[symbol];
+            if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
+                tokenContractAddress = GANACHE_CONTRACTS[symbol];
+            }
+            const tokenContract = new this.web3.eth.Contract(Erc20TokenABI, tokenContractAddress);
             let balanceInWei = await tokenContract.methods.balanceOf(this.myAddress).call();
             let decimals = await tokenContract.methods.decimals().call();
             let balance = balanceInWei / (10 ** (decimals - 0));
@@ -48,9 +53,16 @@ class OpenchainTransactions {
             return { error: -1, data: "Illegal operation. Selling token must be different than token to buy" };
         }
         try {
-            const WETH_ADDRESS = GOERLI_CONTRACTS['WETH'];
+            let WETH_ADDRESS = GOERLI_CONTRACTS['WETH'];
             let sellTokenAddress = GOERLI_CONTRACTS[params.sellSymbol];
             let buyTokenAddress = GOERLI_CONTRACTS[params.buySymbol];
+
+            if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
+                WETH_ADDRESS = GANACHE_CONTRACTS['WETH'];
+                sellTokenAddress = GANACHE_CONTRACTS[params.sellSymbol];
+                buyTokenAddress = GANACHE_CONTRACTS[params.buySymbol];
+            }
+
             let path = [];
             if (params.sellSymbol !== "ETH" && params.buySymbol !== "ETH") {
                 path = [sellTokenAddress, WETH_ADDRESS, buyTokenAddress];
@@ -83,11 +95,17 @@ class OpenchainTransactions {
 
     async swapEthForToken(params) {
         try {
-            const WETH_ADDRESS = GOERLI_CONTRACTS['WETH'];
-            const erc20TokenAddress = GOERLI_CONTRACTS[params.buySymbol];
+            let WETH_ADDRESS = GOERLI_CONTRACTS['WETH'];
+            let erc20TokenAddress = GOERLI_CONTRACTS[params.buySymbol];
+            let ourSwapContractAddress = GOERLI_CONTRACTS.ERC20_SWAP;
+
+            if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
+                WETH_ADDRESS = GANACHE_CONTRACTS['WETH'];
+                erc20TokenAddress = GANACHE_CONTRACTS[params.buySymbol];
+                ourSwapContractAddress = GANACHE_CONTRACTS.ERC20_SWAP;
+            }
             const path = [WETH_ADDRESS, erc20TokenAddress];
-            // const uniRouter02 = new this.web3.eth.Contract(IRouter.abi, UniswapV2Router02Address)
-            const openchainSwap = new this.web3.eth.Contract(openchainContractAbi, GOERLI_CONTRACTS.ERC20_SWAP);
+            const openchainSwap = new this.web3.eth.Contract(openchainContractAbi, ourSwapContractAddress);
             const sellAmountInHex = this.web3.utils.toHex(params.sellAmount);
             const buyAmountInHex = this.web3.utils.toHex(params.buyAmountMin);
 
@@ -113,14 +131,21 @@ class OpenchainTransactions {
 
     async swapTokenForEth(params) {
         try {
-            const openchainSwap = new this.web3.eth.Contract(openchainContractAbi, GOERLI_CONTRACTS.ERC20_SWAP);
-            const erc20TokenAddress = GOERLI_CONTRACTS[params.sellSymbol];
+            let ourSwapContractAddress = GOERLI_CONTRACTS.ERC20_SWAP;
+            if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
+                ourSwapContractAddress = GANACHE_CONTRACTS.ERC20_SWAP;
+            }
+            const openchainSwap = new this.web3.eth.Contract(openchainContractAbi, ourSwapContractAddress);
+            let erc20TokenAddress = GOERLI_CONTRACTS[params.sellSymbol];
+            if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
+                erc20TokenAddress = GANACHE_CONTRACTS[params.sellSymbol];
+            }
             const sellAmountInHex = this.web3.utils.toHex(params.sellAmount);
             const buyAmountInHex = this.web3.utils.toHex(params.buyAmountMin);
             let ret = null;
 
             const tokenContract = new this.web3.eth.Contract(Erc20TokenABI, erc20TokenAddress);
-            ret = await tokenContract.methods.approve(GOERLI_CONTRACTS.ERC20_SWAP, sellAmountInHex)
+            ret = await tokenContract.methods.approve(ourSwapContractAddress, sellAmountInHex)
                 .send({
                     from: this.myAddress,
                 });
@@ -153,9 +178,17 @@ class OpenchainTransactions {
 
     async swapTokenForToken(params) {
         try {
+            let ourSwapContractAddress = GOERLI_CONTRACTS.ERC20_SWAP;
+            if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
+                ourSwapContractAddress = GANACHE_CONTRACTS.ERC20_SWAP;
+            }
             const openchainSwap = new this.web3.eth.Contract(openchainContractAbi, GOERLI_CONTRACTS.ERC20_SWAP);
-            const sellTokenAddress = GOERLI_CONTRACTS[params.sellSymbol];
-            const buyTokenAddress = GOERLI_CONTRACTS[params.buySymbol];
+            let sellTokenAddress = GOERLI_CONTRACTS[params.sellSymbol];
+            let buyTokenAddress = GOERLI_CONTRACTS[params.buySymbol];
+            if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
+                sellTokenAddress = GANACHE_CONTRACTS[params.sellSymbol];
+                buyTokenAddress = GANACHE_CONTRACTS[params.buySymbol];
+            }
             const path = [sellTokenAddress, buyTokenAddress];
             const sellAmountInHex = this.web3.utils.toHex(params.sellAmount);
             let ret = null;
@@ -163,9 +196,12 @@ class OpenchainTransactions {
             // const buyAmountMinInHex = this.web3.utils.toHex(params.buyAmountMin);
             const buyAmountMinInHex = this.web3.utils.toHex("0");
 
-            const sellTokenContract = new this.web3.eth.Contract(Erc20TokenABI, sellTokenAddress)
+            const sellTokenContract = new this.web3.eth.Contract(Erc20TokenABI, sellTokenAddress);
 
-            ret = await sellTokenContract.methods.approve(GOERLI_CONTRACTS.ERC20_SWAP, sellAmountInHex)
+            if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
+                ourSwapContractAddress = GANACHE_CONTRACTS.ERC20_SWAP;
+            }
+            ret = await sellTokenContract.methods.approve(ourSwapContractAddress, sellAmountInHex)
                 .send({
                     from: this.myAddress,
                 });
@@ -239,7 +275,11 @@ class OpenchainTransactions {
             return { error: -2, data: "Invalid asset data" };
         }
         try {
-            let pawnNftContract = new this.web3.eth.Contract(pawnNftAbi, GOERLI_CONTRACTS['PNFT']);
+            let pnftContractAddress = GOERLI_CONTRACTS.PNFT;
+            if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
+                pnftContractAddress = GANACHE_CONTRACTS.PNFT;
+            }
+            let pawnNftContract = new this.web3.eth.Contract(pawnNftAbi, pnftContractAddress);
             let priceInWei = this.web3.utils.toWei(assetInfo.quote_price, "ether");
             let ret = await pawnNftContract.methods.mintPawnNFT(
                 assetInfo.asset_name, 
@@ -287,11 +327,15 @@ class OpenchainTransactions {
             return { error: -2, data: "Invalid pawning data" };
         }
         try {
-            let pawnNftContract = new this.web3.eth.Contract(pawnNftAbi, GOERLI_CONTRACTS['PNFT']);
-            let ret = await pawnNftContract.methods.mintPawnNFT(
-                assetInfo.asset_name, 
-                assetInfo.valuation_report, 
-                assetInfo.price,
+            let pnftContractAddress = GOERLI_CONTRACTS.PNFT;
+            let ourSwapContractAddress = GOERLI_CONTRACTS.ERC20_SWAP;
+            if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
+                ourSwapContractAddress = GANACHE_CONTRACTS.ERC20_SWAP;
+                pnftContractAddress = GANACHE_CONTRACTS.PNFT;
+            }
+            let openchainSwap = new this.web3.eth.Contract(openchainContractAbi, ourSwapContractAddress);
+            let ret = await openchainSwap.methods.swapPNFTtoOCAT(
+                assetInfo.nft_id
             ).send({
                 from: this.myAddress,
                 gas: "500000"

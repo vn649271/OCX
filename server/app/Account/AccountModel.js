@@ -23,7 +23,7 @@ Data Model
  */
 function AccountModel() {
 
-    this.getObject = async function(accountId) {
+    this.getById = async function(accountId) {
         const snapshot = await db.collection(collection).doc(accountId).get();
         if (snapshot.empty) {
             console.info('No matching user information.');
