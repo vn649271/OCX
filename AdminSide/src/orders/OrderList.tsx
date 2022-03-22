@@ -140,157 +140,50 @@ const TabbedDatagrid = (props: TabbedDatagridProps) => {
 
     return (
         <Fragment>
-            <Tabs
-                variant="fullWidth"
-                centered
-                value={filterValues.status}
-                indicatorColor="primary"
-                onChange={handleChange}
-            >
-                {tabs.map(choice => (
-                    <Tab
-                        key={choice.id}
-                        label={
-                            totals[choice.name]
-                                ? `${choice.name} (${totals[choice.name]})`
-                                : choice.name
-                        }
-                        value={choice.id}
-                    />
-                ))}
-            </Tabs>
-            <Divider />
-            {isXSmall ? (
+            <div>
                 <ListContextProvider
-                    value={{ ...listContext, ids: selectedIds }}
+                    value={{ ...listContext, ids: ordered }}
                 >
-                    <MobileGrid {...props} ids={selectedIds} />
+                    <Datagrid {...props} optimized rowClick="edit">
+                        <TextField label="Name" source="asset_name" />
+                        <TextField label="Type" source="asset_type" />
+                        <NumberField label="Zip Code" source="asset_address_zipcode" />
+                        <TextField label="Country" source="asset_address_country" />
+                        <NumberField 
+                            label="Price" 
+                            source="price" 
+                            options={{
+                                style: 'currency',
+                                currency: 'AUD',
+                            }}
+                        />
+                        <NumberField label="Price Percentage" source="price_percentage" />
+                        <NumberField 
+                            label="Quote Price" 
+                            source="quote_price" 
+                            options={{
+                                style: 'currency',
+                                currency: 'AUD',
+                            }}
+                        />
+                        <TextField label="Estimated Fee" source="estimated_fee" />
+                        <NumberField label="Estimated OCAT" source="estimated_ocat" />
+                        <DateField source="created_at" showTime />
+                        <TextField label="Status" source="statusText"/>
+                        <EditButton label="Action" basePath="/pawnshop" />
+                        {/* <CustomerReferenceField />
+                        <ReferenceField
+                            source="customer_id"
+                            reference="customers"
+                            link={false}
+                            label="resources.pawnshop.fields.address"
+                        >
+                            <AddressField />
+                        </ReferenceField> */}
+                        {/* <NbItemsField /> */}
+                    </Datagrid>
                 </ListContextProvider>
-            ) : (
-                <div>
-                    {filterValues.status === 'ordered' && (
-                        <ListContextProvider
-                            value={{ ...listContext, ids: ordered }}
-                        >
-                            <Datagrid {...props} optimized rowClick="edit">
-                                {/* 
-                                data: {
-                                    asset_name: '',
-                                    asset_type: '',
-                                    asset_description: '',
-                                    asset_address: '',
-                                    asset_address_street: '',
-                                    asset_address_city: '',
-                                    asset_address_state: '',
-                                    asset_address_zipcode: '',
-                                    asset_address_country: '',
-                                    valuation_report: '',
-                                    price: 0,
-                                    price_percentage: 0,
-                                    quote_price: 0,
-                                    estimated_ocat: 0,
-                                    estimated_fee: '',
-                                    verified: false
-                                } */}
-                                <TextField label="Name" source="asset_name" />
-                                <TextField label="Type" source="asset_type" />
-                                <NumberField label="Zip Code" source="asset_address_zipcode" />
-                                <TextField label="Country" source="asset_address_country" />
-                                <NumberField 
-                                    label="Price" 
-                                    source="price" 
-                                    options={{
-                                        style: 'currency',
-                                        currency: 'AUD',
-                                    }}
-                                />
-                                <NumberField label="Price Percentage" source="price_percentage" />
-                                <NumberField 
-                                    label="Quote Price" 
-                                    source="quote_price" 
-                                    options={{
-                                        style: 'currency',
-                                        currency: 'AUD',
-                                    }}
-                                />
-                                <NumberField label="Estimated OCAT" source="estimated_ocat" />
-                                <TextField label="Estimated Fee" source="estimated_fee" />
-                                <DateField source="created_at" showTime />
-                                <BooleanField label="Approved" source="verified"/>
-                                <EditButton label="Edit" basePath="/pawnshop" />
-                                {/* <CustomerReferenceField />
-                                <ReferenceField
-                                    source="customer_id"
-                                    reference="customers"
-                                    link={false}
-                                    label="resources.pawnshop.fields.address"
-                                >
-                                    <AddressField />
-                                </ReferenceField> */}
-                                {/* <NbItemsField /> */}
-                            </Datagrid>
-                        </ListContextProvider>
-                    )}
-                    {filterValues.status === 'delivered' && (
-                        <ListContextProvider
-                            value={{ ...listContext, ids: delivered }}
-                        >
-                            <Datagrid {...props} rowClick="edit">
-                                <DateField source="date" showTime />
-                                <TextField source="reference" />
-                                <CustomerReferenceField />
-                                <ReferenceField
-                                    source="customer_id"
-                                    reference="customers"
-                                    link={false}
-                                    label="resources.pawnshop.fields.address"
-                                >
-                                    <AddressField />
-                                </ReferenceField>
-                                {/* <NbItemsField /> */}
-                                <NumberField
-                                    source="total"
-                                    options={{
-                                        style: 'currency',
-                                        currency: 'USD',
-                                    }}
-                                    className={classes.total}
-                                />
-                                <BooleanField source="returned" />
-                            </Datagrid>
-                        </ListContextProvider>
-                    )}
-                    {filterValues.status === 'cancelled' && (
-                        <ListContextProvider
-                            value={{ ...listContext, ids: cancelled }}
-                        >
-                            <Datagrid {...props} rowClick="edit">
-                                <DateField source="date" showTime />
-                                <TextField source="reference" />
-                                <CustomerReferenceField />
-                                <ReferenceField
-                                    source="customer_id"
-                                    reference="customers"
-                                    link={false}
-                                    label="resources.pawnshop.fields.address"
-                                >
-                                    <AddressField />
-                                </ReferenceField>
-                                {/* <NbItemsField /> */}
-                                <NumberField
-                                    source="total"
-                                    options={{
-                                        style: 'currency',
-                                        currency: 'USD',
-                                    }}
-                                    className={classes.total}
-                                />
-                                <BooleanField source="returned" />
-                            </Datagrid>
-                        </ListContextProvider>
-                    )}
-                </div>
-            )}
+            </div>
         </Fragment>
     );
 };

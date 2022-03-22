@@ -417,10 +417,10 @@ class OpenchainRouter {
             }
             const pnftContract = new this.web3.eth.Contract(pawnNftAbi, pnftContractAddress);
             let ret = await pnftContract.methods.allPawnNFTs(assetInfo.nft_id).call(); //().
-            if (!ret || ret.price === undefined || !ret.price) {
-                return { error: -250, data: "Failed to get price for the pawning NFT" };
+            if (!ret || ret.estimated_ocat === undefined || !ret.estimated_ocat) {
+                return { error: -250, data: "Failed to get OCAT for the pawning NFT" };
             }
-            let priceInWei = ret.price;
+            let priceInWei = ret.estimated_ocat;
             const ocatContract = new this.web3.eth.Contract(ocatAbi, ocatContractAddress);
             let gasPrice = await this.web3.eth.getGasPrice();
             gasPrice = (gasPrice * 1.2).toFixed(0);

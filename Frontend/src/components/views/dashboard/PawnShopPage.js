@@ -38,6 +38,17 @@ const ASSET_TYPES = [
     },
 ];
 
+const ASSET_STATUS_LABELS = [
+    "Pending",  // 0
+    "Submitted",
+    "Declined",
+    "Resubmitted",
+    "Approved", // 4
+    "Minted",
+    "Loaned",
+    "Burned",   // 7
+]
+
 const COUNTRIES = [
     {
         iconUrl: "/images/country-flags/Australia.png",
@@ -195,6 +206,7 @@ const TRACKING_TABLE_SCHEMA = {
         { title: 'Quoted Pricce' },
         { title: 'Management Fees' },
         { title: 'Status' },
+        { title: 'Action' },
     ]
 }
 
@@ -206,7 +218,8 @@ class PawnShopPage extends Component {
         new_asset_id: "",
         accounts: null,
         connected_hotwallet: 0,
-        error: '',
+        error_message: '',
+        information_message: '',
         inputs: {
             asset_name: '',
             asset_type: '',
@@ -258,12 +271,23 @@ class PawnShopPage extends Component {
         this.onClickSubmit = this.onClickSubmit.bind(this);
         this.onSelectValuationReport = this.onSelectValuationReport.bind(this);
         this.onClickMint = this.onClickMint.bind(this);
+        this.onClickBurn = this.onClickBurn.bind(this);
         this.onClickLoan = this.onClickLoan.bind(this);
         this.onClickRestore = this.onClickRestore.bind(this);
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.buildTrackTable = this.buildTrackTable.bind(this);
         this.updateTrackTable = this.updateTrackTable.bind(this);
+
+        this.warning = this.warning.bind(this);
+    }
+
+    error = msg => {
+        this.setState({error_message: msg});
+    }
+
+    inform = msg => {
+        this.setState({information_message: msg});
     }
 
     setAssetName = name => {
@@ -388,7 +412,7 @@ class PawnShopPage extends Component {
             let ret = await pawnShopService.upload(this.state.inputs.valuation_report);
             if (ret.error - 0 !== 0) {
                 btnCmpnt.stopTimer();
-                alert("Failed to save valuation report: " + ret.data);
+                this.error("Failed to submint: " + ret.data);
                 return;
             }
             console.log("Uploading valuation report: ", ret)
@@ -398,7 +422,7 @@ class PawnShopPage extends Component {
             ret = await pawnShopService.create({userToken: this.userToken, data: submitData});
             if (ret.error - 0 !== 0) {
                 btnCmpnt.stopTimer();
-                alert("Failed to create new pawn NFT: " + ret.data);
+                this.error("Failed to create new pawn NFT: " + ret.data);
                 return;
             }
 
@@ -406,9 +430,9 @@ class PawnShopPage extends Component {
             btnCmpnt.stopTimer();
             this.clearAllFields();
             this.buildTrackTable(ret.data.all_assets);
-            alert("Success: " + ret.data);
+            this.inform("Success: " + ret.data);
         } catch(error) {
-            alert(error)
+            this.error(error)
         }
     }
 
@@ -421,19 +445,32 @@ class PawnShopPage extends Component {
         let ret = await pawnShopService.mint({ownerToken: this.userToken, assetId: assetId});
         if (ret.error - 0 !== 0) {
             buttonComponent.stopTimer();
-            console.log("Failed to save valuation report: " + ret.data);
+            this.error("Failed to mint: " + ret.data);
             return;
         }
         buttonComponent.stopTimer();
-        console.log("Success to mint: ", ret.data);
+        this.inform("Success to mint: ", ret.data);
         // Get all pawn assets items for this user
         console.log("Get all pawn assets items for the user");
         ret = await pawnShopService.getPawnAssets({userToken: this.userToken});
         if (ret.error - 0 !== 0) {
-            alert("Failed to create new pawn NFT: " + ret.data);
+            this.error("Failed to mint new pawn NFT: " + ret.data);
             return;
         }
         this.buildTrackTable(ret.data.all_assets);
+    }
+
+    onClickBurn = async (params, ev, buttonComponent) => {
+        let targetElement = ev.target;
+        let assetId = targetElement.id.replace("tracking-item-burn-", "");
+        let ret = await pawnShopService.burn({ownerToken: this.userToken, assetId: assetId});
+        if (ret.error - 0 !== 0) {
+            buttonComponent.stopTimer();
+            this.error("Failed to burn asset: " + ret.data);
+            return;
+        }
+        buttonComponent.stopTimer();
+        this.inform("Success to burn: ", ret.data);
     }
 
     onClickLoan = async (params, ev, buttonComponent) => {
@@ -441,8 +478,7 @@ class PawnShopPage extends Component {
         let ret = await pawnShopService.loan({ownerToken: this.userToken, assetId: assetId});
         buttonComponent.stopTimer();
         if (ret.error - 0 !== 0) {
-            alert("Failed to loan: " + ret.data);
-            console.log("Failed to loan: " + ret.data);
+            this.error("Failed to loan: " + ret.data);
             return;
         }
         this.buildTrackTable(ret.data.all_assets);
@@ -454,8 +490,7 @@ class PawnShopPage extends Component {
         buttonComponent.stopTimer();
         if (ret.error - 0 !== 0) {
             // btnCmpnt.stopTimer();
-            alert("Failed to return back: " + ret.data);
-            console.log("Failed to return back: " + ret.data);
+            this.error("Failed to return back: " + ret.data);
             return;
         }
         this.buildTrackTable(ret.data.all_assets);
@@ -477,26 +512,52 @@ class PawnShopPage extends Component {
         console.log("buildTrackTable(): ", assets);
         let trackTableData = [];
         assets.forEach(record => {
-            let statusCol = <span></span>;
+            // "Pending",       // 0
+            // "Submitted",     // 1
+            // "Declined",      // 2
+            // "Resubmitted",   // 3
+            // "Approved",      // 4
+            // "Minted",        // 5
+            // "Loaned",        // 6
+            // "Burned",        // 7
+            let statusCol = <span>{ASSET_STATUS_LABELS[record.status - 0]}</span>;
+            let actionCol = <span></span>;
             switch (record.status) {
-            case 1:
-                statusCol = <span>Submitted</span>;
-                break;
             case 2:
-                statusCol = <span>Rejected</span>;
+                actionCol = <DelayButton
+                    id={"tracking-item-resubmit-" + record.id} 
+                    captionInDelay="Resubmit"
+                    caption="Resubmit"
+                    maxDelayInterval={30}
+                    onClickButton={this.onClickSubmit}
+                    onClickButtonParam={null} 
+                />
                 break;
-            case 3: // Once verified, can mint
-                statusCol = <DelayButton
-                                id={"tracking-item-mint-" + record.id} 
-                                captionInDelay="Minting"
-                                caption="Mint"
-                                maxDelayInterval={30}
-                                onClickButton={this.onClickMint}
-                                onClickButtonParam={null} 
-                            />
+            case 3:
+                actionCol = <span>Resubmitted</span>;
                 break;
-            case 4:// Once minted, can swap into OCAT
-                statusCol = <DelayButton 
+            case 4: // Once verified, can mint or burn
+                actionCol = <div>
+                                <DelayButton
+                                    id={"tracking-item-mint-" + record.id} 
+                                    captionInDelay="Minting"
+                                    caption="Mint"
+                                    maxDelayInterval={30}
+                                    onClickButton={this.onClickMint}
+                                    onClickButtonParam={null} 
+                                />
+                                <DelayButton
+                                    id={"tracking-item-burn-" + record.id} 
+                                    captionInDelay="Burning"
+                                    caption="Burn"
+                                    maxDelayInterval={30}
+                                    onClickButton={this.onClickBurn}
+                                    onClickButtonParam={null} 
+                                />
+                            </div>
+                break;
+            case 5:// Once minted, can swap into OCAT
+                actionCol = <DelayButton 
                                 id={"tracking-item-loan-" + record.id} 
                                 captionInDelay="Loaning"
                                 caption="Loan"
@@ -506,8 +567,8 @@ class PawnShopPage extends Component {
                                 onClickButtonParam={null} 
                             />
                 break;
-            case 5:
-                statusCol = <DelayButton
+            case 6:
+                actionCol = <DelayButton
                                 id={"tracking-item-restore-" + record.id} 
                                 captionInDelay="Restoring"
                                 caption="Restore"
@@ -531,6 +592,7 @@ class PawnShopPage extends Component {
                     { value: record.quote_price },
                     { value: record.estimated_fee },
                     { value: statusCol },
+                    { value: actionCol },
                 ]
             };
             trackTableData.push(row);
@@ -583,7 +645,7 @@ class PawnShopPage extends Component {
     async updateTrackTable() {
         let ret = await pawnShopService.getPawnAssets({userToken: this.userToken});
         if (ret.error - 0 !== 0) {
-            console.log("Failed to update track table: " + ret.data);
+            this.error("Failed to update track table: " + ret.data);
             return;
         }
         this.buildTrackTable(ret.data);
@@ -613,7 +675,8 @@ class PawnShopPage extends Component {
         return (
             <div>
                 <div className="my-pawnshop-page main-font main-color font-16 m-8">
-                    <p className="account-balance-box main-font text-red-400 mb-100 font-16">{this.state.error}</p>
+                    <p className="account-balance-box main-font text-red-400 mb-100 font-16">{this.state.error_message}</p>
+                    <p className="account-balance-box main-font text-green-400 mb-100 font-16">{this.state.information_message}</p>
                     <Card title='Pawn your assets into cryptos'>
                         <div>
                             <div className="inline-flex w-full">

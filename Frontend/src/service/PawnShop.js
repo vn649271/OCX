@@ -46,10 +46,17 @@ export default function PawnShopService() {
      * 
      * @returns new account address
      */
-     this.mint = async (params) => {
+    this.mint = async (params) => {
         let _params = {};
         _params['data'] = params;
         _params['url'] = BACKEND_BASE_URL + "/pawnshop/mint";
+        return await this._sendRequest(_params);
+    }
+
+    this.burn = async (params) => {
+        let _params = {};
+        _params['data'] = params;
+        _params['url'] = BACKEND_BASE_URL + "/pawnshop/burn";
         return await this._sendRequest(_params);
     }
 
