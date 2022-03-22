@@ -297,7 +297,7 @@ class OpenchainRouter {
                 pnftContractAddress = GANACHE_CONTRACTS.PNFT;
             }
             let pawnNftContract = new this.web3.eth.Contract(pawnNftAbi, pnftContractAddress);
-            let priceInWei = this.web3.utils.toWei(assetInfo.quote_price, "ether");
+            let priceInWei = this.web3.utils.toWei(assetInfo.estimated_ocat, "ether");
             let ret = await pawnNftContract.methods.mintPawnNFT(
                 assetInfo.asset_name, 
                 assetId, 
@@ -417,10 +417,10 @@ class OpenchainRouter {
             }
             const pnftContract = new this.web3.eth.Contract(pawnNftAbi, pnftContractAddress);
             let ret = await pnftContract.methods.allPawnNFTs(assetInfo.nft_id).call(); //().
-            if (!ret || ret.estimated_ocat === undefined || !ret.estimated_ocat) {
+            if (!ret || ret.price === undefined || !ret.price) {
                 return { error: -250, data: "Failed to get OCAT for the pawning NFT" };
             }
-            let priceInWei = ret.estimated_ocat;
+            let priceInWei = ret.price;
             const ocatContract = new this.web3.eth.Contract(ocatAbi, ocatContractAddress);
             let gasPrice = await this.web3.eth.getGasPrice();
             gasPrice = (gasPrice * 1.2).toFixed(0);

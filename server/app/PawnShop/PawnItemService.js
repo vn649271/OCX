@@ -1,4 +1,14 @@
-var util = require('util');
+const {
+    ASSET_PENDING,
+    ASSET_SUBMITTED,
+    ASSET_DECLINED,
+    ASSET_RESUBMITTED,
+    ASSET_APPROVED,
+    ASSET_MINTED,
+    ASSET_LOANED,
+    ASSET_BURNED,
+    ASSET_STATUS_LABELS    
+} = require("./Constants");var util = require('util');
 require('dotenv').config();
 const PawnItemModel = require("./PawnItemModel");
 const { openchainRouterInstance, DEFAULT_DEADLINE } = require('../Services/Uniswap/OpenchainRouter');
@@ -69,7 +79,7 @@ class PawnItemService {
             if (!ret) {
                 return resp.json({ error: -6, data: "Failed to set NFT ID of the minted pawn asset" });
             }
-            ret = await pawnItemModel.setStatus(assetId, 4); // 4: Minted
+            ret = await pawnItemModel.setStatus(assetId, ASSET_MINTED);
             if (!ret) {
                 return resp.json({ error: -7, data: "Failed to set status of the minted pawn asset" });
             }
@@ -123,7 +133,7 @@ class PawnItemService {
                 return { error: -205, data: ret.data };
             }
             let result = ret.data;
-            ret = await pawnItemModel.setStatus(assetId, 5); // 5: Swapped to OCAT
+            ret = await pawnItemModel.setStatus(assetId, ASSET_LOANED);
             if (!ret) {
                 return { error: -206, data: "Failed to change status of the pawn asset" };
             }
@@ -173,7 +183,7 @@ class PawnItemService {
                 return { error: -205, data: ret.data };
             }
             let result = ret.data;
-            ret = await pawnItemModel.setStatus(assetId, 4); // 4: Swapped from OCAT
+            ret = await pawnItemModel.setStatus(assetId, ASSET_MINTED);
             if (!ret) {
                 return { error: -206, data: "Failed to change status of the pawn asset" };
             }

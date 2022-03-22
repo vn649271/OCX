@@ -1,3 +1,14 @@
+const {
+    ASSET_PENDING,
+    ASSET_SUBMITTED,
+    ASSET_DECLINED,
+    ASSET_RESUBMITTED,
+    ASSET_APPROVED,
+    ASSET_MINTED,
+    ASSET_LOANED,
+    ASSET_BURNED,
+    ASSET_STATUS_LABELS    
+} = require("./Constants");
 const PawnItemModel = require("./PawnItemModel");
 const PawnItemService = require("./PawnItemService");
 const UserAuthController = require('../UserAuth/UserAuthController');
@@ -12,25 +23,6 @@ var accountController = new AccountController();
 
 var self = null;
 
-const ASSET_PENDING = 0;
-const ASSET_SUBMITTED = 1;
-const ASSET_DECLINED = 2;
-const ASSET_RESUBMITTED = 3;
-const ASSET_APPROVED = 4;
-const ASSET_MINTED = 5;
-const ASSET_LOANED = 6;
-const ASSET_BURNED = 7;
-
-const ASSET_STATUS_LABELS = [
-    "Pending",  // 0
-    "Submitted",
-    "Declined",
-    "Resubmitted",
-    "Approved", // 4
-    "Minted",
-    "Loaned",
-    "Burned",   // 7
-]
 
 /**
  * Controller for user authentication
@@ -84,6 +76,9 @@ class PawnShopController {
 
     getList = async (req, resp) => {
         let ret = await pawnItemModel.all();
+        if (!ret) {
+            return resp.json({});
+        }
         ret.map(item => {
             item.statusText = ASSET_STATUS_LABELS[item.status - 0];
         });
@@ -95,7 +90,7 @@ class PawnShopController {
     _getAssetFor = async assetId => {
         let allAssetIDs = await accountController.allAsset(assetId);
         if (!allAssetIDs || allAssetIDs.length === undefined || allAssetIDs.length < 1) {
-            return resp.json({ error: -4, data: "No result for the assets for this user(1)" });
+            return null;
         }
         var allAssetsForUser = [];
         for (let i in allAssetIDs) {
@@ -120,7 +115,7 @@ class PawnShopController {
         }
         let hisAllAssets = await this._getAssetFor(userInfo.account);
         if (!hisAllAssets || hisAllAssets.length === undefined || hisAllAssets.length < 1) {
-            return resp.json({ error: -5, data: "No result for the assets for this user(2)" });
+            return resp.json({ error: 1, data: "No result for the assets for this user" });
         }
         return resp.json({error: 0, data: hisAllAssets});        
     }
