@@ -203,7 +203,7 @@ const TRACKING_TABLE_SCHEMA = {
         { title: 'Asset ID' },
         { title: 'Asset Type' },
         { title: 'Asset Name' },
-        { title: 'Quoted Pricce' },
+        { title: 'Estimated OCAT' },
         { title: 'Management Fees' },
         { title: 'Status' },
         { title: 'Action' },
@@ -589,7 +589,7 @@ class PawnShopPage extends Component {
                     { value: record.id },
                     { value: record.asset_type },
                     { value: record.asset_name },
-                    { value: record.quote_price },
+                    { value: record.estimated_ocat },
                     { value: record.estimated_fee },
                     { value: statusCol },
                     { value: actionCol },
@@ -644,8 +644,11 @@ class PawnShopPage extends Component {
 
     async updateTrackTable() {
         let ret = await pawnShopService.getPawnAssets({userToken: this.userToken});
-        if (ret.error - 0 !== 0) {
+        if (ret.error - 0 < 0) {
             this.error("Failed to update track table: " + ret.data);
+            return;
+        } else if (ret.error > 0) {
+            this.error(ret.data);
             return;
         }
         this.buildTrackTable(ret.data);
