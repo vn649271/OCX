@@ -112,7 +112,6 @@ class WalletPage extends Component {
         this.onGeneratePassphrase = this.onGeneratePassphrase.bind(this);
         this.setEncryptKey = this.setEncryptKey.bind(this);
         this.onSelectTab = this.onSelectTab.bind(this);
-        this.onClickEmptyAreaInPage = this.onClickEmptyAreaInPage.bind(this);
         this.startBalanceMonitor = this.startBalanceMonitor.bind(this);
         this._startBalanceMonitor = this._startBalanceMonitor.bind(this);
         this.buildTokenList = this.buildTokenList.bind(this);
@@ -314,10 +313,6 @@ class WalletPage extends Component {
 
     onSelectTab = tabName => {
         this.setState({ current_tab: tabName })
-    }
-
-    onClickEmptyAreaInPage = ev => {
-        console.log(ev);
     }
 
     onCreateAccont = async (param, ev, btnCmpnt) => {
@@ -538,7 +533,7 @@ class WalletPage extends Component {
     render() {
         return (
             <>
-                <div className="my-account-page" onClick={this.onClickEmptyAreaInPage}>
+                <div className="my-account-page">
                     <p className="account-balance-box main-font text-red-400 mb-100 font-16">{this.state.error}</p>
                     <p className="help-block main-font text-green-400 font-16">{this.state.info}</p>
                     <div>

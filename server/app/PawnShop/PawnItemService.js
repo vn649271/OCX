@@ -80,6 +80,10 @@ class PawnItemService {
         }
     }
 
+    async burn(params) {
+        return {error: 0, data: ""};
+    }
+
     /**
      * @param {object} newPawnItemObj list of symbols for getting info of
      */

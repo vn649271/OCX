@@ -166,7 +166,7 @@ const OrderForm = (props: any) => {
                                     </Grid>
                                     <Spacer />
                                     <Grid container>
-                                        <Grid item xs={12} sm={12} md={2}>
+                                        <Grid item xs={12} sm={12} md={4}>
                                             <Labeled
                                                 label="Address"
                                                 source="asset_address"
@@ -179,7 +179,7 @@ const OrderForm = (props: any) => {
                                                 />
                                             </Labeled>
                                         </Grid>
-                                        <Grid item xs={12} sm={12} md={3}>
+                                        <Grid item xs={12} sm={12} md={4}>
                                             <Labeled
                                                 label="Street"
                                                 source="asset_address_street"
@@ -192,7 +192,7 @@ const OrderForm = (props: any) => {
                                                 />
                                             </Labeled>
                                         </Grid>
-                                        <Grid item xs={12} sm={12} md={2}>
+                                        <Grid item xs={12} sm={12} md={4}>
                                             <Labeled
                                                 label="City"
                                                 source="asset_address_city"
@@ -205,20 +205,10 @@ const OrderForm = (props: any) => {
                                                 />
                                             </Labeled>
                                         </Grid>
-                                        <Grid item xs={12} sm={12} md={2}>
-                                            <Labeled
-                                                label="State"
-                                                source="asset_address_state"
-                                                resource="pawnshop"
-                                            >
-                                                <TextField
-                                                    source="asset_address_state"
-                                                    resource="pawnshop"
-                                                    record={formProps.record}
-                                                />
-                                            </Labeled>
-                                        </Grid>
-                                        <Grid item xs={12} sm={12} md={3}>
+                                    </Grid>
+                                    <Spacer />
+                                    <Grid container>
+                                        <Grid item xs={12} sm={12} md={4}>
                                             <Labeled
                                                 label="Country"
                                                 source="asset_address_country"
@@ -231,10 +221,23 @@ const OrderForm = (props: any) => {
                                                 />
                                             </Labeled>
                                         </Grid>
+                                        <Grid item xs={12} sm={12} md={4}>
+                                            <Labeled
+                                                label="State"
+                                                source="asset_address_state"
+                                                resource="pawnshop"
+                                            >
+                                                <TextField
+                                                    source="asset_address_state"
+                                                    resource="pawnshop"
+                                                    record={formProps.record}
+                                                />
+                                            </Labeled>
+                                        </Grid>
                                     </Grid>
                                     <Spacer />
                                     <Grid container>
-                                        <Grid item xs={12} sm={12} md={3}>
+                                        <Grid item xs={12} sm={12} md={4}>
                                             <Labeled
                                                 label="Valuation Report"
                                                 source="valuation_report"
@@ -250,7 +253,7 @@ const OrderForm = (props: any) => {
                                                 /> */}
                                             </Labeled>
                                         </Grid>
-                                        <Grid item xs={12} sm={12} md={3}>
+                                        <Grid item xs={12} sm={12} md={4}>
                                             <Box>
                                                 <TextInput
                                                     source="price"
@@ -259,14 +262,17 @@ const OrderForm = (props: any) => {
                                                 />
                                             </Box>
                                         </Grid>
-                                        <Grid item xs={12} sm={12} md={2}>
+                                        <Grid item xs={12} sm={12} md={4}>
                                             <TextInput
                                                 source="price_percentage"
                                                 resource="pawnshop"
                                                 record={formProps.record}
                                             />
                                         </Grid>
-                                        <Grid item xs={12} sm={12} md={3}>
+                                    </Grid>
+                                    <Spacer />
+                                    <Grid container>
+                                        <Grid item xs={12} sm={12} md={4}>
                                             <Labeled
                                                 label="Quote Price"
                                                 source="quote_price"
@@ -279,23 +285,7 @@ const OrderForm = (props: any) => {
                                                 />
                                             </Labeled>
                                         </Grid>
-                                    </Grid>
-                                    <Spacer />
-                                    <Grid container>
-                                        <Grid item xs={12} sm={12} md={6}>
-                                            <Labeled
-                                                label="Estimated OCAT"
-                                                source="estimated_ocat"
-                                                resource="pawnshop"
-                                            >
-                                                <TextField
-                                                    source="estimated_ocat"
-                                                    resource="pawnshop"
-                                                    record={formProps.record}
-                                                />
-                                            </Labeled>
-                                        </Grid>
-                                        <Grid item xs={12} sm={12} md={6}>
+                                        <Grid item xs={12} sm={12} md={4}>
                                             <Labeled
                                                 label="Estimated Fee"
                                                 source="estimated_fee"
@@ -303,6 +293,19 @@ const OrderForm = (props: any) => {
                                             >
                                                 <TextField
                                                     source="estimated_fee"
+                                                    resource="pawnshop"
+                                                    record={formProps.record}
+                                                />
+                                            </Labeled>
+                                        </Grid>
+                                        <Grid item xs={12} sm={12} md={4}>
+                                            <Labeled
+                                                label="Estimated OCAT"
+                                                source="estimated_ocat"
+                                                resource="pawnshop"
+                                            >
+                                                <TextField
+                                                    source="estimated_ocat"
                                                     resource="pawnshop"
                                                     record={formProps.record}
                                                 />
@@ -338,30 +341,46 @@ const OrderForm = (props: any) => {
                                     </Grid>
                                     <Spacer />
                                     <Grid container>
-                                        <Grid item xs={12} sm={12} md={6}>
+                                        <Grid item xs={12} sm={12} md={3}>
+                                            <Labeled
+                                                label="Status"
+                                                resource="pawnshop"
+                                            >
                                             {
                                                 // Once verified, never can be reverted
-                                                // formProps.record.status > 1 ? 
+                                                <TextField
+                                                    source="statusText"
+                                                    resource="pawnshop"
+                                                    record={formProps.record}
+                                                />
+                                            }
+                                            </Labeled>
+                                        </Grid>
+                                        <Grid item xs={12} sm={12} md={3}>
+                                            <Labeled
+                                                label="Action"
+                                                resource="pawnshop"
+                                            >
+                                            { 
+                                                formProps.record.status == 1 || 
+                                                formProps.record.status == 3 ?
                                                 <SelectInput
                                                     source="status"
                                                     choices={[
-                                                        { id: 1, name: 'Submitted' },
-                                                        { id: 2, name: 'Rejected' },
-                                                        { id: 3, name: 'Verified' },
-                                                        { id: 4, name: 'Minted' },
+                                                        { id: 2, name: 'Decline' },
+                                                        { id: 4, name: 'Approve' },
                                                     ]}
-                                                />
+                                                />: 
+                                                formProps.record.status == 4 ? 
+                                                <SelectInput
+                                                    source="status"
+                                                    choices={[
+                                                        { id: 2, name: 'Decline' },
+                                                    ]}
+                                                />:<></> 
                                             }
+                                            </Labeled>
                                         </Grid>
-                                        {/* <Grid item xs={12} sm={12} md={6}>
-                                            <Box mt={2}>
-                                                <BooleanInput
-                                                    row={true}
-                                                    resource="pawnshop"
-                                                    source="returned"
-                                                />
-                                            </Box>
-                                        </Grid> */}
                                     </Grid>
                                 </Grid>
                             </Grid>

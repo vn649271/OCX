@@ -12,6 +12,26 @@ var accountController = new AccountController();
 
 var self = null;
 
+const ASSET_PENDING = 0;
+const ASSET_SUBMITTED = 1;
+const ASSET_DECLINED = 2;
+const ASSET_RESUBMITTED = 3;
+const ASSET_APPROVED = 4;
+const ASSET_MINTED = 5;
+const ASSET_LOANED = 6;
+const ASSET_BURNED = 7;
+
+const ASSET_STATUS_LABELS = [
+    "Pending",  // 0
+    "Submitted",
+    "Declined",
+    "Resubmitted",
+    "Approved", // 4
+    "Minted",
+    "Loaned",
+    "Burned",   // 7
+]
+
 /**
  * Controller for user authentication
  */
@@ -64,6 +84,9 @@ class PawnShopController {
 
     getList = async (req, resp) => {
         let ret = await pawnItemModel.all();
+        ret.map(item => {
+            item.statusText = ASSET_STATUS_LABELS[item.status - 0];
+        });
         resp.set('Content-Range', 'pawnshop 0-9/3');
         resp.set('Access-Control-Expose-Headers', 'Content-Range');
         return resp.json(ret);
@@ -113,6 +136,7 @@ class PawnShopController {
         }
         // ret.created_at = new Date(ret.created_at._seconds * 1000);
         ret.id = id;
+        ret.statusText = ASSET_STATUS_LABELS[ret.status - 0];
         return resp.json(ret);
     }
 
@@ -169,9 +193,9 @@ class PawnShopController {
         }
 
         try {
-            assetData.status = 1; // Submitted
+            assetData.status = ASSET_SUBMITTED; // Submitted
             // Save the pawn item data into firestore
-            ret = await pawnItemModel.create(assetData);
+            let ret = await pawnItemModel.create(assetData);
             if (!ret || ret.error === undefined) {
                 return resp.json({ error: -2, data: "Failed to save pawn item" });
             }
@@ -203,7 +227,7 @@ class PawnShopController {
             return resp.json({ error: -2, data: "Invalid request paramter for issuing NFT token" });
         }
         let assetStatus = await pawnItemModel.getStatus(assetId);
-        if (assetStatus !== 3) { // 3: verified
+        if (assetStatus !== ASSET_APPROVED) {
             return resp.json({ error: -3, data: "Invalid status" });
         }
         try {
@@ -240,6 +264,52 @@ class PawnShopController {
         }
     }
 
+    burn = async(req, resp) => {
+        const ownerToken = req.body ? req.body.ownerToken ? req.body.ownerToken : null : null;
+        if (ownerToken === null) {
+            return resp.json({ error: -1, data: "Invalid request" });
+        }
+        let assetId = req.body ? req.body.assetId ? req.body.assetId : null : null;
+        if (!assetId) {
+            return resp.json({ error: -2, data: "Invalid request paramter for burning asset" });
+        }
+        let assetStatus = await pawnItemModel.getStatus(assetId);
+        if (assetStatus !== ASSET_SUBMITTED) {
+            return resp.json({ error: -3, data: "Invalid status" });
+        }
+        try {
+            let ownerInfoObj = userController.validateUserToken(ownerToken);
+            if (!ownerInfoObj) {
+                return resp.json({ error: -4, data: "Invalid user token or internet disconnected" });
+            }
+            if (ownerInfoObj.account === undefined || !ownerInfoObj.account) {
+                return resp.json({ error: 51, data: "No account" });
+            }
+
+            let ret = await accountController.getById(ownerInfoObj.account);
+            if (ret === undefined || ret === null || ret.data === undefined || ret.data === null) {
+                return resp.json({ error: 52, data: "Not found the account" });
+            }
+            let accountInfo = ret.data;
+            // 
+            ret = await pawnItemService.burn({
+                accountInfo: accountInfo,
+                assetId: assetId
+            });
+            if (ret.error !== 0) {
+                return resp.json({ error: -5, data: ret.data });
+            }
+            let hisAllAssets = await this._getAssetFor(ownerInfoObj.account);
+            if (!hisAllAssets || hisAllAssets.length === undefined || hisAllAssets.length < 1) {
+                return resp.json({ error: -6, data: "Failed to get all pawn assets for you" });
+            }
+            return resp.json({ error: 0, data: { all_assets: hisAllAssets } });
+            // return resp.json({ error: 0, data: minted });
+        } catch (error) {
+            return resp.json({ error: -100, data: error.message });
+        }
+    }
+
     loan = async(req, resp) => {
         const ownerToken = req.body ? req.body.ownerToken ? req.body.ownerToken : null : null;
         if (ownerToken === null) {
@@ -250,7 +320,7 @@ class PawnShopController {
             return resp.json({ error: -2, data: "Invalid request paramter for issuing NFT token" });
         }
         let assetStatus = await pawnItemModel.getStatus(assetId);
-        if (assetStatus !== 4) { // 4: minted
+        if (assetStatus !== ASSET_MINTED) {
             return resp.json({ error: -3, data: "Invalid status" });
         }
         try {
@@ -295,7 +365,7 @@ class PawnShopController {
             return resp.json({ error: -2, data: "Invalid request paramter for issuing NFT token" });
         }
         let assetStatus = await pawnItemModel.getStatus(assetId);
-        if (assetStatus !== 5) { // 5: converted to OCAT
+        if (assetStatus !== ASSET_LOANED) {
             return resp.json({ error: -3, data: "Invalid status" });
         }
         try {
