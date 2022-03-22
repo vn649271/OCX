@@ -188,7 +188,11 @@ class WalletPage extends Component {
             var errorMsg = null;
             if (resp.error === 0) {
                 for (let i in resp.data) {
-                    self.setBalanceInUI(i, (resp.data[i] - 0).toFixed(4));
+                    if (i !== 'PNFT') {
+                        self.setBalanceInUI(i, (resp.data[i] - 0).toFixed(4));
+                    } else {
+                        self.setBalanceInUI(i, resp.data[i]);
+                    }
                 }
                 return;
             } else if (resp.error === -1000) {

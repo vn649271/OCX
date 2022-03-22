@@ -352,19 +352,37 @@ class OpenchainRouter {
                 pnftContractAddress = GANACHE_CONTRACTS.PNFT;
             }
             const pnftContract = new this.web3.eth.Contract(pawnNftAbi, pnftContractAddress);
+            if (assetInfo.nft_id === undefined) {
+                return { error: -250, data: "Could not to find ID for the pawning NFT" };
+            }
+            let gasPrice = await this.web3.eth.getGasPrice();
+            gasPrice = (gasPrice * 1.2).toFixed(0);
             let ret = await pnftContract.methods.approve(ourSwapContractAddress, assetInfo.nft_id)
                 .send({
                     from: this.myAddress,
+                    gas: "280000",
+                    gasPrice: gasPrice
                 });
             let openchainSwap = new this.web3.eth.Contract(openchainContractAbi, ourSwapContractAddress);
+            // Get latest value of gas limit
+            gasPrice = (gasPrice * 1.2).toFixed(0);
+            let latestBlock = await this.web3.eth.getBlock("latest");
+            if (!latestBlock || !latestBlock.gasLimit) {
+                return { error: -251, data: "Could not to get information of latest block" };
+            }
+            let gasLimit = latestBlock.gasLimit;
+            gasLimit = (gasLimit * 1.5).toFixed(0);
+            // Do exchange
             ret = await openchainSwap.methods.exchangeToOcat(
                 assetInfo.nft_id
             ).send({
                 from: this.myAddress,
-                gas: "500000"
+                gas: "760000",
+                gasPrice: gasPrice,
+                gasLimit: gasLimit
             })
             if (!ret) {
-                return { error: -251, data: "Failed to mint pawning NFT" };
+                return { error: -252, data: "Failed to mint pawning NFT" };
             }
             console.log("@@@ OpenchainRouter.exchangeToOcat(): ", ret.transactionHash);
             return { error: 0, data: ret.transactionHash };
@@ -404,21 +422,37 @@ class OpenchainRouter {
             }
             let priceInWei = ret.price;
             const ocatContract = new this.web3.eth.Contract(ocatAbi, ocatContractAddress);
+            let gasPrice = await this.web3.eth.getGasPrice();
+            gasPrice = (gasPrice * 1.2).toFixed(0);
             ret = await ocatContract.methods.approve(ourSwapContractAddress, priceInWei).//assetInfo.nft_id
                 send({
                     from: this.myAddress,
+                    gas: "280000",
+                    gasPrice: gasPrice
                 });
             let openchainSwap = new this.web3.eth.Contract(openchainContractAbi, ourSwapContractAddress);
+            gasPrice = (gasPrice * 1.2).toFixed(0);
+
+            // Get latest value of gas limit
+            let latestBlock = await this.web3.eth.getBlock("latest");
+            if (!latestBlock || !latestBlock.gasLimit) {
+                return { error: -251, data: "Could not to get information of latest block" };
+            }
+            let gasLimit = latestBlock.gasLimit;
+            gasLimit = (gasLimit * 1.5).toFixed(0);
+            
+            // Do swap
             ret = await openchainSwap.methods.exchangeFromOcat(
                 assetInfo.nft_id
             ).send({
                 from: this.myAddress,
-                gas: "500000"
+                gas: "780000",
+                gasPrice: gasPrice
             })
             if (!ret) {
                 return { error: -251, data: "Failed to mint pawning NFT" };
             }
-            console.log("@@@ OpenchainRouter.exchangeToOcat(): ", ret.transactionHash);
+            console.log("@@@ OpenchainRouter.exchangeFromOcat(): ", ret.transactionHash);
             return { error: 0, data: ret.transactionHash };
 
         } catch (error) {

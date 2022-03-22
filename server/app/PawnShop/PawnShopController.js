@@ -179,7 +179,10 @@ class PawnShopController {
                 return resp.json({ error: -3, data: ret.data });
             }
             let newAssetId = ret.data;
-            await accountController.addAsset(userInfo.account, newAssetId);
+            ret = await accountController.addAsset(userInfo.account, newAssetId);
+            if (!ret) {
+                return resp.json({ error: -3, data: "Failed to register the asset" });
+            }
             let hisAllAssets = await this._getAssetFor(userInfo.account);
             if (!hisAllAssets || hisAllAssets.length === undefined || hisAllAssets.length < 1) {
                 return resp.json({ error: -4, data: "Failed to get all pawn assets for you" });
@@ -225,8 +228,13 @@ class PawnShopController {
             if (ret.error !== 0) {
                 return resp.json({ error: -5, data: ret.data });
             }
-            let minted = ret.data;
-            return resp.json({ error: 0, data: minted });
+            // let minted = ret.data;
+            let hisAllAssets = await this._getAssetFor(ownerInfoObj.account);
+            if (!hisAllAssets || hisAllAssets.length === undefined || hisAllAssets.length < 1) {
+                return resp.json({ error: -4, data: "Failed to get all pawn assets for you" });
+            }
+            return resp.json({ error: 0, data: { all_assets: hisAllAssets } });
+            // return resp.json({ error: 0, data: minted });
         } catch (error) {
             return resp.json({ error: -100, data: error.message });
         }
@@ -267,8 +275,11 @@ class PawnShopController {
             if (ret.error !== 0) {
                 return resp.json({ error: -5, data: ret.data });
             }
-            let minted = ret.data;
-            return resp.json({ error: 0, data: minted });
+            let hisAllAssets = await this._getAssetFor(ownerInfoObj.account);
+            if (!hisAllAssets || hisAllAssets.length === undefined || hisAllAssets.length < 1) {
+                return resp.json({ error: -4, data: "Failed to get all pawn assets for you" });
+            }
+            return resp.json({ error: 0, data: { all_assets: hisAllAssets } });
         } catch (error) {
             return resp.json({ error: -100, data: error.message });
         }
@@ -309,8 +320,11 @@ class PawnShopController {
             if (ret.error !== 0) {
                 return resp.json({ error: -5, data: ret.data });
             }
-            let minted = ret.data;
-            return resp.json({ error: 0, data: minted });
+            let hisAllAssets = await this._getAssetFor(ownerInfoObj.account);
+            if (!hisAllAssets || hisAllAssets.length === undefined || hisAllAssets.length < 1) {
+                return resp.json({ error: -4, data: "Failed to get all pawn assets for you" });
+            }
+            return resp.json({ error: 0, data: { all_assets: hisAllAssets } });
         } catch (error) {
             return resp.json({ error: -100, data: error.message });
         }
