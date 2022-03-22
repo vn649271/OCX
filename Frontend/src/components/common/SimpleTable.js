@@ -3,26 +3,8 @@ import { Component } from "react";
 
 export default class SimpleTable extends Component {
 
-    state = {
-        def: null,
-        data: null
-    };
-
     constructor(props) {
         super(props);
-        this.setState({def: this.props.def});
-        this.setState({data: this.props.data ? this.props.data : null});
-    }
-
-    componentDidUpdate(prevProps) {
-        if (prevProps.target !== this.props.target) {
-        }
-        if (prevProps.def !== this.props.def) {
-            this.setState({def: this.props.def});
-        }
-        if (prevProps.data !== this.props.data) {
-            this.setState({data: this.props.data});
-        }
     }
 
     render() {
@@ -45,7 +27,7 @@ export default class SimpleTable extends Component {
                                 </thead>
                                 <tbody className="bg-white">
                                 {
-                                    this.state.data ? this.state.data.map((r, i) => {
+                                    this.props.data ? this.props.data.map((r, i) => {
                                         return <tr key={r.id} id={"tr" + r.id} className="whitespace-nowrap">
                                             {
                                                 r.data.map((c, j) => {

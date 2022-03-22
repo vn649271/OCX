@@ -222,7 +222,8 @@ class PawnShopPage extends Component {
             quote_price: 0,
             estimated_ocat: 0,
             estimated_fee: '',
-        }
+        },
+        track_table_component: <SimpleTable def={TRACKING_TABLE_SCHEMA} data={[]}></SimpleTable>
     }
 
     constructor(props) {
@@ -432,7 +433,7 @@ class PawnShopPage extends Component {
             alert("Failed to create new pawn NFT: " + ret.data);
             return;
         }
-        this.buildTrackTable(ret.data);        
+        this.buildTrackTable(ret.data.all_assets);
     }
 
     onClickLoan = async (params, ev, buttonComponent) => {
@@ -440,10 +441,11 @@ class PawnShopPage extends Component {
         let ret = await pawnShopService.loan({ownerToken: this.userToken, assetId: assetId});
         buttonComponent.stopTimer();
         if (ret.error - 0 !== 0) {
-            // btnCmpnt.stopTimer();
-            alert("Failed to save valuation report: " + ret.data);
+            alert("Failed to loan: " + ret.data);
+            console.log("Failed to loan: " + ret.data);
             return;
         }
+        this.buildTrackTable(ret.data.all_assets);
     }
 
     onClickRestore = async (params, ev, buttonComponent) => {
@@ -452,13 +454,11 @@ class PawnShopPage extends Component {
         buttonComponent.stopTimer();
         if (ret.error - 0 !== 0) {
             // btnCmpnt.stopTimer();
-            alert("Failed to save valuation report: " + ret.data);
+            alert("Failed to return back: " + ret.data);
+            console.log("Failed to return back: " + ret.data);
             return;
         }
-    }
-
-    onClickWithdraw = async (params, ev, buttonComponent) => {
-        buttonComponent.stopTimer();
+        this.buildTrackTable(ret.data.all_assets);
     }
 
     handleInputChange = ev => {
@@ -535,8 +535,12 @@ class PawnShopPage extends Component {
             };
             trackTableData.push(row);
         });
-        this.setState({track_table_data: trackTableData})
-        console.log("buildTrackTable(): ", trackTableData);
+        this.setState({
+            track_table_component: <SimpleTable 
+                                        def={TRACKING_TABLE_SCHEMA} 
+                                        data={trackTableData}>
+                                    </SimpleTable>
+        });
     }
 
     async componentDidMount() {
@@ -572,7 +576,7 @@ class PawnShopPage extends Component {
         this.warning(errorMsg);
         // Get all pawn assets items for this user
         console.log("Get all pawn assets items for the user");
-        this.trackTableUpdateTimer = setInterval(this.updateTrackTable, 60000);
+        // this.trackTableUpdateTimer = setInterval(this.updateTrackTable, 60000);
         this.updateTrackTable();
     }
 
@@ -820,8 +824,7 @@ class PawnShopPage extends Component {
                 </div>
                 <div className="my-pawnshop-page main-font main-color font-16 m-8 mt-16">
                     <Card title='Tracking'>
-                        <SimpleTable def={TRACKING_TABLE_SCHEMA} data={this.state.track_table_data}>
-                        </SimpleTable>                        
+                        {this.state.track_table_component}
                     </Card>
                 </div>
             </div>
