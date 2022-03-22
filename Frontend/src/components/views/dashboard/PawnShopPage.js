@@ -9,6 +9,7 @@ import DelayButton from '../../common/DelayButton';
 import Card from '../../common/Card';
 import SimpleTable from '../../common/SimpleTable';
 import CheckBox from '../../common/CheckBox';
+import SpinButton from '../../common/SpinButton';
 
 var rsaCrypt = new JSEncrypt();
 var pawnShopService = new PawnShopService();
@@ -218,8 +219,8 @@ class PawnShopPage extends Component {
         new_asset_id: "",
         accounts: null,
         connected_hotwallet: 0,
-        error_message: '',
-        information_message: '',
+        message: '',
+        message_type: 'account-balance-box main-font text-green-400 mb-100 font-16',
         inputs: {
             asset_name: '',
             asset_type: '',
@@ -236,7 +237,7 @@ class PawnShopPage extends Component {
             estimated_ocat: 0,
             estimated_fee: '',
         },
-        track_table_component: <SimpleTable def={TRACKING_TABLE_SCHEMA} data={[]}></SimpleTable>
+        track_table_data: null,
     }
 
     constructor(props) {
@@ -261,7 +262,7 @@ class PawnShopPage extends Component {
         this.setQuotePrice = this.setQuotePrice.bind(this);
         this.setEstimatedOcat = this.setEstimatedOcat.bind(this);
         this.setEstimatedFee = this.setEstimatedFee.bind(this);
-        this.warning = this.warning.bind(this);
+
         // Event Handler
         this.onChangeAssetType = this.onChangeAssetType.bind(this);
         this.onChangeCountry = this.onChangeCountry.bind(this);
@@ -269,6 +270,7 @@ class PawnShopPage extends Component {
 
         this.onClickBooking = this.onClickBooking.bind(this);
         this.onClickSubmit = this.onClickSubmit.bind(this);
+        this.onClickResubmit = this.onClickResubmit.bind(this);
         this.onSelectValuationReport = this.onSelectValuationReport.bind(this);
         this.onClickMint = this.onClickMint.bind(this);
         this.onClickBurn = this.onClickBurn.bind(this);
@@ -279,15 +281,7 @@ class PawnShopPage extends Component {
         this.buildTrackTable = this.buildTrackTable.bind(this);
         this.updateTrackTable = this.updateTrackTable.bind(this);
 
-        this.warning = this.warning.bind(this);
-    }
-
-    error = msg => {
-        this.setState({error_message: msg});
-    }
-
-    inform = msg => {
-        this.setState({information_message: msg});
+        this.messageBox = this.messageBox.bind(this);
     }
 
     setAssetName = name => {
@@ -412,7 +406,7 @@ class PawnShopPage extends Component {
             let ret = await pawnShopService.upload(this.state.inputs.valuation_report);
             if (ret.error - 0 !== 0) {
                 btnCmpnt.stopTimer();
-                this.error("Failed to submint: " + ret.data);
+                this.messageBox("Failed to submint: " + ret.data, 1);
                 return;
             }
             console.log("Uploading valuation report: ", ret)
@@ -422,7 +416,7 @@ class PawnShopPage extends Component {
             ret = await pawnShopService.create({userToken: this.userToken, data: submitData});
             if (ret.error - 0 !== 0) {
                 btnCmpnt.stopTimer();
-                this.error("Failed to create new pawn NFT: " + ret.data);
+                this.messageBox("Failed to create new pawn NFT: " + ret.data, 1);
                 return;
             }
 
@@ -430,69 +424,77 @@ class PawnShopPage extends Component {
             btnCmpnt.stopTimer();
             this.clearAllFields();
             this.buildTrackTable(ret.data.all_assets);
-            this.inform("Success: " + ret.data);
+            this.messageBox("Success: " + ret.data);
         } catch(error) {
-            this.error(error)
+            this.messageBox(error, 1)
         }
     }
+
+    onClickResubmit = ev => {}
 
     onClickDownloadLegalContract = ev => {
     }
 
-    onClickMint = async (params, ev, buttonComponent) => {
+    // onClickMint = async (params, ev, buttonComponent) => {
+    onClickMint = async (ev) => {
         let targetElement = ev.target;
         let assetId = targetElement.id.replace("tracking-item-mint-", "");
         let ret = await pawnShopService.mint({ownerToken: this.userToken, assetId: assetId});
         if (ret.error - 0 !== 0) {
-            buttonComponent.stopTimer();
-            this.error("Failed to mint: " + ret.data);
+            // buttonComponent.stopTimer();
+            this.messageBox("Failed to mint: " + ret.data, 1);
             return;
         }
-        buttonComponent.stopTimer();
-        this.inform("Success to mint: ", ret.data);
+        // buttonComponent.stopTimer();
+        this.messageBox("Success to mint: " + ret.data);
         // Get all pawn assets items for this user
         console.log("Get all pawn assets items for the user");
         ret = await pawnShopService.getPawnAssets({userToken: this.userToken});
         if (ret.error - 0 !== 0) {
-            this.error("Failed to mint new pawn NFT: " + ret.data);
+            this.messageBox("Failed to mint new pawn NFT: " + ret.data, 1);
             return;
         }
         this.buildTrackTable(ret.data.all_assets);
     }
 
-    onClickBurn = async (params, ev, buttonComponent) => {
+    // onClickBurn = async (params, ev, buttonComponent) => {
+    onClickBurn = async (ev) => {
         let targetElement = ev.target;
         let assetId = targetElement.id.replace("tracking-item-burn-", "");
         let ret = await pawnShopService.burn({ownerToken: this.userToken, assetId: assetId});
         if (ret.error - 0 !== 0) {
-            buttonComponent.stopTimer();
-            this.error("Failed to burn asset: " + ret.data);
+            // buttonComponent.stopTimer();
+            this.messageBox("Failed to burn asset: " + ret.data, 1);
             return;
         }
-        buttonComponent.stopTimer();
-        this.inform("Success to burn: ", ret.data);
+        // buttonComponent.stopTimer();
+        this.messageBox("Success to burn: " + ret.data);
     }
 
-    onClickLoan = async (params, ev, buttonComponent) => {
+    // onClickLoan = async (params, ev, buttonComponent) => {
+    onClickLoan = async (ev) => {
         let assetId = ev.target.id.replace("tracking-item-loan-", "");
         let ret = await pawnShopService.loan({ownerToken: this.userToken, assetId: assetId});
-        buttonComponent.stopTimer();
+        // buttonComponent.stopTimer();
         if (ret.error - 0 !== 0) {
-            this.error("Failed to loan: " + ret.data);
+            this.messageBox("Failed to loan: " + ret.data, 1);
             return;
         }
+        this.messageBox("Loaned successfully");
         this.buildTrackTable(ret.data.all_assets);
     }
 
-    onClickRestore = async (params, ev, buttonComponent) => {
+    // onClickRestore = async (params, ev, buttonComponent) => {
+    onClickRestore = async (ev) => {
         let assetId = ev.target.id.replace("tracking-item-restore-", "");
         let ret = await pawnShopService.restore({ownerToken: this.userToken, assetId: assetId});
-        buttonComponent.stopTimer();
+        // buttonComponent.stopTimer();
         if (ret.error - 0 !== 0) {
             // btnCmpnt.stopTimer();
-            this.error("Failed to return back: " + ret.data);
+            this.messageBox("Failed to return back: " + ret.data, 1);
             return;
         }
+        this.messageBox("Rerstored successfully");
         this.buildTrackTable(ret.data.all_assets);
     }
 
@@ -524,59 +526,73 @@ class PawnShopPage extends Component {
             let actionCol = <span></span>;
             switch (record.status) {
             case 2:
-                actionCol = <DelayButton
+                actionCol = <div
                     id={"tracking-item-resubmit-" + record.id} 
-                    captionInDelay="Resubmit"
-                    caption="Resubmit"
-                    maxDelayInterval={30}
-                    onClickButton={this.onClickSubmit}
-                    onClickButtonParam={null} 
-                />
+                    className="main-font border border-grey-light p-5 button-bg cursor-pointer focus:outline-none rounded text-white hover-transition " 
+                    // className="spinner-button border text-2xl border-grey-light button-bg p-5 hover-transition main-font focus:outline-none rounded text-white verify-button"
+                    // captionInDelay="Resubmit"
+                    // caption="Resubmit"
+                    // maxDelayInterval={30}
+                    onClick={this.onClickResubmit}
+                    // onClickButtonParam={null} 
+                >Resubmit</div>
                 break;
             case 3:
                 actionCol = <span>Resubmitted</span>;
                 break;
             case 4: // Once verified, can mint or burn
                 actionCol = <div>
-                                <DelayButton
+                                <div
                                     id={"tracking-item-mint-" + record.id} 
-                                    captionInDelay="Minting"
-                                    caption="Mint"
-                                    maxDelayInterval={30}
-                                    onClickButton={this.onClickMint}
-                                    onClickButtonParam={null} 
-                                />
-                                <DelayButton
+                                    // className="spinner-button text-[16px] border border-grey-light button-bg p-5 hover-transition main-font focus:outline-none rounded text-white verify-button"
+                                    className="main-font border border-grey-light p-5 button-bg cursor-pointer focus:outline-none rounded text-white hover-transition " 
+                                    // captionInDelay="Minting"
+                                    // caption="Mint"
+                                    // maxDelayInterval={30}
+                                    // onClickButton={this.onClickMint}
+                                    onClick={this.onClickMint}
+                                    // onClickButtonParam={null} 
+                                >Mint</div>
+                                <div
                                     id={"tracking-item-burn-" + record.id} 
-                                    captionInDelay="Burning"
-                                    caption="Burn"
-                                    maxDelayInterval={30}
-                                    onClickButton={this.onClickBurn}
-                                    onClickButtonParam={null} 
-                                />
+                                    className="main-font border border-grey-light p-5 button-bg cursor-pointer focus:outline-none rounded text-white hover-transition " 
+                                    // className="spinner-button text-[16px] border border-grey-light button-bg p-5 hover-transition main-font focus:outline-none rounded text-white verify-button"
+                                    // captionInDelay="Burning"
+                                    // caption="Burn"
+                                    // maxDelayInterval={30}
+                                    // onClickButton={this.onClickBurn}
+                                    onClick={this.onClickBurn}
+                                    // onClickButtonParam={null} 
+                                >Burn</div>
                             </div>
                 break;
             case 5:// Once minted, can swap into OCAT
-                actionCol = <DelayButton 
+                actionCol = <div 
                                 id={"tracking-item-loan-" + record.id} 
-                                captionInDelay="Loaning"
-                                caption="Loan"
-                                className="px-4 py-1 text-white bg-blue-400 rounded cursor-pointer" 
-                                onClickButton={this.onClickLoan} 
-                                maxDelayInterval={30}
-                                onClickButtonParam={null} 
-                            />
+                                className="main-font border border-grey-light p-5 button-bg cursor-pointer focus:outline-none rounded text-white hover-transition " 
+                                // className="spinner-button text-[16px] border border-grey-light button-bg p-5 hover-transition main-font focus:outline-none rounded text-white verify-button"
+                                // captionInDelay="Loaning"
+                                // caption="Loan"
+                                // className="px-4 py-1 text-white bg-blue-400 rounded cursor-pointer" 
+                                // onClickButton={this.onClickLoan} 
+                                onClick={this.onClickLoan} 
+                                // maxDelayInterval={30}
+                                // onClickButtonParam={null} 
+                            >Loan</div>
                 break;
             case 6:
-                actionCol = <DelayButton
+                actionCol = <div
                                 id={"tracking-item-restore-" + record.id} 
-                                captionInDelay="Restoring"
-                                caption="Restore"
-                                className="px-4 py-1 text-white bg-blue-400 rounded cursor-pointer" 
-                                onClickButton={this.onClickRestore}
-                                maxDelayInterval={30}
-                                onClickButtonParam={null} 
-                            />
+                                className="main-font border border-grey-light p-5 button-bg cursor-pointer focus:outline-none rounded text-white hover-transition " 
+                                // className="spinner-button text-[16px] border border-grey-light button-bg p-5 hover-transition main-font focus:outline-none rounded text-white verify-button"
+                                // captionInDelay="Restoring"
+                                // caption="Restore"
+                                // className="px-4 py-1 text-white bg-blue-400 rounded cursor-pointer" 
+                                // onClickButton={this.onClickRestore}
+                                onClick={this.onClickRestore}
+                                // maxDelayInterval={30}
+                                // onClickButtonParam={null} 
+                            >Restore</div>
                 break;
             default:
                 break;
@@ -598,10 +614,7 @@ class PawnShopPage extends Component {
             trackTableData.push(row);
         });
         this.setState({
-            track_table_component: <SimpleTable 
-                                        def={TRACKING_TABLE_SCHEMA} 
-                                        data={trackTableData}>
-                                    </SimpleTable>
+            track_table_data: trackTableData
         });
     }
 
@@ -635,7 +648,9 @@ class PawnShopPage extends Component {
         } else {
             errorMsg = "Invalid response for connecting to my account"
         }
-        this.warning(errorMsg);
+        if (errorMsg) {
+            this.messageBox(errorMsg, 1);
+        }
         // Get all pawn assets items for this user
         console.log("Get all pawn assets items for the user");
         // this.trackTableUpdateTimer = setInterval(this.updateTrackTable, 60000);
@@ -645,10 +660,10 @@ class PawnShopPage extends Component {
     async updateTrackTable() {
         let ret = await pawnShopService.getPawnAssets({userToken: this.userToken});
         if (ret.error - 0 < 0) {
-            this.error("Failed to update track table: " + ret.data);
+            this.messageBox("Failed to update track table: " + ret.data, 1);
             return;
         } else if (ret.error > 0) {
-            this.error(ret.data);
+            this.messageBox(ret.data, 2);
             return;
         }
         this.buildTrackTable(ret.data);
@@ -664,22 +679,33 @@ class PawnShopPage extends Component {
         this.rsaCryptInited = true;
     }
 
-    warning = (msg) => {
+    messageBox = (msg, type) => {
         if (!msg) {
             return;
+        }
+        if (type !== undefined) {
+            switch (type) {
+            case 1:
+                this.setState({message_type: 'account-balance-box main-font text-red-400 mb-100 font-16'});
+                break;
+            case 2:
+                this.setState({message_type: 'account-balance-box main-font text-blue-400 mb-100 font-16'});
+                break;
+            default:
+                break;
+            }
         }
         if (typeof msg === 'object') {
             msg = msg.toString();
         }
-        this.setState({ error: msg });
+        this.setState({ message: msg });
     }
 
     render() {
         return (
             <div>
                 <div className="my-pawnshop-page main-font main-color font-16 m-8">
-                    <p className="account-balance-box main-font text-red-400 mb-100 font-16">{this.state.error_message}</p>
-                    <p className="account-balance-box main-font text-green-400 mb-100 font-16">{this.state.information_message}</p>
+                    <p className={this.state.message_type}>{this.state.message}</p>
                     <Card title='Pawn your assets into cryptos'>
                         <div>
                             <div className="inline-flex w-full">
@@ -890,7 +916,10 @@ class PawnShopPage extends Component {
                 </div>
                 <div className="my-pawnshop-page main-font main-color font-16 m-8 mt-16">
                     <Card title='Tracking'>
-                        {this.state.track_table_component}
+                        <SimpleTable 
+                            def={TRACKING_TABLE_SCHEMA} 
+                            data={this.state.track_table_data}
+                        />
                     </Card>
                 </div>
             </div>

@@ -5,9 +5,40 @@ export default class SimpleTable extends Component {
 
     constructor(props) {
         super(props);
+
+        this.state = {
+            data: props.data
+        }
     }
 
+    componentWillReceiveProps(nextProps) {
+        console.log("SimpleTable.componentWillReceiveProps(): ", nextProps);
+        this.setState({data: nextProps.data});
+    }
+
+    // componentDidUpdate(prevProps) {
+    //     if (prevProps.data != this.props.data) {
+    //         this.setState({data: this.props.data});
+    //     }
+    // }
+
     render() {
+        var trs = [];
+        if (this.state.data) {
+            for (let r in this.state.data) {
+                let rowData = this.state.data[r];
+                let cols = [];
+                for(let c in rowData.data) {
+                    let colData = rowData.data[c];
+                    cols.push(<td key={"col-" + c} className="px-6 py-4 text-gray-500">{colData.value}</td>);
+                }
+                trs.push(<tr 
+                            key={rowData.id} 
+                            id={"tr" + rowData.id} 
+                            className="whitespace-nowrap"
+                        >{cols}</tr>)
+            }            
+        }
         return (
             <div className="container main-font font-16 w-full mx-auto">
                 <div className="flex">
@@ -26,17 +57,7 @@ export default class SimpleTable extends Component {
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white">
-                                {
-                                    this.props.data ? this.props.data.map((r, i) => {
-                                        return <tr key={r.id} id={"tr" + r.id} className="whitespace-nowrap">
-                                            {
-                                                r.data.map((c, j) => {
-                                                    return <td className="px-6 py-4 text-gray-500">{c.value}</td>
-                                                })
-                                            }
-                                        </tr>
-                                    }): null
-                                }
+                                    {trs}
                                 </tbody>
                             </table>
                         </div>
