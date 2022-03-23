@@ -556,7 +556,7 @@ li.sc-gsDKAQ {
     position: fixed; 
     top: 0; 
     z-index: 100; 
-    y: 200;
+    margin-top: 0.5em;
 }
 
 /* .account-address-box {
