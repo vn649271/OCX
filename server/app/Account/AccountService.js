@@ -311,7 +311,8 @@ class AccountService {
             let txHash = await web3.eth.sendTransaction({
                 "from": myEthAddress,
                 "to": toAddress,
-                "value": amountToSend
+                "value": amountToSend,
+                "gasLimit": "21000"
             })
             if (!txHash) {
                 return { error: -251, data: "Failed to send token" };

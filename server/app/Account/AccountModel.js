@@ -67,6 +67,7 @@ function AccountModel() {
         jsonAccount.created_at = now;
         jsonAccount.updated_at = now;
         jsonAccount.assets = [];
+        jsonAccount.assets_ganache = [];
 
         return await db.collection(collection).add(jsonAccount);
     }
@@ -156,10 +157,16 @@ function AccountModel() {
         }
         let accountInfo = accountSnapshot.data();
         let assets = accountInfo.assets;
+        if (process.env.BLOCKCHAIN_EMULATOR === 'ganache') {
+            assets = accountInfo.assets_ganache;
+        }
         if (!assets) {
             assets = [];
         }
         assets.push(assetId);
+        if (process.env.BLOCKCHAIN_EMULATOR === 'ganache') {
+            return await accountRef.update({ assets_ganache: assets });
+        }        
         return await accountRef.update({ assets: assets });
     }
 }

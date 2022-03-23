@@ -458,6 +458,9 @@ class AccountController {
         if (ret === undefined || ret === null) {
             return null;
         }
+        if (process.env.BLOCKCHAIN_EMULATOR === 'ganache') {
+            return accountInfo.assets_ganache;
+        }
         return accountInfo.assets;
     }
 };
