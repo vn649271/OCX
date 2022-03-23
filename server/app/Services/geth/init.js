@@ -16,12 +16,6 @@ var gethProvider = null;
 // For Linux
 var GETH_DATA_DIR = process.env.HOME + "/.ethereum/" + CHAIN_NAME
 var ipcPath = GETH_DATA_DIR + "/geth.ipc";
-// In case of Ganache
-if (process.env.BLOCKCHAIN_EMULATOR !== undefined &&
-process.env.BLOCKCHAIN_EMULATOR !== null &&
-process.env.BLOCKCHAIN_EMULATOR === "ganache") {
-    ipcPath = "HTTP://127.0.0.1:7545"; // Ganache
-}
 
 // For Windows
 if (process.platform.search('win32') >= 0) {
@@ -29,6 +23,13 @@ if (process.platform.search('win32') >= 0) {
     ipcPath = "\\\\.\\pipe\\geth.ipc";
 }
 
+// In case of Ganache
+if (process.env.BLOCKCHAIN_EMULATOR !== undefined &&
+process.env.BLOCKCHAIN_EMULATOR !== null &&
+process.env.BLOCKCHAIN_EMULATOR === "ganache") {
+    ipcPath = "HTTP://127.0.0.1:7545"; // Ganache
+}
+    
 async function attachToGethIPC(ipcPath) {
     if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
         gethProvider = new Web3.providers.HttpProvider(ipcPath, net);
