@@ -591,8 +591,6 @@ class PawnShopPage extends Component {
 
     async componentDidMount() {
 
-        this.showMessageBox('xxxxxxxxxxxx');
-
         this.userToken = localStorage.getItem("userToken");
         this.encryptKey = localStorage.getItem("encryptKey");
         this.setEncryptKey(this.encryptKey);
