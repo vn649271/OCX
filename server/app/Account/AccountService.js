@@ -240,7 +240,7 @@ class AccountService {
                 var balance = 0;
                 let balanceInWei = 0;
                 if (symbol === "ETH") {
-                    balanceInWei = await web3.eth.getBalance(myEthAddress);
+                    balanceInWei = await web3.eth.getBalance(ocRouter.myAddress);
                     balance = web3.utils.fromWei(balanceInWei, 'ether');
                 } else {
                     let ret = await ocRouter.getBalance(symbol);
