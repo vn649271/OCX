@@ -25,6 +25,16 @@ export default function SpinButton(props) {
             id={props.id} 
             className={buttonClass} 
             onClick={handleClick}
-        >{props.title}</div>
+        >
+        {
+            status? (
+                <i
+                    className="fa od-spinner"
+                    style={{ marginRight: "7px" }}
+                >( )</i>
+            ): <i style={{ marginRight: "0px" }}></i>
+        }
+        {props.title}
+        </div>
     );
 }
