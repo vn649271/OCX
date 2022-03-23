@@ -602,20 +602,20 @@ class PawnShopPage extends Component {
         var errorMsg = null;
         if (resp.error !== undefined) {
             switch (resp.error) {
-                case 0:
-                    this.setState({ accounts: resp.data.addresses });
-                    this.setState({ connected_hotwallet: USER_WITH_ACCOUNT });
-                    break;
-                case 51:
-                case 52:
-                    this.setState({ connected_hotwallet: NEW_USER });
-                    return;
-                case -1000:
-                    errorMsg = "No response for get balance";
-                    break;
-                default:
-                    errorMsg = resp.data;
-                    break;
+            case 0:
+                this.setState({ accounts: resp.data.addresses });
+                this.setState({ connected_hotwallet: USER_WITH_ACCOUNT });
+                break;
+            case 51:
+            case 52:
+                this.setState({ connected_hotwallet: NEW_USER });
+                return;
+            case -1000:
+                errorMsg = "No response for get balance";
+                break;
+            default:
+                errorMsg = resp.data;
+                break;
             }
         } else {
             errorMsg = "Invalid response for connecting to my account"
@@ -658,32 +658,12 @@ class PawnShopPage extends Component {
         let t = type ? type : 0;
         this.setState({'message_box': <Toast message={msg} type={t}/>})
         setTimeout(function() {self.setState({'message_box':<></>})}, 4000)
-        // if (type !== undefined) {
-        //     switch (type) {
-        //     case 1:
-        //         this.setState({message_type: 'account-balance-box main-font text-red-400 mb-100 font-16'});
-        //         break;
-        //     case 2:
-        //         this.setState({message_type: 'account-balance-box main-font text-blue-400 mb-100 font-16'});
-        //         break;
-        //     default:
-        //         this.setState({message_type: 'account-balance-box main-font text-green-400 mb-100 font-16'});
-        //         break;
-        //     }
-        // } else {
-        //     this.setState({message_type: 'account-balance-box main-font text-green-400 mb-100 font-16'});            
-        // }
-        // if (typeof msg === 'object') {
-        //     msg = msg.toString();
-        // }
-        // this.setState({ message_box: msgBox });
     }
 
     render() {
         return (
             <div>
                 <div className="my-pawnshop-page main-font main-color font-16 m-8">
-                    {/*<p className={this.state.message_type}>{this.state.message}</p>*/}
                     {this.state.message_box}
                     <Card title='Pawn your assets into cryptos'>
                         <div>
