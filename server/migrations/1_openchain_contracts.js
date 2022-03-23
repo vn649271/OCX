@@ -1,6 +1,6 @@
 const PawnNFTs = artifacts.require("./PawnNFTs.sol");
 const OcatToken = artifacts.require("./OcatToken.sol");
-const OcdSwap = artifacts.require("./OcdSwap.sol");
+const OcxSwap = artifacts.require("./OcxSwap.sol");
 
 module.exports = async deployer => {
   var pnftAddress = 0;
@@ -11,10 +11,10 @@ module.exports = async deployer => {
   deployer.deploy(OcatToken).then(ret => {
     ocatAddress = ret.address;
   });
-  deployer.deploy(OcdSwap).then(async ret => {
+  deployer.deploy(OcxSwap).then(async ret => {
     console.log("******************* PNFT: ", pnftAddress);
     console.log("******************* OCAT: ", ocatAddress);
-    console.log("******************* OcdSwap: ", ret.address);
+    console.log("******************* OcxSwap: ", ret.address);
     // Setting deployed PNFT address 
     await ret.setPnftAddress(pnftAddress);
     // Setting deployed OCAT address 

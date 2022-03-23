@@ -14,7 +14,7 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "./PawnNFTs.sol";
 import "./OcatToken.sol";
 
-contract OcdSwap {
+contract OcxSwap {
 
     address private constant UNISWAP_ROUTER_ADDRESS = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
 
@@ -31,14 +31,14 @@ contract OcdSwap {
     }
 
     function setPnftAddress(address payable _pnftAddress) public {
-        require(creator == msg.sender, "OcdSwap.setPNFTAddress(): Caller for  must be creator");
-        require(_pnftAddress != address(0), "OcdSwap.setPNFTAddress(): Invalid parameter");
+        require(creator == msg.sender, "OcxSwap.setPNFTAddress(): Caller for  must be creator");
+        require(_pnftAddress != address(0), "OcxSwap.setPNFTAddress(): Invalid parameter");
         pnftAddress = _pnftAddress;
     }
 
     function setOcatAddress(address payable _ocatAddress) public {
-        require(creator == msg.sender, "OcdSwap.setOcatAddress(): Caller for  must be creator");
-        require(_ocatAddress != address(0), "OcdSwap.setOcatAddress(): Invalid parameter");
+        require(creator == msg.sender, "OcxSwap.setOcatAddress(): Caller for  must be creator");
+        require(_ocatAddress != address(0), "OcxSwap.setOcatAddress(): Invalid parameter");
         ocatAddress = _ocatAddress;
     }
 

@@ -443,41 +443,28 @@ class PawnShopPage extends Component {
         let assetId = targetElement.id.replace("tracking-item-mint-", "");
         let ret = await pawnShopService.mint({ownerToken: this.userToken, assetId: assetId});
         if (ret.error - 0 !== 0) {
-            // buttonComponent.stopTimer();
             this.showMessageBox("Failed to mint: " + ret.data, 1);
             return;
         }
-        // buttonComponent.stopTimer();
         this.showMessageBox("Success to mint: " + ret.data);
-        // Get all pawn assets items for this user
-        console.log("Get all pawn assets items for the user");
-        ret = await pawnShopService.getPawnAssets({userToken: this.userToken});
-        if (ret.error - 0 !== 0) {
-            this.showMessageBox("Failed to mint new pawn NFT: " + ret.data, 1);
-            return;
-        }
         this.buildTrackTable(ret.data.all_assets);
     }
 
-    // onClickBurn = async (params, ev, buttonComponent) => {
     onClickBurn = async (ev) => {
         let targetElement = ev.target;
         let assetId = targetElement.id.replace("tracking-item-burn-", "");
         let ret = await pawnShopService.burn({ownerToken: this.userToken, assetId: assetId});
         if (ret.error - 0 !== 0) {
-            // buttonComponent.stopTimer();
             this.showMessageBox("Failed to burn asset: " + ret.data, 1);
             return;
         }
-        // buttonComponent.stopTimer();
         this.showMessageBox("Success to burn: " + ret.data);
     }
 
-    // onClickLoan = async (params, ev, buttonComponent) => {
     onClickLoan = async (ev) => {
         let assetId = ev.target.id.replace("tracking-item-loan-", "");
         let ret = await pawnShopService.loan({ownerToken: this.userToken, assetId: assetId});
-        // buttonComponent.stopTimer();
+        
         if (ret.error - 0 !== 0) {
             this.showMessageBox("Failed to loan: " + ret.data, 1);
             return;
@@ -486,13 +473,11 @@ class PawnShopPage extends Component {
         this.buildTrackTable(ret.data.all_assets);
     }
 
-    // onClickRestore = async (params, ev, buttonComponent) => {
     onClickRestore = async (ev) => {
         let assetId = ev.target.id.replace("tracking-item-restore-", "");
         let ret = await pawnShopService.restore({ownerToken: this.userToken, assetId: assetId});
-        // buttonComponent.stopTimer();
+        
         if (ret.error - 0 !== 0) {
-            // btnCmpnt.stopTimer();
             this.showMessageBox("Failed to return back: " + ret.data, 1);
             return;
         }
@@ -657,7 +642,7 @@ class PawnShopPage extends Component {
         }
         let t = type ? type : 0;
         this.setState({'message_box': <Toast message={msg} type={t}/>})
-        setTimeout(function() {self.setState({'message_box':<></>})}, 4000)
+        setTimeout(function() {self.setState({'message_box':<></>})}, 5000)
     }
 
     render() {
