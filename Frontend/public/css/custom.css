@@ -552,6 +552,12 @@ li.sc-gsDKAQ {
     margin-bottom: 10px;
 }
 
+.floating-box {
+    position: fixed; 
+    top: 0; 
+    z-index: 100; 
+    y: 200;
+}
 
 /* .account-address-box {
     float: left;
@@ -579,6 +585,11 @@ li.sc-gsDKAQ {
 
 .page-tab-item {
     cursor: pointer;
+}
+
+.spin-button-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 /* responsive */

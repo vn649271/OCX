@@ -1,73 +1,30 @@
-import React, { Component } from 'react';
+import React, { Component, useStyles } from 'react';
 
 var me;
 
-class DelayButton extends Component {
+export default function SpinButton(props) {
 
-    constructor(props) {
-        super(props);
-        me = this;
+    const defaultClass = "main-font border border-grey-light p-5 button-bg focus:outline-none rounded text-white hover-transition cursor-pointer";
 
-        this.captionInDelay = props.captionInDelay;
-        this.caption = props.caption;
-        this.maxDelayInterval = props.maxDelayInterval;
-        this.onClickButton = props.onClickButton;
-        this.onClickButtonParam = props.onClickButtonParam;
+    const [buttonClass, setButtonClass] = React.useState(defaultClass);
+    const [status, setStatus] = React.useState(0); // 0: Normal, 1: Pending
 
-        this.state = {
-            value: '',
-            in_delay: false,
-            delay_interval: this.maxDelayInterval
-        }
-
-        this.onClicked = this.onClicked.bind(this);
-        this.stopTimer = this.stopTimer.bind(this);
-    }
-
-    stopTimer() {
-        this.setState({ in_delay: false });
-        this.setState({ delay_interval: this.maxDelayInterval });
-        clearTimeout(this.delayTimer);
-    }
-
-    onClicked = (ev) => {
-        if (this.state.in_delay && this.state.delay_interval > 0) {
+    const handleClick = async (event) => {
+        if (status) {
             return;
         }
-        if (ev.target.nodeName == "SPAN") {
-            ev.target = ev.target.parentNode;
-        }
+        setStatus(1);
+        setButtonClass(defaultClass.replace("cursor-pointer", "spin-button-disabled"));
+        await props.onClick(event);
+        setButtonClass(defaultClass);
+        setStatus(0);
+    };
 
-        this.setState({ in_delay: true });
-
-        /* Start counting for loading data */
-        this.delayTimer = setTimeout(
-            function () {
-                let delayInterval = me.state.delay_interval;
-                delayInterval--;
-                if (delayInterval <= 0) {
-                    me.stopTimer();
-                } else {
-                    me.setState({ delay_interval: delayInterval });
-                }
-            },
-            1000
-        );
-        this.onClickButton(this.onClickButtonParam, ev, this);
-    }
-
-    componentDidUpdate(prevProps) {
-        if (prevProps.target !== this.props.target) {
-        }
-    }
-
-    render() {
-        return (
-            <div {...this.props}>{this.props.children}
-            </div>
-        );
-    }
-
+    return (
+        <div
+            id={props.id} 
+            className={buttonClass} 
+            onClick={handleClick}
+        >{props.title}</div>
+    );
 }
-
-export default DelayButton;

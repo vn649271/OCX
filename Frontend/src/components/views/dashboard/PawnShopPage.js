@@ -9,6 +9,7 @@ import DelayButton from '../../common/DelayButton';
 import Card from '../../common/Card';
 import SimpleTable from '../../common/SimpleTable';
 import CheckBox from '../../common/CheckBox';
+import ToastSuccess from '../../common/ToastSuccess';
 import SpinButton from '../../common/SpinButton';
 
 var rsaCrypt = new JSEncrypt();
@@ -526,73 +527,42 @@ class PawnShopPage extends Component {
             let actionCol = <span></span>;
             switch (record.status) {
             case 2:
-                actionCol = <div
-                    id={"tracking-item-resubmit-" + record.id} 
-                    className="main-font border border-grey-light p-5 button-bg cursor-pointer focus:outline-none rounded text-white hover-transition " 
-                    // className="spinner-button border text-2xl border-grey-light button-bg p-5 hover-transition main-font focus:outline-none rounded text-white verify-button"
-                    // captionInDelay="Resubmit"
-                    // caption="Resubmit"
-                    // maxDelayInterval={30}
-                    onClick={this.onClickResubmit}
-                    // onClickButtonParam={null} 
-                >Resubmit</div>
+                actionCol = <SpinButton
+                                id={"tracking-item-resubmit-" + record.id} 
+                                title="Resubmit"
+                                onClick={this.onClickResubmit}
+                            />
                 break;
             case 3:
                 actionCol = <span>Resubmitted</span>;
                 break;
             case 4: // Once verified, can mint or burn
                 actionCol = <div>
-                                <div
+                                <SpinButton
                                     id={"tracking-item-mint-" + record.id} 
-                                    // className="spinner-button text-[16px] border border-grey-light button-bg p-5 hover-transition main-font focus:outline-none rounded text-white verify-button"
-                                    className="main-font border border-grey-light p-5 button-bg cursor-pointer focus:outline-none rounded text-white hover-transition " 
-                                    // captionInDelay="Minting"
-                                    // caption="Mint"
-                                    // maxDelayInterval={30}
-                                    // onClickButton={this.onClickMint}
+                                    title="Mint"
                                     onClick={this.onClickMint}
-                                    // onClickButtonParam={null} 
-                                >Mint</div>
-                                <div
+                                />
+                                <SpinButton
                                     id={"tracking-item-burn-" + record.id} 
-                                    className="main-font border border-grey-light p-5 button-bg cursor-pointer focus:outline-none rounded text-white hover-transition " 
-                                    // className="spinner-button text-[16px] border border-grey-light button-bg p-5 hover-transition main-font focus:outline-none rounded text-white verify-button"
-                                    // captionInDelay="Burning"
-                                    // caption="Burn"
-                                    // maxDelayInterval={30}
-                                    // onClickButton={this.onClickBurn}
+                                    title="Burn"
                                     onClick={this.onClickBurn}
-                                    // onClickButtonParam={null} 
-                                >Burn</div>
+                                />
                             </div>
                 break;
             case 5:// Once minted, can swap into OCAT
-                actionCol = <div 
+                actionCol = <SpinButton 
                                 id={"tracking-item-loan-" + record.id} 
-                                className="main-font border border-grey-light p-5 button-bg cursor-pointer focus:outline-none rounded text-white hover-transition " 
-                                // className="spinner-button text-[16px] border border-grey-light button-bg p-5 hover-transition main-font focus:outline-none rounded text-white verify-button"
-                                // captionInDelay="Loaning"
-                                // caption="Loan"
-                                // className="px-4 py-1 text-white bg-blue-400 rounded cursor-pointer" 
-                                // onClickButton={this.onClickLoan} 
+                                title="Loan"
                                 onClick={this.onClickLoan} 
-                                // maxDelayInterval={30}
-                                // onClickButtonParam={null} 
-                            >Loan</div>
+                            />
                 break;
             case 6:
-                actionCol = <div
+                actionCol = <SpinButton
                                 id={"tracking-item-restore-" + record.id} 
-                                className="main-font border border-grey-light p-5 button-bg cursor-pointer focus:outline-none rounded text-white hover-transition " 
-                                // className="spinner-button text-[16px] border border-grey-light button-bg p-5 hover-transition main-font focus:outline-none rounded text-white verify-button"
-                                // captionInDelay="Restoring"
-                                // caption="Restore"
-                                // className="px-4 py-1 text-white bg-blue-400 rounded cursor-pointer" 
-                                // onClickButton={this.onClickRestore}
+                                title="Restore"
                                 onClick={this.onClickRestore}
-                                // maxDelayInterval={30}
-                                // onClickButtonParam={null} 
-                            >Restore</div>
+                            />
                 break;
             default:
                 break;
@@ -692,8 +662,11 @@ class PawnShopPage extends Component {
                 this.setState({message_type: 'account-balance-box main-font text-blue-400 mb-100 font-16'});
                 break;
             default:
+                this.setState({message_type: 'account-balance-box main-font text-green-400 mb-100 font-16'});
                 break;
             }
+        } else {
+            this.setState({message_type: 'account-balance-box main-font text-green-400 mb-100 font-16'});            
         }
         if (typeof msg === 'object') {
             msg = msg.toString();
@@ -706,6 +679,7 @@ class PawnShopPage extends Component {
             <div>
                 <div className="my-pawnshop-page main-font main-color font-16 m-8">
                     <p className={this.state.message_type}>{this.state.message}</p>
+                    {this.state.message ? <ToastSuccess message={this.state.message} />: <></>}
                     <Card title='Pawn your assets into cryptos'>
                         <div>
                             <div className="inline-flex w-full">
