@@ -9,7 +9,7 @@ import DelayButton from '../../common/DelayButton';
 import Card from '../../common/Card';
 import SimpleTable from '../../common/SimpleTable';
 import CheckBox from '../../common/CheckBox';
-import ToastSuccess from '../../common/ToastSuccess';
+import Toast from '../../common/Toast';
 import SpinButton from '../../common/SpinButton';
 
 var rsaCrypt = new JSEncrypt();
@@ -222,6 +222,7 @@ class PawnShopPage extends Component {
         connected_hotwallet: 0,
         message: '',
         message_type: 'account-balance-box main-font text-green-400 mb-100 font-16',
+        message_box: <></>,
         inputs: {
             asset_name: '',
             asset_type: '',
@@ -282,7 +283,7 @@ class PawnShopPage extends Component {
         this.buildTrackTable = this.buildTrackTable.bind(this);
         this.updateTrackTable = this.updateTrackTable.bind(this);
 
-        this.messageBox = this.messageBox.bind(this);
+        this.showMessageBox = this.showMessageBox.bind(this);
     }
 
     setAssetName = name => {
@@ -407,7 +408,7 @@ class PawnShopPage extends Component {
             let ret = await pawnShopService.upload(this.state.inputs.valuation_report);
             if (ret.error - 0 !== 0) {
                 btnCmpnt.stopTimer();
-                this.messageBox("Failed to submint: " + ret.data, 1);
+                this.showMessageBox("Failed to submint: " + ret.data, 1);
                 return;
             }
             console.log("Uploading valuation report: ", ret)
@@ -417,7 +418,7 @@ class PawnShopPage extends Component {
             ret = await pawnShopService.create({userToken: this.userToken, data: submitData});
             if (ret.error - 0 !== 0) {
                 btnCmpnt.stopTimer();
-                this.messageBox("Failed to create new pawn NFT: " + ret.data, 1);
+                this.showMessageBox("Failed to create new pawn NFT: " + ret.data, 1);
                 return;
             }
 
@@ -425,9 +426,9 @@ class PawnShopPage extends Component {
             btnCmpnt.stopTimer();
             this.clearAllFields();
             this.buildTrackTable(ret.data.all_assets);
-            this.messageBox("Success: " + ret.data);
+            this.showMessageBox("Success: " + ret.data);
         } catch(error) {
-            this.messageBox(error, 1)
+            this.showMessageBox(error, 1)
         }
     }
 
@@ -443,16 +444,16 @@ class PawnShopPage extends Component {
         let ret = await pawnShopService.mint({ownerToken: this.userToken, assetId: assetId});
         if (ret.error - 0 !== 0) {
             // buttonComponent.stopTimer();
-            this.messageBox("Failed to mint: " + ret.data, 1);
+            this.showMessageBox("Failed to mint: " + ret.data, 1);
             return;
         }
         // buttonComponent.stopTimer();
-        this.messageBox("Success to mint: " + ret.data);
+        this.showMessageBox("Success to mint: " + ret.data);
         // Get all pawn assets items for this user
         console.log("Get all pawn assets items for the user");
         ret = await pawnShopService.getPawnAssets({userToken: this.userToken});
         if (ret.error - 0 !== 0) {
-            this.messageBox("Failed to mint new pawn NFT: " + ret.data, 1);
+            this.showMessageBox("Failed to mint new pawn NFT: " + ret.data, 1);
             return;
         }
         this.buildTrackTable(ret.data.all_assets);
@@ -465,11 +466,11 @@ class PawnShopPage extends Component {
         let ret = await pawnShopService.burn({ownerToken: this.userToken, assetId: assetId});
         if (ret.error - 0 !== 0) {
             // buttonComponent.stopTimer();
-            this.messageBox("Failed to burn asset: " + ret.data, 1);
+            this.showMessageBox("Failed to burn asset: " + ret.data, 1);
             return;
         }
         // buttonComponent.stopTimer();
-        this.messageBox("Success to burn: " + ret.data);
+        this.showMessageBox("Success to burn: " + ret.data);
     }
 
     // onClickLoan = async (params, ev, buttonComponent) => {
@@ -478,10 +479,10 @@ class PawnShopPage extends Component {
         let ret = await pawnShopService.loan({ownerToken: this.userToken, assetId: assetId});
         // buttonComponent.stopTimer();
         if (ret.error - 0 !== 0) {
-            this.messageBox("Failed to loan: " + ret.data, 1);
+            this.showMessageBox("Failed to loan: " + ret.data, 1);
             return;
         }
-        this.messageBox("Loaned successfully");
+        this.showMessageBox("Loaned successfully");
         this.buildTrackTable(ret.data.all_assets);
     }
 
@@ -492,10 +493,10 @@ class PawnShopPage extends Component {
         // buttonComponent.stopTimer();
         if (ret.error - 0 !== 0) {
             // btnCmpnt.stopTimer();
-            this.messageBox("Failed to return back: " + ret.data, 1);
+            this.showMessageBox("Failed to return back: " + ret.data, 1);
             return;
         }
-        this.messageBox("Rerstored successfully");
+        this.showMessageBox("Rerstored successfully");
         this.buildTrackTable(ret.data.all_assets);
     }
 
@@ -589,6 +590,9 @@ class PawnShopPage extends Component {
     }
 
     async componentDidMount() {
+
+        this.showMessageBox('xxxxxxxxxxxx');
+
         this.userToken = localStorage.getItem("userToken");
         this.encryptKey = localStorage.getItem("encryptKey");
         this.setEncryptKey(this.encryptKey);
@@ -619,7 +623,7 @@ class PawnShopPage extends Component {
             errorMsg = "Invalid response for connecting to my account"
         }
         if (errorMsg) {
-            this.messageBox(errorMsg, 1);
+            this.showMessageBox(errorMsg, 1);
         }
         // Get all pawn assets items for this user
         console.log("Get all pawn assets items for the user");
@@ -630,10 +634,10 @@ class PawnShopPage extends Component {
     async updateTrackTable() {
         let ret = await pawnShopService.getPawnAssets({userToken: this.userToken});
         if (ret.error - 0 < 0) {
-            this.messageBox("Failed to update track table: " + ret.data, 1);
+            this.showMessageBox("Failed to update track table: " + ret.data, 1);
             return;
         } else if (ret.error > 0) {
-            this.messageBox(ret.data, 2);
+            this.showMessageBox(ret.data, 2);
             return;
         }
         this.buildTrackTable(ret.data);
@@ -649,37 +653,40 @@ class PawnShopPage extends Component {
         this.rsaCryptInited = true;
     }
 
-    messageBox = (msg, type) => {
+    showMessageBox = (msg, type) => {
         if (!msg) {
             return;
         }
-        if (type !== undefined) {
-            switch (type) {
-            case 1:
-                this.setState({message_type: 'account-balance-box main-font text-red-400 mb-100 font-16'});
-                break;
-            case 2:
-                this.setState({message_type: 'account-balance-box main-font text-blue-400 mb-100 font-16'});
-                break;
-            default:
-                this.setState({message_type: 'account-balance-box main-font text-green-400 mb-100 font-16'});
-                break;
-            }
-        } else {
-            this.setState({message_type: 'account-balance-box main-font text-green-400 mb-100 font-16'});            
-        }
-        if (typeof msg === 'object') {
-            msg = msg.toString();
-        }
-        this.setState({ message: msg });
+        let t = type ? type : 0;
+        this.setState({'message_box': <Toast message={msg} type={t}/>})
+        setTimeout(function() {self.setState({'message_box':<></>})}, 4000)
+        // if (type !== undefined) {
+        //     switch (type) {
+        //     case 1:
+        //         this.setState({message_type: 'account-balance-box main-font text-red-400 mb-100 font-16'});
+        //         break;
+        //     case 2:
+        //         this.setState({message_type: 'account-balance-box main-font text-blue-400 mb-100 font-16'});
+        //         break;
+        //     default:
+        //         this.setState({message_type: 'account-balance-box main-font text-green-400 mb-100 font-16'});
+        //         break;
+        //     }
+        // } else {
+        //     this.setState({message_type: 'account-balance-box main-font text-green-400 mb-100 font-16'});            
+        // }
+        // if (typeof msg === 'object') {
+        //     msg = msg.toString();
+        // }
+        // this.setState({ message_box: msgBox });
     }
 
     render() {
         return (
             <div>
                 <div className="my-pawnshop-page main-font main-color font-16 m-8">
-                    <p className={this.state.message_type}>{this.state.message}</p>
-                    {this.state.message ? <ToastSuccess message={this.state.message} />: <></>}
+                    {/*<p className={this.state.message_type}>{this.state.message}</p>*/}
+                    {this.state.message_box}
                     <Card title='Pawn your assets into cryptos'>
                         <div>
                             <div className="inline-flex w-full">
