@@ -35,7 +35,7 @@ class OpenchainRouter {
     async setDeveloperAccount() {
         if (process.env.BLOCKCHAIN_EMULATOR == "ganache") {
             let accounts = await this.web3.eth.personal.getAccounts();
-            this.myAddress = accounts[3];
+            this.myAddress = accounts[1];
             console.log("*************** My Address: ", self.myAddress);
         }
     }
