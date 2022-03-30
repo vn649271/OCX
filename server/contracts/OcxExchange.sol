@@ -79,13 +79,13 @@ contract OcxExchange {
         //     Check for allowance
         uint256 allowance = sellTokenContract.allowance(msg.sender, address(this));
         string memory errorText = Strings.toString(allowance);
-        errorText = strConcat("Not enough allowance for the ERC20 token. allowance: ", errorText);
+        errorText = strConcat("OcxExchange.swapToETH(): Not enough allowance for the ERC20 token. allowance: ", errorText);
         require(allowance >= _amountIn, errorText);
         //     Do transferFrom
         TransferHelper.safeTransferFrom(_tokenIn, msg.sender, address(this), _amountIn);
 
         // approve
-        require(sellTokenContract.approve(address(UNISWAP_ROUTER_ADDRESS), _amountIn), 'approve for the router failed.');
+        require(sellTokenContract.approve(address(UNISWAP_ROUTER_ADDRESS), _amountIn), 'OcxExchange.swapToETH(): approve for the router failed.');
 
         address[] memory path = new address[](2);
         path[0] = address(_tokenIn);
@@ -104,7 +104,7 @@ contract OcxExchange {
         //    Check for allowance
         uint256 allowance = IERC20(_tokenIn).allowance(msg.sender, address(this));
         string memory errorText = Strings.toString(allowance);
-        errorText = strConcat("Not enough allowance for the ERC20 token. allowance: ", errorText);
+        errorText = strConcat("OcxExchange.swapForERC20(): Not enough allowance for the ERC20 token. allowance: ", errorText);
         require(allowance >= _amountIn, errorText);
         //     Do transferFrom
         TransferHelper.safeTransferFrom(_tokenIn, msg.sender, address(this), _amountIn);
@@ -112,7 +112,7 @@ contract OcxExchange {
         // approve
         require(
             IERC20(_tokenIn).approve(address(UNISWAP_ROUTER_ADDRESS), _amountIn), 
-            'approve for the router failed.'
+            'OcxExchange.swapForERC20(): approve for the router failed.'
         );
 
         address[] memory path = new address[](3);
