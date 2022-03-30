@@ -13,6 +13,7 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "./PawnNFTs.sol";
 import "./OcatToken.sol";
+import "./OcxLocalPool.sol";
 
 contract OcxExchange {
 
@@ -43,7 +44,7 @@ contract OcxExchange {
         ocatAddress = _ocatAddress;
     }
 
-    function setLocalPoolAddress(address payable _ocxLocalPoolAddress) public {
+    function setOcxLocalPoolAddress(address payable _ocxLocalPoolAddress) public {
         require(creator == msg.sender, "OcxExchange.setLocalPoolAddress(): Caller for  must be creator");
         require(_ocxLocalPoolAddress != address(0), "OcxExchange.setLocalPoolAddress(): Invalid parameter");
         ocxLocalPoolAddress = _ocxLocalPoolAddress;
@@ -59,9 +60,11 @@ contract OcxExchange {
         path[0] = uniswapRouter.WETH();
         path[1] = address(_tokenOut);
         if (_tokenOut != ocatAddress) {
-            uniswapRouter.swapExactETHForTokens{value: msg.value}(_amountOutMin, path, msg.sender, _deadline);
+            uniswapRouter.swapExactETHForTokens(_amountOutMin, path, msg.sender, _deadline);
         } else {
-            OcxLocalPool(ocxLocalPoolAddress).swapEthToOcat(msg.value, _amountOutMin, payable(msg.sender), _deadline);
+            OcxLocalPool(ocxLocalPoolAddress).swapEthToOcat{
+                value: msg.value
+            }(_amountOutMin, payable(msg.sender), _deadline);
         }
     }
 
@@ -117,49 +120,6 @@ contract OcxExchange {
         path[1] = uniswapRouter.WETH();
         path[2] = _tokenOut;
         uniswapRouter.swapExactTokensForTokens(_amountIn, _amountOutMin, path, msg.sender, _deadline);
-    }
-
-    function onERC721Received(
-        address payable operator,
-        address payable from,
-        uint256 tokenId,
-        bytes calldata data
-    ) external pure returns (bytes4) {
-        return this.onERC721Received.selector;
-    }
-
-    function exchangeToOcat(uint256 nftID) public {
-        require(msg.sender != address(this), "exchangeToOcat(): Error: Caller couldn't be same to this address");
-        require(msg.sender != address(0), "exchangeToOcat(): Invalid caller");
-        require(nftID > 0, "exchangeToOcat(): Invalid NFT ID");
-        uint256 ocatBalance = IERC20(ocatAddress).balanceOf(address(this));
-        // Get price for the NFT
-        (,,,,,,uint256 price,,) = PawnNFTs(payable(address(pnftAddress))).allPawnNFTs(nftID);
-        // uint256 price = nftItem.price;
-        require(ocatBalance >= price, "Insufficient balance of OCAT in the contract");
-        // safeTransferFrom: send NFT from caller to the address
-        IERC721(pnftAddress).safeTransferFrom(msg.sender, address(this), nftID);
-        // Pay OCAT for the NFT
-        IERC20(ocatAddress).transfer(msg.sender, price);
-        //   Then transfer OCATs from the address to caller
-        // TransferHelper.safeTransferFrom(ocatAddress, address(this), msg.sender, price);
-    }
-
-    function exchangeFromOcat(uint256 nftID) public {
-        require(msg.sender != address(this), "exchangeToOcat(): Error: Caller couldn't be same to this address");
-        require(msg.sender != address(0), "exchangeToOcat(): Invalid caller");
-        require(nftID > 0, "exchangeToOcat(): Invalid NFT ID");
-        uint256 ocatBalance = IERC20(ocatAddress).balanceOf(msg.sender);
-        // Get price for the NFT
-        (,,,,,,uint256 price,,) = PawnNFTs(payable(address(pnftAddress))).allPawnNFTs(nftID);
-        // uint256 price = nftItem.price;
-        require(ocatBalance >= price, "Insufficient balance of OCAT in the account");
-        // safeTransferFrom: send NFT from caller to the address
-        TransferHelper.safeTransferFrom(ocatAddress, msg.sender, address(this), price);
-        // Pay OCAT for the NFT
-        IERC721(pnftAddress).safeTransferFrom(address(this), msg.sender, nftID);
-        //   Then transfer OCATs from the address to caller
-        // TransferHelper.safeTransferFrom(ocatAddress, address(this), msg.sender, price);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////
