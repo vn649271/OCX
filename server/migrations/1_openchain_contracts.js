@@ -2,13 +2,15 @@
 // const OcatToken = artifacts.require("./OcatToken.sol");
 // const GDaiToken = artifacts.require("./GDaiToken.sol");
 // const GUniToken = artifacts.require("./GUniToken.sol");
-const OcxExchange = artifacts.require("./OcxExchange.sol");
+// const OcxExchange = artifacts.require("./OcxExchange.sol");
+const OcxLocalPool = artifacts.require("./OcxLocalPool.sol");
 
 module.exports = async deployer => {
-  var gdaiAddress = null;
-  var guniAddress = null;
+  // var gdaiAddress = null;
+  // var guniAddress = null;
   var ocatAddress = null;
-  var pnftAddress = null;
+  var ocxLocalPoolAddress = null;
+  // var pnftAddress = null;
   // deployer.deploy(GDaiToken).then(ret => {
   //   gdaiAddress = ret.address;
   // });
@@ -25,15 +27,25 @@ module.exports = async deployer => {
   // deployer.deploy(OcatToken).then(ret => {
   //   ocatAddress = ret.address;
   // });
-  deployer.deploy(OcxExchange).then(async ret => {
-    console.log("******************* GDAI: ", gdaiAddress);
-    console.log("******************* GUNI: ", guniAddress);
-    console.log("******************* PNFT: ", pnftAddress);
+  deployer.deploy(OcxLocalPool).then(async ret => {
     console.log("******************* OCAT: ", ocatAddress);
-    console.log("******************* OcxExchange: ", ret.address);
-    // Setting deployed PNFT address 
-    // await ret.setPnftAddress(pnftAddress);
+    ocxLocalPoolAddress = ret.address;
+    console.log("******************* OcxLocalPool: ", ocxLocalPoolAddress);
     // Setting deployed OCAT address 
-    // await ret.setOcatAddress(ocatAddress);
+    await ret.setOcatAddress(ocatAddress);
   });
+  // deployer.deploy(OcxExchange).then(async ret => {
+    // console.log("******************* GDAI: ", gdaiAddress);
+    // console.log("******************* GUNI: ", guniAddress);
+    // console.log("******************* PNFT: ", pnftAddress);
+    // console.log("******************* OCAT: ", ocatAddress);
+    // console.log("******************* OcxExchange: ", ret.address);
+    // // Setting deployed PNFT address 
+    // await ret.setPnftAddress(pnftAddress);
+    // // Setting deployed OCAT address 
+    // await ret.setOcatAddress(ocatAddress);
+    // // Setting deployed Ocx local pool address 
+    // await ret.setOcxLocalPoolAddress(ocxLocalPoolAddress);
+  // });
+
 };

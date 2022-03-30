@@ -18,29 +18,11 @@ contract OcxExchange {
 
     address private constant UNISWAP_ROUTER_ADDRESS = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
 
-    struct Pool {
-        address[2] tokens;
-        uint256[2] amounts;
-        uint256 k;
-        uint256 prevK;
-        uint8[2] quoteOrder;
-        uint256 prevQuote;
-        uint256 quoteOrig;
-        uint256 quote;
-    }
-    struct PoolShare {
-        uint8 poolIndex;
-        uint256[2] amounts;
-    }
-
     IUniswapV2Router02 public uniswapRouter;
     address payable private pnftAddress;
     address payable private ocatAddress;
+    address payable private ocxLocalPoolAddress;
     address payable private creator;
-
-    Pool[] poolList;
-    // mapping(address => PoolShare) public poolShare;
-    mapping(address => PoolShare[]) public poolShare;
 
     receive() external payable {}
 
@@ -61,6 +43,12 @@ contract OcxExchange {
         ocatAddress = _ocatAddress;
     }
 
+    function setLocalPoolAddress(address payable _ocxLocalPoolAddress) public {
+        require(creator == msg.sender, "OcxExchange.setLocalPoolAddress(): Caller for  must be creator");
+        require(_ocxLocalPoolAddress != address(0), "OcxExchange.setLocalPoolAddress(): Invalid parameter");
+        ocxLocalPoolAddress = _ocxLocalPoolAddress;
+    }
+
     function swapFromETH(
         address _tokenOut,
         uint _amountOutMin,
@@ -70,7 +58,11 @@ contract OcxExchange {
         address[] memory path = new address[](2);
         path[0] = uniswapRouter.WETH();
         path[1] = address(_tokenOut);
-        uniswapRouter.swapExactETHForTokens{value: msg.value}(_amountOutMin, path, msg.sender, _deadline);
+        if (_tokenOut != ocatAddress) {
+            uniswapRouter.swapExactETHForTokens{value: msg.value}(_amountOutMin, path, msg.sender, _deadline);
+        } else {
+            OcxLocalPool(ocxLocalPoolAddress).swapEthToOcat(msg.value, _amountOutMin, payable(msg.sender), _deadline);
+        }
     }
 
     function swapToETH(
@@ -168,120 +160,6 @@ contract OcxExchange {
         IERC721(pnftAddress).safeTransferFrom(address(this), msg.sender, nftID);
         //   Then transfer OCATs from the address to caller
         // TransferHelper.safeTransferFrom(ocatAddress, address(this), msg.sender, price);
-    }
-
-    function _getPoolIndex(
-        address token0,
-        address token1
-     ) internal view returns (bool bFound, uint8 poolIndex, bool isInTurn)  {
-        bFound = false;
-        poolIndex = 0;
-        isInTurn = true;
-        for (uint8 i = 0; i < poolList.length; i++) {
-            if ((poolList[i].tokens[0] == token0 && poolList[i].tokens[1] == token1) 
-            || (poolList[i].tokens[1] == token0 && poolList[i].tokens[0] == token1)) {
-                bFound = true;
-                poolIndex = i;
-                if (poolList[i].tokens[1] == token0) {
-                    isInTurn = false;
-                }
-                break;
-            }
-        }
-    }
-
-    function addLiquidity(
-        address[2] memory tokens, 
-        uint256[2] memory amounts
-//    ) public returns (uint256 amountA, uint256 amountB, uint liquidity) {
-    ) public {
-        require(msg.sender != address(0), "Invalid sender");
-        require(tokens[0] != address(0) && tokens[1] != address(0), "Invalid tokens");
-        require(tokens[0] != tokens[1], "Same tokens");
-        require(amounts[0] > 0 && amounts[1] > 0, "Invalid amounts");
-
-        // If the amount of OCAT is limited, then assert sender must be creator
-        // Otherwise OCAT can be issued with swapping from/to PNFT continuosly,
-        //   following assertion must be removed
-        require(creator == msg.sender);
-
-        // Get quote
-        // ...uint256((quote / poolList[poolIndex].quoteOrig) * 100)
-        // Transfer token A and B from msg.sender to this address
-
-        bool bExist = false;
-        bool isInTurn = true;
-        uint8 poolIndex = 0;
-
-        (bExist, poolIndex, isInTurn) = _getPoolIndex(tokens[0], tokens[1]);
-        if (!bExist) {
-            uint8[2] memory quoteOrder = [0, 1];
-            if (amounts[0] < amounts[1]) {
-                quoteOrder = [1, 0];
-            }
-            poolList.push(Pool(
-                {
-                    tokens: tokens,
-                    amounts: amounts, 
-                    k: amounts[0] * amounts[1],
-                    prevK: 0,
-                    quoteOrder: quoteOrder,
-                    quoteOrig: uint256((amounts[quoteOrder[0]] / amounts[quoteOrder[1]]) * 1000),
-                    quote: uint256((amounts[quoteOrder[0]] / amounts[quoteOrder[1]]) * 1000),
-                    prevQuote: 0
-                })
-            );
-        } else {
-            // If order for token in parameter in against pool is revered, swap
-            if (!isInTurn) {
-                address tmpToken = tokens[0];
-                tokens[0] = tokens[1];
-                tokens[1] = tmpToken;
-                uint256 tmpAmount = amounts[0];
-                amounts[0] = amounts[1];
-                amounts[1] = tmpAmount;
-            }
-            // Check quote
-            uint256 quote = uint256(
-                (
-                    amounts[poolList[poolIndex].quoteOrder[0]] / 
-                    amounts[poolList[poolIndex].quoteOrder[1]]
-                ) * 1000
-            );
-            uint256 orgQuote = uint256((quote / poolList[poolIndex].quoteOrig) * 1000);
-            require(orgQuote > 1020 || orgQuote < 980, "Invalid quote");
-            // Update pool
-            Pool memory pool = poolList[poolIndex];
-            pool.amounts[0] += amounts[0];
-            pool.amounts[1] += amounts[1];
-            pool.prevK = pool.k;
-            pool.k = pool.amounts[0] * pool.amounts[1];
-            pool.prevQuote = pool.quote;
-            pool.quote = uint256(
-                (
-                    pool.amounts[poolList[poolIndex].quoteOrder[0]] / 
-                    pool.amounts[poolList[poolIndex].quoteOrder[0]]
-                ) * 1000
-            );
-            poolList[poolIndex] = pool;
-        }
-        bExist = false;
-        for (uint i = 0; i < poolShare[msg.sender].length; i++) {
-            if (poolIndex == poolShare[msg.sender][i].poolIndex) {
-                poolShare[msg.sender][i].amounts[0] += amounts[0];
-                poolShare[msg.sender][i].amounts[1] += amounts[1];
-                bExist = true;
-                break;
-            }
-        }
-        if (!bExist) {
-            poolShare[msg.sender].push(PoolShare(poolIndex, amounts));
-        }
-
-        // Mint LP token to return
-        // ...
-        // amountA = amounts[0];
-        // amountB = amounts[1];
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////
