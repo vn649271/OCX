@@ -42,9 +42,9 @@ contract OcxLocalPool {
         ocatAddress = _ocatAddress;
     }
 
-    function swapEthToOcat(uint _amountOutMin, uint _deadline) public payable {
-        require(msg.sender != address(0), "swapEthToOcat(): Invalid sender");
-        require(msg.sender != address(this), "swapEthToOcat(): The sender must be different than this");
+    function swapEthToOcat(uint _amountOutMin, address payable to, uint _deadline) public payable {
+        require(to != address(0), "swapEthToOcat(): Invalid sender");
+        require(to != address(this), "swapEthToOcat(): The sender must be different than this");
         require(msg.value > 0, "swapEthToOcat(): Invalid ETH amount");
         // Find the ETH/OCAT pool
         (bool bFound, uint8 poolIndex, bool isInTurn) = _getPoolIndex(WETH, ocatAddress);
