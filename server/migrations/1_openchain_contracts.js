@@ -7,6 +7,7 @@ const PawnExchange = artifacts.require("./PawnExchange.sol");
 const OcxLocalPool = artifacts.require("./OcxLocalPool.sol");
 
 module.exports = async deployer => {
+  // console.log("%%%%%%%%%%%%%%% deployer: ", deployer);
   var gdaiAddress = null;
   var guniAddress = null;
   var ocatAddress = null;
@@ -14,12 +15,14 @@ module.exports = async deployer => {
   var pawnExchangeAddress = null;
   var pnftAddress = null;
 
-  deployer.deploy(GDaiToken).then(ret => {
-    gdaiAddress = ret.address;
-  });
-  deployer.deploy(GUniToken).then(ret => {
-    guniAddress = ret.address;
-  });
+  if (deployer.network == "ganache") {
+    deployer.deploy(GDaiToken).then(ret => {
+      gdaiAddress = ret.address;
+    });
+    deployer.deploy(GUniToken).then(ret => {
+      guniAddress = ret.address;
+    });
+  }
   deployer.deploy(OcatToken).then(ret => {
     ocatAddress = ret.address;
   });
@@ -42,13 +45,17 @@ module.exports = async deployer => {
   });
 
   deployer.deploy(OcxExchange).then(async ret => {
-    console.log("******************* GDAI: ", gdaiAddress);
-    console.log("******************* GUNI: ", guniAddress);
-    console.log("******************* PNFT: ", pnftAddress);
-    console.log("******************* OCAT: ", ocatAddress);
-    console.log("******************* PawnExchange: ", pawnExchangeAddress);
-    console.log("******************* OcxLocalPool: ", ocxLocalPoolAddress);
-    console.log("******************* OcxExchange: ", ret.address);
+    console.log("\n\n");
+    if (deployer.network == "ganache") {
+      console.log("    DAI: \"" + gdaiAddress + "\",");
+      console.log("    UNI: \"" + guniAddress + "\",");
+    }
+    console.log("    PNFT: \"" + pnftAddress + "\",");
+    console.log("    OCAT: \"" + ocatAddress + "\",");
+    console.log("    PAWN_EXCHANGE: \"" + pawnExchangeAddress + "\",");
+    console.log("    OCX_LOCAL_POOL: \"" + ocxLocalPoolAddress + "\",");
+    console.log("    OCX_EXCHANGE: \"" + ret.address + "\"");
+    console.log("\n\n");
     // Setting deployed PNFT address 
     await ret.setPnftAddress(pnftAddress);
     // Setting deployed OCAT address 
