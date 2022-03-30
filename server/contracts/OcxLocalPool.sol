@@ -103,14 +103,13 @@ contract OcxLocalPool {
     function addLiquidity(
         address[2] memory tokens, 
         uint256[2] memory amounts
-//    ) public returns (uint256 amountA, uint256 amountB, uint liquidity) {
     ) public {
         require(msg.sender != address(0), "Invalid sender");
         require(tokens[0] != address(0) && tokens[1] != address(0), "Invalid tokens");
         require(tokens[0] != tokens[1], "Same tokens");
         require(amounts[0] > 0 && amounts[1] > 0, "Invalid amounts");
         // If the amount of OCAT is limited, then assert sender must be creator
-        // Otherwise OCAT can be issued with swapping from/to PNFT continuosly,
+        // Otherwise OCAT is mintable with swapping from/to PNFT continuosly,
         //   following assertion must be removed
         require(creator == msg.sender);
 
