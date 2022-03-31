@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol"; // openzeppelin 4.5 (for solidity 0.8.x)
+import '@uniswap/lib/contracts/libraries/TransferHelper.sol';
+
 contract OcxLocalPool {
 
     uint256 private constant QUOTE_DECIMALS = 6; // Must be more than 3 at least
@@ -26,7 +29,7 @@ contract OcxLocalPool {
     }
 
 
-    Pool[] poolList;
+    Pool[] public poolList;
     // mapping(address => PoolShare) public poolShare;
     mapping(address => PoolShare[]) public poolShare;
 
@@ -66,9 +69,9 @@ contract OcxLocalPool {
         // Transfer ETH from the sender
         // First check allowance of ETH amount from the sender
         uint256 allowance = IERC20(WETH).allowance(to, address(this));
-        require(allowance >= _amountIn, "");
+        require(allowance >= msg.value, "");
         // Transfer ETH from the sender
-        TransferHelper.safeTransferFrom(WETH, msg.sender, address(this), _amountIn);
+        TransferHelper.safeTransferFrom(WETH, msg.sender, address(this), msg.value);
         // Transfer OCAT to the sender
         IERC20(ocatAddress).transfer(msg.sender, amountOut);
 
@@ -85,7 +88,7 @@ contract OcxLocalPool {
     function swapOcatToEth(uint _amountIn, uint _amountOutMin, address payable to, uint _deadline) public {
         require(to != address(0), "OcxLocalPool.swapOcatToEth(): Invalid sender");
         require(to != address(this), "OcxLocalPool.swapOcatToEth(): The sender must be different than this");
-        require(msg.value > 0, "OcxLocalPool.swapOcatToEth(): Invalid ETH amount");
+        require(_amountIn > 0, "OcxLocalPool.swapOcatToEth(): Invalid ETH amount");
         // Find the ETH/OCAT pool
         (bool bFound, uint8 poolIndex, bool isInTurn) = _getPoolIndex(ocatAddress, WETH);
         // Check if the pool exists
@@ -98,21 +101,21 @@ contract OcxLocalPool {
         // Ensure that OCAT balance >= _amountOutMin
         require(ethPoolBalance > _amountOutMin, "OcxLocalPool.swapOcatToEth(): Insufficient balance for ETH in the pool(1)");
         // Calculate the output amount of OCAT 
-        require(ethPoolBalance >= (poolList[poolIndex].k / (ocatPoolBalance + msg.value)), "OcxLocalPool.swapOcatToEth(): Insufficient balance for ETH in the pool(2)");
-        uint256 amountOut = ethPoolBalance - (poolList[poolIndex].k / (ocatPoolBalance + msg.value));
+        require(ethPoolBalance >= (poolList[poolIndex].k / (ocatPoolBalance + _amountIn)), "OcxLocalPool.swapOcatToEth(): Insufficient balance for ETH in the pool(2)");
+        uint256 amountOut = ethPoolBalance - (poolList[poolIndex].k / (ocatPoolBalance + _amountIn));
         require(amountOut > 0, "OcxLocalPool.swapOcatToEth(): Insufficient balance for ETH in the pool(3)");
         require(amountOut >= _amountOutMin, "OcxLocalPool.swapOcatToEth(): Insufficient balance for ETH in the pool(4)");
         // Transfer OCAT from the sender
         // First check allowance of OCAT amount from the sender
         uint256 allowance = IERC20(ocatAddress).allowance(to, address(this));
-        require(allowance >= _amountIn, "");
+        require(allowance >= _amountIn, "OcxLocalPool.swapOcatToEth(): Insufficient allowed amount for input token");
         // Transfer OCAT from the sender
         TransferHelper.safeTransferFrom(ocatAddress, msg.sender, address(this), _amountIn);
         // Transfer ETH to the sender
-        TransferHelper.safeTransferFrom(WETH, address(this), msg.sender, amountOut);
+        IERC20(WETH).transfer(msg.sender, amountOut);
 
         // Update the quote for the pool
-        poolList[poolIndex].amounts[isInTurn?0:1] += msg.value;
+        poolList[poolIndex].amounts[isInTurn?0:1] += _amountIn;
         poolList[poolIndex].amounts[!isInTurn?0:1] -= amountOut;
         poolList[poolIndex].prevQuote = poolList[poolIndex].quote;
 
@@ -230,9 +233,15 @@ contract OcxLocalPool {
             poolShare[msg.sender].push(PoolShare(poolIndex, amounts));
         }
 
+        // Transfer amounts for both tokens from the sender
+        uint256 allowance = IERC20(tokens[0]).allowance(msg.sender, address(this));
+        require(allowance >= amounts[0], "OcxLocalPool.addLiquidity(): Insufficient allowance for first token");
+        allowance = IERC20(tokens[1]).allowance(msg.sender, address(this));
+        require(allowance >= amounts[1], "OcxLocalPool.addLiquidity(): Insufficient allowance for second token");
+        TransferHelper.safeTransferFrom(tokens[0], msg.sender, address(this), amounts[0]);
+        TransferHelper.safeTransferFrom(tokens[1], msg.sender, address(this), amounts[1]);
+
         // Mint LP token to return
-        // ...
-        // Transfer ETH and OCAT amounts from the sender
         // ...
     }
 }

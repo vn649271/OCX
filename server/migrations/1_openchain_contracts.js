@@ -1,3 +1,4 @@
+const WEthToken = artifacts.require("./WEthToken.sol");
 const PawnNFTs = artifacts.require("./PawnNFTs.sol");
 const OcatToken = artifacts.require("./OcatToken.sol");
 const GDaiToken = artifacts.require("./GDaiToken.sol");
@@ -8,6 +9,7 @@ const OcxLocalPool = artifacts.require("./OcxLocalPool.sol");
 
 module.exports = async deployer => {
   // console.log("%%%%%%%%%%%%%%% deployer: ", deployer);
+  var wethAddress = null;
   var gdaiAddress = null;
   var guniAddress = null;
   var ocatAddress = null;
@@ -16,6 +18,9 @@ module.exports = async deployer => {
   var pnftAddress = null;
 
   if (deployer.network == "ganache") {
+    deployer.deploy(WEthToken).then(ret => {
+      wethAddress = ret.address;
+    });
     deployer.deploy(GDaiToken).then(ret => {
       gdaiAddress = ret.address;
     });
@@ -47,6 +52,7 @@ module.exports = async deployer => {
   deployer.deploy(OcxExchange).then(async ret => {
     console.log("\n\n");
     if (deployer.network == "ganache") {
+      console.log("    WETH: \"" + wethAddress + "\",");
       console.log("    DAI: \"" + gdaiAddress + "\",");
       console.log("    UNI: \"" + guniAddress + "\",");
     }
