@@ -44,6 +44,7 @@ module.exports = {
     ganache: {
       provider: () => new HDWalletProvider(mnemonic_development, `http://127.0.0.1:7545`),
       network_id: "5777",       // Any network (default: none)
+      // from: "0x82919a8F7B3E052d4e53BBA5298e621276e8Da3C",        // Account to send txs from (default: accounts[0])
     },
     // Another network with more advanced options...
     // advanced: {
