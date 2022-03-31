@@ -70,7 +70,7 @@ contract OcxLocalPool {
         // Transfer ETH from the sender
         TransferHelper.safeTransferFrom(WETH, msg.sender, address(this), _amountIn);
         // Transfer OCAT to the sender
-        TransferHelper.safeTransferFrom(ocatAddress, address(this), msg.sender, amountOut);
+        IERC20(ocatAddress).transfer(msg.sender, amountOut);
 
         // Update the quote for the pool
         poolList[poolIndex].amounts[isInTurn?0:1] += msg.value;
