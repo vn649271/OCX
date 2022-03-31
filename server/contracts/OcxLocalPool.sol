@@ -64,10 +64,6 @@ contract OcxLocalPool {
         require(amountOut >= _amountOutMin, "OcxLocalPool.swapEthToOcat(): Insufficient balance for OCAT in the pool(4)");
 
         // Transfer ETH from the sender
-        // ...
-        // Transfer OCAT to the sender
-        // ...
-        // Transfer ETH from the sender
         // First check allowance of ETH amount from the sender
         uint256 allowance = IERC20(WETH).allowance(to, address(this));
         require(allowance >= _amountIn, "");
