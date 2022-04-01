@@ -45,9 +45,6 @@ module.exports = async deployer => {
 
   deployer.deploy(OcxLocalPool).then(async ret => {
     ocxLocalPoolAddress = ret.address;
-    if (deployer.network == "ganache") {
-      await ret.setWethAddress(wethAddress);
-    }
     // Setting deployed OCAT address 
     await ret.setOcatAddress(ocatAddress);
   });
