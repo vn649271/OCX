@@ -7,9 +7,10 @@ import '@uniswap/lib/contracts/libraries/TransferHelper.sol';
 contract OcxLocalPool {
 
     uint256 private constant QUOTE_DECIMALS = 6; // Must be more than 3 at least
-    address private constant WETH = 0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6;
 
+    address payable private wethAddress;
     address payable private ocatAddress;
+
     address payable private creator;
 
     struct Pool {
@@ -39,6 +40,12 @@ contract OcxLocalPool {
         creator = payable(msg.sender);
     }
 
+    function setWethAddress(address payable _wethAddress) public {
+        require(creator == msg.sender, "OcxLocalPool.setWethAddress(): Caller for  must be creator");
+        require(_wethAddress != address(0), "OcxLocalPool.setWethAddress(): Invalid parameter");
+        wethAddress = _wethAddress;
+    }
+
     function setOcatAddress(address payable _ocatAddress) public {
         require(creator == msg.sender, "OcxLocalPool.setOcatAddress(): Caller for  must be creator");
         require(_ocatAddress != address(0), "OcxLocalPool.setOcatAddress(): Invalid parameter");
@@ -50,9 +57,9 @@ contract OcxLocalPool {
         require(to != address(this), "OcxLocalPool.swapEthToOcat(): The sender must be different than this");
         require(msg.value > 0, "OcxLocalPool.swapEthToOcat(): Invalid ETH amount");
         // Find the ETH/OCAT pool
-        (bool bFound, uint8 poolIndex, bool isInTurn) = _getPoolIndex(WETH, ocatAddress);
+        (bool bFound, uint8 poolIndex, bool isInTurn) = _getPoolIndex(wethAddress, ocatAddress);
         // Check if the pool exists
-        require(bFound, "OcxLocalPool.swapEthToOcat(): No pool for ETH-OCAT");
+        require(bFound, "OcxLocalPool.swapEthToOcat(): No pool for ETH/OCAT");
         // Get ETH balance in the pool
         uint256 ethPoolBalance = poolList[poolIndex].amounts[isInTurn?0:1];
         uint256 ocatPoolBalance = poolList[poolIndex].amounts[!isInTurn?0:1];
@@ -68,10 +75,10 @@ contract OcxLocalPool {
 
         // Transfer ETH from the sender
         // First check allowance of ETH amount from the sender
-        uint256 allowance = IERC20(WETH).allowance(to, address(this));
+        uint256 allowance = IERC20(wethAddress).allowance(to, address(this));
         require(allowance >= msg.value, "");
         // Transfer ETH from the sender
-        TransferHelper.safeTransferFrom(WETH, msg.sender, address(this), msg.value);
+        TransferHelper.safeTransferFrom(wethAddress, msg.sender, address(this), msg.value);
         // Transfer OCAT to the sender
         IERC20(ocatAddress).transfer(msg.sender, amountOut);
 
@@ -90,7 +97,7 @@ contract OcxLocalPool {
         require(to != address(this), "OcxLocalPool.swapOcatToEth(): The sender must be different than this");
         require(_amountIn > 0, "OcxLocalPool.swapOcatToEth(): Invalid ETH amount");
         // Find the ETH/OCAT pool
-        (bool bFound, uint8 poolIndex, bool isInTurn) = _getPoolIndex(ocatAddress, WETH);
+        (bool bFound, uint8 poolIndex, bool isInTurn) = _getPoolIndex(ocatAddress, wethAddress);
         // Check if the pool exists
         require(bFound, "OcxLocalPool.swapOcatToEth(): No pool for ETH-OCAT");
         // Get ETH balance in the pool
@@ -112,7 +119,9 @@ contract OcxLocalPool {
         // Transfer OCAT from the sender
         TransferHelper.safeTransferFrom(ocatAddress, msg.sender, address(this), _amountIn);
         // Transfer ETH to the sender
-        IERC20(WETH).transfer(msg.sender, amountOut);
+        require(IERC20(wethAddress).approve(msg.sender, amountOut), 'OcxLocalPool.swapOcatToEth(): Failed to approve WETH for sender');
+        bool ret = IERC20(wethAddress).transfer(msg.sender, amountOut);
+        require(ret, "OcxLocalPool.swapOcatToEth(): Failed to transfer ETH to sender");
 
         // Update the quote for the pool
         poolList[poolIndex].amounts[isInTurn?0:1] += _amountIn;
