@@ -90,7 +90,16 @@ contract OcxExchange {
         address[] memory path = new address[](2);
         path[0] = address(_tokenIn);
         path[1] = uniswapRouter.WETH();
-        uniswapRouter.swapExactTokensForETH(_amountIn, _amountOutMin, path, msg.sender, _deadline);
+        if (_tokenIn != ocatAddress) {
+            uniswapRouter.swapExactTokensForETH(_amountIn, _amountOutMin, path, msg.sender, _deadline);
+        } else {
+            OcxLocalPool(ocxLocalPoolAddress).swapOcatToEth(
+                _amountIn,
+                _amountOutMin, 
+                payable(msg.sender), 
+                _deadline
+            );
+        }
     }
 
     function swapForERC20(
