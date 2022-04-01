@@ -6,33 +6,40 @@ import '@uniswap/lib/contracts/libraries/TransferHelper.sol';
 
 contract OcxLocalPool {
 
-    uint256 private constant QUOTE_DECIMALS = 6; // Must be more than 3 at least
+    uint256 private constant QUOTE_DECIMALS = 3; // Must be more than 3 at least
 
-    address payable private wethAddress;
+    address payable private constant WETH = payable(address(0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6));
+    address payable private wethAddress = WETH;
     address payable private ocatAddress;
 
     address payable private creator;
 
     struct Pool {
         address[2] tokens;
-        uint256[2] amounts;
+        mapping(address => uint256) amounts;
         uint256 k;
         uint256 prevK;
-        uint8[2] quoteOrder;
+        address[2] quoteOrder;
         uint256 prevQuote;
         uint256 quoteOrig;
         uint256 quote;
     }
 
-    struct PoolShare {
-        uint8 poolIndex;
-        uint256[2] amounts;
+    struct SharingPool {
+        uint8 index;
+        mapping(address => uint256) sharingAmounts;
     }
 
+    struct SharingPools {
+        mapping(uint8 => SharingPool) pools;
+        uint8                         poolCount;
+    }
 
-    Pool[] public poolList;
-    // mapping(address => PoolShare) public poolShare;
-    mapping(address => PoolShare[]) public poolShare;
+    mapping(uint8 => Pool) public   poolList;
+    uint8 public                    poolCount;
+
+    // mapping(address => PoolShare) public shares;
+    mapping(address => SharingPools) public shares;
 
     event AmountToRetrieve(uint256);
     
@@ -63,8 +70,8 @@ contract OcxLocalPool {
         // Check if the pool exists
         require(bFound, "OcxLocalPool.swapEthToOcat(): No pool for ETH/OCAT");
         // Get ETH balance in the pool
-        uint256 ethPoolBalance = poolList[poolIndex].amounts[isInTurn?0:1];
-        uint256 ocatPoolBalance = poolList[poolIndex].amounts[!isInTurn?0:1];
+        uint256 ethPoolBalance = poolList[poolIndex].amounts[wethAddress];
+        uint256 ocatPoolBalance = poolList[poolIndex].amounts[ocatAddress];
         // Ensure that OCAT balance is more than 0
         require(ocatPoolBalance > 0, "OcxLocalPool.swapEthToOcat(): No balance for OCAT in the pool");
         // Ensure that OCAT balance >= _amountOutMin
@@ -85,16 +92,21 @@ contract OcxLocalPool {
         IERC20(ocatAddress).transfer(msg.sender, amountOut);
 
         // Update the quote for the pool
-        poolList[poolIndex].amounts[isInTurn?0:1] += msg.value;
-        poolList[poolIndex].amounts[!isInTurn?0:1] -= amountOut;
+        poolList[poolIndex].amounts[wethAddress] += msg.value;
+        poolList[poolIndex].amounts[ocatAddress] -= amountOut;
         poolList[poolIndex].prevQuote = poolList[poolIndex].quote;
 
         poolList[poolIndex].quote = 
-            (poolList[poolIndex].amounts[poolList[poolIndex].quoteOrder[0]] * (10 ** QUOTE_DECIMALS)) / 
-                poolList[poolIndex].amounts[poolList[poolIndex].quoteOrder[1]];
+            (poolList[poolIndex].amounts[wethAddress] * (10 ** QUOTE_DECIMALS)) / 
+                poolList[poolIndex].amounts[ocatAddress];
     }
 
-    function swapOcatToEth(uint _amountIn, uint _amountOutMin, address payable to, uint _deadline) public {
+    function swapOcatToEth(
+            uint _amountIn, 
+            uint _amountOutMin, 
+            address payable to, 
+            uint _deadline
+    ) public returns (uint256 amountOut) {
         require(to != address(0), "OcxLocalPool.swapOcatToEth(): Invalid sender");
         require(to != address(this), "OcxLocalPool.swapOcatToEth(): The sender must be different than this");
         require(_amountIn > 0, "OcxLocalPool.swapOcatToEth(): Invalid ETH amount");
@@ -103,8 +115,8 @@ contract OcxLocalPool {
         // Check if the pool exists
         require(bFound, "OcxLocalPool.swapOcatToEth(): No pool for ETH-OCAT");
         // Get ETH balance in the pool
-        uint256 ethPoolBalance = poolList[poolIndex].amounts[isInTurn?0:1];
-        uint256 ocatPoolBalance = poolList[poolIndex].amounts[!isInTurn?0:1];
+        uint256 ethPoolBalance = poolList[poolIndex].amounts[wethAddress];
+        uint256 ocatPoolBalance = poolList[poolIndex].amounts[ocatAddress];
         // Ensure that OCAT balance is more than 0
         require(ethPoolBalance > 0, "OcxLocalPool.swapOcatToEth(): No balance for ETH in the pool");
         // Ensure that OCAT balance >= _amountOutMin
@@ -112,7 +124,7 @@ contract OcxLocalPool {
         // Calculate the output amount of OCAT 
         uint256 requiredLeavedPoolEthBalance = (poolList[poolIndex].k / (ocatPoolBalance + _amountIn));
         require(ethPoolBalance >= requiredLeavedPoolEthBalance, "OcxLocalPool.swapOcatToEth(): Insufficient balance for ETH in the pool(2)");
-        uint256 amountOut = ethPoolBalance - requiredLeavedPoolEthBalance;
+        amountOut = ethPoolBalance - requiredLeavedPoolEthBalance;
         require(amountOut > 0, "OcxLocalPool.swapOcatToEth(): Insufficient balance for ETH in the pool(3)");
         require(amountOut >= _amountOutMin, "OcxLocalPool.swapOcatToEth(): Insufficient balance for ETH in the pool(4)");
         emit AmountToRetrieve(amountOut);
@@ -126,17 +138,17 @@ contract OcxLocalPool {
         require(IERC20(wethAddress).approve(msg.sender, amountOut), 'OcxLocalPool.swapOcatToEth(): Failed to approve WETH for sender');
         emit AmountToRetrieve(amountOut);
 
-        // bool ret = IERC20(wethAddress).transfer(msg.sender, amountOut);
-        // require(ret, "OcxLocalPool.swapOcatToEth(): Failed to transfer ETH to sender");
+        bool ret = IERC20(wethAddress).transfer(msg.sender, amountOut);
+        require(ret, "OcxLocalPool.swapOcatToEth(): Failed to transfer ETH to sender");
 
-        // // Update the quote for the pool
-        // poolList[poolIndex].amounts[isInTurn?0:1] += _amountIn;
-        // poolList[poolIndex].amounts[!isInTurn?0:1] -= amountOut;
-        // poolList[poolIndex].prevQuote = poolList[poolIndex].quote;
+        // Update the quote for the pool
+        poolList[poolIndex].amounts[ocatAddress] += _amountIn;
+        poolList[poolIndex].amounts[wethAddress] -= amountOut;
+        poolList[poolIndex].prevQuote = poolList[poolIndex].quote;
 
-        // poolList[poolIndex].quote = 
-        //     (poolList[poolIndex].amounts[poolList[poolIndex].quoteOrder[0]] * (10 ** QUOTE_DECIMALS)) / 
-        //         poolList[poolIndex].amounts[poolList[poolIndex].quoteOrder[1]];
+        poolList[poolIndex].quote = 
+            (poolList[poolIndex].amounts[poolList[poolIndex].quoteOrder[1]] * (10 ** QUOTE_DECIMALS)) / 
+                poolList[poolIndex].amounts[poolList[poolIndex].quoteOrder[0]];
     }
 
     function _getPoolIndex(
@@ -146,7 +158,7 @@ contract OcxLocalPool {
         bFound = false;
         poolIndex = 0;
         isInTurn = true;
-        for (uint8 i = 0; i < poolList.length; i++) {
+        for (uint8 i = 0; i < poolCount; i++) {
             if ((poolList[i].tokens[0] == token0 && poolList[i].tokens[1] == token1) 
             || (poolList[i].tokens[1] == token0 && poolList[i].tokens[0] == token1)) {
                 bFound = true;
@@ -183,22 +195,29 @@ contract OcxLocalPool {
 
         (bExist, poolIndex, isInTurn) = _getPoolIndex(tokens[0], tokens[1]);
         if (!bExist) {
-            uint8[2] memory quoteOrder = [0, 1];
-            if (amounts[0] < amounts[1]) {
-                quoteOrder = [1, 0];
+            address[2] memory quoteOrder;
+            quoteOrder[0] = tokens[0];
+            quoteOrder[1] = tokens[1];
+
+            if (amounts[0] > amounts[1]) {
+                quoteOrder[0] = tokens[1];
+                quoteOrder[1] = tokens[0];
             }
-            poolList.push(Pool(
-                {
-                    tokens: tokens,
-                    amounts: amounts, 
-                    k: amounts[0] * amounts[1],
-                    prevK: 0,
-                    quoteOrder: quoteOrder,
-                    quoteOrig: uint256((amounts[quoteOrder[0]] * quoteMultiplier) / amounts[quoteOrder[1]]),
-                    quote: uint256((amounts[quoteOrder[0]] * quoteMultiplier) / amounts[quoteOrder[1]]),
-                    prevQuote: 0
-                })
+            poolList[poolCount].tokens = tokens;
+            poolList[poolCount].amounts[tokens[0]] = amounts[0];
+            poolList[poolCount].amounts[tokens[1]] = amounts[1];
+            poolList[poolCount].k = amounts[0] * amounts[1];
+            poolList[poolCount].prevK = 0;
+            poolList[poolCount].quoteOrder = quoteOrder;
+            poolList[poolCount].quote = uint256(
+                (poolList[poolCount].amounts[quoteOrder[1]] * quoteMultiplier) / 
+                poolList[poolCount].amounts[quoteOrder[0]]
             );
+            poolList[poolCount].quoteOrig = poolList[poolCount].quote;
+            poolList[poolCount].prevQuote = 0;
+
+            poolCount++;
+
         } else {
             // If order for token in parameter in against pool is revered, swap
             if (!isInTurn) {
@@ -210,42 +229,44 @@ contract OcxLocalPool {
                 amounts[1] = tmpAmount;
             }
             // Check quote
-            uint256 quote = uint256(
-                (amounts[poolList[poolIndex].quoteOrder[0]] * quoteMultiplier) / 
-                amounts[poolList[poolIndex].quoteOrder[1]]
+            uint256 newQuote = uint256(
+                (amounts[1] * quoteMultiplier) / 
+                amounts[0]
             );
-            uint256 quoteRate = uint256((quote * quoteMultiplier) / poolList[poolIndex].quoteOrig);
+            uint256 quoteRate = uint256(
+                                    (newQuote * quoteMultiplier) / 
+                                    poolList[poolIndex].quoteOrig
+                                );
             // Check if new quote >= 98% and <= 102%
             require(
-                quoteRate > 980 * (10 ** (QUOTE_DECIMALS - 3)) && 
-                    quoteRate < 1020 * (10 ** (QUOTE_DECIMALS - 3)), 
-                "Invalid quote"
+                quoteRate > 98 * (10 ** (QUOTE_DECIMALS - 2)) && 
+                    quoteRate < 102 * (10 ** (QUOTE_DECIMALS - 2)), 
+                "Invalid quote(out of range: 98%~102%)"
             );
             // Update pool
-            Pool memory pool = poolList[poolIndex];
-            pool.amounts[0] += amounts[0];
-            pool.amounts[1] += amounts[1];
-            pool.prevK = pool.k;
-            pool.k = pool.amounts[0] * pool.amounts[1];
-            pool.prevQuote = pool.quote;
-            pool.quote = uint256(
-                (pool.amounts[poolList[poolIndex].quoteOrder[0]] * quoteMultiplier) / 
-                pool.amounts[poolList[poolIndex].quoteOrder[1]]
-            );
-            poolList[poolIndex] = pool;
+            poolList[poolIndex].amounts[tokens[0]] += amounts[0];
+            poolList[poolIndex].amounts[tokens[1]] += amounts[1];
+            poolList[poolIndex].prevK = poolList[poolIndex].k;
+            poolList[poolIndex].k = poolList[poolIndex].amounts[tokens[0]] * 
+                poolList[poolIndex].amounts[tokens[1]];
+            poolList[poolIndex].prevQuote = poolList[poolIndex].quote;
+            poolList[poolIndex].quote = newQuote;
         }
         // Update pool share
         bExist = false;
-        for (uint i = 0; i < poolShare[msg.sender].length; i++) {
-            if (poolIndex == poolShare[msg.sender][i].poolIndex) {
-                poolShare[msg.sender][i].amounts[0] += amounts[0];
-                poolShare[msg.sender][i].amounts[1] += amounts[1];
+        for (uint8 i = 0; i < shares[msg.sender].poolCount; i++) {
+            if (poolIndex == shares[msg.sender].pools[i].index) {
+                shares[msg.sender].pools[i].sharingAmounts[tokens[0]] += amounts[0];
+                shares[msg.sender].pools[i].sharingAmounts[tokens[1]] += amounts[1];
                 bExist = true;
                 break;
             }
         }
         if (!bExist) {
-            poolShare[msg.sender].push(PoolShare(poolIndex, amounts));
+            shares[msg.sender].pools[0].index = poolIndex;
+            shares[msg.sender].pools[0].sharingAmounts[tokens[0]] = amounts[0];
+            shares[msg.sender].pools[0].sharingAmounts[tokens[1]] = amounts[1];
+            shares[msg.sender].poolCount++;
         }
 
         // Transfer amounts for both tokens from the sender
