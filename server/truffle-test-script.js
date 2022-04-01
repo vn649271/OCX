@@ -14,7 +14,7 @@ web3.utils.fromWei(ocxWethBalance, "ether");
 let ocxOcatBalance = (await ocat.balanceOf(ocx.address)).toString();
 web3.utils.fromWei(ocxOcatBalance, "ether");
 
-// Fund 50 OCAT to "0x82919a8F7B3E052d4e53BBA5298e621276e8Da3C" from 
+// Fund 50 OCAT to tester: "0x82919a8F7B3E052d4e53BBA5298e621276e8Da3C"
 let ocatFundAmount = web3.utils.toHex(50 * (10 ** 18));
 await ocat.transfer(testerAddress, ocatFundAmount);
 let fundedOcatAmount = (await ocat.balanceOf(testerAddress)).toString(); 
