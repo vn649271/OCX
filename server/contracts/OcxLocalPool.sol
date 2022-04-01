@@ -34,6 +34,8 @@ contract OcxLocalPool {
     // mapping(address => PoolShare) public poolShare;
     mapping(address => PoolShare[]) public poolShare;
 
+    event AmountToRetrieve(uint256);
+    
     receive() external payable {}
 
     constructor() {
@@ -108,12 +110,12 @@ contract OcxLocalPool {
         // Ensure that OCAT balance >= _amountOutMin
         require(ethPoolBalance > _amountOutMin, "OcxLocalPool.swapOcatToEth(): Insufficient balance for ETH in the pool(1)");
         // Calculate the output amount of OCAT 
-        uint256 requiredLeavedPoolEthBalance = (poolList[poolIndex].k / (ocatPoolBalance + _amountIn);
-        require(ethPoolBalance >= requiredLeavedPoolEthBalance), "OcxLocalPool.swapOcatToEth(): Insufficient balance for ETH in the pool(2)");
-        uint256 amountOut = ethPoolBalance - requiredLeavedPoolEthBalance);
+        uint256 requiredLeavedPoolEthBalance = (poolList[poolIndex].k / (ocatPoolBalance + _amountIn));
+        require(ethPoolBalance >= requiredLeavedPoolEthBalance, "OcxLocalPool.swapOcatToEth(): Insufficient balance for ETH in the pool(2)");
+        uint256 amountOut = ethPoolBalance - requiredLeavedPoolEthBalance;
         require(amountOut > 0, "OcxLocalPool.swapOcatToEth(): Insufficient balance for ETH in the pool(3)");
         require(amountOut >= _amountOutMin, "OcxLocalPool.swapOcatToEth(): Insufficient balance for ETH in the pool(4)");
-        require(ethPoolBalance >= amountOut, "OcxLocalPool.swapOcatToEth(): Insufficient balance for ETH in the pool(5))
+        emit AmountToRetrieve(amountOut);
         // Transfer OCAT from the sender
         // First check allowance of OCAT amount from the sender
         uint256 allowance = IERC20(ocatAddress).allowance(to, address(this));
@@ -122,17 +124,19 @@ contract OcxLocalPool {
         TransferHelper.safeTransferFrom(ocatAddress, msg.sender, address(this), _amountIn);
         // Transfer ETH to the sender
         require(IERC20(wethAddress).approve(msg.sender, amountOut), 'OcxLocalPool.swapOcatToEth(): Failed to approve WETH for sender');
-        bool ret = IERC20(wethAddress).transfer(msg.sender, amountOut);
-        require(ret, "OcxLocalPool.swapOcatToEth(): Failed to transfer ETH to sender");
+        emit AmountToRetrieve(amountOut);
 
-        // Update the quote for the pool
-        poolList[poolIndex].amounts[isInTurn?0:1] += _amountIn;
-        poolList[poolIndex].amounts[!isInTurn?0:1] -= amountOut;
-        poolList[poolIndex].prevQuote = poolList[poolIndex].quote;
+        // bool ret = IERC20(wethAddress).transfer(msg.sender, amountOut);
+        // require(ret, "OcxLocalPool.swapOcatToEth(): Failed to transfer ETH to sender");
 
-        poolList[poolIndex].quote = 
-            (poolList[poolIndex].amounts[poolList[poolIndex].quoteOrder[0]] * (10 ** QUOTE_DECIMALS)) / 
-                poolList[poolIndex].amounts[poolList[poolIndex].quoteOrder[1]];
+        // // Update the quote for the pool
+        // poolList[poolIndex].amounts[isInTurn?0:1] += _amountIn;
+        // poolList[poolIndex].amounts[!isInTurn?0:1] -= amountOut;
+        // poolList[poolIndex].prevQuote = poolList[poolIndex].quote;
+
+        // poolList[poolIndex].quote = 
+        //     (poolList[poolIndex].amounts[poolList[poolIndex].quoteOrder[0]] * (10 ** QUOTE_DECIMALS)) / 
+        //         poolList[poolIndex].amounts[poolList[poolIndex].quoteOrder[1]];
     }
 
     function _getPoolIndex(
