@@ -4,13 +4,14 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol"; // openzeppelin 4.5 (for solidity 0.8.x)
 // import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import '@uniswap/lib/contracts/libraries/TransferHelper.sol';
-
+import "./OcxLPToken.sol";
 
 contract OcxLocalPool {
 
     uint256 private constant QUOTE_DECIMALS = 3; // Must be more than 3 at least
 
     address payable private ocatAddress;
+    address payable private ocxLPAddress;
 
     address payable private creator;
 
@@ -58,6 +59,18 @@ contract OcxLocalPool {
         require(creator == msg.sender, "setOcatAddress(): -1");
         require(_ocatAddress != address(0), "setOcatAddress(): -2");
         ocatAddress = _ocatAddress;
+    }
+
+    /*
+     * Error Code
+     *  -1: Caller for  must be creator
+     *  -2: Invalid parameter
+     */
+    function setOcxLPAddress(address payable _ocxlpAddress) public {
+        require(creator == msg.sender, "setOcatAddress(): -1");
+        require(_ocxlpAddress != address(0), "setOcatAddress(): -2");
+        ocxLPAddress = _ocxlpAddress;
+        OcxLPToken(ocxLPAddress).setOcxPoolAddress(address(this));
     }
 
     /*
@@ -186,116 +199,6 @@ contract OcxLocalPool {
         }
     }
 
-    // function addLiquidity(
-    //     address[2] memory tokens, 
-    //     uint256[2] memory amounts
-    // ) public {
-    //     require(msg.sender != address(0), "Invalid sender");
-    //     require(tokens[0] != address(0) && tokens[1] != address(0), "Invalid tokens");
-    //     require(tokens[0] != tokens[1], "Same tokens");
-    //     require(amounts[0] > 0 && amounts[1] > 0, "Invalid amounts");
-    //     // If the amount of OCAT is limited, then assert sender must be creator
-    //     // Otherwise OCAT is mintable with swapping from/to PNFT continuosly,
-    //     //   following assertion must be removed
-    //     require(creator == msg.sender);
-
-    //     // Get quote
-    //     // ...uint256((quote / poolList[poolIndex].quoteOrig) * 100)
-    //     // Transfer token A and B from msg.sender to this address
-
-    //     bool bExist = false;
-    //     bool isInTurn = true;
-    //     uint8 poolIndex = 0;
-    //     uint256 quoteMultiplier = 10 ** QUOTE_DECIMALS;
-
-    //     (bExist, poolIndex, isInTurn) = _getPoolIndex(tokens[0], tokens[1]);
-    //     if (!bExist) {
-    //         address[2] memory quoteOrder;
-    //         quoteOrder[0] = tokens[0];
-    //         quoteOrder[1] = tokens[1];
-
-    //         if (amounts[0] > amounts[1]) {
-    //             quoteOrder[0] = tokens[1];
-    //             quoteOrder[1] = tokens[0];
-    //         }
-    //         poolList[poolCount].tokens = tokens;
-    //         poolList[poolCount].amounts[tokens[0]] = amounts[0];
-    //         poolList[poolCount].amounts[tokens[1]] = amounts[1];
-    //         poolList[poolCount].k = amounts[0] * amounts[1];
-    //         poolList[poolCount].prevK = 0;
-    //         poolList[poolCount].quoteOrder = quoteOrder;
-    //         poolList[poolCount].quote = uint256(
-    //             (poolList[poolCount].amounts[quoteOrder[1]] * quoteMultiplier) / 
-    //             poolList[poolCount].amounts[quoteOrder[0]]
-    //         );
-    //         poolList[poolCount].quoteOrig = poolList[poolCount].quote;
-    //         poolList[poolCount].prevQuote = 0;
-
-    //         poolCount++;
-
-    //     } else {
-    //         // If order for token in parameter in against pool is revered, swap
-    //         if (!isInTurn) {
-    //             address tmpToken = tokens[0];
-    //             tokens[0] = tokens[1];
-    //             tokens[1] = tmpToken;
-    //             uint256 tmpAmount = amounts[0];
-    //             amounts[0] = amounts[1];
-    //             amounts[1] = tmpAmount;
-    //         }
-    //         // Check quote
-    //         uint256 newQuote = uint256(
-    //             (amounts[1] * quoteMultiplier) / 
-    //             amounts[0]
-    //         );
-    //         uint256 quoteRate = uint256(
-    //                                 (newQuote * quoteMultiplier) / 
-    //                                 poolList[poolIndex].quoteOrig
-    //                             );
-    //         // Check if new quote >= 98% and <= 102%
-    //         require(
-    //             quoteRate > 98 * (10 ** (QUOTE_DECIMALS - 2)) && 
-    //                 quoteRate < 102 * (10 ** (QUOTE_DECIMALS - 2)), 
-    //             "Invalid quote(out of range: 98%~102%)"
-    //         );
-    //         // Update pool
-    //         poolList[poolIndex].amounts[tokens[0]] += amounts[0];
-    //         poolList[poolIndex].amounts[tokens[1]] += amounts[1];
-    //         poolList[poolIndex].prevK = poolList[poolIndex].k;
-    //         poolList[poolIndex].k = poolList[poolIndex].amounts[tokens[0]] * 
-    //             poolList[poolIndex].amounts[tokens[1]];
-    //         poolList[poolIndex].prevQuote = poolList[poolIndex].quote;
-    //         poolList[poolIndex].quote = newQuote;
-    //     }
-    //     // Update pool share
-    //     bExist = false;
-    //     for (uint8 i = 0; i < shares[msg.sender].poolCount; i++) {
-    //         if (poolIndex == shares[msg.sender].pools[i].index) {
-    //             shares[msg.sender].pools[i].sharingAmounts[tokens[0]] += amounts[0];
-    //             shares[msg.sender].pools[i].sharingAmounts[tokens[1]] += amounts[1];
-    //             bExist = true;
-    //             break;
-    //         }
-    //     }
-    //     if (!bExist) {
-    //         shares[msg.sender].pools[0].index = poolIndex;
-    //         shares[msg.sender].pools[0].sharingAmounts[tokens[0]] = amounts[0];
-    //         shares[msg.sender].pools[0].sharingAmounts[tokens[1]] = amounts[1];
-    //         shares[msg.sender].poolCount++;
-    //     }
-
-    //     // Transfer amounts for both tokens from the sender
-    //     uint256 allowance = IERC20(tokens[0]).allowance(msg.sender, address(this));
-    //     require(allowance >= amounts[0], "OcxLocalPool.addLiquidity(): Insufficient allowance for first token");
-    //     allowance = IERC20(tokens[1]).allowance(msg.sender, address(this));
-    //     require(allowance >= amounts[1], "OcxLocalPool.addLiquidity(): Insufficient allowance for second token");
-    //     TransferHelper.safeTransferFrom(tokens[0], msg.sender, address(this), amounts[0]);
-    //     TransferHelper.safeTransferFrom(tokens[1], msg.sender, address(this), amounts[1]);
-
-    //     // Mint LP token to return
-    //     // ...
-    // }
-
     function addLiquidityWithETH(
         address token, 
         uint256 amount
@@ -391,5 +294,9 @@ contract OcxLocalPool {
 
         // Mint LP token to return
         // ...
+        // uint256 newMintAmount = msg.value * amount;
+        // IERC20(ocxLPAddress).mint(newMintAmount);
+        // // Send the amount with fee substracted
+        // IERC20(ocxLPAddress).transfer(msg.sender, (newMintAmount * 100 - 2) / 100)
     }
 }
