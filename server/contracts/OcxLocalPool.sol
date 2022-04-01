@@ -252,9 +252,9 @@ contract OcxLocalPool {
                 msg.value
             );
             uint256 quoteRate = uint256(
-                                    (newQuote * quoteMultiplier) / 
-                                    poolList[poolIndex].quoteOrig
-                                );
+                (newQuote * quoteMultiplier) / 
+                poolList[poolIndex].quoteOrig
+            );
             // Check if new quote >= 98% and <= 102%
             require(
                 quoteRate > 98 * (10 ** (QUOTE_DECIMALS - 2)) && 
