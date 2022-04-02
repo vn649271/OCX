@@ -70,7 +70,49 @@ contract OcxLocalPool {
         require(creator == msg.sender, "setOcatAddress(): -1");
         require(_ocxlpAddress != address(0), "setOcatAddress(): -2");
         ocxLPAddress = _ocxlpAddress;
-        OcxLPToken(ocxLPAddress).setOcxPoolAddress(address(this));
+        OcxLPToken(ocxLPAddress).setOcxPoolAddress( payable(address(this)) );
+    }
+
+    function _compareStrings(string memory a, string memory b) internal view returns (bool) {
+        return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));
+    }
+
+    function getAmountsOut(
+        uint256 sellAmount, 
+        string[2] memory path
+    ) public returns(uint256 amountOut, uint8 poolIndex) {
+        bool ret1 = _compareStrings(path[0], "ETH");
+        bool ret2 = _compareStrings(path[1], "OCAT");
+        bool ret3 = _compareStrings(path[0], "OCAT");
+        bool ret4 = _compareStrings(path[1], "ETH");
+        require(ret1 && ret2 || ret3 && ret4, "getAmountsOut(): Invalid path");
+
+        // Find the ETH/OCAT pool
+        bool bFound = false;
+        bool isInTurn = false;
+        (bFound, poolIndex, isInTurn) = _getPoolIndex(address(0), ocatAddress);
+        uint256 ethPoolBalance = poolList[poolIndex].amounts[address(0)];
+        uint256 ocatPoolBalance = poolList[poolIndex].amounts[ocatAddress];
+
+        if (ret1 && ret2) {
+            // Check if the pool exists
+            require(bFound, "swapEthToOcat(): -3");
+            // Ensure that OCAT balance is more than 0
+            require(ocatPoolBalance > 0, "getAmountsOut(): -4");
+            // Calculate the output amount of OCAT 
+            uint256 newOcatPoolBalance = poolList[poolIndex].k / (ethPoolBalance + sellAmount);
+            require(ocatPoolBalance > newOcatPoolBalance, "getAmountsOut(): -6");
+            amountOut = ocatPoolBalance - newOcatPoolBalance;
+        } else {
+            // Check if the pool exists
+            require(bFound, "swapOcatToEth(): -4");
+            // Ensure that OCAT balance is more than 0
+            require(ethPoolBalance > 0, "getAmountsOut(): -5");
+            // Calculate the output amount of OCAT 
+            uint256 newPoolEthBalance = (poolList[poolIndex].k / (ocatPoolBalance + sellAmount));
+            require(ethPoolBalance > newPoolEthBalance, "getAmountsOut(): -7");
+            amountOut = ethPoolBalance - newPoolEthBalance;            
+        }
     }
 
     /*
@@ -86,21 +128,19 @@ contract OcxLocalPool {
     function swapEthToOcat(uint _amountOutMin, address payable to, uint _deadline) public payable {
         require(to != address(0) && to != address(this), "swapEthToOcat(): -1");
         require(msg.value > 0, "swapEthToOcat(): -2");
-        // Find the ETH/OCAT pool
-        (bool bFound, uint8 poolIndex, bool isInTurn) = _getPoolIndex(address(0), ocatAddress);
-        // Check if the pool exists
-        require(bFound, "swapEthToOcat(): -3");
-        // Get ETH balance in the pool
-        uint256 ethPoolBalance = poolList[poolIndex].amounts[address(0)];
-        uint256 ocatPoolBalance = poolList[poolIndex].amounts[ocatAddress];
-        // Ensure that OCAT balance is more than 0
-        require(ocatPoolBalance > 0, "swapEthToOcat(): -4");
-        // Ensure that OCAT balance >= _amountOutMin
-        require(ocatPoolBalance > _amountOutMin, "swapEthToOcat(): -5");
-        // Calculate the output amount of OCAT 
-        uint256 newOcatPoolBalance = poolList[poolIndex].k / (ethPoolBalance + msg.value);
-        require(ocatPoolBalance > newOcatPoolBalance, "swapEthToOcat(): -6");
-        uint256 amountOut = ocatPoolBalance - newOcatPoolBalance;
+
+        (uint256 amountOut, uint8 poolIndex) = getAmountsOut(msg.value, ["ETH", "OCAT"]);
+        // // Get ETH balance in the pool
+        // uint256 ethPoolBalance = poolList[poolIndex].amounts[address(0)];
+        // uint256 ocatPoolBalance = poolList[poolIndex].amounts[ocatAddress];
+        // // Ensure that OCAT balance is more than 0
+        // require(ocatPoolBalance > 0, "swapEthToOcat(): -4");
+        // // Ensure that OCAT balance >= _amountOutMin
+        // require(ocatPoolBalance > _amountOutMin, "swapEthToOcat(): -5");
+        // // Calculate the output amount of OCAT 
+        // uint256 newOcatPoolBalance = poolList[poolIndex].k / (ethPoolBalance + msg.value);
+        // require(ocatPoolBalance > newOcatPoolBalance, "swapEthToOcat(): -6");
+        // uint256 amountOut = ocatPoolBalance - newOcatPoolBalance;
         require(amountOut >= _amountOutMin, "swapEthToOcat(): -7");
 
         // Transfer OCAT to the sender
@@ -141,21 +181,19 @@ contract OcxLocalPool {
         require(to != address(0), "swapOcatToEth(): -1");
         require(to != address(this), "swapOcatToEth(): -2");
         require(_amountIn > 0, "swapOcatToEth(): -3");
-        // Find the ETH/OCAT pool
-        (bool bFound, uint8 poolIndex, bool isInTurn) = _getPoolIndex(ocatAddress, address(0));
-        // Check if the pool exists
-        require(bFound, "swapOcatToEth(): -4");
         // Get ETH balance in the pool
-        uint256 ethPoolBalance = poolList[poolIndex].amounts[address(0)];
-        uint256 ocatPoolBalance = poolList[poolIndex].amounts[ocatAddress];
-        // Ensure that OCAT balance is more than 0
-        require(ethPoolBalance > 0, "swapOcatToEth(): -5");
-        // Ensure that OCAT balance >= _amountOutMin
-        require(ethPoolBalance > _amountOutMin, "swapOcatToEth(): -6");
-        // Calculate the output amount of OCAT 
-        uint256 newPoolEthBalance = (poolList[poolIndex].k / (ocatPoolBalance + _amountIn));
-        require(ethPoolBalance > newPoolEthBalance, "swapOcatToEth(): -7");
-        amountOut = ethPoolBalance - newPoolEthBalance;
+        uint8 poolIndex;
+        (amountOut, poolIndex) = getAmountsOut(_amountIn, ["OCAT", "ETH"]);
+        // uint256 ethPoolBalance = poolList[poolIndex].amounts[address(0)];
+        // uint256 ocatPoolBalance = poolList[poolIndex].amounts[ocatAddress];
+        // // Ensure that OCAT balance is more than 0
+        // require(ethPoolBalance > 0, "swapOcatToEth(): -5");
+        // // Ensure that OCAT balance >= _amountOutMin
+        // require(ethPoolBalance > _amountOutMin, "swapOcatToEth(): -6");
+        // // Calculate the output amount of OCAT 
+        // uint256 newPoolEthBalance = (poolList[poolIndex].k / (ocatPoolBalance + _amountIn));
+        // require(ethPoolBalance > newPoolEthBalance, "swapOcatToEth(): -7");
+        // amountOut = ethPoolBalance - newPoolEthBalance;
         require(amountOut >= _amountOutMin, "swapOcatToEth(): -8");
         emit AmountToRetrieve(amountOut);
         // Transfer OCAT from the sender

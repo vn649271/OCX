@@ -68,7 +68,8 @@ await ocat.approve(ocx.address, ocatAllowedAmount);
 
 let lpEthBalance = (await web3.eth.getBalance(lpAddress)).toString();
 web3.utils.fromWei(lpEthBalance.toString(), "ether");
-// 82.010752689090909092 ETH
+// 82.010752689090909092, 
+// 80.460732483636363638 ETH
 let ocxEthBalanceInWei = (await web3.eth.getBalance(ocx.address)).toString(); 
 web3.utils.fromWei(ocxEthBalanceInWei, "ether");
 // = 5 ETH
@@ -82,7 +83,8 @@ web3.utils.fromWei(ocxOcatBal.toString(), "ether");
 // 110 OCAT
 lpEthBalance = (await web3.eth.getBalance(lpAddress)).toString();
 web3.utils.fromWei(lpEthBalance.toString(), "ether");
-// = 82.463192363636363638 ETH => 82.010752689090909092 + 0.4545454545 - 0.003(Fee) ETH
+// = 82.463192363636363638 ETH => 82.010752689090909092 + 0,452357655 + 0.0021878(Fee) ETH
+// = 80.913090138181818184 => 80.460732483636363638 + 0.452357655 + 0.0021878(Fee)
 ocxEthBalanceInWei = (await web3.eth.getBalance(ocx.address)).toString(); 
 web3.utils.fromWei(ocxEthBalanceInWei, "ether");
 // 500/110 = 4.545454545454545454 OCAT
