@@ -143,12 +143,12 @@ class OpenchainRouter {
         try {
             let WETH_ADDRESS = GOERLI_CONTRACTS['WETH'];
             let erc20TokenAddress = GOERLI_CONTRACTS[params.buySymbol];
-            let ourSwapContractAddress = GOERLI_CONTRACTS.OCX_EXCHANGE;
+            let ocxExchangeAddress = GOERLI_CONTRACTS.OCX_EXCHANGE;
 
             if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
                 WETH_ADDRESS = GANACHE_CONTRACTS['WETH'];
                 erc20TokenAddress = GANACHE_CONTRACTS[params.buySymbol];
-                ourSwapContractAddress = GANACHE_CONTRACTS.OCX_EXCHANGE;
+                ocxExchangeAddress = GANACHE_CONTRACTS.OCX_EXCHANGE;
             }
             // const path = [WETH_ADDRESS, erc20TokenAddress];
             const sellAmountInHex = this.web3.utils.toHex(params.sellAmount);
@@ -156,7 +156,7 @@ class OpenchainRouter {
             let gasPrice = await this.web3.eth.getGasPrice();
             gasPrice = (gasPrice * 1.2).toFixed(0);
             if (params.buySymbol != "OCAT") {
-                const openchainSwap = new this.web3.eth.Contract(ocxSwapAbi, ourSwapContractAddress);
+                const openchainSwap = new this.web3.eth.Contract(ocxSwapAbi, ocxExchangeAddress);
     
                 let ret = await openchainSwap.methods.swapFromETH(
                     erc20TokenAddress,
@@ -196,11 +196,10 @@ class OpenchainRouter {
 
     async swapTokenForEth(params) {
         try {
-            let ourSwapContractAddress = GOERLI_CONTRACTS.OCX_EXCHANGE;
+            let ocxExchangeAddress = GOERLI_CONTRACTS.OCX_EXCHANGE;
             if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
-                ourSwapContractAddress = GANACHE_CONTRACTS.OCX_EXCHANGE;
+                ocxExchangeAddress = GANACHE_CONTRACTS.OCX_EXCHANGE;
             }
-            const openchainSwap = new this.web3.eth.Contract(ocxSwapAbi, ourSwapContractAddress);
             let erc20TokenAddress = GOERLI_CONTRACTS[params.sellSymbol];
             if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
                 erc20TokenAddress = GANACHE_CONTRACTS[params.sellSymbol];
@@ -210,26 +209,59 @@ class OpenchainRouter {
             let ret = null;
 
             const tokenContract = new this.web3.eth.Contract(erc20Abi, erc20TokenAddress);
-            ret = await tokenContract.methods.approve(ourSwapContractAddress, sellAmountInHex)
+            if (params.sellSymbol != "OCAT") {
+                ret = await tokenContract.methods.approve(ocxExchangeAddress, sellAmountInHex)
                 .send({
                     from: this.myAddress,
                 });
-            if (!ret) {
-                return { error: -250, data: "Failed to approve the ERC20 token for the contract" };
+                if (!ret) {
+                    return { error: -250, data: "Failed to approve the ERC20 token for the contract" };
+                }
+                const openchainSwap = new this.web3.eth.Contract(ocxSwapAbi, ocxExchangeAddress);
+                ret = await openchainSwap.methods.swapToETH(
+                    erc20TokenAddress,
+                    sellAmountInHex,
+                    buyAmountInHex,
+                    params.deadline
+                ).send({
+                    from: this.myAddress
+                })
+                if (!ret) {
+                    return { error: -251, data: "Failed to swap from ERC20 token to ETH" };
+                }
+                console.log("@@@ OpenchainRouter.swapTokenForEth(): ", ret);
+                return { error: 0, data: ret };                
+            } else {
+                let ocxLocalPoolAddress = this.getOcxLocalPoolAddress();
+                let ocatContractAddress = GOERLI_CONTRACTS.OCAT;
+                if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
+                    ocatContractAddress = GANACHE_CONTRACTS.OCAT;
+                }
+                const ocatContract = new this.web3.eth.Contract(ocatAbi, ocatContractAddress);
+                let gasPrice = await this.web3.eth.getGasPrice();
+                gasPrice = (gasPrice * 1.2).toFixed(0);
+                ret = await ocatContract.methods.approve(
+                    ocxLocalPoolAddress, 
+                    sellAmountInHex
+                ).send({
+                    from: this.myAddress,
+                    gas: "280000",
+                    gasPrice: gasPrice
+                });
+                if (!ret) {
+                    return { error: -250, data: "Failed to approve the ERC20 token for the contract" };
+                }
+                const ocxLocalPool = new this.web3.eth.Contract(ocxLocalPoolAbi, ocxLocalPoolAddress);
+
+                ret = await ocxLocalPool.methods.swapOcatToEth(
+                    sellAmountInHex, 
+                    buyAmountInHex, 
+                    this.myAddress, 
+                    params.deadline
+                ).call();
+        
+                return { error: 0, data: ret };
             }
-            ret = await openchainSwap.methods.swapToETH(
-                erc20TokenAddress,
-                sellAmountInHex,
-                buyAmountInHex,
-                params.deadline
-            ).send({
-                from: this.myAddress
-            })
-            if (!ret) {
-                return { error: -251, data: "Failed to swap from ERC20 token to ETH" };
-            }
-            console.log("@@@ OpenchainRouter.swapTokenForEth(): ", ret);
-            return { error: 0, data: ret };
         }
         catch (error) {
             var errMsg = error ?
@@ -243,9 +275,9 @@ class OpenchainRouter {
 
     async swapTokenForToken(params) {
         try {
-            let ourSwapContractAddress = GOERLI_CONTRACTS.OCX_EXCHANGE;
+            let ocxExchangeAddress = GOERLI_CONTRACTS.OCX_EXCHANGE;
             if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
-                ourSwapContractAddress = GANACHE_CONTRACTS.OCX_EXCHANGE;
+                ocxExchangeAddress = GANACHE_CONTRACTS.OCX_EXCHANGE;
             }
             const openchainSwap = new this.web3.eth.Contract(ocxSwapAbi, GOERLI_CONTRACTS.OCX_EXCHANGE);
             let sellTokenAddress = GOERLI_CONTRACTS[params.sellSymbol];
@@ -264,9 +296,9 @@ class OpenchainRouter {
             const sellTokenContract = new this.web3.eth.Contract(erc20Abi, sellTokenAddress);
 
             if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
-                ourSwapContractAddress = GANACHE_CONTRACTS.OCX_EXCHANGE;
+                ocxExchangeAddress = GANACHE_CONTRACTS.OCX_EXCHANGE;
             }
-            ret = await sellTokenContract.methods.approve(ourSwapContractAddress, sellAmountInHex)
+            ret = await sellTokenContract.methods.approve(ocxExchangeAddress, sellAmountInHex)
                 .send({
                     from: this.myAddress,
                 });
@@ -396,9 +428,9 @@ class OpenchainRouter {
         }
         try {
             let pnftContractAddress = GOERLI_CONTRACTS.PNFT;
-            let ourSwapContractAddress = GOERLI_CONTRACTS.OCX_EXCHANGE;
+            let ocxExchangeAddress = GOERLI_CONTRACTS.OCX_EXCHANGE;
             if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
-                ourSwapContractAddress = GANACHE_CONTRACTS.OCX_EXCHANGE;
+                ocxExchangeAddress = GANACHE_CONTRACTS.OCX_EXCHANGE;
                 pnftContractAddress = GANACHE_CONTRACTS.PNFT;
             }
             const pnftContract = new this.web3.eth.Contract(pawnNftAbi, pnftContractAddress);
@@ -407,13 +439,13 @@ class OpenchainRouter {
             }
             let gasPrice = await this.web3.eth.getGasPrice();
             gasPrice = (gasPrice * 1.2).toFixed(0);
-            let ret = await pnftContract.methods.approve(ourSwapContractAddress, assetInfo.nft_id)
+            let ret = await pnftContract.methods.approve(ocxExchangeAddress, assetInfo.nft_id)
                 .send({
                     from: this.myAddress,
                     gas: "280000",
                     gasPrice: gasPrice
                 });
-            let openchainSwap = new this.web3.eth.Contract(ocxSwapAbi, ourSwapContractAddress);
+            let openchainSwap = new this.web3.eth.Contract(ocxSwapAbi, ocxExchangeAddress);
             // Get latest value of gas limit
             gasPrice = (gasPrice * 1.2).toFixed(0);
             let latestBlock = await this.web3.eth.getBlock("latest");
@@ -459,9 +491,9 @@ class OpenchainRouter {
         try {
             let pnftContractAddress = GOERLI_CONTRACTS.PNFT;
             let ocatContractAddress = GOERLI_CONTRACTS.OCAT;
-            let ourSwapContractAddress = GOERLI_CONTRACTS.OCX_EXCHANGE;
+            let ocxExchangeAddress = GOERLI_CONTRACTS.OCX_EXCHANGE;
             if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
-                ourSwapContractAddress = GANACHE_CONTRACTS.OCX_EXCHANGE;
+                ocxExchangeAddress = GANACHE_CONTRACTS.OCX_EXCHANGE;
                 pnftContractAddress = GANACHE_CONTRACTS.PNFT;
                 ocatContractAddress = GANACHE_CONTRACTS.OCAT;
             }
@@ -474,13 +506,13 @@ class OpenchainRouter {
             const ocatContract = new this.web3.eth.Contract(ocatAbi, ocatContractAddress);
             let gasPrice = await this.web3.eth.getGasPrice();
             gasPrice = (gasPrice * 1.2).toFixed(0);
-            ret = await ocatContract.methods.approve(ourSwapContractAddress, priceInWei).//assetInfo.nft_id
+            ret = await ocatContract.methods.approve(ocxExchangeAddress, priceInWei).//assetInfo.nft_id
                 send({
                     from: this.myAddress,
                     gas: "280000",
                     gasPrice: gasPrice
                 });
-            let openchainSwap = new this.web3.eth.Contract(ocxSwapAbi, ourSwapContractAddress);
+            let openchainSwap = new this.web3.eth.Contract(ocxSwapAbi, ocxExchangeAddress);
             gasPrice = (gasPrice * 1.2).toFixed(0);
 
             // Get latest value of gas limit
