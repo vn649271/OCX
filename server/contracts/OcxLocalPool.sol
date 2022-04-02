@@ -201,9 +201,9 @@ contract OcxLocalPool {
         uint256 allowance = IERC20(ocatAddress).allowance(to, address(this));
         require(allowance >= _amountIn, "swapOcatToEth(): -9");
         // Transfer OCAT from the sender
-        TransferHelper.safeTransferFrom(ocatAddress, msg.sender, address(this), _amountIn);
+        TransferHelper.safeTransferFrom(ocatAddress, to, address(this), _amountIn);
         // Transfer ETH to the sender
-        TransferHelper.safeTransferETH(msg.sender, amountOut);
+        TransferHelper.safeTransferETH(to, amountOut);
 
         emit AmountToRetrieve(amountOut);
 
