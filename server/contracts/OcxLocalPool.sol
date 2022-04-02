@@ -119,10 +119,6 @@ contract OcxLocalPool {
      * Error Code
      *  -1: Invalid sender
      *  -2: Invalid ETH amount
-     *  -3: No pool for ETH/OCAT
-     *  -4: No balance for OCAT in the pool
-     *  -5: Insufficient OCAT balance in the pool(1)
-     *  -6: Insufficient OCAT balance in the pool(2)
      *  -7: Insufficient OCAT balance in the pool(3)
      */
     function swapEthToOcat(uint _amountOutMin, address payable to, uint _deadline) public payable {
@@ -130,17 +126,6 @@ contract OcxLocalPool {
         require(msg.value > 0, "swapEthToOcat(): -2");
 
         (uint256 amountOut, uint8 poolIndex) = getAmountsOut(msg.value, ["ETH", "OCAT"]);
-        // // Get ETH balance in the pool
-        // uint256 ethPoolBalance = poolList[poolIndex].amounts[address(0)];
-        // uint256 ocatPoolBalance = poolList[poolIndex].amounts[ocatAddress];
-        // // Ensure that OCAT balance is more than 0
-        // require(ocatPoolBalance > 0, "swapEthToOcat(): -4");
-        // // Ensure that OCAT balance >= _amountOutMin
-        // require(ocatPoolBalance > _amountOutMin, "swapEthToOcat(): -5");
-        // // Calculate the output amount of OCAT 
-        // uint256 newOcatPoolBalance = poolList[poolIndex].k / (ethPoolBalance + msg.value);
-        // require(ocatPoolBalance > newOcatPoolBalance, "swapEthToOcat(): -6");
-        // uint256 amountOut = ocatPoolBalance - newOcatPoolBalance;
         require(amountOut >= _amountOutMin, "swapEthToOcat(): -7");
 
         // Transfer OCAT to the sender
@@ -164,11 +149,6 @@ contract OcxLocalPool {
      * Error Code
      *  -1: Invalid sender
      *  -2: The sender must be different than this
-     *  -3: Invalid ETH amount
-     *  -4: No pool for ETH-OCAT
-     *  -5: No balance for ETH in the pool
-     *  -6: Insufficient ETH balance in the pool(1)
-     *  -7: Insufficient ETH balance in the pool(2)
      *  -8: Insufficient ETH balance in the pool(3)
      *  -9: Insufficient allowed amount for input token
      */
@@ -184,16 +164,6 @@ contract OcxLocalPool {
         // Get ETH balance in the pool
         uint8 poolIndex;
         (amountOut, poolIndex) = getAmountsOut(_amountIn, ["OCAT", "ETH"]);
-        // uint256 ethPoolBalance = poolList[poolIndex].amounts[address(0)];
-        // uint256 ocatPoolBalance = poolList[poolIndex].amounts[ocatAddress];
-        // // Ensure that OCAT balance is more than 0
-        // require(ethPoolBalance > 0, "swapOcatToEth(): -5");
-        // // Ensure that OCAT balance >= _amountOutMin
-        // require(ethPoolBalance > _amountOutMin, "swapOcatToEth(): -6");
-        // // Calculate the output amount of OCAT 
-        // uint256 newPoolEthBalance = (poolList[poolIndex].k / (ocatPoolBalance + _amountIn));
-        // require(ethPoolBalance > newPoolEthBalance, "swapOcatToEth(): -7");
-        // amountOut = ethPoolBalance - newPoolEthBalance;
         require(amountOut >= _amountOutMin, "swapOcatToEth(): -8");
         emit AmountToRetrieve(amountOut);
         // Transfer OCAT from the sender
