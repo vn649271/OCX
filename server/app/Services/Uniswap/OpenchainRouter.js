@@ -4,10 +4,12 @@ const IRouter = require('@uniswap/v2-periphery/build/IUniswapV2Router02.json')
 
 const Erc20Json = require('../../../build/contracts/ERC20.json');
 const OcxExchangeJson = require('../../../build/contracts/OcxExchange.json');
+const OcxLocalPoolJson = require('../../../build/contracts/OcxLocalPool.json');
 const PawnNFTsJson = require('../../../build/contracts/PawnNFTs.json');
 const ocatTokenJson = require('../../../build/contracts/OcatToken.json');
 
 const ocxSwapAbi = OcxExchangeJson.abi;
+const ocxLocalPoolAbi = OcxLocalPoolJson.abi;
 const pawnNftAbi = PawnNFTsJson.abi;
 const ocatAbi = ocatTokenJson.abi;
 const erc20Abi = Erc20Json.abi;
@@ -71,32 +73,51 @@ class OpenchainRouter {
             let WETH_ADDRESS = GOERLI_CONTRACTS['WETH'];
             let sellTokenAddress = GOERLI_CONTRACTS[params.sellSymbol];
             let buyTokenAddress = GOERLI_CONTRACTS[params.buySymbol];
+            let ocxLocalPoolAddress = OcxLocalPoolJson.networks['5'].address; // contract address in Goerli testnet
 
             if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
                 WETH_ADDRESS = GANACHE_CONTRACTS['WETH'];
                 sellTokenAddress = GANACHE_CONTRACTS[params.sellSymbol];
                 buyTokenAddress = GANACHE_CONTRACTS[params.buySymbol];
+                ocxLocalPoolAddress = OcxLocalPoolJson.networks['5777'].address;
             }
 
-            let path = [];
-            if (params.sellSymbol !== "ETH" && params.buySymbol !== "ETH") {
-                path = [sellTokenAddress, WETH_ADDRESS, buyTokenAddress];
-            } else if (params.sellSymbol === "ETH" && params.buySymbol !== "ETH") {
-                path = [WETH_ADDRESS, buyTokenAddress];
-            } else if (params.sellSymbol !== "ETH" && params.buySymbol === "ETH") {
-                path = [sellTokenAddress, WETH_ADDRESS];
+            let amountOutMin = 0;
+            if (params.sellSymbol == 'OCAT' || params.buySymbol == 'OCAT') {
+                if ((params.sellSymbol == 'OCAT' && params.buySymbol == 'ETH') ||
+                    (params.sellSymbol == 'ETH' && params.buySymbol == 'OCAT')
+                ) {
+                    let path = [params.sellSymbol, params.buySymbol];
+                    const ocxLocalPool = new this.web3.eth.Contract(ocxLocalPoolAbi, ocxLocalPoolAddress);
+                    const amountsOut = await ocxLocalPool.getAmountsOut(sellAmount, path).call;
+                    amountOutMin = this.web3.utils.toBN(amountsOut[amountsOut.length - 1])
+                        .mul(this.web3.utils.toBN(100 - SLIPPAGE_MAX))
+                        .div(this.web3.utils.toBN(100))
+                        .toString();
+                } else {
+
+                }
             } else {
-                return { error: -2, data: "Illegal Swap Pair. Selling token must be different than token to buy" };
-            }
-            const sellAmount = this.web3.utils.toHex(params.sellAmount);
+                let path = [];
+                if (params.sellSymbol !== "ETH" && params.buySymbol !== "ETH") {
+                    path = [sellTokenAddress, WETH_ADDRESS, buyTokenAddress];
+                } else if (params.sellSymbol === "ETH" && params.buySymbol !== "ETH") {
+                    path = [WETH_ADDRESS, buyTokenAddress];
+                } else if (params.sellSymbol !== "ETH" && params.buySymbol === "ETH") {
+                    path = [sellTokenAddress, WETH_ADDRESS];
+                } else {
+                    return { error: -2, data: "Illegal Swap Pair. Selling token must be different than token to buy" };
+                }
+                const sellAmount = this.web3.utils.toHex(params.sellAmount);
 
-            const uniRouter02 = new this.web3.eth.Contract(IRouter.abi, UniswapV2Router02Address)
-            const amountsOut = await uniRouter02.methods.getAmountsOut(sellAmount, path).call();
-            const amountOutMin = this.web3.utils.toBN(amountsOut[amountsOut.length - 1])
-                .mul(this.web3.utils.toBN(100 - SLIPPAGE_MAX))
-                .div(this.web3.utils.toBN(100))
-                .toString();
-            console.log("@@@ OpenchainRouter.getBestPrice(): ", amountOutMin);
+                const uniRouter02 = new this.web3.eth.Contract(IRouter.abi, UniswapV2Router02Address)
+                const amountsOut = await uniRouter02.methods.getAmountsOut(sellAmount, path).call();
+                amountOutMin = this.web3.utils.toBN(amountsOut[amountsOut.length - 1])
+                    .mul(this.web3.utils.toBN(100 - SLIPPAGE_MAX))
+                    .div(this.web3.utils.toBN(100))
+                    .toString();
+            }
+            console.log("@@@ OpenchainRouter.getBestPrice(): ", amountOutMin);                
             return { error: 0, data: amountOutMin };
         }
         catch (error) {
