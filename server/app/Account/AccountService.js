@@ -304,9 +304,11 @@ class AccountService {
         myEthAddress = addresses[token];
         var amountToSend = web3.utils.toWei(toAmount.toString(), "ether");
         try {
-            let ret = await web3.eth.personal.unlockAccount(myEthAddress, accountInfo.account_password, UNLOCK_ACCOUNT_INTERVAL);
-            if (!ret) {
-                return { error: -250, data: "Failed to unlock for sending" };
+            if (process.env.BLOCKCHAIN_EMULATOR != "ganache") {
+                let ret = await web3.eth.personal.unlockAccount(myEthAddress, accountInfo.account_password, UNLOCK_ACCOUNT_INTERVAL);
+                if (!ret) {
+                    return { error: -250, data: "Failed to unlock for sending" };
+                }
             }
             let txHash = await web3.eth.sendTransaction({
                 "from": myEthAddress,
@@ -437,9 +439,11 @@ class AccountService {
 
         try {
             // const signer = await this._getSigner(accountInfo, "ETH");
-            let ret = await web3.eth.personal.unlockAccount(myAddress, accountInfo.account_password, UNLOCK_ACCOUNT_INTERVAL)
-            if (!ret) {
-                return { error: -250, data: "Failed to unlock for swapping" };
+            if (process.env.BLOCKCHAIN_EMULATOR != "ganache") {
+                let ret = await web3.eth.personal.unlockAccount(myAddress, accountInfo.account_password, UNLOCK_ACCOUNT_INTERVAL)
+                if (!ret) {
+                    return { error: -250, data: "Failed to unlock for swapping" };
+                }
             }
             const ocRouter = await openchainRouterInstance(web3, myAddress);
             ret = await ocRouter.getBestPrice({
