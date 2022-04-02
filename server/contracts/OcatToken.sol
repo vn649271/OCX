@@ -12,6 +12,6 @@ contract OcatToken is ERC20 {
     }
 
     /**
-    * Custom accessor to create a unique token
+        * Custom accessor to create a unique token
     */
 }
