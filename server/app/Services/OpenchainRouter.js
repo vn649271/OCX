@@ -2,11 +2,11 @@ const IRouter = require('@uniswap/v2-periphery/build/IUniswapV2Router02.json')
 // const erc20 = require("@studydefi/money-legos/erc20")
 // const uniswap = require("@studydefi/money-legos/uniswap")
 
-const Erc20Json = require('../../../build/contracts/ERC20.json');
-const OcxExchangeJson = require('../../../build/contracts/OcxExchange.json');
-const OcxLocalPoolJson = require('../../../build/contracts/OcxLocalPool.json');
-const PawnNFTsJson = require('../../../build/contracts/PawnNFTs.json');
-const ocatTokenJson = require('../../../build/contracts/OcatToken.json');
+const Erc20Json = require('../../build/contracts/ERC20.json');
+const OcxExchangeJson = require('../../build/contracts/OcxExchange.json');
+const OcxLocalPoolJson = require('../../build/contracts/OcxLocalPool.json');
+const PawnNFTsJson = require('../../build/contracts/PawnNFTs.json');
+const ocatTokenJson = require('../../build/contracts/OcatToken.json');
 
 const ocxSwapAbi = OcxExchangeJson.abi;
 const ocxLocalPoolAbi = OcxLocalPoolJson.abi;
@@ -18,7 +18,7 @@ const {
     UniswapV2Router02Address, 
     GOERLI_CONTRACTS,
     GANACHE_CONTRACTS,
-} = require("./Abi/Erc20Abi");
+} = require("./Erc20Abi");
 
 const DEFAULT_DEADLINE = 300;   // 300s = 5min
 const SLIPPAGE_MAX = 3;         // 3%

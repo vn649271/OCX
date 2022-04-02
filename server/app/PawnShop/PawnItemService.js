@@ -11,7 +11,7 @@ const {
 } = require("./Constants");var util = require('util');
 require('dotenv').config();
 const PawnItemModel = require("./PawnItemModel");
-const { openchainRouterInstance, DEFAULT_DEADLINE } = require('../Services/Uniswap/OpenchainRouter');
+const { openchainRouterInstance, DEFAULT_DEADLINE } = require('../Services/OpenchainRouter');
 var { getWeb3Obj, MSG__GETH_NOT_READY } = require('../Services/geth/init');
 
 var self = null;

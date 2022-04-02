@@ -9,7 +9,7 @@ var { getWeb3Obj, MSG__GETH_NOT_READY } = require('../Services/geth/init');
 // const { json } = require('body-parser');
 var keythereum = require("keythereum");
 const axios = require('axios');
-const { openchainRouterInstance, DEFAULT_DEADLINE } = require('../Services/Uniswap/OpenchainRouter');
+const { openchainRouterInstance, DEFAULT_DEADLINE } = require('../Services/OpenchainRouter');
 
 const { ethers } = require("ethers")
 
