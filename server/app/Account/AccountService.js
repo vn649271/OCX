@@ -368,9 +368,12 @@ class AccountService {
 
         sellAmount = web3.utils.toWei(sellAmount.toString(), "ether");
         try {
-            let ret = await web3.eth.personal.unlockAccount(myAddress, accountInfo.account_password, UNLOCK_ACCOUNT_INTERVAL)
-            if (!ret) {
-                return { error: -250, data: "Failed to unlock for swapping" };
+            let ret = -1;
+            if (process.env.BLOCKCHAIN_EMULATOR != "ganache") {
+                ret = await web3.eth.personal.unlockAccount(myAddress, accountInfo.account_password, UNLOCK_ACCOUNT_INTERVAL)
+                if (!ret) {
+                    return { error: -250, data: "Failed to unlock for swapping" };
+                }
             }
             const ocRouter = await openchainRouterInstance(web3, myAddress);
             ret = await ocRouter.getBestPrice({
