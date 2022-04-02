@@ -269,6 +269,7 @@ class OpenchainRouter {
                     error.message.replace('Returned error: ', '') :
                     "Unknown error in send transaction for swap" :
                 error;
+            console.log("swapTokenForEth(): ", error);
             return { error: -400, data: errMsg };
         }
     }
