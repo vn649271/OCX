@@ -73,13 +73,15 @@ class OpenchainRouter {
             let WETH_ADDRESS = GOERLI_CONTRACTS['WETH'];
             let sellTokenAddress = GOERLI_CONTRACTS[params.sellSymbol];
             let buyTokenAddress = GOERLI_CONTRACTS[params.buySymbol];
-            let ocxLocalPoolAddress = OcxLocalPoolJson.networks['5'].address; // contract address in Goerli testnet
+            let ocxLocalPoolAddress = null; // OcxLocalPoolJson.networks['5'].address; // contract address in Goerli testnet
 
             if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
                 WETH_ADDRESS = GANACHE_CONTRACTS['WETH'];
                 sellTokenAddress = GANACHE_CONTRACTS[params.sellSymbol];
                 buyTokenAddress = GANACHE_CONTRACTS[params.buySymbol];
                 ocxLocalPoolAddress = OcxLocalPoolJson.networks['5777'].address;
+            } else {
+                ocxLocalPoolAddress = OcxLocalPoolJson.networks['5'].address; // contract address in Goerli testnet
             }
 
             let amountOutMin = 0;
@@ -89,11 +91,17 @@ class OpenchainRouter {
                 ) {
                     let path = [params.sellSymbol, params.buySymbol];
                     const ocxLocalPool = new this.web3.eth.Contract(ocxLocalPoolAbi, ocxLocalPoolAddress);
-                    const amountsOut = await ocxLocalPool.getAmountsOut(sellAmount, path).call;
-                    amountOutMin = this.web3.utils.toBN(amountsOut[amountsOut.length - 1])
-                        .mul(this.web3.utils.toBN(100 - SLIPPAGE_MAX))
-                        .div(this.web3.utils.toBN(100))
-                        .toString();
+                    const sellAmount = this.web3.utils.toHex(params.sellAmount);
+                    let ret = await ocxLocalPool.methods.getAmountsOut(sellAmount, path).call();
+                    if (!ret) {
+                        return { error: -2, data: "Failed to get best price" }
+                    }
+                    // let amountsOut = ret.amountOut;
+                    // amountOutMin = await this.web3.utils.fromWei(amountsOut, "ether");
+                    amountOutMin = ret.amountOut * (100 - SLIPPAGE_MAX) / 100;
+                        // .mul(this.web3.utils.toBN)
+                        // .div(this.web3.utils.toBN(100))
+                        // .toString();
                 } else {
 
                 }
@@ -106,7 +114,7 @@ class OpenchainRouter {
                 } else if (params.sellSymbol !== "ETH" && params.buySymbol === "ETH") {
                     path = [sellTokenAddress, WETH_ADDRESS];
                 } else {
-                    return { error: -2, data: "Illegal Swap Pair. Selling token must be different than token to buy" };
+                    return { error: -3, data: "Illegal Swap Pair. Selling token must be different than token to buy" };
                 }
                 const sellAmount = this.web3.utils.toHex(params.sellAmount);
 
