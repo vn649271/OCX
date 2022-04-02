@@ -96,7 +96,7 @@ contract OcxLocalPool {
 
         if (ret1 && ret2) {
             // Check if the pool exists
-            require(bFound, "swapEthToOcat(): -1");
+            require(bFound, "getAmountsOut(): -1");
             // Ensure that OCAT balance is more than 0
             require(ocatPoolBalance > 0, "getAmountsOut(): -2");
             // Calculate the output amount of OCAT 
@@ -105,7 +105,7 @@ contract OcxLocalPool {
             amountOut = ocatPoolBalance - newOcatPoolBalance;
         } else {
             // Check if the pool exists
-            require(bFound, "swapOcatToEth(): -4");
+            require(bFound, "getAmountsOut(): -4");
             // Ensure that OCAT balance is more than 0
             require(ethPoolBalance > 0, "getAmountsOut(): -5");
             // Calculate the output amount of OCAT 

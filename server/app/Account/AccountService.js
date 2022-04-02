@@ -370,7 +370,7 @@ class AccountService {
 
         sellAmount = web3.utils.toWei(sellAmount.toString(), "ether");
         try {
-            let ret = -1;
+            let ret = null;
             if (process.env.BLOCKCHAIN_EMULATOR != "ganache") {
                 ret = await web3.eth.personal.unlockAccount(myAddress, accountInfo.account_password, UNLOCK_ACCOUNT_INTERVAL)
                 if (!ret) {
@@ -439,8 +439,9 @@ class AccountService {
 
         try {
             // const signer = await this._getSigner(accountInfo, "ETH");
+            let ret = null;
             if (process.env.BLOCKCHAIN_EMULATOR != "ganache") {
-                let ret = await web3.eth.personal.unlockAccount(myAddress, accountInfo.account_password, UNLOCK_ACCOUNT_INTERVAL)
+                ret = await web3.eth.personal.unlockAccount(myAddress, accountInfo.account_password, UNLOCK_ACCOUNT_INTERVAL)
                 if (!ret) {
                     return { error: -250, data: "Failed to unlock for swapping" };
                 }
