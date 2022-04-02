@@ -80,7 +80,7 @@ contract OcxLocalPool {
     function getAmountsOut(
         uint256 sellAmount, 
         string[2] memory path
-    ) public returns(uint256 amountOut, uint8 poolIndex) {
+    ) public view returns(uint256 amountOut, uint8 poolIndex) {
         bool ret1 = _compareStrings(path[0], "ETH");
         bool ret2 = _compareStrings(path[1], "OCAT");
         bool ret3 = _compareStrings(path[0], "OCAT");
