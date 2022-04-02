@@ -65,6 +65,17 @@ class OpenchainRouter {
         }
     }
 
+    getOcxLocalPoolAddress() {
+        let ocxLocalPoolAddress = null; // OcxLocalPoolJson.networks['5'].address; // contract address in Goerli testnet
+
+        if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
+            ocxLocalPoolAddress = OcxLocalPoolJson.networks['5777'].address;
+        } else {
+            ocxLocalPoolAddress = OcxLocalPoolJson.networks['5'].address; // contract address in Goerli testnet
+        }
+        return ocxLocalPoolAddress;
+    }
+
     async getBestPrice(params) {
         if (params.sellSymbol === params.buySymbol) {
             return { error: -1, data: "Illegal operation. Selling token must be different than token to buy" };
@@ -73,23 +84,13 @@ class OpenchainRouter {
             let WETH_ADDRESS = GOERLI_CONTRACTS['WETH'];
             let sellTokenAddress = GOERLI_CONTRACTS[params.sellSymbol];
             let buyTokenAddress = GOERLI_CONTRACTS[params.buySymbol];
-            let ocxLocalPoolAddress = null; // OcxLocalPoolJson.networks['5'].address; // contract address in Goerli testnet
-
-            if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
-                WETH_ADDRESS = GANACHE_CONTRACTS['WETH'];
-                sellTokenAddress = GANACHE_CONTRACTS[params.sellSymbol];
-                buyTokenAddress = GANACHE_CONTRACTS[params.buySymbol];
-                ocxLocalPoolAddress = OcxLocalPoolJson.networks['5777'].address;
-            } else {
-                ocxLocalPoolAddress = OcxLocalPoolJson.networks['5'].address; // contract address in Goerli testnet
-            }
-
             let amountOutMin = 0;
             if (params.sellSymbol == 'OCAT' || params.buySymbol == 'OCAT') {
                 if ((params.sellSymbol == 'OCAT' && params.buySymbol == 'ETH') ||
                     (params.sellSymbol == 'ETH' && params.buySymbol == 'OCAT')
                 ) {
                     let path = [params.sellSymbol, params.buySymbol];
+                    let ocxLocalPoolAddress = this.getOcxLocalPoolAddress();
                     const ocxLocalPool = new this.web3.eth.Contract(ocxLocalPoolAbi, ocxLocalPoolAddress);
                     const sellAmount = this.web3.utils.toHex(params.sellAmount);
                     let ret = await ocxLocalPool.methods.getAmountsOut(sellAmount, path).call();
@@ -149,28 +150,46 @@ class OpenchainRouter {
                 erc20TokenAddress = GANACHE_CONTRACTS[params.buySymbol];
                 ourSwapContractAddress = GANACHE_CONTRACTS.OCX_EXCHANGE;
             }
-            const path = [WETH_ADDRESS, erc20TokenAddress];
-            const openchainSwap = new this.web3.eth.Contract(ocxSwapAbi, ourSwapContractAddress);
+            // const path = [WETH_ADDRESS, erc20TokenAddress];
             const sellAmountInHex = this.web3.utils.toHex(params.sellAmount);
             const buyAmountInHex = this.web3.utils.toHex(params.buyAmountMin);
-
-            let ret = await openchainSwap.methods.swapFromETH(
-                erc20TokenAddress,
-                buyAmountInHex,
-                params.deadline
-            ).send({
-                from: this.myAddress,
-                value: sellAmountInHex
-            })
-            console.log("@@@ OpenchainRouter.swapEthForToken(): ", ret);
-            return { error: 0, data: ret };
-        }
-        catch (error) {
+            let gasPrice = await this.web3.eth.getGasPrice();
+            gasPrice = (gasPrice * 1.2).toFixed(0);
+            if (params.buySymbol != "OCAT") {
+                const openchainSwap = new this.web3.eth.Contract(ocxSwapAbi, ourSwapContractAddress);
+    
+                let ret = await openchainSwap.methods.swapFromETH(
+                    erc20TokenAddress,
+                    buyAmountInHex,
+                    params.deadline
+                ).send({
+                    from: this.myAddress,
+                    value: sellAmountInHex
+                })
+                console.log("@@@ OpenchainRouter.swapEthForToken(): ", ret);
+                return { error: 0, data: ret };
+            } else {
+                let ocxLocalPoolAddress = this.getOcxLocalPoolAddress();
+                const ocxLocalPool = new this.web3.eth.Contract(ocxLocalPoolAbi, ocxLocalPoolAddress);
+                let ret = await ocxLocalPool.methods.swapEthToOcat(buyAmountInHex, this.myAddress, params.deadline)
+                .send({
+                    from: this.myAddress,
+                    value: sellAmountInHex,
+                    gas: "100000",
+                    gasPrice: gasPrice
+                });
+        
+                return { error: 0, data: ret };
+            }
+        } catch (error) {
             var errMsg = error ?
                 error.message ?
                     error.message.replace('Returned error: ', '') :
                     "Unknown error in send transaction for swap" :
                 error;
+            if (error.data !== undefined && error.data)  {
+                console.log(error.data);
+            }
             return { error: -400, data: errMsg };
         }
     }

@@ -6,27 +6,19 @@ let ocat = await OcatToken.deployed();
 // let weth = await WEthToken.deployed();
 // let wethAllowedAmount = web3.utils.toHex(10 * (10 ** 18));
 
-// await weth.approve(ocx.address, wethAllowedAmount);
-let ocatAllowedAmount = web3.utils.toHex(100 * (10 ** 18));
+// Approve 1000 OCAT
+let ocatAllowedAmount = await web3.utils.toWei("1000", "ether");
 await ocat.approve(ocx.address, ocatAllowedAmount);
 
-// Test addLiquidity()
-// await ocx.addLiquidity([weth.address, ocat.address], [wethAllowedAmount, ocatAllowedAmount])
-
-// Test addLiquidityWithETH()
-// Check previous ETH balance of OcxLocalPool
-let ocxEthBalance = await web3.eth.getBalance(ocx.address);
-await web3.utils.fromWei(ocxEthBalance, "ether");
-// = 0
-// Fund 5 ETH + 100 OCAT into OcxLocalPool
-let ethAmount = await web3.utils.toWei("5", "ether");
+// Fund 50 ETH + 1000 OCAT into OcxLocalPool
+let ethAmount = await web3.utils.toWei("50", "ether");
 await ocx.addLiquidityWithETH(ocat.address, ocatAllowedAmount, {value: ethAmount});
 ocxEthBalance = await web3.eth.getBalance(ocx.address);
 await web3.utils.fromWei(ocxEthBalance, "ether");
-// = 5 ETH
+// = 50 ETH
 let ocxOcatBalance = (await ocat.balanceOf(ocx.address)).toString();
 web3.utils.fromWei(ocxOcatBalance, "ether");
-// = 100 OCAT
+// = 1000 OCAT
 // Fund 50 OCAT to tester: "0x82919a8F7B3E052d4e53BBA5298e621276e8Da3C"
 let ocatFundAmount = web3.utils.toHex(50 * (10 ** 18));
 await ocat.transfer(lpAddress, ocatFundAmount);
