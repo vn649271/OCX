@@ -83,8 +83,8 @@ web3.utils.fromWei(ocxEthBalanceInWei, "ether");
 //****************************************************************************
 // Try to OcxLocalPool.swapEthToOcat()
 //****************************************************************************
-// Add 2 ETH into the pool
-let ethToSwap = await web3.utils.toWei("2", "ether");
+// Add 5 ETH into the pool
+let ethToSwap = await web3.utils.toWei("5", "ether");
 ret = await ocx.swapEthToOcat(0, lpAddress, 10000000000000, {value: ethToSwap});
 lpOcatBal = (await ocat.balanceOf(lpAddress)).toString()
 web3.utils.fromWei(lpOcatBal.toString(), "ether")

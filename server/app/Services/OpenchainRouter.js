@@ -258,7 +258,11 @@ class OpenchainRouter {
                     buyAmountInHex, 
                     this.myAddress, 
                     params.deadline
-                ).call();
+                ).send({
+                    from: this.myAddress,
+                    gas: "280000",
+                    gasPrice: gasPrice
+                });
         
                 return { error: 0, data: ret };
             }
@@ -280,7 +284,7 @@ class OpenchainRouter {
             if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
                 ocxExchangeAddress = GANACHE_CONTRACTS.OCX_EXCHANGE;
             }
-            const openchainSwap = new this.web3.eth.Contract(ocxSwapAbi, GOERLI_CONTRACTS.OCX_EXCHANGE);
+            const openchainSwap = new this.web3.eth.Contract(ocxSwapAbi, ocxExchangeAddress);
             let sellTokenAddress = GOERLI_CONTRACTS[params.sellSymbol];
             let buyTokenAddress = GOERLI_CONTRACTS[params.buySymbol];
             if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
@@ -289,7 +293,6 @@ class OpenchainRouter {
             }
             const path = [sellTokenAddress, buyTokenAddress];
             const sellAmountInHex = this.web3.utils.toHex(params.sellAmount);
-            let ret = null;
 
             // const buyAmountMinInHex = this.web3.utils.toHex(params.buyAmountMin);
             const buyAmountMinInHex = this.web3.utils.toHex("0");
@@ -299,29 +302,56 @@ class OpenchainRouter {
             if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
                 ocxExchangeAddress = GANACHE_CONTRACTS.OCX_EXCHANGE;
             }
-            ret = await sellTokenContract.methods.approve(ocxExchangeAddress, sellAmountInHex)
+            let ret = null;
+            if (params.sellSymbol != "OCAT" && params.buySymbol != "OCAT") {
+                ret = await sellTokenContract.methods.approve(ocxExchangeAddress, sellAmountInHex)
                 .send({
                     from: this.myAddress,
                 });
-            if (!ret) {
-                return { error: -250, data: "Failed to approve the ERC20 token for the contract" };
+                if (!ret) {
+                    return { error: -250, data: "Failed to approve the ERC20 token for the contract" };
+                }
+                ret = await openchainSwap.methods.swapForERC20(
+                    sellTokenAddress,
+                    sellAmountInHex,
+                    buyTokenAddress,
+                    buyAmountMinInHex,
+                    params.deadline
+                ).send({
+                    from: this.myAddress
+                })
+                if (!ret) {
+                    return { error: -251, data: "Failed to swap from ERC20 token to ETH" };
+                }
+                console.log("@@@ OpenchainRouter.swapTokenForToken(): ", ret);
+                return { error: 0, data: ret };
+            } else {
+                ret = await this.swapTokenForEth({
+                    sellSymbol: params.sellSymbol,
+                    buySymbol: "ETH",
+                    buyAmountMin: 0,
+                    deadline: params.deadline
+                });
+                if (!ret || ret.error != undefined) {
+                    return {error: -250, data: "Failed to cross-swap(1)"}
+                }
+                if (ret.error != 0) {
+                    return ret;
+                }
+                ret = await this.swapEthForToken({
+                    sellSymbol: "ETH",
+                    buySymbol: params.buySymbol,
+                    buyAmountMin: params.buyAmountMin,
+                    deadline: params.deadline
+                });
+                if (!ret || ret.error != undefined) {
+                    return {error: -251, data: "Failed to cross-swap(2)"}
+                }
+                if (ret.error != 0) {
+                    return ret;
+                }
             }
-            ret = await openchainSwap.methods.swapForERC20(
-                sellTokenAddress,
-                sellAmountInHex,
-                buyTokenAddress,
-                buyAmountMinInHex,
-                params.deadline
-            ).send({
-                from: this.myAddress
-            })
-            if (!ret) {
-                return { error: -251, data: "Failed to swap from ERC20 token to ETH" };
-            }
-            console.log("@@@ OpenchainRouter.swapTokenForToken(): ", ret);
-            return { error: 0, data: ret };
-        }
-        catch (error) {
+        } catch (error) {
             var errMsg = error ?
                 error.message ?
                     error.message.replace('Returned error: ', '') :
