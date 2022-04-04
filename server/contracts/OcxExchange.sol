@@ -84,13 +84,42 @@ contract OcxExchange {
         //     Do transferFrom
         TransferHelper.safeTransferFrom(_tokenIn, msg.sender, address(this), _amountIn);
 
-        // approve
-        require(sellTokenContract.approve(address(UNISWAP_ROUTER_ADDRESS), _amountIn), 'OcxExchange.swapToETH(): approve for the router failed.');
 
         address[] memory path = new address[](2);
         path[0] = address(_tokenIn);
         path[1] = uniswapRouter.WETH();
-        uniswapRouter.swapExactTokensForETH(_amountIn, _amountOutMin, path, msg.sender, _deadline);
+        if (_tokenIn != ocatAddress) {
+            // approve
+            require(
+                sellTokenContract.approve(
+                    address(UNISWAP_ROUTER_ADDRESS), 
+                    _amountIn
+                ), 
+                'OcxExchange.swapToETH(): approve for the router failed.'
+            );
+            uniswapRouter.swapExactTokensForETH(
+                _amountIn, 
+                _amountOutMin, 
+                path, 
+                msg.sender, 
+                _deadline
+            );
+        } else {
+            // approve
+            require(
+                sellTokenContract.approve(
+                    address(ocxLocalPoolAddress), 
+                    _amountIn
+                ), 
+                'OcxExchange.swapToETH(): approve for the router failed.'
+            );
+            OcxLocalPool(ocxLocalPoolAddress).swapOcatToEth(
+                _amountIn,
+                _amountOutMin, 
+                payable(msg.sender), 
+                _deadline
+            );
+        }
     }
 
     function swapForERC20(
