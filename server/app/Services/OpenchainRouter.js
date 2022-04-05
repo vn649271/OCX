@@ -7,6 +7,7 @@ const OcxExchangeJson = require('../../build/contracts/OcxExchange.json');
 const OcxLocalPoolJson = require('../../build/contracts/OcxLocalPool.json');
 const PawnNFTsJson = require('../../build/contracts/PawnNFTs.json');
 const ocatTokenJson = require('../../build/contracts/OcatToken.json');
+const OcxPriceOracleJson = require('../../build/contracts/ocxPriceOracleJson.json');
 
 const ocxSwapAbi = OcxExchangeJson.abi;
 const ocxLocalPoolAbi = OcxLocalPoolJson.abi;
@@ -74,6 +75,14 @@ class OpenchainRouter {
             ocxLocalPoolAddress = OcxLocalPoolJson.networks['5'].address; // contract address in Goerli testnet
         }
         return ocxLocalPoolAddress;
+    }
+
+    getOcxPriceOracleAddress() {
+        if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
+            return OcxPriceOracleJson.networks['5777'].address;
+        } else {
+            return OcxPriceOracleJson.networks['5'].address; // contract address in Goerli testnet
+        }
     }
 
     async getBestPrice(params) {
@@ -576,6 +585,22 @@ class OpenchainRouter {
                 error;
             return { error: -400, data: errMsg };
         }
+    }
+
+    getPriceList = async () => {
+        const priceOracleContract = new this.web3.eth.Contract(
+            OcxPriceOracleJson.abi, 
+            this.getOcxPriceOracleAddress()
+        );
+
+        let gasPrice = await this.web3.eth.getGasPrice();
+        gasPrice = (gasPrice * 1.2).toFixed(0);
+
+        ret = await priceOracleContract.methods.getPriceList().send({
+            from: this.myAddress,
+            gas: "280000",
+            gasPrice: gasPrice
+        });        
     }
 }
 

@@ -496,6 +496,15 @@ class AccountService {
             return { error: -300, data: errorMessage };
         }
     }
+
+    async getPriceList() {
+        const ocRouter = await openchainRouterInstance(web3, myAddress);
+        let ret = await ocRouter.getPriceList();
+        if (!ret || ret.data === undefined) {
+            return { error: -251, data: "Failed to calculate minimum amount out" };
+        }
+        return {error: 0, ret}
+    }
 };
 
 module.exports = AccountService;
