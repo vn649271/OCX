@@ -26,12 +26,12 @@ if (process.env.IPC_TYPE == "geth") {
     }
 } else if (process.env.IPC_TYPE == 'ganache') {
     ipcURL = "HTTP://127.0.0.1:7545"; // Ganache
-} else if (process.env.IPC_TYPE == 'moralis') {
-    ipcURL = "https://xpld8fecutzw.usemoralis.com:2053/server"
+} else if (process.env.IPC_TYPE == 'infura') {
+    ipcURL = "https://goerli.infura.io/v3/499740cc57444242b52f0c55033fcee0"
 }
     
 async function attachToGethIPC(ipcURL) {
-    if (process.env.IPC_TYPE === 'ganache' || process.env.IPC_TYPE === 'moralis') {
+    if (process.env.IPC_TYPE === 'ganache' || process.env.IPC_TYPE === 'infura') {
         let web3Provider = new Web3.providers.HttpProvider(ipcURL, net);
         web3 = new Web3(web3Provider);
         if (!web3) {

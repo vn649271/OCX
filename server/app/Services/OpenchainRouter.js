@@ -565,7 +565,7 @@ class OpenchainRouter {
             // let gasPrice = await this.web3.eth.getGasPrice();
             // gasPrice = (gasPrice * 1.2).toFixed(0);
     
-            let ret = await priceOracleContract.methods.getPrice("ETHUSD").send({
+            let ret = await priceOracleContract.methods.getEthUsdPrice().send({
                 from: this.myAddress,
                 gas: "500000",
                 // gasPrice: gasPrice
