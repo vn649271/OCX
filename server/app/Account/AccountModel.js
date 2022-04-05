@@ -157,14 +157,14 @@ function AccountModel() {
         }
         let accountInfo = accountSnapshot.data();
         let assets = accountInfo.assets;
-        if (process.env.BLOCKCHAIN_EMULATOR === 'ganache') {
+        if (process.env.IPC_TYPE === 'ganache') {
             assets = accountInfo.assets_ganache;
         }
         if (!assets) {
             assets = [];
         }
         assets.push(assetId);
-        if (process.env.BLOCKCHAIN_EMULATOR === 'ganache') {
+        if (process.env.IPC_TYPE === 'ganache') {
             return await accountRef.update({ assets_ganache: assets });
         }        
         return await accountRef.update({ assets: assets });

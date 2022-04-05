@@ -2,23 +2,26 @@ const IRouter = require('@uniswap/v2-periphery/build/IUniswapV2Router02.json')
 // const erc20 = require("@studydefi/money-legos/erc20")
 // const uniswap = require("@studydefi/money-legos/uniswap")
 
-const Erc20Json = require('../../build/contracts/ERC20.json');
-const OcxExchangeJson = require('../../build/contracts/OcxExchange.json');
-const OcxLocalPoolJson = require('../../build/contracts/OcxLocalPool.json');
-const PawnNFTsJson = require('../../build/contracts/PawnNFTs.json');
-const ocatTokenJson = require('../../build/contracts/OcatToken.json');
-const OcxPriceOracleJson = require('../../build/contracts/ocxPriceOracleJson.json');
+const Erc20_DeployedInfo = require('../../build/contracts/ERC20.json');
+const OcxExchange_DeployedInfo = require('../../build/contracts/OcxExchange.json');
+const OcxLocalPool_DeployedInfo = require('../../build/contracts/OcxLocalPool.json');
+const Pnft_DeployedInfo = require('../../build/contracts/PawnNFTs.json');
+const OcatToken_DeployedInfo = require('../../build/contracts/OcatToken.json');
+const OcxPriceOracle_DeployedInfo = require('../../build/contracts/OcxPriceOracle.json');
 
-const ocxSwapAbi = OcxExchangeJson.abi;
-const ocxLocalPoolAbi = OcxLocalPoolJson.abi;
-const pawnNftAbi = PawnNFTsJson.abi;
-const ocatAbi = ocatTokenJson.abi;
-const erc20Abi = Erc20Json.abi;
+const ocxSwapAbi = OcxExchange_DeployedInfo.abi;
+const ocxLocalPoolAbi = OcxLocalPool_DeployedInfo.abi;
+const pawnNftAbi = Pnft_DeployedInfo.abi;
+const ocatAbi = OcatToken_DeployedInfo.abi;
+const erc20Abi = Erc20_DeployedInfo.abi;
 
 const { 
     UniswapV2Router02Address, 
-    GOERLI_CONTRACTS,
-    GANACHE_CONTRACTS,
+    ContractAddressMap,
+    ChainIDMap
+    // MAINNET_CONTRACTS,
+    // GOERLI_CONTRACTS,
+    // GANACHE_CONTRACTS,
 } = require("./Erc20Abi");
 
 const DEFAULT_DEADLINE = 300;   // 300s = 5min
@@ -36,7 +39,7 @@ class OpenchainRouter {
     }
 
     async setDeveloperAccount() {
-        if (process.env.BLOCKCHAIN_EMULATOR == "ganache") {
+        if (process.env.IPC_TYPE == "ganache") {
             let accounts = await this.web3.eth.personal.getAccounts();
             this.myAddress = accounts[1];
             console.log("*************** My Address: ", self.myAddress);
@@ -45,10 +48,10 @@ class OpenchainRouter {
 
     async getBalance(symbol) {
         try {
-            let tokenContractAddress = GOERLI_CONTRACTS[symbol];
-            if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
-                tokenContractAddress = GANACHE_CONTRACTS[symbol];
-            }
+            let chainType = process.env.IPC_TYPE;
+            let chainName = process.env.CHAIN_NAME;
+            let tokenContractAddress = ContractAddressMap[chainType][chainName][symbol];
+
             const tokenContract = new this.web3.eth.Contract(erc20Abi, tokenContractAddress);
             let balanceInWei = await tokenContract.methods.balanceOf(this.myAddress).call();
             let decimals = await tokenContract.methods.decimals().call();
@@ -66,23 +69,12 @@ class OpenchainRouter {
         }
     }
 
-    getOcxLocalPoolAddress() {
-        let ocxLocalPoolAddress = null; // OcxLocalPoolJson.networks['5'].address; // contract address in Goerli testnet
-
-        if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
-            ocxLocalPoolAddress = OcxLocalPoolJson.networks['5777'].address;
-        } else {
-            ocxLocalPoolAddress = OcxLocalPoolJson.networks['5'].address; // contract address in Goerli testnet
-        }
-        return ocxLocalPoolAddress;
-    }
-
-    getOcxPriceOracleAddress() {
-        if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
-            return OcxPriceOracleJson.networks['5777'].address;
-        } else {
-            return OcxPriceOracleJson.networks['5'].address; // contract address in Goerli testnet
-        }
+    getContractAddress(ContractJson) {
+        return ContractJson.networks[
+            ChainIDMap[process.env.IPC_TYPE][process.env.CHAIN_NAME]
+        ] ? ContractJson.networks[
+            ChainIDMap[process.env.IPC_TYPE][process.env.CHAIN_NAME]
+        ].address: null;
     }
 
     async getBestPrice(params) {
@@ -99,7 +91,7 @@ class OpenchainRouter {
                     (params.sellSymbol == 'ETH' && params.buySymbol == 'OCAT')
                 ) {
                     let path = [params.sellSymbol, params.buySymbol];
-                    let ocxLocalPoolAddress = this.getOcxLocalPoolAddress();
+                    let ocxLocalPoolAddress = this.getContractAddress(OcxLocalPool_DeployedInfo);
                     const ocxLocalPool = new this.web3.eth.Contract(ocxLocalPoolAbi, ocxLocalPoolAddress);
                     const sellAmount = this.web3.utils.toHex(params.sellAmount);
                     let ret = await ocxLocalPool.methods.getAmountsOut(sellAmount, path).call();
@@ -150,16 +142,11 @@ class OpenchainRouter {
 
     async swapEthForToken(params) {
         try {
-            let WETH_ADDRESS = GOERLI_CONTRACTS['WETH'];
-            let erc20TokenAddress = GOERLI_CONTRACTS[params.buySymbol];
-            let ocxExchangeAddress = GOERLI_CONTRACTS.OCX_EXCHANGE;
+            let chainType = process.env.IPC_TYPE;
+            let chainName = process.env.CHAIN_NAME;
+            let erc20TokenAddress = ContractAddressMap[chainType][chainName][buySymbol];
+            let ocxExchangeAddress = ContractAddressMap[chainType][chainName].OCX_EXCHANGE;
 
-            if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
-                WETH_ADDRESS = GANACHE_CONTRACTS['WETH'];
-                erc20TokenAddress = GANACHE_CONTRACTS[params.buySymbol];
-                ocxExchangeAddress = GANACHE_CONTRACTS.OCX_EXCHANGE;
-            }
-            // const path = [WETH_ADDRESS, erc20TokenAddress];
             const sellAmountInHex = this.web3.utils.toHex(params.sellAmount);
             const buyAmountInHex = this.web3.utils.toHex(params.buyAmountMin);
             let gasPrice = await this.web3.eth.getGasPrice();
@@ -178,7 +165,7 @@ class OpenchainRouter {
                 console.log("@@@ OpenchainRouter.swapEthForToken(): ", ret);
                 return { error: 0, data: ret };
             } else {
-                let ocxLocalPoolAddress = this.getOcxLocalPoolAddress();
+                let ocxLocalPoolAddress = this.getContractAddress(OcxLocalPool_DeployedInfo);
                 const ocxLocalPool = new this.web3.eth.Contract(ocxLocalPoolAbi, ocxLocalPoolAddress);
                 let ret = await ocxLocalPool.methods.swapEthToOcat(buyAmountInHex, this.myAddress, params.deadline)
                 .send({
@@ -205,14 +192,11 @@ class OpenchainRouter {
 
     async swapTokenForEth(params) {
         try {
-            let ocxExchangeAddress = GOERLI_CONTRACTS.OCX_EXCHANGE;
-            if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
-                ocxExchangeAddress = GANACHE_CONTRACTS.OCX_EXCHANGE;
-            }
-            let erc20TokenAddress = GOERLI_CONTRACTS[params.sellSymbol];
-            if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
-                erc20TokenAddress = GANACHE_CONTRACTS[params.sellSymbol];
-            }
+            let chainType = process.env.IPC_TYPE;
+            let chainName = process.env.CHAIN_NAME;
+            let erc20TokenAddress = ContractAddressMap[chainType][chainName][params.sellSymbol];
+            let ocxExchangeAddress = ContractAddressMap[chainType][chainName].OCX_EXCHANGE;
+
             const sellAmountInHex = this.web3.utils.toHex(params.sellAmount);
             const buyAmountInHex = this.web3.utils.toHex(params.buyAmountMin);
             let ret = null;
@@ -241,11 +225,9 @@ class OpenchainRouter {
                 console.log("@@@ OpenchainRouter.swapTokenForEth(): ", ret);
                 return { error: 0, data: ret };                
             } else {
-                let ocxLocalPoolAddress = this.getOcxLocalPoolAddress();
-                let ocatContractAddress = GOERLI_CONTRACTS.OCAT;
-                if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
-                    ocatContractAddress = GANACHE_CONTRACTS.OCAT;
-                }
+                let ocxLocalPoolAddress = this.getContractAddress(OcxLocalPool_DeployedInfo);
+                let ocatContractAddress = this.getContractAddress(OcatToken_DeployedInfo);
+
                 const ocatContract = new this.web3.eth.Contract(ocatAbi, ocatContractAddress);
                 let gasPrice = await this.web3.eth.getGasPrice();
                 gasPrice = (gasPrice * 1.2).toFixed(0);
@@ -289,28 +271,25 @@ class OpenchainRouter {
 
     async swapTokenForToken(params) {
         try {
-            let ocxExchangeAddress = GOERLI_CONTRACTS.OCX_EXCHANGE;
-            if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
-                ocxExchangeAddress = GANACHE_CONTRACTS.OCX_EXCHANGE;
-            }
-            const openchainSwap = new this.web3.eth.Contract(ocxSwapAbi, ocxExchangeAddress);
-            let sellTokenAddress = GOERLI_CONTRACTS[params.sellSymbol];
-            let buyTokenAddress = GOERLI_CONTRACTS[params.buySymbol];
-            if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
-                sellTokenAddress = GANACHE_CONTRACTS[params.sellSymbol];
-                buyTokenAddress = GANACHE_CONTRACTS[params.buySymbol];
-            }
+            let ocxExchangeAddress = this.getContractAddress(OcxExchange_DeployedInfo);
+            const openchainSwap = new this.web3.eth.Contract(
+                OcxExchange_DeployedInfo.abi, 
+                ocxExchangeAddress
+            );
+
+            let chainType = process.env.IPC_TYPE;
+            let chainName = process.env.CHAIN_NAME;
+
+            let sellTokenAddress = ContractAddressMap[chainType][chainName][params.sellSymbol];
+            let buyTokenAddress = ContractAddressMap[chainType][chainName][params.buySymbol];
+
             const path = [sellTokenAddress, buyTokenAddress];
             const sellAmountInHex = this.web3.utils.toHex(params.sellAmount);
 
             // const buyAmountMinInHex = this.web3.utils.toHex(params.buyAmountMin);
             const buyAmountMinInHex = this.web3.utils.toHex("0");
-
             const sellTokenContract = new this.web3.eth.Contract(erc20Abi, sellTokenAddress);
 
-            if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
-                ocxExchangeAddress = GANACHE_CONTRACTS.OCX_EXCHANGE;
-            }
             let ret = null;
             if (params.sellSymbol != "OCAT" && params.buySymbol != "OCAT") {
                 ret = await sellTokenContract.methods.approve(ocxExchangeAddress, sellAmountInHex)
@@ -414,11 +393,8 @@ class OpenchainRouter {
             return { error: -2, data: "Invalid asset data" };
         }
         try {
-            let pnftContractAddress = GOERLI_CONTRACTS.PNFT;
-            if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
-                pnftContractAddress = GANACHE_CONTRACTS.PNFT;
-            }
-            let pawnNftContract = new this.web3.eth.Contract(pawnNftAbi, pnftContractAddress);
+            let pnftContractAddress = this.getContractAddress(Pnft_DeployedInfo);
+            let pawnNftContract = new this.web3.eth.Contract(Pnft_DeployedInfo.abi, pnftContractAddress);
             let priceInWei = this.web3.utils.toWei(assetInfo.estimated_ocat, "ether");
             let ret = await pawnNftContract.methods.mintPawnNFT(
                 assetInfo.asset_name, 
@@ -467,13 +443,9 @@ class OpenchainRouter {
             return { error: -2, data: "Invalid pawning data" };
         }
         try {
-            let pnftContractAddress = GOERLI_CONTRACTS.PNFT;
-            let ocxExchangeAddress = GOERLI_CONTRACTS.OCX_EXCHANGE;
-            if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
-                ocxExchangeAddress = GANACHE_CONTRACTS.OCX_EXCHANGE;
-                pnftContractAddress = GANACHE_CONTRACTS.PNFT;
-            }
-            const pnftContract = new this.web3.eth.Contract(pawnNftAbi, pnftContractAddress);
+            let pnftContractAddress = this.getContractAddress(Pnft_DeployedInfo);
+            let ocxExchangeAddress = this.getContractAddress(OcxExchange_DeployedInfo);
+            const pnftContract = new this.web3.eth.Contract(Pnft_DeployedInfo.abi, pnftContractAddress);
             if (assetInfo.nft_id === undefined) {
                 return { error: -250, data: "Could not to find ID for the pawning NFT" };
             }
@@ -529,15 +501,11 @@ class OpenchainRouter {
             return { error: -2, data: "Invalid pawning data" };
         }
         try {
-            let pnftContractAddress = GOERLI_CONTRACTS.PNFT;
-            let ocatContractAddress = GOERLI_CONTRACTS.OCAT;
-            let ocxExchangeAddress = GOERLI_CONTRACTS.OCX_EXCHANGE;
-            if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
-                ocxExchangeAddress = GANACHE_CONTRACTS.OCX_EXCHANGE;
-                pnftContractAddress = GANACHE_CONTRACTS.PNFT;
-                ocatContractAddress = GANACHE_CONTRACTS.OCAT;
-            }
-            const pnftContract = new this.web3.eth.Contract(pawnNftAbi, pnftContractAddress);
+            let pnftContractAddress = this.getContractAddress(Pnft_DeployedInfo);
+            let ocatContractAddress = this.getContractAddress(OcatToken_DeployedInfo);
+            let ocxExchangeAddress = this.getContractAddress(OcxExchange_DeployedInfo);
+
+            const pnftContract = new this.web3.eth.Contract(Pnft_DeployedInfo.abi, pnftContractAddress);
             let ret = await pnftContract.methods.allPawnNFTs(assetInfo.nft_id).call(); //().
             if (!ret || ret.price === undefined || !ret.price) {
                 return { error: -250, data: "Failed to get OCAT for the pawning NFT" };
@@ -589,18 +557,23 @@ class OpenchainRouter {
 
     getPriceList = async () => {
         const priceOracleContract = new this.web3.eth.Contract(
-            OcxPriceOracleJson.abi, 
-            this.getOcxPriceOracleAddress()
+            OcxPriceOracle_DeployedInfo.abi, 
+            this.getContractAddress(OcxPriceOracle_DeployedInfo)
         );
 
-        let gasPrice = await this.web3.eth.getGasPrice();
-        gasPrice = (gasPrice * 1.2).toFixed(0);
-
-        ret = await priceOracleContract.methods.getPriceList().send({
-            from: this.myAddress,
-            gas: "280000",
-            gasPrice: gasPrice
-        });        
+        try {
+            // let gasPrice = await this.web3.eth.getGasPrice();
+            // gasPrice = (gasPrice * 1.2).toFixed(0);
+    
+            let ret = await priceOracleContract.methods.getPrice("ETHUSD").send({
+                from: this.myAddress,
+                gas: "500000",
+                // gasPrice: gasPrice
+            });
+            return ret;
+        } catch (error) {
+            return error;
+        }
     }
 }
 

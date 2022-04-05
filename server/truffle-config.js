@@ -44,7 +44,7 @@ module.exports = {
     ganache: {
       provider: () => new HDWalletProvider(mnemonic_development, `http://127.0.0.1:7545`),
       network_id: "5777",       // Any network (default: none)
-      from: "0x82919a8F7B3E052d4e53BBA5298e621276e8Da3C",        // Account to send txs from (default: accounts[0])
+      // from: "0x82919a8F7B3E052d4e53BBA5298e621276e8Da3C",        // Account to send txs from (default: accounts[0])
     },
     // Another network with more advanced options...
     // advanced: {
@@ -67,6 +67,7 @@ module.exports = {
     },
     goerli: {
       provider: () => new HDWalletProvider(mnemonic, `http://127.0.0.1:8545`),
+      // provider: () => new HDWalletProvider(mnemonic, `https://ropsten.infura.io/v3/YOUR-PROJECT-ID`),
       network_id: "5",       // Any network (default: none)
       gas: 8700000,          // Gas for goerli
       gasPrice: 10000000000,

@@ -16,8 +16,6 @@ const { ethers } = require("ethers")
 const OUR_TOKENS = ["ETH", "UNI", "DAI", "PNFT", "OCAT"];
 
 const UNLOCK_ACCOUNT_INTERVAL = process.env.UNLOCK_ACCOUNT_INTERVAL || 15000; // 15s
-const CHAIN_NAME = process.env.CHAIN_NAME || "goerli";
-const CHAIN_ID = process.env.CHAIN_ID || 5;
 
 var gTokenList = {};
 var gPriceList = {};
@@ -304,7 +302,7 @@ class AccountService {
         myEthAddress = addresses[token];
         var amountToSend = web3.utils.toWei(toAmount.toString(), "ether");
         try {
-            if (process.env.BLOCKCHAIN_EMULATOR != "ganache") {
+            if (process.env.IPC_TYPE != "ganache") {
                 let ret = await web3.eth.personal.unlockAccount(myEthAddress, accountInfo.account_password, UNLOCK_ACCOUNT_INTERVAL);
                 if (!ret) {
                     return { error: -250, data: "Failed to unlock for sending" };
@@ -371,7 +369,7 @@ class AccountService {
         sellAmount = web3.utils.toWei(sellAmount.toString(), "ether");
         try {
             let ret = null;
-            if (process.env.BLOCKCHAIN_EMULATOR != "ganache") {
+            if (process.env.IPC_TYPE != "ganache") {
                 ret = await web3.eth.personal.unlockAccount(myAddress, accountInfo.account_password, UNLOCK_ACCOUNT_INTERVAL)
                 if (!ret) {
                     return { error: -250, data: "Failed to unlock for swapping" };
@@ -440,7 +438,7 @@ class AccountService {
         try {
             // const signer = await this._getSigner(accountInfo, "ETH");
             let ret = null;
-            if (process.env.BLOCKCHAIN_EMULATOR != "ganache") {
+            if (process.env.IPC_TYPE != "ganache") {
                 ret = await web3.eth.personal.unlockAccount(myAddress, accountInfo.account_password, UNLOCK_ACCOUNT_INTERVAL)
                 if (!ret) {
                     return { error: -250, data: "Failed to unlock for swapping" };
@@ -498,12 +496,12 @@ class AccountService {
     }
 
     async getPriceList() {
-        const ocRouter = await openchainRouterInstance(web3, myAddress);
+        const ocRouter = await openchainRouterInstance(web3, null);
         let ret = await ocRouter.getPriceList();
         if (!ret || ret.data === undefined) {
             return { error: -251, data: "Failed to calculate minimum amount out" };
         }
-        return {error: 0, ret}
+        return {error: 0, data: ret}
     }
 };
 

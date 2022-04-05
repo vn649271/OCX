@@ -5,46 +5,46 @@ const net = require('net');
 var fs = require("fs");
 const { json } = require('body-parser');
 
-const CHAIN_NAME = process.env.CHAIN_NAME || "goerli";
+const CHAIN_NAME = process.env.CHAIN_NAME == 'main' ? '' : process.env.CHAIN_NAME;
 const CHAIN_ID = process.env.CHAIN_ID || 5;
 const MSG__GETH_NOT_READY = "Geth node is not ready yet. Please retry a while later.";
 
 var gethIpcTimer = null;
 var web3 = null;
-var gethProvider = null;
 
-// For Linux
-var GETH_DATA_DIR = process.env.HOME + "/.ethereum/" + CHAIN_NAME
-var ipcPath = GETH_DATA_DIR + "/geth.ipc";
+var ipcURL = null;
 
-// For Windows
-if (process.platform.search('win32') >= 0) {
-    GETH_DATA_DIR = process.env.LOCALAPPDATA + "\\Ethereum\\" + CHAIN_NAME;
-    ipcPath = "\\\\.\\pipe\\geth.ipc";
-}
-
-// In case of Ganache
-if (process.env.BLOCKCHAIN_EMULATOR !== undefined &&
-process.env.BLOCKCHAIN_EMULATOR !== null &&
-process.env.BLOCKCHAIN_EMULATOR === "ganache") {
-    ipcPath = "HTTP://127.0.0.1:7545"; // Ganache
+if (process.env.IPC_TYPE == "geth") {
+    // For Linux
+    var GETH_DATA_DIR = process.env.HOME + "/.ethereum/" + CHAIN_NAME
+    ipcURL = GETH_DATA_DIR + "/geth.ipc";
+    
+    // For Windows
+    if (process.platform.search('win32') >= 0) {
+        GETH_DATA_DIR = process.env.LOCALAPPDATA + "\\Ethereum\\" + CHAIN_NAME;
+        ipcURL = "\\\\.\\pipe\\geth.ipc";
+    }
+} else if (process.env.IPC_TYPE == 'ganache') {
+    ipcURL = "HTTP://127.0.0.1:7545"; // Ganache
+} else if (process.env.IPC_TYPE == 'moralis') {
+    ipcURL = "https://xpld8fecutzw.usemoralis.com:2053/server"
 }
     
-async function attachToGethIPC(ipcPath) {
-    if (process.env.BLOCKCHAIN_EMULATOR === "ganache") {
-        gethProvider = new Web3.providers.HttpProvider(ipcPath, net);
-        web3 = new Web3(gethProvider);
+async function attachToGethIPC(ipcURL) {
+    if (process.env.IPC_TYPE === 'ganache' || process.env.IPC_TYPE === 'moralis') {
+        let web3Provider = new Web3.providers.HttpProvider(ipcURL, net);
+        web3 = new Web3(web3Provider);
         if (!web3) {
             return;
         }
         clearTimeout(gethIpcTimer);
         gethIpcTimer = null;
-        console.log("Attached to Ganache RPC successfully");
-    } else {
-        fs.access(ipcPath, (err) => {
+        console.log("Attached to " + process.env.IPC_TYPE.toUpperCase() + " RPC successfully");
+    } else if (process.env.IPC_TYPE === 'geth') {
+        fs.access(ipcURL, (err) => {
             if (!err) {
-                gethProvider = new Web3.providers.IpcProvider(ipcPath, net);
-                web3 = new Web3(gethProvider);
+                let web3Provider = new Web3.providers.web3Provider(ipcURL, net);
+                web3 = new Web3(web3Provider);
                 if (!web3) {
                     return;
                 }
@@ -58,7 +58,7 @@ async function attachToGethIPC(ipcPath) {
     }
 }
 
-gethIpcTimer = setTimeout(attachToGethIPC, 10000, ipcPath);
+gethIpcTimer = setTimeout(attachToGethIPC, 10000, ipcURL);
 
 getWeb3Obj = (initWeb3) => {
     initWeb3(web3);
