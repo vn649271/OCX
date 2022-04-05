@@ -1,0 +1,2217 @@
+{
+  "contractName": "IWitnetPriceRouter",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "erc2362ID",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "contract IERC165",
+          "name": "pricefeed",
+          "type": "address"
+        }
+      ],
+      "name": "CurrencyPairSet",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "_id",
+          "type": "bytes32"
+        }
+      ],
+      "name": "valueFor",
+      "outputs": [
+        {
+          "internalType": "int256",
+          "name": "",
+          "type": "int256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "name": "currencyPairId",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "_erc2362id",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getPriceFeed",
+      "outputs": [
+        {
+          "internalType": "contract IERC165",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract IERC165",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "getPriceFeedCaption",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "_erc2362id",
+          "type": "bytes32"
+        }
+      ],
+      "name": "lookupERC2362ID",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract IERC165",
+          "name": "_pricefeed",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_decimals",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "_base",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "_quote",
+          "type": "string"
+        }
+      ],
+      "name": "setPriceFeed",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "supportedCurrencyPairs",
+      "outputs": [
+        {
+          "internalType": "bytes32[]",
+          "name": "",
+          "type": "bytes32[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "_erc2362id",
+          "type": "bytes32"
+        }
+      ],
+      "name": "supportsCurrencyPair",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract IERC165",
+          "name": "_priceFeed",
+          "type": "address"
+        }
+      ],
+      "name": "supportsPriceFeed",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.4+commit.c7e474f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"erc2362ID\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"contract IERC165\",\"name\":\"pricefeed\",\"type\":\"address\"}],\"name\":\"CurrencyPairSet\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"name\":\"currencyPairId\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_erc2362id\",\"type\":\"bytes32\"}],\"name\":\"getPriceFeed\",\"outputs\":[{\"internalType\":\"contract IERC165\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IERC165\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"getPriceFeedCaption\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_erc2362id\",\"type\":\"bytes32\"}],\"name\":\"lookupERC2362ID\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IERC165\",\"name\":\"_pricefeed\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_decimals\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"_base\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_quote\",\"type\":\"string\"}],\"name\":\"setPriceFeed\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"supportedCurrencyPairs\",\"outputs\":[{\"internalType\":\"bytes32[]\",\"name\":\"\",\"type\":\"bytes32[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_erc2362id\",\"type\":\"bytes32\"}],\"name\":\"supportsCurrencyPair\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract IERC165\",\"name\":\"_priceFeed\",\"type\":\"address\"}],\"name\":\"supportsPriceFeed\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_id\",\"type\":\"bytes32\"}],\"name\":\"valueFor\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"author\":\"The Witnet Foundation.\",\"details\":\"Guides implementation of price feeds aggregation contracts.\",\"events\":{\"CurrencyPairSet(bytes32,address)\":{\"details\":\"See https://github.com/adoracles/ADOIPs/blob/main/adoip-0010.md to learn how these ids are created.\"}},\"kind\":\"dev\",\"methods\":{\"getPriceFeedCaption(address)\":{\"details\":\"Should fail if the given price feed contract address is not currentlyregistered in the router.\"},\"setPriceFeed(address,uint256,string,string)\":{\"details\":\"Setting zero address to a currency pair implies that it will not be served any longer.Otherwise, should fail if the price feed contract does not support the `IWitnetPriceFeed` interface,or if given price feed is already serving another currency pair (within this WitnetPriceRouter instance).\"},\"valueFor(bytes32)\":{\"details\":\"Exposed function pertaining to EIP standards\",\"params\":{\"_id\":\"bytes32 ID of the query\"},\"returns\":{\"_0\":\"int,uint,uint returns the value, timestamp, and status code of query\"}}},\"title\":\"The Witnet Price Router basic interface.\",\"version\":1},\"userdoc\":{\"events\":{\"CurrencyPairSet(bytes32,address)\":{\"notice\":\"Emitted everytime a currency pair is attached to a new price feed contract\"}},\"kind\":\"user\",\"methods\":{\"currencyPairId(string)\":{\"notice\":\"Helper pure function: returns hash of the provided ERC2362-compliant currency pair caption (aka ID).\"},\"getPriceFeed(bytes32)\":{\"notice\":\"Returns the ERC-165-compliant price feed contract currently serving  updates on the given currency pair.\"},\"getPriceFeedCaption(address)\":{\"notice\":\"Returns human-readable ERC2362-based caption of the currency pair being served by the given price feed contract address. \"},\"lookupERC2362ID(bytes32)\":{\"notice\":\"Returns human-readable caption of the ERC2362-based currency pair identifier, if known.\"},\"setPriceFeed(address,uint256,string,string)\":{\"notice\":\"Register a price feed contract that will serve updates for the given currency pair.\"},\"supportedCurrencyPairs()\":{\"notice\":\"Returns list of known currency pairs IDs.\"},\"supportsCurrencyPair(bytes32)\":{\"notice\":\"Returns `true` if given pair is currently being served by a compliant price feed contract.\"},\"supportsPriceFeed(address)\":{\"notice\":\"Returns `true` if given price feed contract is currently serving updates to any known currency pair. \"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"witnet-solidity-bridge/contracts/interfaces/IWitnetPriceRouter.sol\":\"IWitnetPriceRouter\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"ado-contracts/contracts/interfaces/IERC2362.sol\":{\"keccak256\":\"0x4df66aa83b94d7c3d52aba3522b6eeafc19f2c45299b7c871ef46eb199ee4f6b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://0af92023c38ab97a95fb7e2a196a697cfc1d90bb1b8bfe73e0ba69cbb7a8f5ab\",\"dweb:/ipfs/QmVSBWxe2QCZvAxiuTfEwprK9MbDtFNptoWeMBbmUcwQnx\"]},\"witnet-solidity-bridge/contracts/interfaces/IERC165.sol\":{\"keccak256\":\"0x14a404607f920aa7ce19e17a0abce07d317c95b427fd8ca7b4aaf0b2999d4847\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://c77d9a8e0d77524a2d69f3f7b1739273b277ca99023ecfe02a63c1b47019defe\",\"dweb:/ipfs/QmaLmP6qsWft2VVg6eZznAYsjL11QvThuEazFbnBunaKYn\"]},\"witnet-solidity-bridge/contracts/interfaces/IWitnetPriceRouter.sol\":{\"keccak256\":\"0xeabd84fc5a5676dc88de213245b7199e50bc11af174ebb1a5ef460ba262a7276\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://dc012a3ac758981fd38e08f3727f4e9083e651be231d023077277b9aaddc8794\",\"dweb:/ipfs/QmeWu2BVad6UPWFqmnLN7r85ANKWBVBs5dKcNy7bqwTJqJ\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: MIT\npragma solidity >=0.7.0 <0.9.0;\npragma experimental ABIEncoderV2;\n\nimport \"ado-contracts/contracts/interfaces/IERC2362.sol\";\nimport \"./IERC165.sol\";\n\n/// @title The Witnet Price Router basic interface.\n/// @dev Guides implementation of price feeds aggregation contracts.\n/// @author The Witnet Foundation.\nabstract contract IWitnetPriceRouter\n    is\n        IERC2362 \n{\n    /// Emitted everytime a currency pair is attached to a new price feed contract\n    /// @dev See https://github.com/adoracles/ADOIPs/blob/main/adoip-0010.md \n    /// @dev to learn how these ids are created.\n    event CurrencyPairSet(bytes32 indexed erc2362ID, IERC165 pricefeed);\n\n    /// Helper pure function: returns hash of the provided ERC2362-compliant currency pair caption (aka ID).\n    function currencyPairId(string memory) external pure virtual returns (bytes32);\n\n    /// Returns the ERC-165-compliant price feed contract currently serving \n    /// updates on the given currency pair.\n    function getPriceFeed(bytes32 _erc2362id) external view virtual returns (IERC165);\n\n    /// Returns human-readable ERC2362-based caption of the currency pair being\n    /// served by the given price feed contract address. \n    /// @dev Should fail if the given price feed contract address is not currently\n    /// @dev registered in the router.\n    function getPriceFeedCaption(IERC165) external view virtual returns (string memory);\n\n    /// Returns human-readable caption of the ERC2362-based currency pair identifier, if known.\n    function lookupERC2362ID(bytes32 _erc2362id) external view virtual returns (string memory);\n\n    /// Register a price feed contract that will serve updates for the given currency pair.\n    /// @dev Setting zero address to a currency pair implies that it will not be served any longer.\n    /// @dev Otherwise, should fail if the price feed contract does not support the `IWitnetPriceFeed` interface,\n    /// @dev or if given price feed is already serving another currency pair (within this WitnetPriceRouter instance).\n    function setPriceFeed(\n            IERC165 _pricefeed,\n            uint256 _decimals,\n            string calldata _base,\n            string calldata _quote\n        )\n        external virtual;\n\n    /// Returns list of known currency pairs IDs.\n    function supportedCurrencyPairs() external view virtual returns (bytes32[] memory);\n\n    /// Returns `true` if given pair is currently being served by a compliant price feed contract.\n    function supportsCurrencyPair(bytes32 _erc2362id) external view virtual returns (bool);\n\n    /// Returns `true` if given price feed contract is currently serving updates to any known currency pair. \n    function supportsPriceFeed(IERC165 _priceFeed) external view virtual returns (bool);\n}\n",
+  "sourcePath": "witnet-solidity-bridge/contracts/interfaces/IWitnetPriceRouter.sol",
+  "ast": {
+    "absolutePath": "witnet-solidity-bridge/contracts/interfaces/IWitnetPriceRouter.sol",
+    "exportedSymbols": {
+      "IERC165": [
+        7909
+      ],
+      "IERC2362": [
+        2965
+      ],
+      "IWitnetPriceRouter": [
+        7997
+      ]
+    },
+    "id": 7998,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 7911,
+        "literals": [
+          "solidity",
+          ">=",
+          "0.7",
+          ".0",
+          "<",
+          "0.9",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "32:31:31"
+      },
+      {
+        "id": 7912,
+        "literals": [
+          "experimental",
+          "ABIEncoderV2"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "64:33:31"
+      },
+      {
+        "absolutePath": "ado-contracts/contracts/interfaces/IERC2362.sol",
+        "file": "ado-contracts/contracts/interfaces/IERC2362.sol",
+        "id": 7913,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 7998,
+        "sourceUnit": 2966,
+        "src": "99:57:31",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "witnet-solidity-bridge/contracts/interfaces/IERC165.sol",
+        "file": "./IERC165.sol",
+        "id": 7914,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 7998,
+        "sourceUnit": 7910,
+        "src": "157:23:31",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": true,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 7916,
+              "name": "IERC2362",
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 2965,
+              "src": "390:8:31"
+            },
+            "id": 7917,
+            "nodeType": "InheritanceSpecifier",
+            "src": "390:8:31"
+          }
+        ],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": {
+          "id": 7915,
+          "nodeType": "StructuredDocumentation",
+          "src": "182:156:31",
+          "text": "@title The Witnet Price Router basic interface.\n @dev Guides implementation of price feeds aggregation contracts.\n @author The Witnet Foundation."
+        },
+        "fullyImplemented": false,
+        "id": 7997,
+        "linearizedBaseContracts": [
+          7997,
+          2965
+        ],
+        "name": "IWitnetPriceRouter",
+        "nameLocation": "356:18:31",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "anonymous": false,
+            "documentation": {
+              "id": 7918,
+              "nodeType": "StructuredDocumentation",
+              "src": "406:205:31",
+              "text": "Emitted everytime a currency pair is attached to a new price feed contract\n @dev See https://github.com/adoracles/ADOIPs/blob/main/adoip-0010.md \n @dev to learn how these ids are created."
+            },
+            "id": 7925,
+            "name": "CurrencyPairSet",
+            "nameLocation": "622:15:31",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 7924,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7920,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "erc2362ID",
+                  "nameLocation": "654:9:31",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7925,
+                  "src": "638:25:31",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 7919,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "638:7:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 7923,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "pricefeed",
+                  "nameLocation": "673:9:31",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7925,
+                  "src": "665:17:31",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IERC165_$7909",
+                    "typeString": "contract IERC165"
+                  },
+                  "typeName": {
+                    "id": 7922,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 7921,
+                      "name": "IERC165",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 7909,
+                      "src": "665:7:31"
+                    },
+                    "referencedDeclaration": 7909,
+                    "src": "665:7:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IERC165_$7909",
+                      "typeString": "contract IERC165"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "637:46:31"
+            },
+            "src": "616:68:31"
+          },
+          {
+            "documentation": {
+              "id": 7926,
+              "nodeType": "StructuredDocumentation",
+              "src": "690:104:31",
+              "text": "Helper pure function: returns hash of the provided ERC2362-compliant currency pair caption (aka ID)."
+            },
+            "functionSelector": "835262f5",
+            "id": 7933,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "currencyPairId",
+            "nameLocation": "808:14:31",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 7929,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7928,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7933,
+                  "src": "823:13:31",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 7927,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "823:6:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "822:15:31"
+            },
+            "returnParameters": {
+              "id": 7932,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7931,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7933,
+                  "src": "869:7:31",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 7930,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "869:7:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "868:9:31"
+            },
+            "scope": 7997,
+            "src": "799:79:31",
+            "stateMutability": "pure",
+            "virtual": true,
+            "visibility": "external"
+          },
+          {
+            "documentation": {
+              "id": 7934,
+              "nodeType": "StructuredDocumentation",
+              "src": "884:116:31",
+              "text": "Returns the ERC-165-compliant price feed contract currently serving \n updates on the given currency pair."
+            },
+            "functionSelector": "8c0adf62",
+            "id": 7942,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getPriceFeed",
+            "nameLocation": "1014:12:31",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 7937,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7936,
+                  "mutability": "mutable",
+                  "name": "_erc2362id",
+                  "nameLocation": "1035:10:31",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7942,
+                  "src": "1027:18:31",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 7935,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1027:7:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1026:20:31"
+            },
+            "returnParameters": {
+              "id": 7941,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7940,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7942,
+                  "src": "1078:7:31",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IERC165_$7909",
+                    "typeString": "contract IERC165"
+                  },
+                  "typeName": {
+                    "id": 7939,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 7938,
+                      "name": "IERC165",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 7909,
+                      "src": "1078:7:31"
+                    },
+                    "referencedDeclaration": 7909,
+                    "src": "1078:7:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IERC165_$7909",
+                      "typeString": "contract IERC165"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1077:9:31"
+            },
+            "scope": 7997,
+            "src": "1005:82:31",
+            "stateMutability": "view",
+            "virtual": true,
+            "visibility": "external"
+          },
+          {
+            "documentation": {
+              "id": 7943,
+              "nodeType": "StructuredDocumentation",
+              "src": "1093:255:31",
+              "text": "Returns human-readable ERC2362-based caption of the currency pair being\n served by the given price feed contract address. \n @dev Should fail if the given price feed contract address is not currently\n @dev registered in the router."
+            },
+            "functionSelector": "bbfa8118",
+            "id": 7951,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getPriceFeedCaption",
+            "nameLocation": "1362:19:31",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 7947,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7946,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7951,
+                  "src": "1382:7:31",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IERC165_$7909",
+                    "typeString": "contract IERC165"
+                  },
+                  "typeName": {
+                    "id": 7945,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 7944,
+                      "name": "IERC165",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 7909,
+                      "src": "1382:7:31"
+                    },
+                    "referencedDeclaration": 7909,
+                    "src": "1382:7:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IERC165_$7909",
+                      "typeString": "contract IERC165"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1381:9:31"
+            },
+            "returnParameters": {
+              "id": 7950,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7949,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7951,
+                  "src": "1422:13:31",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 7948,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1422:6:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1421:15:31"
+            },
+            "scope": 7997,
+            "src": "1353:84:31",
+            "stateMutability": "view",
+            "virtual": true,
+            "visibility": "external"
+          },
+          {
+            "documentation": {
+              "id": 7952,
+              "nodeType": "StructuredDocumentation",
+              "src": "1443:91:31",
+              "text": "Returns human-readable caption of the ERC2362-based currency pair identifier, if known."
+            },
+            "functionSelector": "99d32a04",
+            "id": 7959,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "lookupERC2362ID",
+            "nameLocation": "1548:15:31",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 7955,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7954,
+                  "mutability": "mutable",
+                  "name": "_erc2362id",
+                  "nameLocation": "1572:10:31",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7959,
+                  "src": "1564:18:31",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 7953,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1564:7:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1563:20:31"
+            },
+            "returnParameters": {
+              "id": 7958,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7957,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7959,
+                  "src": "1615:13:31",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 7956,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1615:6:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1614:15:31"
+            },
+            "scope": 7997,
+            "src": "1539:91:31",
+            "stateMutability": "view",
+            "virtual": true,
+            "visibility": "external"
+          },
+          {
+            "documentation": {
+              "id": 7960,
+              "nodeType": "StructuredDocumentation",
+              "src": "1636:420:31",
+              "text": "Register a price feed contract that will serve updates for the given currency pair.\n @dev Setting zero address to a currency pair implies that it will not be served any longer.\n @dev Otherwise, should fail if the price feed contract does not support the `IWitnetPriceFeed` interface,\n @dev or if given price feed is already serving another currency pair (within this WitnetPriceRouter instance)."
+            },
+            "functionSelector": "77021267",
+            "id": 7972,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setPriceFeed",
+            "nameLocation": "2070:12:31",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 7970,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7963,
+                  "mutability": "mutable",
+                  "name": "_pricefeed",
+                  "nameLocation": "2104:10:31",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7972,
+                  "src": "2096:18:31",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IERC165_$7909",
+                    "typeString": "contract IERC165"
+                  },
+                  "typeName": {
+                    "id": 7962,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 7961,
+                      "name": "IERC165",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 7909,
+                      "src": "2096:7:31"
+                    },
+                    "referencedDeclaration": 7909,
+                    "src": "2096:7:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IERC165_$7909",
+                      "typeString": "contract IERC165"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 7965,
+                  "mutability": "mutable",
+                  "name": "_decimals",
+                  "nameLocation": "2136:9:31",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7972,
+                  "src": "2128:17:31",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 7964,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2128:7:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 7967,
+                  "mutability": "mutable",
+                  "name": "_base",
+                  "nameLocation": "2175:5:31",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7972,
+                  "src": "2159:21:31",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_calldata_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 7966,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2159:6:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 7969,
+                  "mutability": "mutable",
+                  "name": "_quote",
+                  "nameLocation": "2210:6:31",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7972,
+                  "src": "2194:22:31",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_calldata_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 7968,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2194:6:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2082:144:31"
+            },
+            "returnParameters": {
+              "id": 7971,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2251:0:31"
+            },
+            "scope": 7997,
+            "src": "2061:191:31",
+            "stateMutability": "nonpayable",
+            "virtual": true,
+            "visibility": "external"
+          },
+          {
+            "documentation": {
+              "id": 7973,
+              "nodeType": "StructuredDocumentation",
+              "src": "2258:45:31",
+              "text": "Returns list of known currency pairs IDs."
+            },
+            "functionSelector": "3fd29ebd",
+            "id": 7979,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "supportedCurrencyPairs",
+            "nameLocation": "2317:22:31",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 7974,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2339:2:31"
+            },
+            "returnParameters": {
+              "id": 7978,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7977,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7979,
+                  "src": "2373:16:31",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_bytes32_$dyn_memory_ptr",
+                    "typeString": "bytes32[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 7975,
+                      "name": "bytes32",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "2373:7:31",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes32",
+                        "typeString": "bytes32"
+                      }
+                    },
+                    "id": 7976,
+                    "nodeType": "ArrayTypeName",
+                    "src": "2373:9:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_bytes32_$dyn_storage_ptr",
+                      "typeString": "bytes32[]"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2372:18:31"
+            },
+            "scope": 7997,
+            "src": "2308:83:31",
+            "stateMutability": "view",
+            "virtual": true,
+            "visibility": "external"
+          },
+          {
+            "documentation": {
+              "id": 7980,
+              "nodeType": "StructuredDocumentation",
+              "src": "2397:94:31",
+              "text": "Returns `true` if given pair is currently being served by a compliant price feed contract."
+            },
+            "functionSelector": "ca64c540",
+            "id": 7987,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "supportsCurrencyPair",
+            "nameLocation": "2505:20:31",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 7983,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7982,
+                  "mutability": "mutable",
+                  "name": "_erc2362id",
+                  "nameLocation": "2534:10:31",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7987,
+                  "src": "2526:18:31",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 7981,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2526:7:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2525:20:31"
+            },
+            "returnParameters": {
+              "id": 7986,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7985,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7987,
+                  "src": "2577:4:31",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 7984,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2577:4:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2576:6:31"
+            },
+            "scope": 7997,
+            "src": "2496:87:31",
+            "stateMutability": "view",
+            "virtual": true,
+            "visibility": "external"
+          },
+          {
+            "documentation": {
+              "id": 7988,
+              "nodeType": "StructuredDocumentation",
+              "src": "2589:105:31",
+              "text": "Returns `true` if given price feed contract is currently serving updates to any known currency pair. "
+            },
+            "functionSelector": "a027ad15",
+            "id": 7996,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "supportsPriceFeed",
+            "nameLocation": "2708:17:31",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 7992,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7991,
+                  "mutability": "mutable",
+                  "name": "_priceFeed",
+                  "nameLocation": "2734:10:31",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7996,
+                  "src": "2726:18:31",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IERC165_$7909",
+                    "typeString": "contract IERC165"
+                  },
+                  "typeName": {
+                    "id": 7990,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 7989,
+                      "name": "IERC165",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 7909,
+                      "src": "2726:7:31"
+                    },
+                    "referencedDeclaration": 7909,
+                    "src": "2726:7:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IERC165_$7909",
+                      "typeString": "contract IERC165"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2725:20:31"
+            },
+            "returnParameters": {
+              "id": 7995,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7994,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7996,
+                  "src": "2777:4:31",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 7993,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2777:4:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2776:6:31"
+            },
+            "scope": 7997,
+            "src": "2699:84:31",
+            "stateMutability": "view",
+            "virtual": true,
+            "visibility": "external"
+          }
+        ],
+        "scope": 7998,
+        "src": "338:2447:31",
+        "usedErrors": []
+      }
+    ],
+    "src": "32:2754:31"
+  },
+  "legacyAST": {
+    "absolutePath": "witnet-solidity-bridge/contracts/interfaces/IWitnetPriceRouter.sol",
+    "exportedSymbols": {
+      "IERC165": [
+        7909
+      ],
+      "IERC2362": [
+        2965
+      ],
+      "IWitnetPriceRouter": [
+        7997
+      ]
+    },
+    "id": 7998,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 7911,
+        "literals": [
+          "solidity",
+          ">=",
+          "0.7",
+          ".0",
+          "<",
+          "0.9",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "32:31:31"
+      },
+      {
+        "id": 7912,
+        "literals": [
+          "experimental",
+          "ABIEncoderV2"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "64:33:31"
+      },
+      {
+        "absolutePath": "ado-contracts/contracts/interfaces/IERC2362.sol",
+        "file": "ado-contracts/contracts/interfaces/IERC2362.sol",
+        "id": 7913,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 7998,
+        "sourceUnit": 2966,
+        "src": "99:57:31",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "witnet-solidity-bridge/contracts/interfaces/IERC165.sol",
+        "file": "./IERC165.sol",
+        "id": 7914,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 7998,
+        "sourceUnit": 7910,
+        "src": "157:23:31",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": true,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 7916,
+              "name": "IERC2362",
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 2965,
+              "src": "390:8:31"
+            },
+            "id": 7917,
+            "nodeType": "InheritanceSpecifier",
+            "src": "390:8:31"
+          }
+        ],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": {
+          "id": 7915,
+          "nodeType": "StructuredDocumentation",
+          "src": "182:156:31",
+          "text": "@title The Witnet Price Router basic interface.\n @dev Guides implementation of price feeds aggregation contracts.\n @author The Witnet Foundation."
+        },
+        "fullyImplemented": false,
+        "id": 7997,
+        "linearizedBaseContracts": [
+          7997,
+          2965
+        ],
+        "name": "IWitnetPriceRouter",
+        "nameLocation": "356:18:31",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "anonymous": false,
+            "documentation": {
+              "id": 7918,
+              "nodeType": "StructuredDocumentation",
+              "src": "406:205:31",
+              "text": "Emitted everytime a currency pair is attached to a new price feed contract\n @dev See https://github.com/adoracles/ADOIPs/blob/main/adoip-0010.md \n @dev to learn how these ids are created."
+            },
+            "id": 7925,
+            "name": "CurrencyPairSet",
+            "nameLocation": "622:15:31",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 7924,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7920,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "erc2362ID",
+                  "nameLocation": "654:9:31",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7925,
+                  "src": "638:25:31",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 7919,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "638:7:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 7923,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "pricefeed",
+                  "nameLocation": "673:9:31",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7925,
+                  "src": "665:17:31",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IERC165_$7909",
+                    "typeString": "contract IERC165"
+                  },
+                  "typeName": {
+                    "id": 7922,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 7921,
+                      "name": "IERC165",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 7909,
+                      "src": "665:7:31"
+                    },
+                    "referencedDeclaration": 7909,
+                    "src": "665:7:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IERC165_$7909",
+                      "typeString": "contract IERC165"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "637:46:31"
+            },
+            "src": "616:68:31"
+          },
+          {
+            "documentation": {
+              "id": 7926,
+              "nodeType": "StructuredDocumentation",
+              "src": "690:104:31",
+              "text": "Helper pure function: returns hash of the provided ERC2362-compliant currency pair caption (aka ID)."
+            },
+            "functionSelector": "835262f5",
+            "id": 7933,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "currencyPairId",
+            "nameLocation": "808:14:31",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 7929,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7928,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7933,
+                  "src": "823:13:31",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 7927,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "823:6:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "822:15:31"
+            },
+            "returnParameters": {
+              "id": 7932,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7931,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7933,
+                  "src": "869:7:31",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 7930,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "869:7:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "868:9:31"
+            },
+            "scope": 7997,
+            "src": "799:79:31",
+            "stateMutability": "pure",
+            "virtual": true,
+            "visibility": "external"
+          },
+          {
+            "documentation": {
+              "id": 7934,
+              "nodeType": "StructuredDocumentation",
+              "src": "884:116:31",
+              "text": "Returns the ERC-165-compliant price feed contract currently serving \n updates on the given currency pair."
+            },
+            "functionSelector": "8c0adf62",
+            "id": 7942,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getPriceFeed",
+            "nameLocation": "1014:12:31",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 7937,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7936,
+                  "mutability": "mutable",
+                  "name": "_erc2362id",
+                  "nameLocation": "1035:10:31",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7942,
+                  "src": "1027:18:31",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 7935,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1027:7:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1026:20:31"
+            },
+            "returnParameters": {
+              "id": 7941,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7940,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7942,
+                  "src": "1078:7:31",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IERC165_$7909",
+                    "typeString": "contract IERC165"
+                  },
+                  "typeName": {
+                    "id": 7939,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 7938,
+                      "name": "IERC165",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 7909,
+                      "src": "1078:7:31"
+                    },
+                    "referencedDeclaration": 7909,
+                    "src": "1078:7:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IERC165_$7909",
+                      "typeString": "contract IERC165"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1077:9:31"
+            },
+            "scope": 7997,
+            "src": "1005:82:31",
+            "stateMutability": "view",
+            "virtual": true,
+            "visibility": "external"
+          },
+          {
+            "documentation": {
+              "id": 7943,
+              "nodeType": "StructuredDocumentation",
+              "src": "1093:255:31",
+              "text": "Returns human-readable ERC2362-based caption of the currency pair being\n served by the given price feed contract address. \n @dev Should fail if the given price feed contract address is not currently\n @dev registered in the router."
+            },
+            "functionSelector": "bbfa8118",
+            "id": 7951,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getPriceFeedCaption",
+            "nameLocation": "1362:19:31",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 7947,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7946,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7951,
+                  "src": "1382:7:31",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IERC165_$7909",
+                    "typeString": "contract IERC165"
+                  },
+                  "typeName": {
+                    "id": 7945,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 7944,
+                      "name": "IERC165",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 7909,
+                      "src": "1382:7:31"
+                    },
+                    "referencedDeclaration": 7909,
+                    "src": "1382:7:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IERC165_$7909",
+                      "typeString": "contract IERC165"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1381:9:31"
+            },
+            "returnParameters": {
+              "id": 7950,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7949,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7951,
+                  "src": "1422:13:31",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 7948,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1422:6:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1421:15:31"
+            },
+            "scope": 7997,
+            "src": "1353:84:31",
+            "stateMutability": "view",
+            "virtual": true,
+            "visibility": "external"
+          },
+          {
+            "documentation": {
+              "id": 7952,
+              "nodeType": "StructuredDocumentation",
+              "src": "1443:91:31",
+              "text": "Returns human-readable caption of the ERC2362-based currency pair identifier, if known."
+            },
+            "functionSelector": "99d32a04",
+            "id": 7959,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "lookupERC2362ID",
+            "nameLocation": "1548:15:31",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 7955,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7954,
+                  "mutability": "mutable",
+                  "name": "_erc2362id",
+                  "nameLocation": "1572:10:31",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7959,
+                  "src": "1564:18:31",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 7953,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1564:7:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1563:20:31"
+            },
+            "returnParameters": {
+              "id": 7958,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7957,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7959,
+                  "src": "1615:13:31",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 7956,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1615:6:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1614:15:31"
+            },
+            "scope": 7997,
+            "src": "1539:91:31",
+            "stateMutability": "view",
+            "virtual": true,
+            "visibility": "external"
+          },
+          {
+            "documentation": {
+              "id": 7960,
+              "nodeType": "StructuredDocumentation",
+              "src": "1636:420:31",
+              "text": "Register a price feed contract that will serve updates for the given currency pair.\n @dev Setting zero address to a currency pair implies that it will not be served any longer.\n @dev Otherwise, should fail if the price feed contract does not support the `IWitnetPriceFeed` interface,\n @dev or if given price feed is already serving another currency pair (within this WitnetPriceRouter instance)."
+            },
+            "functionSelector": "77021267",
+            "id": 7972,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setPriceFeed",
+            "nameLocation": "2070:12:31",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 7970,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7963,
+                  "mutability": "mutable",
+                  "name": "_pricefeed",
+                  "nameLocation": "2104:10:31",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7972,
+                  "src": "2096:18:31",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IERC165_$7909",
+                    "typeString": "contract IERC165"
+                  },
+                  "typeName": {
+                    "id": 7962,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 7961,
+                      "name": "IERC165",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 7909,
+                      "src": "2096:7:31"
+                    },
+                    "referencedDeclaration": 7909,
+                    "src": "2096:7:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IERC165_$7909",
+                      "typeString": "contract IERC165"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 7965,
+                  "mutability": "mutable",
+                  "name": "_decimals",
+                  "nameLocation": "2136:9:31",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7972,
+                  "src": "2128:17:31",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 7964,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2128:7:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 7967,
+                  "mutability": "mutable",
+                  "name": "_base",
+                  "nameLocation": "2175:5:31",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7972,
+                  "src": "2159:21:31",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_calldata_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 7966,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2159:6:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 7969,
+                  "mutability": "mutable",
+                  "name": "_quote",
+                  "nameLocation": "2210:6:31",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7972,
+                  "src": "2194:22:31",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_calldata_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 7968,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2194:6:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2082:144:31"
+            },
+            "returnParameters": {
+              "id": 7971,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2251:0:31"
+            },
+            "scope": 7997,
+            "src": "2061:191:31",
+            "stateMutability": "nonpayable",
+            "virtual": true,
+            "visibility": "external"
+          },
+          {
+            "documentation": {
+              "id": 7973,
+              "nodeType": "StructuredDocumentation",
+              "src": "2258:45:31",
+              "text": "Returns list of known currency pairs IDs."
+            },
+            "functionSelector": "3fd29ebd",
+            "id": 7979,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "supportedCurrencyPairs",
+            "nameLocation": "2317:22:31",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 7974,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2339:2:31"
+            },
+            "returnParameters": {
+              "id": 7978,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7977,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7979,
+                  "src": "2373:16:31",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_bytes32_$dyn_memory_ptr",
+                    "typeString": "bytes32[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 7975,
+                      "name": "bytes32",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "2373:7:31",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes32",
+                        "typeString": "bytes32"
+                      }
+                    },
+                    "id": 7976,
+                    "nodeType": "ArrayTypeName",
+                    "src": "2373:9:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_bytes32_$dyn_storage_ptr",
+                      "typeString": "bytes32[]"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2372:18:31"
+            },
+            "scope": 7997,
+            "src": "2308:83:31",
+            "stateMutability": "view",
+            "virtual": true,
+            "visibility": "external"
+          },
+          {
+            "documentation": {
+              "id": 7980,
+              "nodeType": "StructuredDocumentation",
+              "src": "2397:94:31",
+              "text": "Returns `true` if given pair is currently being served by a compliant price feed contract."
+            },
+            "functionSelector": "ca64c540",
+            "id": 7987,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "supportsCurrencyPair",
+            "nameLocation": "2505:20:31",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 7983,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7982,
+                  "mutability": "mutable",
+                  "name": "_erc2362id",
+                  "nameLocation": "2534:10:31",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7987,
+                  "src": "2526:18:31",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 7981,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2526:7:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2525:20:31"
+            },
+            "returnParameters": {
+              "id": 7986,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7985,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7987,
+                  "src": "2577:4:31",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 7984,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2577:4:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2576:6:31"
+            },
+            "scope": 7997,
+            "src": "2496:87:31",
+            "stateMutability": "view",
+            "virtual": true,
+            "visibility": "external"
+          },
+          {
+            "documentation": {
+              "id": 7988,
+              "nodeType": "StructuredDocumentation",
+              "src": "2589:105:31",
+              "text": "Returns `true` if given price feed contract is currently serving updates to any known currency pair. "
+            },
+            "functionSelector": "a027ad15",
+            "id": 7996,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "supportsPriceFeed",
+            "nameLocation": "2708:17:31",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 7992,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7991,
+                  "mutability": "mutable",
+                  "name": "_priceFeed",
+                  "nameLocation": "2734:10:31",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7996,
+                  "src": "2726:18:31",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IERC165_$7909",
+                    "typeString": "contract IERC165"
+                  },
+                  "typeName": {
+                    "id": 7990,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 7989,
+                      "name": "IERC165",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 7909,
+                      "src": "2726:7:31"
+                    },
+                    "referencedDeclaration": 7909,
+                    "src": "2726:7:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_IERC165_$7909",
+                      "typeString": "contract IERC165"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2725:20:31"
+            },
+            "returnParameters": {
+              "id": 7995,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7994,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7996,
+                  "src": "2777:4:31",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 7993,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2777:4:31",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2776:6:31"
+            },
+            "scope": 7997,
+            "src": "2699:84:31",
+            "stateMutability": "view",
+            "virtual": true,
+            "visibility": "external"
+          }
+        ],
+        "scope": 7998,
+        "src": "338:2447:31",
+        "usedErrors": []
+      }
+    ],
+    "src": "32:2754:31"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.4+commit.c7e474f2.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.6",
+  "updatedAt": "2022-04-05T09:45:21.200Z",
+  "devdoc": {
+    "author": "The Witnet Foundation.",
+    "details": "Guides implementation of price feeds aggregation contracts.",
+    "events": {
+      "CurrencyPairSet(bytes32,address)": {
+        "details": "See https://github.com/adoracles/ADOIPs/blob/main/adoip-0010.md to learn how these ids are created."
+      }
+    },
+    "kind": "dev",
+    "methods": {
+      "getPriceFeedCaption(address)": {
+        "details": "Should fail if the given price feed contract address is not currentlyregistered in the router."
+      },
+      "setPriceFeed(address,uint256,string,string)": {
+        "details": "Setting zero address to a currency pair implies that it will not be served any longer.Otherwise, should fail if the price feed contract does not support the `IWitnetPriceFeed` interface,or if given price feed is already serving another currency pair (within this WitnetPriceRouter instance)."
+      },
+      "valueFor(bytes32)": {
+        "details": "Exposed function pertaining to EIP standards",
+        "params": {
+          "_id": "bytes32 ID of the query"
+        },
+        "returns": {
+          "_0": "int,uint,uint returns the value, timestamp, and status code of query"
+        }
+      }
+    },
+    "title": "The Witnet Price Router basic interface.",
+    "version": 1
+  },
+  "userdoc": {
+    "events": {
+      "CurrencyPairSet(bytes32,address)": {
+        "notice": "Emitted everytime a currency pair is attached to a new price feed contract"
+      }
+    },
+    "kind": "user",
+    "methods": {
+      "currencyPairId(string)": {
+        "notice": "Helper pure function: returns hash of the provided ERC2362-compliant currency pair caption (aka ID)."
+      },
+      "getPriceFeed(bytes32)": {
+        "notice": "Returns the ERC-165-compliant price feed contract currently serving  updates on the given currency pair."
+      },
+      "getPriceFeedCaption(address)": {
+        "notice": "Returns human-readable ERC2362-based caption of the currency pair being served by the given price feed contract address. "
+      },
+      "lookupERC2362ID(bytes32)": {
+        "notice": "Returns human-readable caption of the ERC2362-based currency pair identifier, if known."
+      },
+      "setPriceFeed(address,uint256,string,string)": {
+        "notice": "Register a price feed contract that will serve updates for the given currency pair."
+      },
+      "supportedCurrencyPairs()": {
+        "notice": "Returns list of known currency pairs IDs."
+      },
+      "supportsCurrencyPair(bytes32)": {
+        "notice": "Returns `true` if given pair is currently being served by a compliant price feed contract."
+      },
+      "supportsPriceFeed(address)": {
+        "notice": "Returns `true` if given price feed contract is currently serving updates to any known currency pair. "
+      }
+    },
+    "version": 1
+  }
+}

@@ -52,7 +52,7 @@ const ChainIDMap = {
         main: 1,
         goerli: 5
     },
-    moralis: {
+    infura: {
         main: 1,
         goerli: 5
     },

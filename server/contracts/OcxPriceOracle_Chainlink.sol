@@ -7,8 +7,6 @@ contract OcxPriceOracle_Chainlink {
 
     AggregatorV3Interface internal priceFeed;
 
-    WitnetPriceRouter = 0x1cF3Aa9DBF4880d797945726B94B9d29164211BE;
-
     mapping(string => address) public symbolPairList;
 
     /*
