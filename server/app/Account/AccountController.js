@@ -463,6 +463,14 @@ class AccountController {
         }
         return accountInfo.assets;
     }
+
+    async getPriceList(req, resp, next) {
+        let ret = await accountService.getPriceList();
+        if (!ret) {
+            return resp.json({error: -5000, data: "Failed to get price list: Internal Server Error"});
+        }
+        return resp.json(ret);
+    }
 };
 
 module.exports = AccountController;
