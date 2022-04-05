@@ -465,11 +465,29 @@ class AccountController {
     }
 
     async getPriceList(req, resp, next) {
-        let ret = await accountService.getPriceList();
-        if (!ret) {
-            return resp.json({error: -5000, data: "Failed to get price list: Internal Server Error"});
+        var userToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6IkZmVUZpZzgzSUt3WDlzWGd6bkVsIiwiaWF0IjoxNjQ2OTk2MjMwLCJleHAiOjE2NDY5OTc2NzB9.KE8zOOfoebrZx-DmLUBT93quRtiUnEwoMidDM-s5TKw";
+        try {
+            let userInfo = userController.validateUserToken(userToken);
+            if (!userInfo) {
+                return resp.json({ error: -50, data: "Invalid user token or internet disconnected" });
+            }
+            let accountInfo = await accountModel.findOne({
+                where: {
+                    user_token: userToken
+                }
+            });
+            if (!accountInfo) {
+                return resp.json({ error: -51, data: "Not found valid account" });
+            }
+            let ret = await accountService.getPriceList(accountInfo);
+            if (!ret) {
+                return resp.json({error: -5000, data: "Failed to get price list: Internal Server Error"});
+            }
+            return resp.json(ret);
+        } catch (error) {
+            let errorMessage = error.message.replace("Returned error: ", "");
+            return resp.json({ error: -100, data: errorMessage });
         }
-        return resp.json(ret);
     }
 };
 

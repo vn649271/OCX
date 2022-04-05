@@ -495,13 +495,35 @@ class AccountService {
         }
     }
 
-    async getPriceList() {
-        const ocRouter = await openchainRouterInstance(web3, null);
-        let ret = await ocRouter.getPriceList();
-        if (!ret || ret.data === undefined) {
-            return { error: -251, data: "Failed to calculate minimum amount out" };
+    async getPriceList(accountInfo) {
+        if (web3 == null) {
+            return { error: -200, data: "Geth node is not ready yet. Please retry a while later." }
         }
-        return {error: 0, data: ret}
+        if (accountInfo.addresses == undefined || accountInfo.addresses == {}) {
+            return { error: -201, data: "No account for you" };
+        }
+        var addresses = accountInfo.addresses;
+        if (addresses['ETH'] === undefined || addresses['ETH'] === null) {
+            return { error: -206, data: "Invalid your address for swapping" };
+        }
+        var myAddress = addresses['ETH'];
+        let ret = null;
+        if (process.env.IPC_TYPE != "ganache") {
+            ret = await web3.eth.personal.unlockAccount(myAddress, accountInfo.account_password, UNLOCK_ACCOUNT_INTERVAL)
+            if (!ret) {
+                return { error: -250, data: "Failed to unlock for swapping" };
+            }
+        }
+        const ocRouter = await openchainRouterInstance(web3, myAddress);
+        try {
+            let ret = await ocRouter.getPriceList();
+            if (!ret || (ret.data === undefined || ret.data === null) && ret.message) {
+                return { error: -251, data: ret.message };
+            }
+            return {error: 0, data: ret}
+        } catch (error) {
+            return { error: -300, data: error }
+        }
     }
 };
 
