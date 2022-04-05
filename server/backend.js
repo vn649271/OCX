@@ -51,8 +51,7 @@ if (process.argv.length < 3 || process.argv[2] != 'dev') {
 
 app.listen(port, () => {
     console.info("server running at ", port);
-    if (process.env.BLOCKCHAIN_EMULATOR == undefined ||
-    process.env.BLOCKCHAIN_EMULATOR === null) {
+    if (process.env.IPC_TYPE !== undefined && process.env.IPC_TYPE === 'geth') {
         var geth = spawn('geth', ['--goerli', '--syncmode', 'light']);
         geth.stdout.on('data', (data) => {
             console.log(`geth:stdout: ${data}`);
