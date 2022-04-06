@@ -12,19 +12,17 @@ contract OcxPriceOracle {
      * https://docs.witnet.io/smart-contracts/price-feeds/contract-addresses
      */
     constructor() {
-        // router = IWitnetPriceRouter(0x83a757eae821ad7b520d9a74952337138a80b2af); // for 
+        // router = IWitnetPriceRouter(0x83a757eae821ad7b520d9a74952337138a80b2af); // for MainNet
         router = IWitnetPriceRouter(0x1cF3Aa9DBF4880d797945726B94B9d29164211BE); // for Goerli
     }
     
     /// Returns the BTC / USD price (6 decimals), ultimately provided by the Witnet oracle.
     function getBtcUsdPrice() public view returns (int256 _price) {
-        // (_price,,) = router.valueFor(bytes32(uint256(0x24beead4)));
         (_price,,) = router.valueFor(0x24beead43216e490aa240ef0d32e18c57beea168f06eabb94f5193868d500946);
     }
     
     /// Returns the ETH / USD price (6 decimals), ultimately provided by the Witnet oracle.
     function getEthUsdPrice() public view returns (int256 _price) {
-        // (_price,,) = router.valueFor(bytes32(uint256(0x3d15f701)));
         (_price,,) = router.valueFor(0x3d15f7018db5cc80838b684361aaa100bfadf8a11e02d5c1c92e9c6af47626c8);
     }
     
