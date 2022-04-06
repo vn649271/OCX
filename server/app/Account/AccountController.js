@@ -464,8 +464,11 @@ class AccountController {
         return accountInfo.assets;
     }
 
-    async getPriceList(req, resp, next) {
-        var userToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6IkZmVUZpZzgzSUt3WDlzWGd6bkVsIiwiaWF0IjoxNjQ2OTk2MjMwLCJleHAiOjE2NDY5OTc2NzB9.KE8zOOfoebrZx-DmLUBT93quRtiUnEwoMidDM-s5TKw";
+    async getPrices(req, resp, next) {
+        var userToken = req.body ? req.body.userToken ? req.body.userToken : null : null;
+        if (userToken === null) {
+            return resp.json({ error: -1, data: "Invalid request" });
+        }
         try {
             let userInfo = userController.validateUserToken(userToken);
             if (!userInfo) {

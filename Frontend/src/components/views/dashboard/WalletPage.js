@@ -60,6 +60,14 @@ class WalletPage extends Component {
                 eth: 0,
                 btc: 0,
             },
+            prices: {
+                ETH: 0,
+                BTC: 0,
+                UNI: 0,
+                DAI: 0,
+                OCAT: 0,
+                PNFT: 0
+            },
             input: {
                 passphrase: '',
                 to_address: '0xADB366C070DFB857DC63ebF797EFE615B0567C1B',
@@ -100,6 +108,7 @@ class WalletPage extends Component {
         this.warning = this.warning.bind(this);
         this.setSendingAmountInUI = this.setSendingAmountInUI.bind(this);
         this.setBalanceInUI = this.setBalanceInUI.bind(this);
+        this.setPriceInUI = this.setPriceInUI.bind(this);
         this.setPasswordInUI = this.setPasswordInUI.bind(this);
         this.onUnlockAccont = this.onUnlockAccont.bind(this);
         this.onLockAccont = this.onLockAccont.bind(this);
@@ -201,6 +210,22 @@ class WalletPage extends Component {
             }
             self.warning(errorMsg);
         });
+        accountService.getPrices({
+            userToken: self.userToken
+        }).then(resp => {
+            var errorMsg = null;
+            if (resp.error === 0) {
+                for (let i in resp.data) {
+                    self.setPriceInUI(i, (resp.data[i] - 0).toFixed(4));
+                }
+                return;
+            } else if (resp.error === -1000) {
+                errorMsg = "No response for get balance";
+            } else if (resp.error !== 0) {
+                errorMsg = resp.data
+            }
+            self.warning(errorMsg);
+        });
     }
 
     async startBalanceMonitor() {
@@ -280,6 +305,12 @@ class WalletPage extends Component {
         var balanceMsg = this.state.balance;
         balanceMsg[token] = balance;
         this.setState({ balance: balanceMsg });
+    }
+
+    setPriceInUI = (token, price) => {
+        var priceMsg = this.state.prices;
+        priceMsg[token] = price;
+        this.setState({ price: priceMsg });
     }
 
     setPasswordInUI = password => {
@@ -563,19 +594,19 @@ class WalletPage extends Component {
                                     </p>
                                     Balance:
                                     <p className="account-balance-box main-font text-black-400 mb-100 font-20">
-                                        {this.state.balance['ETH']} ETH
+                                        {this.state.balance['ETH']} ETH {this.state.prices['ETH']}
                                     </p>
                                     <p className="account-balance-box main-font text-black-400 mb-100 font-20">
-                                        {this.state.balance['UNI']} UNI
+                                        {this.state.balance['UNI']} UNI {this.state.prices['UNI']}
                                     </p>
                                     <p className="account-balance-box main-font text-black-400 mb-100 font-20">
-                                        {this.state.balance['DAI']} DAI
+                                        {this.state.balance['DAI']} DAI {this.state.prices['DAI']}
                                     </p>
                                     <p className="account-balance-box main-font text-black-400 mb-100 font-20">
-                                        {this.state.balance['OCAT']} OCAT
+                                        {this.state.balance['OCAT']} OCAT {this.state.prices['OCAT']}
                                     </p>
                                     <p className="account-balance-box main-font text-black-400 mb-100 font-20">
-                                        {this.state.balance['PNFT']} PNFT
+                                        {this.state.balance['PNFT']} PNFT {this.state.prices['PNFT']}
                                     </p>
                                 </div>
                             </div>
