@@ -214,7 +214,7 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "// SPDX-License-Identifier: MIT\npragma solidity >=0.7.0 <0.9.0;\npragma experimental ABIEncoderV2;\n\nimport \"ado-contracts/contracts/interfaces/IERC2362.sol\";\nimport \"./IERC165.sol\";\n\n/// @title The Witnet Price Router basic interface.\n/// @dev Guides implementation of price feeds aggregation contracts.\n/// @author The Witnet Foundation.\nabstract contract IWitnetPriceRouter\n    is\n        IERC2362 \n{\n    /// Emitted everytime a currency pair is attached to a new price feed contract\n    /// @dev See https://github.com/adoracles/ADOIPs/blob/main/adoip-0010.md \n    /// @dev to learn how these ids are created.\n    event CurrencyPairSet(bytes32 indexed erc2362ID, IERC165 pricefeed);\n\n    /// Helper pure function: returns hash of the provided ERC2362-compliant currency pair caption (aka ID).\n    function currencyPairId(string memory) external pure virtual returns (bytes32);\n\n    /// Returns the ERC-165-compliant price feed contract currently serving \n    /// updates on the given currency pair.\n    function getPriceFeed(bytes32 _erc2362id) external view virtual returns (IERC165);\n\n    /// Returns human-readable ERC2362-based caption of the currency pair being\n    /// served by the given price feed contract address. \n    /// @dev Should fail if the given price feed contract address is not currently\n    /// @dev registered in the router.\n    function getPriceFeedCaption(IERC165) external view virtual returns (string memory);\n\n    /// Returns human-readable caption of the ERC2362-based currency pair identifier, if known.\n    function lookupERC2362ID(bytes32 _erc2362id) external view virtual returns (string memory);\n\n    /// Register a price feed contract that will serve updates for the given currency pair.\n    /// @dev Setting zero address to a currency pair implies that it will not be served any longer.\n    /// @dev Otherwise, should fail if the price feed contract does not support the `IWitnetPriceFeed` interface,\n    /// @dev or if given price feed is already serving another currency pair (within this WitnetPriceRouter instance).\n    function setPriceFeed(\n            IERC165 _pricefeed,\n            uint256 _decimals,\n            string calldata _base,\n            string calldata _quote\n        )\n        external virtual;\n\n    /// Returns list of known currency pairs IDs.\n    function supportedCurrencyPairs() external view virtual returns (bytes32[] memory);\n\n    /// Returns `true` if given pair is currently being served by a compliant price feed contract.\n    function supportsCurrencyPair(bytes32 _erc2362id) external view virtual returns (bool);\n\n    /// Returns `true` if given price feed contract is currently serving updates to any known currency pair. \n    function supportsPriceFeed(IERC165 _priceFeed) external view virtual returns (bool);\n}\n",
-  "sourcePath": "witnet-solidity-bridge/contracts/interfaces/IWitnetPriceRouter.sol",
+  "sourcePath": "witnet-solidity-bridge\\contracts\\interfaces\\IWitnetPriceRouter.sol",
   "ast": {
     "absolutePath": "witnet-solidity-bridge/contracts/interfaces/IWitnetPriceRouter.sol",
     "exportedSymbols": {
@@ -2149,7 +2149,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.6",
-  "updatedAt": "2022-04-05T09:45:21.200Z",
+  "updatedAt": "2022-04-05T14:27:23.731Z",
   "devdoc": {
     "author": "The Witnet Foundation.",
     "details": "Guides implementation of price feeds aggregation contracts.",
