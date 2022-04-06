@@ -20,7 +20,7 @@
 
 const HDWalletProvider = require('@truffle/hdwallet-provider');
 const fs = require('fs');
-const mnemonic = fs.readFileSync(".secret").toString().trim();
+const mnemonic = fs.readFileSync(".secret.infura").toString().trim();
 const mnemonic_development = fs.readFileSync(".secret-ganache").toString().trim();
 
 module.exports = {
