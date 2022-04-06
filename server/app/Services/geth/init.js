@@ -43,7 +43,7 @@ async function attachToGethIPC(ipcURL) {
     } else if (process.env.IPC_TYPE === 'geth') {
         fs.access(ipcURL, (err) => {
             if (!err) {
-                let web3Provider = new Web3.providers.web3Provider(ipcURL, net);
+                let web3Provider = new Web3.providers.IpcProvider(ipcURL, net);
                 web3 = new Web3(web3Provider);
                 if (!web3) {
                     return;
