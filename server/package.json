@@ -64,9 +64,10 @@
   "scripts": {
     "start": "node backend.js",
     "dev": "nodemon backend.js dev",
-    "deploy-ganache": "rm ./build/contracts/* | truffle migrate --network ganache",
-    "deploy": "rm ./build/contracts/* | truffle migrate --network goerli",
-    "deploy-contract": "rm ./build/contracts/* | truffle migrate --network goerli | grep 'contract address:' | awk '{ print $4 }'",
+    "deploy-linux-ganache": "rm ./build/contracts/* | truffle migrate --network ganache",
+    "deploy-linux-goerli": "rm ./build/contracts/* | truffle migrate --network goerli",
+    "deploy-win-goerli": "del .\\build\\contracts\\* | truffle migrate --network goerli",
+    "deploy-linux-goerli-refined": "rm ./build/contracts/* | truffle migrate --network goerli | grep 'contract address:' | awk '{ print $4 }'",
     "verify": "truffle run verify --network goerli",
     "verify-contract": "truffle run verify --network goerli",
     "eject": "react-scripts eject"
