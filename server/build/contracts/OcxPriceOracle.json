@@ -63,9 +63,9 @@
       "constant": true
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.8.4+commit.c7e474f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"getBtcEthPrice\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"_price\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getBtcUsdPrice\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"_price\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getEthUsdPrice\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"_price\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"router\",\"outputs\":[{\"internalType\":\"contract IWitnetPriceRouter\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"constructor\":{\"notice\":\"IMPORTANT: replace the address below with the WitnetPriceRouter address of the network you are using! Please find the address here: https://docs.witnet.io/smart-contracts/price-feeds/contract-addresses\"},\"getBtcEthPrice()\":{\"notice\":\"Returns the BTC / ETH price (6 decimals), derived from the ETH/USD and  the BTC/USD pairs that were ultimately provided by the Witnet oracle.\"},\"getBtcUsdPrice()\":{\"notice\":\"Returns the BTC / USD price (6 decimals), ultimately provided by the Witnet oracle.\"},\"getEthUsdPrice()\":{\"notice\":\"Returns the ETH / USD price (6 decimals), ultimately provided by the Witnet oracle.\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/OcxPriceOracle.sol\":\"OcxPriceOracle\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"ado-contracts/contracts/interfaces/IERC2362.sol\":{\"keccak256\":\"0x4df66aa83b94d7c3d52aba3522b6eeafc19f2c45299b7c871ef46eb199ee4f6b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://0af92023c38ab97a95fb7e2a196a697cfc1d90bb1b8bfe73e0ba69cbb7a8f5ab\",\"dweb:/ipfs/QmVSBWxe2QCZvAxiuTfEwprK9MbDtFNptoWeMBbmUcwQnx\"]},\"project:/contracts/OcxPriceOracle.sol\":{\"keccak256\":\"0x5ac1fc20d708e8724e3d5f2b0be51d4f4d9ad9d63b47e99a90e1e89af5f2f3d7\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://2e71566de6902f041d8470e7960de0cc3aa975173432a072774ff547c34f672e\",\"dweb:/ipfs/QmacSLgn6RiVpZLD64DHCFwPudPFWrA9gnZGVNt5bvbeEA\"]},\"witnet-solidity-bridge/contracts/interfaces/IERC165.sol\":{\"keccak256\":\"0x14a404607f920aa7ce19e17a0abce07d317c95b427fd8ca7b4aaf0b2999d4847\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://c77d9a8e0d77524a2d69f3f7b1739273b277ca99023ecfe02a63c1b47019defe\",\"dweb:/ipfs/QmaLmP6qsWft2VVg6eZznAYsjL11QvThuEazFbnBunaKYn\"]},\"witnet-solidity-bridge/contracts/interfaces/IWitnetPriceRouter.sol\":{\"keccak256\":\"0xeabd84fc5a5676dc88de213245b7199e50bc11af174ebb1a5ef460ba262a7276\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://dc012a3ac758981fd38e08f3727f4e9083e651be231d023077277b9aaddc8794\",\"dweb:/ipfs/QmeWu2BVad6UPWFqmnLN7r85ANKWBVBs5dKcNy7bqwTJqJ\"]}},\"version\":1}",
-  "bytecode": "0x608060405234801561001057600080fd5b50731cf3aa9dbf4880d797945726b94b9d29164211be6000806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550610631806100746000396000f3fe608060405234801561001057600080fd5b506004361061004b5760003560e01c8062e80f321461005057806364b607001461006e578063a0a8045e1461008c578063f887ea40146100aa575b600080fd5b6100586100c8565b6040516100659190610371565b60405180910390f35b6100766100f7565b6040516100839190610371565b60405180910390f35b6100946101b4565b6040516100a19190610371565b60405180910390f35b6100b2610271565b6040516100bf9190610356565b60405180910390f35b60006100d26101b4565b6100da6100f7565b620f42406100e891906103f6565b6100f2919061038c565b905090565b60008060009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1663f78eea836324beead460001b6040518263ffffffff1660e01b815260040161015a919061033b565b60606040518083038186803b15801561017257600080fd5b505afa158015610186573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906101aa91906102bf565b9050508091505090565b60008060009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1663f78eea83633d15f70160001b6040518263ffffffff1660e01b8152600401610217919061033b565b60606040518083038186803b15801561022f57600080fd5b505afa158015610243573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061026791906102bf565b9050508091505090565b60008054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b6000815190506102a4816105cd565b92915050565b6000815190506102b9816105e4565b92915050565b6000806000606084860312156102d457600080fd5b60006102e286828701610295565b93505060206102f3868287016102aa565b9250506040610304868287016102aa565b9150509250925092565b6103178161050d565b82525050565b6103268161054b565b82525050565b61033581610517565b82525050565b6000602082019050610350600083018461030e565b92915050565b600060208201905061036b600083018461031d565b92915050565b6000602082019050610386600083018461032c565b92915050565b600061039782610517565b91506103a283610517565b9250826103b2576103b161059e565b5b600160000383147f8000000000000000000000000000000000000000000000000000000000000000831416156103eb576103ea61056f565b5b828205905092915050565b600061040182610517565b915061040c83610517565b9250827f7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff048211600084136000841316161561044b5761044a61056f565b5b817f800000000000000000000000000000000000000000000000000000000000000005831260008412600084131616156104885761048761056f565b5b827f800000000000000000000000000000000000000000000000000000000000000005821260008413600084121616156104c5576104c461056f565b5b827f7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff05821260008412600084121616156105025761050161056f565b5b828202905092915050565b6000819050919050565b6000819050919050565b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b6000819050919050565b60006105568261055d565b9050919050565b600061056882610521565b9050919050565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601160045260246000fd5b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601260045260246000fd5b6105d681610517565b81146105e157600080fd5b50565b6105ed81610541565b81146105f857600080fd5b5056fea2646970667358221220e72d29b3ac22f28b02d4afe0d60879ace5359e33ac5b996445e3ae6cd5c7e40364736f6c63430008040033",
-  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061004b5760003560e01c8062e80f321461005057806364b607001461006e578063a0a8045e1461008c578063f887ea40146100aa575b600080fd5b6100586100c8565b6040516100659190610371565b60405180910390f35b6100766100f7565b6040516100839190610371565b60405180910390f35b6100946101b4565b6040516100a19190610371565b60405180910390f35b6100b2610271565b6040516100bf9190610356565b60405180910390f35b60006100d26101b4565b6100da6100f7565b620f42406100e891906103f6565b6100f2919061038c565b905090565b60008060009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1663f78eea836324beead460001b6040518263ffffffff1660e01b815260040161015a919061033b565b60606040518083038186803b15801561017257600080fd5b505afa158015610186573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906101aa91906102bf565b9050508091505090565b60008060009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1663f78eea83633d15f70160001b6040518263ffffffff1660e01b8152600401610217919061033b565b60606040518083038186803b15801561022f57600080fd5b505afa158015610243573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061026791906102bf565b9050508091505090565b60008054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b6000815190506102a4816105cd565b92915050565b6000815190506102b9816105e4565b92915050565b6000806000606084860312156102d457600080fd5b60006102e286828701610295565b93505060206102f3868287016102aa565b9250506040610304868287016102aa565b9150509250925092565b6103178161050d565b82525050565b6103268161054b565b82525050565b61033581610517565b82525050565b6000602082019050610350600083018461030e565b92915050565b600060208201905061036b600083018461031d565b92915050565b6000602082019050610386600083018461032c565b92915050565b600061039782610517565b91506103a283610517565b9250826103b2576103b161059e565b5b600160000383147f8000000000000000000000000000000000000000000000000000000000000000831416156103eb576103ea61056f565b5b828205905092915050565b600061040182610517565b915061040c83610517565b9250827f7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff048211600084136000841316161561044b5761044a61056f565b5b817f800000000000000000000000000000000000000000000000000000000000000005831260008412600084131616156104885761048761056f565b5b827f800000000000000000000000000000000000000000000000000000000000000005821260008413600084121616156104c5576104c461056f565b5b827f7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff05821260008412600084121616156105025761050161056f565b5b828202905092915050565b6000819050919050565b6000819050919050565b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b6000819050919050565b60006105568261055d565b9050919050565b600061056882610521565b9050919050565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601160045260246000fd5b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601260045260246000fd5b6105d681610517565b81146105e157600080fd5b50565b6105ed81610541565b81146105f857600080fd5b5056fea2646970667358221220e72d29b3ac22f28b02d4afe0d60879ace5359e33ac5b996445e3ae6cd5c7e40364736f6c63430008040033",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.4+commit.c7e474f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"getBtcEthPrice\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"_price\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getBtcUsdPrice\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"_price\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getEthUsdPrice\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"_price\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"router\",\"outputs\":[{\"internalType\":\"contract IWitnetPriceRouter\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"constructor\":{\"notice\":\"IMPORTANT: replace the address below with the WitnetPriceRouter address of the network you are using! Please find the address here: https://docs.witnet.io/smart-contracts/price-feeds/contract-addresses\"},\"getBtcEthPrice()\":{\"notice\":\"Returns the BTC / ETH price (6 decimals), derived from the ETH/USD and  the BTC/USD pairs that were ultimately provided by the Witnet oracle.\"},\"getBtcUsdPrice()\":{\"notice\":\"Returns the BTC / USD price (6 decimals), ultimately provided by the Witnet oracle.\"},\"getEthUsdPrice()\":{\"notice\":\"Returns the ETH / USD price (6 decimals), ultimately provided by the Witnet oracle.\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/OcxPriceOracle.sol\":\"OcxPriceOracle\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"ado-contracts/contracts/interfaces/IERC2362.sol\":{\"keccak256\":\"0x4df66aa83b94d7c3d52aba3522b6eeafc19f2c45299b7c871ef46eb199ee4f6b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://0af92023c38ab97a95fb7e2a196a697cfc1d90bb1b8bfe73e0ba69cbb7a8f5ab\",\"dweb:/ipfs/QmVSBWxe2QCZvAxiuTfEwprK9MbDtFNptoWeMBbmUcwQnx\"]},\"project:/contracts/OcxPriceOracle.sol\":{\"keccak256\":\"0x7265e47e7ae0f9a1a37a261945682bec05dccbfa4bc5451aa3a95e04552b5665\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://1ff2a6dd93fd0f0de32eeb9294601c685d08e6d1eaa4586d1bd114cea9b0cc57\",\"dweb:/ipfs/QmZoYf6ymVd6u5QBq5Uk9dfohyCRhZsmkKMPrAvd61SWcF\"]},\"witnet-solidity-bridge/contracts/interfaces/IERC165.sol\":{\"keccak256\":\"0x14a404607f920aa7ce19e17a0abce07d317c95b427fd8ca7b4aaf0b2999d4847\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://c77d9a8e0d77524a2d69f3f7b1739273b277ca99023ecfe02a63c1b47019defe\",\"dweb:/ipfs/QmaLmP6qsWft2VVg6eZznAYsjL11QvThuEazFbnBunaKYn\"]},\"witnet-solidity-bridge/contracts/interfaces/IWitnetPriceRouter.sol\":{\"keccak256\":\"0xeabd84fc5a5676dc88de213245b7199e50bc11af174ebb1a5ef460ba262a7276\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://dc012a3ac758981fd38e08f3727f4e9083e651be231d023077277b9aaddc8794\",\"dweb:/ipfs/QmeWu2BVad6UPWFqmnLN7r85ANKWBVBs5dKcNy7bqwTJqJ\"]}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b50731cf3aa9dbf4880d797945726b94b9d29164211be6000806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550610669806100746000396000f3fe608060405234801561001057600080fd5b506004361061004b5760003560e01c8062e80f321461005057806364b607001461006e578063a0a8045e1461008c578063f887ea40146100aa575b600080fd5b6100586100c8565b60405161006591906103a9565b60405180910390f35b6100766100f7565b60405161008391906103a9565b60405180910390f35b6100946101d0565b6040516100a191906103a9565b60405180910390f35b6100b26102a9565b6040516100bf919061038e565b60405180910390f35b60006100d26101d0565b6100da6100f7565b620f42406100e8919061042e565b6100f291906103c4565b905090565b60008060009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1663f78eea837f24beead43216e490aa240ef0d32e18c57beea168f06eabb94f5193868d50094660001b6040518263ffffffff1660e01b81526004016101769190610373565b60606040518083038186803b15801561018e57600080fd5b505afa1580156101a2573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906101c691906102f7565b9050508091505090565b60008060009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1663f78eea837f3d15f7018db5cc80838b684361aaa100bfadf8a11e02d5c1c92e9c6af47626c860001b6040518263ffffffff1660e01b815260040161024f9190610373565b60606040518083038186803b15801561026757600080fd5b505afa15801561027b573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061029f91906102f7565b9050508091505090565b60008054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b6000815190506102dc81610605565b92915050565b6000815190506102f18161061c565b92915050565b60008060006060848603121561030c57600080fd5b600061031a868287016102cd565b935050602061032b868287016102e2565b925050604061033c868287016102e2565b9150509250925092565b61034f81610545565b82525050565b61035e81610583565b82525050565b61036d8161054f565b82525050565b60006020820190506103886000830184610346565b92915050565b60006020820190506103a36000830184610355565b92915050565b60006020820190506103be6000830184610364565b92915050565b60006103cf8261054f565b91506103da8361054f565b9250826103ea576103e96105d6565b5b600160000383147f800000000000000000000000000000000000000000000000000000000000000083141615610423576104226105a7565b5b828205905092915050565b60006104398261054f565b91506104448361054f565b9250827f7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0482116000841360008413161615610483576104826105a7565b5b817f800000000000000000000000000000000000000000000000000000000000000005831260008412600084131616156104c0576104bf6105a7565b5b827f800000000000000000000000000000000000000000000000000000000000000005821260008413600084121616156104fd576104fc6105a7565b5b827f7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff058212600084126000841216161561053a576105396105a7565b5b828202905092915050565b6000819050919050565b6000819050919050565b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b6000819050919050565b600061058e82610595565b9050919050565b60006105a082610559565b9050919050565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601160045260246000fd5b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601260045260246000fd5b61060e8161054f565b811461061957600080fd5b50565b61062581610579565b811461063057600080fd5b5056fea26469706673582212203d01b720b19ec91d6b52b867d25a03e0b1cce76c3b1fd8c884c7c310c92baad264736f6c63430008040033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061004b5760003560e01c8062e80f321461005057806364b607001461006e578063a0a8045e1461008c578063f887ea40146100aa575b600080fd5b6100586100c8565b60405161006591906103a9565b60405180910390f35b6100766100f7565b60405161008391906103a9565b60405180910390f35b6100946101d0565b6040516100a191906103a9565b60405180910390f35b6100b26102a9565b6040516100bf919061038e565b60405180910390f35b60006100d26101d0565b6100da6100f7565b620f42406100e8919061042e565b6100f291906103c4565b905090565b60008060009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1663f78eea837f24beead43216e490aa240ef0d32e18c57beea168f06eabb94f5193868d50094660001b6040518263ffffffff1660e01b81526004016101769190610373565b60606040518083038186803b15801561018e57600080fd5b505afa1580156101a2573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906101c691906102f7565b9050508091505090565b60008060009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1663f78eea837f3d15f7018db5cc80838b684361aaa100bfadf8a11e02d5c1c92e9c6af47626c860001b6040518263ffffffff1660e01b815260040161024f9190610373565b60606040518083038186803b15801561026757600080fd5b505afa15801561027b573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061029f91906102f7565b9050508091505090565b60008054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b6000815190506102dc81610605565b92915050565b6000815190506102f18161061c565b92915050565b60008060006060848603121561030c57600080fd5b600061031a868287016102cd565b935050602061032b868287016102e2565b925050604061033c868287016102e2565b9150509250925092565b61034f81610545565b82525050565b61035e81610583565b82525050565b61036d8161054f565b82525050565b60006020820190506103886000830184610346565b92915050565b60006020820190506103a36000830184610355565b92915050565b60006020820190506103be6000830184610364565b92915050565b60006103cf8261054f565b91506103da8361054f565b9250826103ea576103e96105d6565b5b600160000383147f800000000000000000000000000000000000000000000000000000000000000083141615610423576104226105a7565b5b828205905092915050565b60006104398261054f565b91506104448361054f565b9250827f7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0482116000841360008413161615610483576104826105a7565b5b817f800000000000000000000000000000000000000000000000000000000000000005831260008412600084131616156104c0576104bf6105a7565b5b827f800000000000000000000000000000000000000000000000000000000000000005821260008413600084121616156104fd576104fc6105a7565b5b827f7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff058212600084126000841216161561053a576105396105a7565b5b828202905092915050565b6000819050919050565b6000819050919050565b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b6000819050919050565b600061058e82610595565b9050919050565b60006105a082610559565b9050919050565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601160045260246000fd5b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601260045260246000fd5b61060e8161054f565b811461061957600080fd5b50565b61062581610579565b811461063057600080fd5b5056fea26469706673582212203d01b720b19ec91d6b52b867d25a03e0b1cce76c3b1fd8c884c7c310c92baad264736f6c63430008040033",
   "immutableReferences": {},
   "generatedSources": [],
   "deployedGeneratedSources": [
@@ -2694,9 +2694,9 @@
       "name": "#utility.yul"
     }
   ],
-  "sourceMap": "140:1329:24:-:0;;;460:211;;;;;;;;;;606:42;578:6;;:71;;;;;;;;;;;;;;;;;;140:1329;;;;;;",
-  "deployedSourceMap": "140:1329:24:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1331:135;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;776:139;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;1020;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;171:32;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;1331:135;1378:13;1442:16;:14;:16::i;:::-;1422;:14;:16::i;:::-;1412:7;:26;;;;:::i;:::-;1411:47;;;;:::i;:::-;1404:54;;1331:135;:::o;776:139::-;823:13;862:6;;;;;;;;;;;:15;;;894:10;878:28;;862:45;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;849:58;;;;;;;776:139;:::o;1020:::-;1067:13;1106:6;;;;;;;;;;;:15;;;1138:10;1122:28;;1106:45;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;1093:58;;;;;;;1020:139;:::o;171:32::-;;;;;;;;;;;;:::o;7:141:32:-;63:5;94:6;88:13;79:22;;110:32;136:5;110:32;:::i;:::-;69:79;;;;:::o;154:143::-;211:5;242:6;236:13;227:22;;258:33;285:5;258:33;:::i;:::-;217:80;;;;:::o;303:594::-;390:6;398;406;455:2;443:9;434:7;430:23;426:32;423:2;;;471:1;468;461:12;423:2;514:1;539:63;594:7;585:6;574:9;570:22;539:63;:::i;:::-;529:73;;485:127;651:2;677:64;733:7;724:6;713:9;709:22;677:64;:::i;:::-;667:74;;622:129;790:2;816:64;872:7;863:6;852:9;848:22;816:64;:::i;:::-;806:74;;761:129;413:484;;;;;:::o;903:118::-;990:24;1008:5;990:24;:::i;:::-;985:3;978:37;968:53;;:::o;1027:185::-;1141:64;1199:5;1141:64;:::i;:::-;1136:3;1129:77;1119:93;;:::o;1218:115::-;1303:23;1320:5;1303:23;:::i;:::-;1298:3;1291:36;1281:52;;:::o;1339:222::-;1432:4;1470:2;1459:9;1455:18;1447:26;;1483:71;1551:1;1540:9;1536:17;1527:6;1483:71;:::i;:::-;1437:124;;;;:::o;1567:276::-;1687:4;1725:2;1714:9;1710:18;1702:26;;1738:98;1833:1;1822:9;1818:17;1809:6;1738:98;:::i;:::-;1692:151;;;;:::o;1849:218::-;1940:4;1978:2;1967:9;1963:18;1955:26;;1991:69;2057:1;2046:9;2042:17;2033:6;1991:69;:::i;:::-;1945:122;;;;:::o;2073:385::-;2112:1;2129:19;2146:1;2129:19;:::i;:::-;2124:24;;2162:19;2179:1;2162:19;:::i;:::-;2157:24;;2200:1;2190:2;;2205:18;;:::i;:::-;2190:2;2391:1;2388;2384:9;2381:1;2378:16;2297:66;2294:1;2291:73;2274:130;2271:2;;;2407:18;;:::i;:::-;2271:2;2450:1;2447;2442:10;2437:15;;2114:344;;;;:::o;2464:991::-;2503:7;2526:19;2543:1;2526:19;:::i;:::-;2521:24;;2559:19;2576:1;2559:19;:::i;:::-;2554:24;;2760:1;2692:66;2688:74;2685:1;2682:81;2677:1;2674;2670:9;2666:1;2663;2659:9;2655:25;2651:113;2648:2;;;2767:18;;:::i;:::-;2648:2;2971:1;2903:66;2898:75;2895:1;2891:83;2886:1;2883;2879:9;2875:1;2872;2868:9;2864:25;2860:115;2857:2;;;2978:18;;:::i;:::-;2857:2;3182:1;3114:66;3109:75;3106:1;3102:83;3097:1;3094;3090:9;3086:1;3083;3079:9;3075:25;3071:115;3068:2;;;3189:18;;:::i;:::-;3068:2;3392:1;3324:66;3319:75;3316:1;3312:83;3307:1;3304;3300:9;3296:1;3293;3289:9;3285:25;3281:115;3278:2;;;3399:18;;:::i;:::-;3278:2;3447:1;3444;3440:9;3429:20;;2511:944;;;;:::o;3461:77::-;3498:7;3527:5;3516:16;;3506:32;;;:::o;3544:76::-;3580:7;3609:5;3598:16;;3588:32;;;:::o;3626:126::-;3663:7;3703:42;3696:5;3692:54;3681:65;;3671:81;;;:::o;3758:77::-;3795:7;3824:5;3813:16;;3803:32;;;:::o;3841:180::-;3918:9;3951:64;4009:5;3951:64;:::i;:::-;3938:77;;3928:93;;;:::o;4027:140::-;4104:9;4137:24;4155:5;4137:24;:::i;:::-;4124:37;;4114:53;;;:::o;4173:180::-;4221:77;4218:1;4211:88;4318:4;4315:1;4308:15;4342:4;4339:1;4332:15;4359:180;4407:77;4404:1;4397:88;4504:4;4501:1;4494:15;4528:4;4525:1;4518:15;4545:120;4617:23;4634:5;4617:23;:::i;:::-;4610:5;4607:34;4597:2;;4655:1;4652;4645:12;4597:2;4587:78;:::o;4671:122::-;4744:24;4762:5;4744:24;:::i;:::-;4737:5;4734:35;4724:2;;4783:1;4780;4773:12;4724:2;4714:79;:::o",
-  "source": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.0;\r\n\r\nimport \"witnet-solidity-bridge/contracts/interfaces/IWitnetPriceRouter.sol\";\r\n\r\ncontract OcxPriceOracle {\r\n    IWitnetPriceRouter public router;\r\n    \r\n    /**\r\n     * IMPORTANT: replace the address below with the WitnetPriceRouter address\r\n     * of the network you are using! Please find the address here:\r\n     * https://docs.witnet.io/smart-contracts/price-feeds/contract-addresses\r\n     */\r\n    constructor() {\r\n        // router = IWitnetPriceRouter(0x83a757eae821ad7b520d9a74952337138a80b2af); // for \r\n        router = IWitnetPriceRouter(0x1cF3Aa9DBF4880d797945726B94B9d29164211BE); // for Goerli\r\n    }\r\n    \r\n    /// Returns the BTC / USD price (6 decimals), ultimately provided by the Witnet oracle.\r\n    function getBtcUsdPrice() public view returns (int256 _price) {\r\n        (_price,,) = router.valueFor(bytes32(uint256(0x24beead4)));\r\n    }\r\n    \r\n    /// Returns the ETH / USD price (6 decimals), ultimately provided by the Witnet oracle.\r\n    function getEthUsdPrice() public view returns (int256 _price) {\r\n        (_price,,) = router.valueFor(bytes32(uint256(0x3d15f701)));\r\n    }\r\n    \r\n    /// Returns the BTC / ETH price (6 decimals), derived from the ETH/USD and \r\n    /// the BTC/USD pairs that were ultimately provided by the Witnet oracle.\r\n    function getBtcEthPrice() public view returns (int256 _price) {\r\n        return (1000000 * getBtcUsdPrice()) / getEthUsdPrice();\r\n    }\r\n}",
+  "sourceMap": "140:1585:24:-:0;;;460:211;;;;;;;;;;606:42;578:6;;:71;;;;;;;;;;;;;;;;;;140:1585;;;;;;",
+  "deployedSourceMap": "140:1585:24:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1587:135;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;776:267;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;1148;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;171:32;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;1587:135;1634:13;1698:16;:14;:16::i;:::-;1678;:14;:16::i;:::-;1668:7;:26;;;;:::i;:::-;1667:47;;;;:::i;:::-;1660:54;;1587:135;:::o;776:267::-;823:13;934:6;;;;;;;;;;;:15;;;966:66;950:84;;934:101;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;921:114;;;;;;;776:267;:::o;1148:::-;1195:13;1306:6;;;;;;;;;;;:15;;;1338:66;1322:84;;1306:101;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;1293:114;;;;;;;1148:267;:::o;171:32::-;;;;;;;;;;;;:::o;7:141:32:-;63:5;94:6;88:13;79:22;;110:32;136:5;110:32;:::i;:::-;69:79;;;;:::o;154:143::-;211:5;242:6;236:13;227:22;;258:33;285:5;258:33;:::i;:::-;217:80;;;;:::o;303:594::-;390:6;398;406;455:2;443:9;434:7;430:23;426:32;423:2;;;471:1;468;461:12;423:2;514:1;539:63;594:7;585:6;574:9;570:22;539:63;:::i;:::-;529:73;;485:127;651:2;677:64;733:7;724:6;713:9;709:22;677:64;:::i;:::-;667:74;;622:129;790:2;816:64;872:7;863:6;852:9;848:22;816:64;:::i;:::-;806:74;;761:129;413:484;;;;;:::o;903:118::-;990:24;1008:5;990:24;:::i;:::-;985:3;978:37;968:53;;:::o;1027:185::-;1141:64;1199:5;1141:64;:::i;:::-;1136:3;1129:77;1119:93;;:::o;1218:115::-;1303:23;1320:5;1303:23;:::i;:::-;1298:3;1291:36;1281:52;;:::o;1339:222::-;1432:4;1470:2;1459:9;1455:18;1447:26;;1483:71;1551:1;1540:9;1536:17;1527:6;1483:71;:::i;:::-;1437:124;;;;:::o;1567:276::-;1687:4;1725:2;1714:9;1710:18;1702:26;;1738:98;1833:1;1822:9;1818:17;1809:6;1738:98;:::i;:::-;1692:151;;;;:::o;1849:218::-;1940:4;1978:2;1967:9;1963:18;1955:26;;1991:69;2057:1;2046:9;2042:17;2033:6;1991:69;:::i;:::-;1945:122;;;;:::o;2073:385::-;2112:1;2129:19;2146:1;2129:19;:::i;:::-;2124:24;;2162:19;2179:1;2162:19;:::i;:::-;2157:24;;2200:1;2190:2;;2205:18;;:::i;:::-;2190:2;2391:1;2388;2384:9;2381:1;2378:16;2297:66;2294:1;2291:73;2274:130;2271:2;;;2407:18;;:::i;:::-;2271:2;2450:1;2447;2442:10;2437:15;;2114:344;;;;:::o;2464:991::-;2503:7;2526:19;2543:1;2526:19;:::i;:::-;2521:24;;2559:19;2576:1;2559:19;:::i;:::-;2554:24;;2760:1;2692:66;2688:74;2685:1;2682:81;2677:1;2674;2670:9;2666:1;2663;2659:9;2655:25;2651:113;2648:2;;;2767:18;;:::i;:::-;2648:2;2971:1;2903:66;2898:75;2895:1;2891:83;2886:1;2883;2879:9;2875:1;2872;2868:9;2864:25;2860:115;2857:2;;;2978:18;;:::i;:::-;2857:2;3182:1;3114:66;3109:75;3106:1;3102:83;3097:1;3094;3090:9;3086:1;3083;3079:9;3075:25;3071:115;3068:2;;;3189:18;;:::i;:::-;3068:2;3392:1;3324:66;3319:75;3316:1;3312:83;3307:1;3304;3300:9;3296:1;3293;3289:9;3285:25;3281:115;3278:2;;;3399:18;;:::i;:::-;3278:2;3447:1;3444;3440:9;3429:20;;2511:944;;;;:::o;3461:77::-;3498:7;3527:5;3516:16;;3506:32;;;:::o;3544:76::-;3580:7;3609:5;3598:16;;3588:32;;;:::o;3626:126::-;3663:7;3703:42;3696:5;3692:54;3681:65;;3671:81;;;:::o;3758:77::-;3795:7;3824:5;3813:16;;3803:32;;;:::o;3841:180::-;3918:9;3951:64;4009:5;3951:64;:::i;:::-;3938:77;;3928:93;;;:::o;4027:140::-;4104:9;4137:24;4155:5;4137:24;:::i;:::-;4124:37;;4114:53;;;:::o;4173:180::-;4221:77;4218:1;4211:88;4318:4;4315:1;4308:15;4342:4;4339:1;4332:15;4359:180;4407:77;4404:1;4397:88;4504:4;4501:1;4494:15;4528:4;4525:1;4518:15;4545:120;4617:23;4634:5;4617:23;:::i;:::-;4610:5;4607:34;4597:2;;4655:1;4652;4645:12;4597:2;4587:78;:::o;4671:122::-;4744:24;4762:5;4744:24;:::i;:::-;4737:5;4734:35;4724:2;;4783:1;4780;4773:12;4724:2;4714:79;:::o",
+  "source": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.0;\r\n\r\nimport \"witnet-solidity-bridge/contracts/interfaces/IWitnetPriceRouter.sol\";\r\n\r\ncontract OcxPriceOracle {\r\n    IWitnetPriceRouter public router;\r\n    \r\n    /**\r\n     * IMPORTANT: replace the address below with the WitnetPriceRouter address\r\n     * of the network you are using! Please find the address here:\r\n     * https://docs.witnet.io/smart-contracts/price-feeds/contract-addresses\r\n     */\r\n    constructor() {\r\n        // router = IWitnetPriceRouter(0x83a757eae821ad7b520d9a74952337138a80b2af); // for \r\n        router = IWitnetPriceRouter(0x1cF3Aa9DBF4880d797945726B94B9d29164211BE); // for Goerli\r\n    }\r\n    \r\n    /// Returns the BTC / USD price (6 decimals), ultimately provided by the Witnet oracle.\r\n    function getBtcUsdPrice() public view returns (int256 _price) {\r\n        // (_price,,) = router.valueFor(bytes32(uint256(0x24beead4)));\r\n        (_price,,) = router.valueFor(bytes32(uint256(0x24beead43216e490aa240ef0d32e18c57beea168f06eabb94f5193868d500946)));\r\n    }\r\n    \r\n    /// Returns the ETH / USD price (6 decimals), ultimately provided by the Witnet oracle.\r\n    function getEthUsdPrice() public view returns (int256 _price) {\r\n        // (_price,,) = router.valueFor(bytes32(uint256(0x3d15f701)));\r\n        (_price,,) = router.valueFor(bytes32(uint256(0x3d15f7018db5cc80838b684361aaa100bfadf8a11e02d5c1c92e9c6af47626c8)));\r\n    }\r\n    \r\n    /// Returns the BTC / ETH price (6 decimals), derived from the ETH/USD and \r\n    /// the BTC/USD pairs that were ultimately provided by the Witnet oracle.\r\n    function getBtcEthPrice() public view returns (int256 _price) {\r\n        return (1000000 * getBtcUsdPrice()) / getEthUsdPrice();\r\n    }\r\n}",
   "sourcePath": "E:\\Work\\OpenchainTestVersion\\server\\contracts\\OcxPriceOracle.sol",
   "ast": {
     "absolutePath": "project:/contracts/OcxPriceOracle.sol",
@@ -2916,7 +2916,7 @@
             "body": {
               "id": 5195,
               "nodeType": "Block",
-              "src": "838:77:24",
+              "src": "838:205:24",
               "statements": [
                 {
                   "expression": {
@@ -2933,7 +2933,7 @@
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
                           "referencedDeclaration": 5179,
-                          "src": "850:6:24",
+                          "src": "922:6:24",
                           "typeDescriptions": {
                             "typeIdentifier": "t_int256",
                             "typeString": "int256"
@@ -2949,7 +2949,7 @@
                       "isPure": false,
                       "lValueRequested": true,
                       "nodeType": "TupleExpression",
-                      "src": "849:10:24",
+                      "src": "921:10:24",
                       "typeDescriptions": {
                         "typeIdentifier": "t_tuple$_t_int256_$__$__$",
                         "typeString": "tuple(int256,,)"
@@ -2964,7 +2964,7 @@
                             {
                               "arguments": [
                                 {
-                                  "hexValue": "30783234626565616434",
+                                  "hexValue": "307832346265656164343332313665343930616132343065663064333265313863353762656561313638663036656162623934663531393338363864353030393436",
                                   "id": 5189,
                                   "isConstant": false,
                                   "isLValue": false,
@@ -2972,19 +2972,19 @@
                                   "kind": "number",
                                   "lValueRequested": false,
                                   "nodeType": "Literal",
-                                  "src": "894:10:24",
+                                  "src": "966:66:24",
                                   "typeDescriptions": {
-                                    "typeIdentifier": "t_rational_616491732_by_1",
-                                    "typeString": "int_const 616491732"
+                                    "typeIdentifier": "t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1",
+                                    "typeString": "int_const 1662...(69 digits omitted)...1942"
                                   },
-                                  "value": "0x24beead4"
+                                  "value": "0x24beead43216e490aa240ef0d32e18c57beea168f06eabb94f5193868d500946"
                                 }
                               ],
                               "expression": {
                                 "argumentTypes": [
                                   {
-                                    "typeIdentifier": "t_rational_616491732_by_1",
-                                    "typeString": "int_const 616491732"
+                                    "typeIdentifier": "t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1",
+                                    "typeString": "int_const 1662...(69 digits omitted)...1942"
                                   }
                                 ],
                                 "id": 5188,
@@ -2993,7 +2993,7 @@
                                 "isPure": true,
                                 "lValueRequested": false,
                                 "nodeType": "ElementaryTypeNameExpression",
-                                "src": "886:7:24",
+                                "src": "958:7:24",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_type$_t_uint256_$",
                                   "typeString": "type(uint256)"
@@ -3002,7 +3002,7 @@
                                   "id": 5187,
                                   "name": "uint256",
                                   "nodeType": "ElementaryTypeName",
-                                  "src": "886:7:24",
+                                  "src": "958:7:24",
                                   "typeDescriptions": {}
                                 }
                               },
@@ -3014,7 +3014,7 @@
                               "lValueRequested": false,
                               "names": [],
                               "nodeType": "FunctionCall",
-                              "src": "886:19:24",
+                              "src": "958:75:24",
                               "tryCall": false,
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -3035,7 +3035,7 @@
                             "isPure": true,
                             "lValueRequested": false,
                             "nodeType": "ElementaryTypeNameExpression",
-                            "src": "878:7:24",
+                            "src": "950:7:24",
                             "typeDescriptions": {
                               "typeIdentifier": "t_type$_t_bytes32_$",
                               "typeString": "type(bytes32)"
@@ -3044,7 +3044,7 @@
                               "id": 5185,
                               "name": "bytes32",
                               "nodeType": "ElementaryTypeName",
-                              "src": "878:7:24",
+                              "src": "950:7:24",
                               "typeDescriptions": {}
                             }
                           },
@@ -3056,7 +3056,7 @@
                           "lValueRequested": false,
                           "names": [],
                           "nodeType": "FunctionCall",
-                          "src": "878:28:24",
+                          "src": "950:84:24",
                           "tryCall": false,
                           "typeDescriptions": {
                             "typeIdentifier": "t_bytes32",
@@ -3077,7 +3077,7 @@
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
                           "referencedDeclaration": 5164,
-                          "src": "862:6:24",
+                          "src": "934:6:24",
                           "typeDescriptions": {
                             "typeIdentifier": "t_contract$_IWitnetPriceRouter_$7997",
                             "typeString": "contract IWitnetPriceRouter"
@@ -3091,7 +3091,7 @@
                         "memberName": "valueFor",
                         "nodeType": "MemberAccess",
                         "referencedDeclaration": 2964,
-                        "src": "862:15:24",
+                        "src": "934:15:24",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_external_view$_t_bytes32_$returns$_t_int256_$_t_uint256_$_t_uint256_$",
                           "typeString": "function (bytes32) view external returns (int256,uint256,uint256)"
@@ -3105,14 +3105,14 @@
                       "lValueRequested": false,
                       "names": [],
                       "nodeType": "FunctionCall",
-                      "src": "862:45:24",
+                      "src": "934:101:24",
                       "tryCall": false,
                       "typeDescriptions": {
                         "typeIdentifier": "t_tuple$_t_int256_$_t_uint256_$_t_uint256_$",
                         "typeString": "tuple(int256,uint256,uint256)"
                       }
                     },
-                    "src": "849:58:24",
+                    "src": "921:114:24",
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
@@ -3120,7 +3120,7 @@
                   },
                   "id": 5194,
                   "nodeType": "ExpressionStatement",
-                  "src": "849:58:24"
+                  "src": "921:114:24"
                 }
               ]
             },
@@ -3179,7 +3179,7 @@
               "src": "822:15:24"
             },
             "scope": 5234,
-            "src": "776:139:24",
+            "src": "776:267:24",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "public"
@@ -3188,7 +3188,7 @@
             "body": {
               "id": 5216,
               "nodeType": "Block",
-              "src": "1082:77:24",
+              "src": "1210:205:24",
               "statements": [
                 {
                   "expression": {
@@ -3205,7 +3205,7 @@
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
                           "referencedDeclaration": 5200,
-                          "src": "1094:6:24",
+                          "src": "1294:6:24",
                           "typeDescriptions": {
                             "typeIdentifier": "t_int256",
                             "typeString": "int256"
@@ -3221,7 +3221,7 @@
                       "isPure": false,
                       "lValueRequested": true,
                       "nodeType": "TupleExpression",
-                      "src": "1093:10:24",
+                      "src": "1293:10:24",
                       "typeDescriptions": {
                         "typeIdentifier": "t_tuple$_t_int256_$__$__$",
                         "typeString": "tuple(int256,,)"
@@ -3236,7 +3236,7 @@
                             {
                               "arguments": [
                                 {
-                                  "hexValue": "30783364313566373031",
+                                  "hexValue": "307833643135663730313864623563633830383338623638343336316161613130306266616466386131316530326435633163393265396336616634373632366338",
                                   "id": 5210,
                                   "isConstant": false,
                                   "isLValue": false,
@@ -3244,19 +3244,19 @@
                                   "kind": "number",
                                   "lValueRequested": false,
                                   "nodeType": "Literal",
-                                  "src": "1138:10:24",
+                                  "src": "1338:66:24",
                                   "typeDescriptions": {
-                                    "typeIdentifier": "t_rational_1024849665_by_1",
-                                    "typeString": "int_const 1024849665"
+                                    "typeIdentifier": "t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1",
+                                    "typeString": "int_const 2762...(69 digits omitted)...8968"
                                   },
-                                  "value": "0x3d15f701"
+                                  "value": "0x3d15f7018db5cc80838b684361aaa100bfadf8a11e02d5c1c92e9c6af47626c8"
                                 }
                               ],
                               "expression": {
                                 "argumentTypes": [
                                   {
-                                    "typeIdentifier": "t_rational_1024849665_by_1",
-                                    "typeString": "int_const 1024849665"
+                                    "typeIdentifier": "t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1",
+                                    "typeString": "int_const 2762...(69 digits omitted)...8968"
                                   }
                                 ],
                                 "id": 5209,
@@ -3265,7 +3265,7 @@
                                 "isPure": true,
                                 "lValueRequested": false,
                                 "nodeType": "ElementaryTypeNameExpression",
-                                "src": "1130:7:24",
+                                "src": "1330:7:24",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_type$_t_uint256_$",
                                   "typeString": "type(uint256)"
@@ -3274,7 +3274,7 @@
                                   "id": 5208,
                                   "name": "uint256",
                                   "nodeType": "ElementaryTypeName",
-                                  "src": "1130:7:24",
+                                  "src": "1330:7:24",
                                   "typeDescriptions": {}
                                 }
                               },
@@ -3286,7 +3286,7 @@
                               "lValueRequested": false,
                               "names": [],
                               "nodeType": "FunctionCall",
-                              "src": "1130:19:24",
+                              "src": "1330:75:24",
                               "tryCall": false,
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -3307,7 +3307,7 @@
                             "isPure": true,
                             "lValueRequested": false,
                             "nodeType": "ElementaryTypeNameExpression",
-                            "src": "1122:7:24",
+                            "src": "1322:7:24",
                             "typeDescriptions": {
                               "typeIdentifier": "t_type$_t_bytes32_$",
                               "typeString": "type(bytes32)"
@@ -3316,7 +3316,7 @@
                               "id": 5206,
                               "name": "bytes32",
                               "nodeType": "ElementaryTypeName",
-                              "src": "1122:7:24",
+                              "src": "1322:7:24",
                               "typeDescriptions": {}
                             }
                           },
@@ -3328,7 +3328,7 @@
                           "lValueRequested": false,
                           "names": [],
                           "nodeType": "FunctionCall",
-                          "src": "1122:28:24",
+                          "src": "1322:84:24",
                           "tryCall": false,
                           "typeDescriptions": {
                             "typeIdentifier": "t_bytes32",
@@ -3349,7 +3349,7 @@
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
                           "referencedDeclaration": 5164,
-                          "src": "1106:6:24",
+                          "src": "1306:6:24",
                           "typeDescriptions": {
                             "typeIdentifier": "t_contract$_IWitnetPriceRouter_$7997",
                             "typeString": "contract IWitnetPriceRouter"
@@ -3363,7 +3363,7 @@
                         "memberName": "valueFor",
                         "nodeType": "MemberAccess",
                         "referencedDeclaration": 2964,
-                        "src": "1106:15:24",
+                        "src": "1306:15:24",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_external_view$_t_bytes32_$returns$_t_int256_$_t_uint256_$_t_uint256_$",
                           "typeString": "function (bytes32) view external returns (int256,uint256,uint256)"
@@ -3377,14 +3377,14 @@
                       "lValueRequested": false,
                       "names": [],
                       "nodeType": "FunctionCall",
-                      "src": "1106:45:24",
+                      "src": "1306:101:24",
                       "tryCall": false,
                       "typeDescriptions": {
                         "typeIdentifier": "t_tuple$_t_int256_$_t_uint256_$_t_uint256_$",
                         "typeString": "tuple(int256,uint256,uint256)"
                       }
                     },
-                    "src": "1093:58:24",
+                    "src": "1293:114:24",
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
@@ -3392,14 +3392,14 @@
                   },
                   "id": 5215,
                   "nodeType": "ExpressionStatement",
-                  "src": "1093:58:24"
+                  "src": "1293:114:24"
                 }
               ]
             },
             "documentation": {
               "id": 5197,
               "nodeType": "StructuredDocumentation",
-              "src": "927:87:24",
+              "src": "1055:87:24",
               "text": "Returns the ETH / USD price (6 decimals), ultimately provided by the Witnet oracle."
             },
             "functionSelector": "a0a8045e",
@@ -3408,13 +3408,13 @@
             "kind": "function",
             "modifiers": [],
             "name": "getEthUsdPrice",
-            "nameLocation": "1029:14:24",
+            "nameLocation": "1157:14:24",
             "nodeType": "FunctionDefinition",
             "parameters": {
               "id": 5198,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1043:2:24"
+              "src": "1171:2:24"
             },
             "returnParameters": {
               "id": 5201,
@@ -3425,10 +3425,10 @@
                   "id": 5200,
                   "mutability": "mutable",
                   "name": "_price",
-                  "nameLocation": "1074:6:24",
+                  "nameLocation": "1202:6:24",
                   "nodeType": "VariableDeclaration",
                   "scope": 5217,
-                  "src": "1067:13:24",
+                  "src": "1195:13:24",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -3439,7 +3439,7 @@
                     "id": 5199,
                     "name": "int256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1067:6:24",
+                    "src": "1195:6:24",
                     "typeDescriptions": {
                       "typeIdentifier": "t_int256",
                       "typeString": "int256"
@@ -3448,10 +3448,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1066:15:24"
+              "src": "1194:15:24"
             },
             "scope": 5234,
-            "src": "1020:139:24",
+            "src": "1148:267:24",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "public"
@@ -3460,7 +3460,7 @@
             "body": {
               "id": 5232,
               "nodeType": "Block",
-              "src": "1393:73:24",
+              "src": "1649:73:24",
               "statements": [
                 {
                   "expression": {
@@ -3494,7 +3494,7 @@
                             "kind": "number",
                             "lValueRequested": false,
                             "nodeType": "Literal",
-                            "src": "1412:7:24",
+                            "src": "1668:7:24",
                             "typeDescriptions": {
                               "typeIdentifier": "t_rational_1000000_by_1",
                               "typeString": "int_const 1000000"
@@ -3512,7 +3512,7 @@
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
                               "referencedDeclaration": 5196,
-                              "src": "1422:14:24",
+                              "src": "1678:14:24",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_function_internal_view$__$returns$_t_int256_$",
                                 "typeString": "function () view returns (int256)"
@@ -3526,14 +3526,14 @@
                             "lValueRequested": false,
                             "names": [],
                             "nodeType": "FunctionCall",
-                            "src": "1422:16:24",
+                            "src": "1678:16:24",
                             "tryCall": false,
                             "typeDescriptions": {
                               "typeIdentifier": "t_int256",
                               "typeString": "int256"
                             }
                           },
-                          "src": "1412:26:24",
+                          "src": "1668:26:24",
                           "typeDescriptions": {
                             "typeIdentifier": "t_int256",
                             "typeString": "int256"
@@ -3547,7 +3547,7 @@
                       "isPure": false,
                       "lValueRequested": false,
                       "nodeType": "TupleExpression",
-                      "src": "1411:28:24",
+                      "src": "1667:28:24",
                       "typeDescriptions": {
                         "typeIdentifier": "t_int256",
                         "typeString": "int256"
@@ -3564,7 +3564,7 @@
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
                         "referencedDeclaration": 5217,
-                        "src": "1442:14:24",
+                        "src": "1698:14:24",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_internal_view$__$returns$_t_int256_$",
                           "typeString": "function () view returns (int256)"
@@ -3578,14 +3578,14 @@
                       "lValueRequested": false,
                       "names": [],
                       "nodeType": "FunctionCall",
-                      "src": "1442:16:24",
+                      "src": "1698:16:24",
                       "tryCall": false,
                       "typeDescriptions": {
                         "typeIdentifier": "t_int256",
                         "typeString": "int256"
                       }
                     },
-                    "src": "1411:47:24",
+                    "src": "1667:47:24",
                     "typeDescriptions": {
                       "typeIdentifier": "t_int256",
                       "typeString": "int256"
@@ -3594,14 +3594,14 @@
                   "functionReturnParameters": 5222,
                   "id": 5231,
                   "nodeType": "Return",
-                  "src": "1404:54:24"
+                  "src": "1660:54:24"
                 }
               ]
             },
             "documentation": {
               "id": 5218,
               "nodeType": "StructuredDocumentation",
-              "src": "1171:154:24",
+              "src": "1427:154:24",
               "text": "Returns the BTC / ETH price (6 decimals), derived from the ETH/USD and \n the BTC/USD pairs that were ultimately provided by the Witnet oracle."
             },
             "functionSelector": "00e80f32",
@@ -3610,13 +3610,13 @@
             "kind": "function",
             "modifiers": [],
             "name": "getBtcEthPrice",
-            "nameLocation": "1340:14:24",
+            "nameLocation": "1596:14:24",
             "nodeType": "FunctionDefinition",
             "parameters": {
               "id": 5219,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1354:2:24"
+              "src": "1610:2:24"
             },
             "returnParameters": {
               "id": 5222,
@@ -3627,10 +3627,10 @@
                   "id": 5221,
                   "mutability": "mutable",
                   "name": "_price",
-                  "nameLocation": "1385:6:24",
+                  "nameLocation": "1641:6:24",
                   "nodeType": "VariableDeclaration",
                   "scope": 5233,
-                  "src": "1378:13:24",
+                  "src": "1634:13:24",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -3641,7 +3641,7 @@
                     "id": 5220,
                     "name": "int256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1378:6:24",
+                    "src": "1634:6:24",
                     "typeDescriptions": {
                       "typeIdentifier": "t_int256",
                       "typeString": "int256"
@@ -3650,21 +3650,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1377:15:24"
+              "src": "1633:15:24"
             },
             "scope": 5234,
-            "src": "1331:135:24",
+            "src": "1587:135:24",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "public"
           }
         ],
         "scope": 5235,
-        "src": "140:1329:24",
+        "src": "140:1585:24",
         "usedErrors": []
       }
     ],
-    "src": "33:1436:24"
+    "src": "33:1692:24"
   },
   "legacyAST": {
     "absolutePath": "project:/contracts/OcxPriceOracle.sol",
@@ -3884,7 +3884,7 @@
             "body": {
               "id": 5195,
               "nodeType": "Block",
-              "src": "838:77:24",
+              "src": "838:205:24",
               "statements": [
                 {
                   "expression": {
@@ -3901,7 +3901,7 @@
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
                           "referencedDeclaration": 5179,
-                          "src": "850:6:24",
+                          "src": "922:6:24",
                           "typeDescriptions": {
                             "typeIdentifier": "t_int256",
                             "typeString": "int256"
@@ -3917,7 +3917,7 @@
                       "isPure": false,
                       "lValueRequested": true,
                       "nodeType": "TupleExpression",
-                      "src": "849:10:24",
+                      "src": "921:10:24",
                       "typeDescriptions": {
                         "typeIdentifier": "t_tuple$_t_int256_$__$__$",
                         "typeString": "tuple(int256,,)"
@@ -3932,7 +3932,7 @@
                             {
                               "arguments": [
                                 {
-                                  "hexValue": "30783234626565616434",
+                                  "hexValue": "307832346265656164343332313665343930616132343065663064333265313863353762656561313638663036656162623934663531393338363864353030393436",
                                   "id": 5189,
                                   "isConstant": false,
                                   "isLValue": false,
@@ -3940,19 +3940,19 @@
                                   "kind": "number",
                                   "lValueRequested": false,
                                   "nodeType": "Literal",
-                                  "src": "894:10:24",
+                                  "src": "966:66:24",
                                   "typeDescriptions": {
-                                    "typeIdentifier": "t_rational_616491732_by_1",
-                                    "typeString": "int_const 616491732"
+                                    "typeIdentifier": "t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1",
+                                    "typeString": "int_const 1662...(69 digits omitted)...1942"
                                   },
-                                  "value": "0x24beead4"
+                                  "value": "0x24beead43216e490aa240ef0d32e18c57beea168f06eabb94f5193868d500946"
                                 }
                               ],
                               "expression": {
                                 "argumentTypes": [
                                   {
-                                    "typeIdentifier": "t_rational_616491732_by_1",
-                                    "typeString": "int_const 616491732"
+                                    "typeIdentifier": "t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1",
+                                    "typeString": "int_const 1662...(69 digits omitted)...1942"
                                   }
                                 ],
                                 "id": 5188,
@@ -3961,7 +3961,7 @@
                                 "isPure": true,
                                 "lValueRequested": false,
                                 "nodeType": "ElementaryTypeNameExpression",
-                                "src": "886:7:24",
+                                "src": "958:7:24",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_type$_t_uint256_$",
                                   "typeString": "type(uint256)"
@@ -3970,7 +3970,7 @@
                                   "id": 5187,
                                   "name": "uint256",
                                   "nodeType": "ElementaryTypeName",
-                                  "src": "886:7:24",
+                                  "src": "958:7:24",
                                   "typeDescriptions": {}
                                 }
                               },
@@ -3982,7 +3982,7 @@
                               "lValueRequested": false,
                               "names": [],
                               "nodeType": "FunctionCall",
-                              "src": "886:19:24",
+                              "src": "958:75:24",
                               "tryCall": false,
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -4003,7 +4003,7 @@
                             "isPure": true,
                             "lValueRequested": false,
                             "nodeType": "ElementaryTypeNameExpression",
-                            "src": "878:7:24",
+                            "src": "950:7:24",
                             "typeDescriptions": {
                               "typeIdentifier": "t_type$_t_bytes32_$",
                               "typeString": "type(bytes32)"
@@ -4012,7 +4012,7 @@
                               "id": 5185,
                               "name": "bytes32",
                               "nodeType": "ElementaryTypeName",
-                              "src": "878:7:24",
+                              "src": "950:7:24",
                               "typeDescriptions": {}
                             }
                           },
@@ -4024,7 +4024,7 @@
                           "lValueRequested": false,
                           "names": [],
                           "nodeType": "FunctionCall",
-                          "src": "878:28:24",
+                          "src": "950:84:24",
                           "tryCall": false,
                           "typeDescriptions": {
                             "typeIdentifier": "t_bytes32",
@@ -4045,7 +4045,7 @@
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
                           "referencedDeclaration": 5164,
-                          "src": "862:6:24",
+                          "src": "934:6:24",
                           "typeDescriptions": {
                             "typeIdentifier": "t_contract$_IWitnetPriceRouter_$7997",
                             "typeString": "contract IWitnetPriceRouter"
@@ -4059,7 +4059,7 @@
                         "memberName": "valueFor",
                         "nodeType": "MemberAccess",
                         "referencedDeclaration": 2964,
-                        "src": "862:15:24",
+                        "src": "934:15:24",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_external_view$_t_bytes32_$returns$_t_int256_$_t_uint256_$_t_uint256_$",
                           "typeString": "function (bytes32) view external returns (int256,uint256,uint256)"
@@ -4073,14 +4073,14 @@
                       "lValueRequested": false,
                       "names": [],
                       "nodeType": "FunctionCall",
-                      "src": "862:45:24",
+                      "src": "934:101:24",
                       "tryCall": false,
                       "typeDescriptions": {
                         "typeIdentifier": "t_tuple$_t_int256_$_t_uint256_$_t_uint256_$",
                         "typeString": "tuple(int256,uint256,uint256)"
                       }
                     },
-                    "src": "849:58:24",
+                    "src": "921:114:24",
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
@@ -4088,7 +4088,7 @@
                   },
                   "id": 5194,
                   "nodeType": "ExpressionStatement",
-                  "src": "849:58:24"
+                  "src": "921:114:24"
                 }
               ]
             },
@@ -4147,7 +4147,7 @@
               "src": "822:15:24"
             },
             "scope": 5234,
-            "src": "776:139:24",
+            "src": "776:267:24",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "public"
@@ -4156,7 +4156,7 @@
             "body": {
               "id": 5216,
               "nodeType": "Block",
-              "src": "1082:77:24",
+              "src": "1210:205:24",
               "statements": [
                 {
                   "expression": {
@@ -4173,7 +4173,7 @@
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
                           "referencedDeclaration": 5200,
-                          "src": "1094:6:24",
+                          "src": "1294:6:24",
                           "typeDescriptions": {
                             "typeIdentifier": "t_int256",
                             "typeString": "int256"
@@ -4189,7 +4189,7 @@
                       "isPure": false,
                       "lValueRequested": true,
                       "nodeType": "TupleExpression",
-                      "src": "1093:10:24",
+                      "src": "1293:10:24",
                       "typeDescriptions": {
                         "typeIdentifier": "t_tuple$_t_int256_$__$__$",
                         "typeString": "tuple(int256,,)"
@@ -4204,7 +4204,7 @@
                             {
                               "arguments": [
                                 {
-                                  "hexValue": "30783364313566373031",
+                                  "hexValue": "307833643135663730313864623563633830383338623638343336316161613130306266616466386131316530326435633163393265396336616634373632366338",
                                   "id": 5210,
                                   "isConstant": false,
                                   "isLValue": false,
@@ -4212,19 +4212,19 @@
                                   "kind": "number",
                                   "lValueRequested": false,
                                   "nodeType": "Literal",
-                                  "src": "1138:10:24",
+                                  "src": "1338:66:24",
                                   "typeDescriptions": {
-                                    "typeIdentifier": "t_rational_1024849665_by_1",
-                                    "typeString": "int_const 1024849665"
+                                    "typeIdentifier": "t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1",
+                                    "typeString": "int_const 2762...(69 digits omitted)...8968"
                                   },
-                                  "value": "0x3d15f701"
+                                  "value": "0x3d15f7018db5cc80838b684361aaa100bfadf8a11e02d5c1c92e9c6af47626c8"
                                 }
                               ],
                               "expression": {
                                 "argumentTypes": [
                                   {
-                                    "typeIdentifier": "t_rational_1024849665_by_1",
-                                    "typeString": "int_const 1024849665"
+                                    "typeIdentifier": "t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1",
+                                    "typeString": "int_const 2762...(69 digits omitted)...8968"
                                   }
                                 ],
                                 "id": 5209,
@@ -4233,7 +4233,7 @@
                                 "isPure": true,
                                 "lValueRequested": false,
                                 "nodeType": "ElementaryTypeNameExpression",
-                                "src": "1130:7:24",
+                                "src": "1330:7:24",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_type$_t_uint256_$",
                                   "typeString": "type(uint256)"
@@ -4242,7 +4242,7 @@
                                   "id": 5208,
                                   "name": "uint256",
                                   "nodeType": "ElementaryTypeName",
-                                  "src": "1130:7:24",
+                                  "src": "1330:7:24",
                                   "typeDescriptions": {}
                                 }
                               },
@@ -4254,7 +4254,7 @@
                               "lValueRequested": false,
                               "names": [],
                               "nodeType": "FunctionCall",
-                              "src": "1130:19:24",
+                              "src": "1330:75:24",
                               "tryCall": false,
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -4275,7 +4275,7 @@
                             "isPure": true,
                             "lValueRequested": false,
                             "nodeType": "ElementaryTypeNameExpression",
-                            "src": "1122:7:24",
+                            "src": "1322:7:24",
                             "typeDescriptions": {
                               "typeIdentifier": "t_type$_t_bytes32_$",
                               "typeString": "type(bytes32)"
@@ -4284,7 +4284,7 @@
                               "id": 5206,
                               "name": "bytes32",
                               "nodeType": "ElementaryTypeName",
-                              "src": "1122:7:24",
+                              "src": "1322:7:24",
                               "typeDescriptions": {}
                             }
                           },
@@ -4296,7 +4296,7 @@
                           "lValueRequested": false,
                           "names": [],
                           "nodeType": "FunctionCall",
-                          "src": "1122:28:24",
+                          "src": "1322:84:24",
                           "tryCall": false,
                           "typeDescriptions": {
                             "typeIdentifier": "t_bytes32",
@@ -4317,7 +4317,7 @@
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
                           "referencedDeclaration": 5164,
-                          "src": "1106:6:24",
+                          "src": "1306:6:24",
                           "typeDescriptions": {
                             "typeIdentifier": "t_contract$_IWitnetPriceRouter_$7997",
                             "typeString": "contract IWitnetPriceRouter"
@@ -4331,7 +4331,7 @@
                         "memberName": "valueFor",
                         "nodeType": "MemberAccess",
                         "referencedDeclaration": 2964,
-                        "src": "1106:15:24",
+                        "src": "1306:15:24",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_external_view$_t_bytes32_$returns$_t_int256_$_t_uint256_$_t_uint256_$",
                           "typeString": "function (bytes32) view external returns (int256,uint256,uint256)"
@@ -4345,14 +4345,14 @@
                       "lValueRequested": false,
                       "names": [],
                       "nodeType": "FunctionCall",
-                      "src": "1106:45:24",
+                      "src": "1306:101:24",
                       "tryCall": false,
                       "typeDescriptions": {
                         "typeIdentifier": "t_tuple$_t_int256_$_t_uint256_$_t_uint256_$",
                         "typeString": "tuple(int256,uint256,uint256)"
                       }
                     },
-                    "src": "1093:58:24",
+                    "src": "1293:114:24",
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
@@ -4360,14 +4360,14 @@
                   },
                   "id": 5215,
                   "nodeType": "ExpressionStatement",
-                  "src": "1093:58:24"
+                  "src": "1293:114:24"
                 }
               ]
             },
             "documentation": {
               "id": 5197,
               "nodeType": "StructuredDocumentation",
-              "src": "927:87:24",
+              "src": "1055:87:24",
               "text": "Returns the ETH / USD price (6 decimals), ultimately provided by the Witnet oracle."
             },
             "functionSelector": "a0a8045e",
@@ -4376,13 +4376,13 @@
             "kind": "function",
             "modifiers": [],
             "name": "getEthUsdPrice",
-            "nameLocation": "1029:14:24",
+            "nameLocation": "1157:14:24",
             "nodeType": "FunctionDefinition",
             "parameters": {
               "id": 5198,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1043:2:24"
+              "src": "1171:2:24"
             },
             "returnParameters": {
               "id": 5201,
@@ -4393,10 +4393,10 @@
                   "id": 5200,
                   "mutability": "mutable",
                   "name": "_price",
-                  "nameLocation": "1074:6:24",
+                  "nameLocation": "1202:6:24",
                   "nodeType": "VariableDeclaration",
                   "scope": 5217,
-                  "src": "1067:13:24",
+                  "src": "1195:13:24",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -4407,7 +4407,7 @@
                     "id": 5199,
                     "name": "int256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1067:6:24",
+                    "src": "1195:6:24",
                     "typeDescriptions": {
                       "typeIdentifier": "t_int256",
                       "typeString": "int256"
@@ -4416,10 +4416,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1066:15:24"
+              "src": "1194:15:24"
             },
             "scope": 5234,
-            "src": "1020:139:24",
+            "src": "1148:267:24",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "public"
@@ -4428,7 +4428,7 @@
             "body": {
               "id": 5232,
               "nodeType": "Block",
-              "src": "1393:73:24",
+              "src": "1649:73:24",
               "statements": [
                 {
                   "expression": {
@@ -4462,7 +4462,7 @@
                             "kind": "number",
                             "lValueRequested": false,
                             "nodeType": "Literal",
-                            "src": "1412:7:24",
+                            "src": "1668:7:24",
                             "typeDescriptions": {
                               "typeIdentifier": "t_rational_1000000_by_1",
                               "typeString": "int_const 1000000"
@@ -4480,7 +4480,7 @@
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
                               "referencedDeclaration": 5196,
-                              "src": "1422:14:24",
+                              "src": "1678:14:24",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_function_internal_view$__$returns$_t_int256_$",
                                 "typeString": "function () view returns (int256)"
@@ -4494,14 +4494,14 @@
                             "lValueRequested": false,
                             "names": [],
                             "nodeType": "FunctionCall",
-                            "src": "1422:16:24",
+                            "src": "1678:16:24",
                             "tryCall": false,
                             "typeDescriptions": {
                               "typeIdentifier": "t_int256",
                               "typeString": "int256"
                             }
                           },
-                          "src": "1412:26:24",
+                          "src": "1668:26:24",
                           "typeDescriptions": {
                             "typeIdentifier": "t_int256",
                             "typeString": "int256"
@@ -4515,7 +4515,7 @@
                       "isPure": false,
                       "lValueRequested": false,
                       "nodeType": "TupleExpression",
-                      "src": "1411:28:24",
+                      "src": "1667:28:24",
                       "typeDescriptions": {
                         "typeIdentifier": "t_int256",
                         "typeString": "int256"
@@ -4532,7 +4532,7 @@
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
                         "referencedDeclaration": 5217,
-                        "src": "1442:14:24",
+                        "src": "1698:14:24",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_internal_view$__$returns$_t_int256_$",
                           "typeString": "function () view returns (int256)"
@@ -4546,14 +4546,14 @@
                       "lValueRequested": false,
                       "names": [],
                       "nodeType": "FunctionCall",
-                      "src": "1442:16:24",
+                      "src": "1698:16:24",
                       "tryCall": false,
                       "typeDescriptions": {
                         "typeIdentifier": "t_int256",
                         "typeString": "int256"
                       }
                     },
-                    "src": "1411:47:24",
+                    "src": "1667:47:24",
                     "typeDescriptions": {
                       "typeIdentifier": "t_int256",
                       "typeString": "int256"
@@ -4562,14 +4562,14 @@
                   "functionReturnParameters": 5222,
                   "id": 5231,
                   "nodeType": "Return",
-                  "src": "1404:54:24"
+                  "src": "1660:54:24"
                 }
               ]
             },
             "documentation": {
               "id": 5218,
               "nodeType": "StructuredDocumentation",
-              "src": "1171:154:24",
+              "src": "1427:154:24",
               "text": "Returns the BTC / ETH price (6 decimals), derived from the ETH/USD and \n the BTC/USD pairs that were ultimately provided by the Witnet oracle."
             },
             "functionSelector": "00e80f32",
@@ -4578,13 +4578,13 @@
             "kind": "function",
             "modifiers": [],
             "name": "getBtcEthPrice",
-            "nameLocation": "1340:14:24",
+            "nameLocation": "1596:14:24",
             "nodeType": "FunctionDefinition",
             "parameters": {
               "id": 5219,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1354:2:24"
+              "src": "1610:2:24"
             },
             "returnParameters": {
               "id": 5222,
@@ -4595,10 +4595,10 @@
                   "id": 5221,
                   "mutability": "mutable",
                   "name": "_price",
-                  "nameLocation": "1385:6:24",
+                  "nameLocation": "1641:6:24",
                   "nodeType": "VariableDeclaration",
                   "scope": 5233,
-                  "src": "1378:13:24",
+                  "src": "1634:13:24",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -4609,7 +4609,7 @@
                     "id": 5220,
                     "name": "int256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1378:6:24",
+                    "src": "1634:6:24",
                     "typeDescriptions": {
                       "typeIdentifier": "t_int256",
                       "typeString": "int256"
@@ -4618,21 +4618,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1377:15:24"
+              "src": "1633:15:24"
             },
             "scope": 5234,
-            "src": "1331:135:24",
+            "src": "1587:135:24",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "public"
           }
         ],
         "scope": 5235,
-        "src": "140:1329:24",
+        "src": "140:1585:24",
         "usedErrors": []
       }
     ],
-    "src": "33:1436:24"
+    "src": "33:1692:24"
   },
   "compiler": {
     "name": "solc",
@@ -4642,12 +4642,12 @@
     "5": {
       "events": {},
       "links": {},
-      "address": "0xAa33deF0209f93A409f02b10ab1f9913c78fE53C",
-      "transactionHash": "0x132c5ccfb07c4e1e7abfbf832df9c9377b1eec872c06330c7052c087d22e4ed9"
+      "address": "0x8584591f81aC1Dd9791cEfd9A425EF6e675d417a",
+      "transactionHash": "0x293647f08d2ab50e2f6fa1dd8ef119d9e3b5df8170a3088681da2794d60b7645"
     }
   },
   "schemaVersion": "3.4.6",
-  "updatedAt": "2022-04-06T02:32:45.082Z",
+  "updatedAt": "2022-04-06T04:08:32.235Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
