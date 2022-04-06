@@ -19,13 +19,13 @@ contract OcxPriceOracle {
     /// Returns the BTC / USD price (6 decimals), ultimately provided by the Witnet oracle.
     function getBtcUsdPrice() public view returns (int256 _price) {
         // (_price,,) = router.valueFor(bytes32(uint256(0x24beead4)));
-        (_price,,) = router.valueFor(bytes32(uint256(0x24beead43216e490aa240ef0d32e18c57beea168f06eabb94f5193868d500946)));
+        (_price,,) = router.valueFor(0x24beead43216e490aa240ef0d32e18c57beea168f06eabb94f5193868d500946);
     }
     
     /// Returns the ETH / USD price (6 decimals), ultimately provided by the Witnet oracle.
     function getEthUsdPrice() public view returns (int256 _price) {
         // (_price,,) = router.valueFor(bytes32(uint256(0x3d15f701)));
-        (_price,,) = router.valueFor(bytes32(uint256(0x3d15f7018db5cc80838b684361aaa100bfadf8a11e02d5c1c92e9c6af47626c8)));
+        (_price,,) = router.valueFor(0x3d15f7018db5cc80838b684361aaa100bfadf8a11e02d5c1c92e9c6af47626c8);
     }
     
     /// Returns the BTC / ETH price (6 decimals), derived from the ETH/USD and 
