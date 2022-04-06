@@ -103,6 +103,20 @@ export default function AccountService() {
     }
 
     /**
+     * Connect to specified account.
+     * @param {string} userToken    user token
+     * @param {string} account      account address
+     * 
+     * @returns 
+     */
+    this.getPrices = async (params) => {
+        let _params = {};
+        _params['data'] = params;
+        _params['url'] = BACKEND_BASE_URL + "/account/prices";
+        return await this._sendRequest(_params);
+    }
+
+    /**
      * Send specified symbol of cryptocurrency from an account to another one.
      * @param {string} userToken    user token
      * @param {string} symbol       Cryptocurrency to send
