@@ -32,18 +32,49 @@ var self;
 
 class OpenchainRouter {
 
-    constructor(web3, myAddress) {
+    constructor(web3) {
         self = this;
         this.web3 = web3;
-        this.myAddress = myAddress;
+    }
+
+    setAccountInfo(accountInfo) {
+        var addresses = accountInfo.addresses;
+        if (addresses['ETH'] === undefined || addresses['ETH'] === null) {
+            return -1;
+        }
+        this.myAddress = addresses['ETH'];
+        this.accountInfo = accountInfo;
+        return 0;
     }
 
     async setDeveloperAccount() {
-        if (process.env.IPC_TYPE == "ganache") {
-            let accounts = await this.web3.eth.personal.getAccounts();
-            this.myAddress = accounts[1];
-            console.log("*************** My Address: ", self.myAddress);
+        let accounts = await this.web3.eth.personal.getAccounts();
+        this.myAddress = accounts[1];
+        console.log("*************** My Address: ", self.myAddress);
+    }
+
+    async _unlockAccount() {
+        try {
+            if (process.env.IPC_TYPE != "ganache" && process.env.IPC_TYPE != 'infura') {
+                ret = await web3.eth.personal.unlockAccount(
+                    this.accountInfo.addresses['ETH'], 
+                    this.accountInfo.account_password, 
+                    UNLOCK_ACCOUNT_INTERVAL
+                );
+                if (!ret) {
+                    return { error: -250, data: "Failed to unlock for your account" };
+                }
+                return { error: 0, data: ret };
+            }
+            return { error: 0, data: null };
+        } catch(error) {
+            return { error: -300, data: "Unexpected error for unlocking account"}
         }
+    }
+
+    getMyAddress() {
+        return this.accountInfo.addresses ? this.accountInfo.addresses['ETH'] ?
+                    this.accountInfo.addresses['ETH'] : null : null;
     }
 
     async getBalance(symbol) {
@@ -81,6 +112,10 @@ class OpenchainRouter {
         if (params.sellSymbol === params.buySymbol) {
             return { error: -1, data: "Illegal operation. Selling token must be different than token to buy" };
         }
+        let ret = await this._unlockAccount();
+        if (ret.error) {
+            return ret;
+        }
         try {
             let WETH_ADDRESS = GOERLI_CONTRACTS['WETH'];
             let sellTokenAddress = GOERLI_CONTRACTS[params.sellSymbol];
@@ -94,7 +129,7 @@ class OpenchainRouter {
                     let ocxLocalPoolAddress = this.getContractAddress(OcxLocalPool_DeployedInfo);
                     const ocxLocalPool = new this.web3.eth.Contract(ocxLocalPoolAbi, ocxLocalPoolAddress);
                     const sellAmount = this.web3.utils.toHex(params.sellAmount);
-                    let ret = await ocxLocalPool.methods.getAmountsOut(sellAmount, path).call();
+                    ret = await ocxLocalPool.methods.getAmountsOut(sellAmount, path).call();
                     if (!ret) {
                         return { error: -2, data: "Failed to get best price" }
                     }
@@ -141,6 +176,10 @@ class OpenchainRouter {
     }
 
     async swapEthForToken(params) {
+        let ret = await this._unlockAccount();
+        if (ret.error) {
+            return ret;
+        }
         try {
             let chainType = process.env.IPC_TYPE;
             let chainName = process.env.CHAIN_NAME;
@@ -191,6 +230,10 @@ class OpenchainRouter {
     }
 
     async swapTokenForEth(params) {
+        let ret = await this._unlockAccount();
+        if (ret.error) {
+            return ret;
+        }
         try {
             let chainType = process.env.IPC_TYPE;
             let chainName = process.env.CHAIN_NAME;
@@ -270,6 +313,10 @@ class OpenchainRouter {
     }
 
     async swapTokenForToken(params) {
+        let ret = await this._unlockAccount();
+        if (ret.error) {
+            return ret;
+        }
         try {
             let ocxExchangeAddress = this.getContractAddress(OcxExchange_DeployedInfo);
             const openchainSwap = new this.web3.eth.Contract(
@@ -350,6 +397,10 @@ class OpenchainRouter {
     }
 
     async buildOpenchainLiquidity(params) {
+        let ret = await this._unlockAccount();
+        if (ret.error) {
+            return ret;
+        }
         try {
             const uniRouter02 = new this.web3.eth.Contract(IRouter.abi, UniswapV2Router02Address)
             let ret = await uniRouter02.addLiquidityETH(
@@ -386,11 +437,15 @@ class OpenchainRouter {
         }
         let assetId = params ? params.assetId ? params.assetId : null : null;
         if (!assetId) {
-            return { error: -1, data: "Invalid asset id" };
+            return { error: -2, data: "Invalid asset id" };
         }
         let assetInfo = params ? params.assetInfo ? params.assetInfo : null : null;
         if (!assetInfo) {
-            return { error: -2, data: "Invalid asset data" };
+            return { error: -3, data: "Invalid asset data" };
+        }
+        let ret = await this._unlockAccount();
+        if (ret.error) {
+            return ret;
         }
         try {
             let pnftContractAddress = this.getContractAddress(Pnft_DeployedInfo);
@@ -441,6 +496,10 @@ class OpenchainRouter {
         let assetInfo = params ? params.assetInfo ? params.assetInfo : null : null;
         if (!assetInfo) {
             return { error: -2, data: "Invalid pawning data" };
+        }
+        let ret = await this._unlockAccount();
+        if (ret.error) {
+            return ret;
         }
         try {
             let pnftContractAddress = this.getContractAddress(Pnft_DeployedInfo);
@@ -500,6 +559,10 @@ class OpenchainRouter {
         if (!assetInfo) {
             return { error: -2, data: "Invalid pawning data" };
         }
+        let ret = await this._unlockAccount();
+        if (ret.error) {
+            return ret;
+        }
         try {
             let pnftContractAddress = this.getContractAddress(Pnft_DeployedInfo);
             let ocatContractAddress = this.getContractAddress(OcatToken_DeployedInfo);
@@ -555,33 +618,88 @@ class OpenchainRouter {
         }
     }
 
-    getPriceList = async () => {
+    getPriceList = async (resp) => {
+        let ret = await this._unlockAccount();
+        if (ret.error) {
+            return ret;
+        }
+        let opoAddress = this.getContractAddress(OcxPriceOracle_DeployedInfo);
         const priceOracleContract = new this.web3.eth.Contract(
             OcxPriceOracle_DeployedInfo.abi, 
-            this.getContractAddress(OcxPriceOracle_DeployedInfo)
+            opoAddress
         );
 
         try {
             // let gasPrice = await this.web3.eth.getGasPrice();
             // gasPrice = (gasPrice * 1.2).toFixed(0);
-    
-            let ret = await priceOracleContract.methods.getEthUsdPrice()
-            .send({
-                from: this.myAddress,
-                gas: "500000",
-                // gasPrice: gasPrice
-            });
-            return ret;
+            if (process.env.IPC_TYPE == 'infura') {
+                let gasPrice = await this.web3.eth.getGasPrice();
+                gasPrice = (gasPrice * 1.2).toFixed(0);
+                let dataBinary = priceOracleContract.methods.getEthUsdPrice().encodeABI();
+                const tx = {
+                    // this could be provider.addresses[0] if it exists
+                    from: this.myAddress, 
+                    // target address, this could be a smart contract address
+                    // to: toAddress, 
+                    // optional if you want to specify the gas limit 
+                    gas: "150000", //gasLimit, 
+                    // optional if you are invoking say a payable function 
+                    // value: value,
+                    gasPrice: gasPrice,
+                    // this encodes the ABI of the method and the arguements
+                    data: dataBinary
+                };
+                const signPromise = this.web3.eth.accounts.signTransaction(
+                    tx, 
+                    this.accountInfo.secret_keys['ETH']
+                );
+                signPromise.then((signedTx) => {
+                    // raw transaction string may be available in .raw or 
+                    // .rawTransaction depending on which signTransaction
+                    // function was called
+                    const sentTx = this.web3.eth.sendSignedTransaction(signedTx.raw || signedTx.rawTransaction);
+                    sentTx.on("receipt", receipt => {
+                        // do something when receipt comes back
+                        console.log(receipt);
+                        return resp.json({ error: 0, data: receipt });
+                    });
+                    sentTx.on("error", err => {
+                        // do something on transaction error
+                        console.log(err)
+                        return resp.json({ error: -1, data: err });
+                    });
+                }).catch((err) => {
+                    // do something when promise fails
+                    console.log(err)
+                    return resp.json({ error: -2, data: err });
+                });
+            } else {
+                priceOracleContract.methods.getEthUsdPrice()
+                .send({
+                    from: this.myAddress,
+                    gas: "500000",
+                    // gasPrice: gasPrice
+                }).then(ret => {
+                    return resp.json({ error: 0, data: ret }); // ret;
+                })
+            }
+
         } catch (error) {
-            return error;
+            return resp.json({ error: -300, data: error });
         }
     }
 }
 
-async function openchainRouterInstance(web3, myAddress) {    
+async function openchainRouterInstance(web3, accountInfo) {    
     if (!gOpenchainRouter) {
-        gOpenchainRouter = new OpenchainRouter(web3, myAddress);
-        await gOpenchainRouter.setDeveloperAccount();
+        gOpenchainRouter = new OpenchainRouter(web3);
+        let ret = gOpenchainRouter.setAccountInfo(accountInfo);
+        if (ret != 0) {
+            return null;
+        }
+        if (process.env.IPC_TYPE == "ganache") {
+            await gOpenchainRouter.setDeveloperAccount();
+        }
     }
     return gOpenchainRouter;
 }

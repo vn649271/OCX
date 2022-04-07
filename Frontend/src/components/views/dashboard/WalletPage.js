@@ -159,6 +159,7 @@ class WalletPage extends Component {
                     self.setState({ user_mode: USER_WITH_ACCOUNT });
                     self.setState({ locked: resp.data.locked });
                     this.startBalanceMonitor();
+                    this.startPriceMonitor();
                     this.onGeneratePassphrase(null);
                     return;
                 case 51:
@@ -210,6 +211,17 @@ class WalletPage extends Component {
             }
             self.warning(errorMsg);
         });
+    }
+
+    async startBalanceMonitor() {
+        if (this.balanceTimer !== null || this.state.locked !== false) {
+            return;
+        }
+        this.balanceTimer = setInterval(this._startBalanceMonitor, BALANCE_CHECKING_INTERVAL);
+        this._startBalanceMonitor();
+    }
+
+    startPriceMonitor = async () => {
         accountService.getPrices({
             userToken: self.userToken
         }).then(resp => {
@@ -226,14 +238,6 @@ class WalletPage extends Component {
             }
             self.warning(errorMsg);
         });
-    }
-
-    async startBalanceMonitor() {
-        if (this.balanceTimer !== null || this.state.locked !== false) {
-            return;
-        }
-        this.balanceTimer = setInterval(this._startBalanceMonitor, BALANCE_CHECKING_INTERVAL);
-        this._startBalanceMonitor();
     }
 
     setEncryptKey(encryptKey) {

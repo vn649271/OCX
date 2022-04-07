@@ -234,13 +234,12 @@ class PawnShopController {
                 return resp.json({ error: 51, data: "No account" });
             }
 
-            let ret = await accountController.getById(ownerInfoObj.account);
-            if (ret === undefined || ret === null || ret.data === undefined || ret.data === null) {
+            let accountInfo = await accountController.getById(ownerInfoObj.account);
+            if (!accountInfo) {
                 return resp.json({ error: 52, data: "Not found the account" });
             }
-            let accountInfo = ret.data;
             // 
-            ret = await pawnItemService.mint({
+            let ret = await pawnItemService.mint({
                 accountInfo: accountInfo,
                 assetId: assetId
             });
@@ -281,13 +280,12 @@ class PawnShopController {
                 return resp.json({ error: 51, data: "No account" });
             }
 
-            let ret = await accountController.getById(ownerInfoObj.account);
-            if (ret === undefined || ret === null || ret.data === undefined || ret.data === null) {
+            let accountInfo = await accountController.getById(ownerInfoObj.account);
+            if (!accountInfo) {
                 return resp.json({ error: 52, data: "Not found the account" });
             }
-            let accountInfo = ret.data;
             // 
-            ret = await pawnItemService.burn({
+            let ret = await pawnItemService.burn({
                 accountInfo: accountInfo,
                 assetId: assetId
             });
@@ -327,13 +325,12 @@ class PawnShopController {
                 return resp.json({ error: 51, data: "No account" });
             }
 
-            let ret = await accountController.getById(ownerInfoObj.account);
-            if (ret === undefined || ret === null || ret.data === undefined || ret.data === null) {
+            let accountInfo = await accountController.getById(ownerInfoObj.account);
+            if (!accountInfo) {
                 return resp.json({ error: 52, data: "Not found the account" });
             }
-            let accountInfo = ret.data;
             // 
-            ret = await pawnItemService.exchangeToOcat({
+            let ret = await pawnItemService.exchangeToOcat({
                 accountInfo: accountInfo,
                 assetId: assetId
             });
@@ -372,13 +369,12 @@ class PawnShopController {
                 return resp.json({ error: 51, data: "No account" });
             }
 
-            let ret = await accountController.getById(ownerInfoObj.account);
-            if (ret === undefined || ret === null || ret.data === undefined || ret.data === null) {
+            let accountInfo = await accountController.getById(ownerInfoObj.account);
+            if (!accountInfo) {
                 return resp.json({ error: 52, data: "Not found the account" });
             }
-            let accountInfo = ret.data;
             // 
-            ret = await pawnItemService.exchangeFromOcat({
+            let ret = await pawnItemService.exchangeFromOcat({
                 accountInfo: accountInfo,
                 assetId: assetId
             });

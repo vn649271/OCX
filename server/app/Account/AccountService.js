@@ -227,18 +227,20 @@ class AccountService {
     /**
      * @param {object} req request object from the client 
      */
-    async getBalances(addresses) {
+    async getBalances(accountInfo) {
         if (web3 == null) {
             return { error: -200, data: MSG__GETH_NOT_READY };
         }
-        var myEthAddress = addresses['ETH'];
-        const ocRouter = await openchainRouterInstance(web3, myEthAddress);
+        const ocRouter = await openchainRouterInstance(web3, accountInfo);
+        if (!ocRouter) {
+            return { error: -202, data: "Invalid account for you"};
+        }
         try {
             OUR_TOKENS.forEach(async symbol => {
                 var balance = 0;
                 let balanceInWei = 0;
                 if (symbol === "ETH") {
-                    balanceInWei = await web3.eth.getBalance(ocRouter.myAddress);
+                    balanceInWei = await web3.eth.getBalance(ocRouter.getMyAddress());
                     balance = web3.utils.fromWei(balanceInWei, 'ether');
                 } else {
                     let ret = await ocRouter.getBalance(symbol);
@@ -369,13 +371,10 @@ class AccountService {
         sellAmount = web3.utils.toWei(sellAmount.toString(), "ether");
         try {
             let ret = null;
-            if (process.env.IPC_TYPE != "ganache") {
-                ret = await web3.eth.personal.unlockAccount(myAddress, accountInfo.account_password, UNLOCK_ACCOUNT_INTERVAL)
-                if (!ret) {
-                    return { error: -250, data: "Failed to unlock for swapping" };
-                }
+            const ocRouter = await openchainRouterInstance(web3, accountInfo);
+            if (!ocRouter) {
+                return { error: -202, data: "Invalid account for you"};
             }
-            const ocRouter = await openchainRouterInstance(web3, myAddress);
             ret = await ocRouter.getBestPrice({
                 sellSymbol: sellSymbol,
                 sellAmount: sellAmount,
@@ -444,7 +443,10 @@ class AccountService {
                     return { error: -250, data: "Failed to unlock for swapping" };
                 }
             }
-            const ocRouter = await openchainRouterInstance(web3, myAddress);
+            const ocRouter = await openchainRouterInstance(web3, accountInfo);
+            if (!ocRouter) {
+                return { error: -252, data: "Invalid account for you"};
+            }
             ret = await ocRouter.getBestPrice({
                 sellSymbol: sellSymbol,
                 sellAmount: sellAmount,
@@ -495,32 +497,20 @@ class AccountService {
         }
     }
 
-    async getPriceList(accountInfo) {
+    getPriceList = async(resp, accountInfo) => {
         if (web3 == null) {
             return { error: -200, data: "Geth node is not ready yet. Please retry a while later." }
         }
         if (accountInfo.addresses == undefined || accountInfo.addresses == {}) {
             return { error: -201, data: "No account for you" };
         }
-        var addresses = accountInfo.addresses;
-        if (addresses['ETH'] === undefined || addresses['ETH'] === null) {
-            return { error: -206, data: "Invalid your address for swapping" };
-        }
-        var myAddress = addresses['ETH'];
         let ret = null;
-        if (process.env.IPC_TYPE != "ganache") {
-            ret = await web3.eth.personal.unlockAccount(myAddress, accountInfo.account_password, UNLOCK_ACCOUNT_INTERVAL)
-            if (!ret) {
-                return { error: -250, data: "Failed to unlock for swapping" };
-            }
+        const ocRouter = await openchainRouterInstance(web3, accountInfo);
+        if (!ocRouter) {
+            return { error: -202, data: "Invalid account for you"};
         }
-        const ocRouter = await openchainRouterInstance(web3, myAddress);
         try {
-            let ret = await ocRouter.getPriceList();
-            if (!ret || (ret.data === undefined || ret.data === null) && ret.message) {
-                return { error: -251, data: ret.message };
-            }
-            return {error: 0, data: ret}
+            ocRouter.getPriceList(resp);
         } catch (error) {
             return { error: -300, data: error }
         }
