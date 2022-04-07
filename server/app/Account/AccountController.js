@@ -30,7 +30,7 @@ class AccountController {
      * @param {object} req request object from the client 
      * @param {object} resp response object to the client
      */
-    async create(req, resp) {
+    create = async (req, resp) => {
         const userToken = req.body ? req.body.userToken ? req.body.userToken : null : null;
         if (userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
@@ -51,11 +51,7 @@ class AccountController {
             // !!!!!!!!!!!!! Decrypt passphrase
             passphrase = await commonUtils.decrypt(passphrase, userInfo.decrypt_key);
             // !!!!!!!!!!!!! Check if the passphrase exists
-            var accountInfo = await accountModel.findOne({
-                where: {
-                    passphrase: passphrase,
-                }
-            });
+            var accountInfo = await self.getById(userInfo.account);
             if (accountInfo) {
                 return resp.json({ error: -50, data: "The passphrase exists. Plese generate another one and retry." });
             }
@@ -103,7 +99,7 @@ class AccountController {
      * @param {object} req request object from the client 
      * @param {object} resp response object to the client
      */
-    async restore(req, resp) {
+    restore = async(req, resp) => {
         const userToken = req.body ? req.body.userToken ? req.body.userToken : null : null;
         if (userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
@@ -124,11 +120,7 @@ class AccountController {
             // !!!!!!!!!!!!! Decrypt passphrase
             passphrase = await commonUtils.decrypt(passphrase, userInfo.decrypt_key);
 
-            var accountInfo = await accountModel.findOne({
-                where: {
-                    passphrase: passphrase,
-                }
-            })
+            var accountInfo = await self.getById(userInfo.account);
             if (accountInfo === undefined || accountInfo === null) {
                 return resp.json({ error: -51, data: "Invalid passphrase" });
             }
@@ -171,7 +163,7 @@ class AccountController {
      * @param {object} resp 
      * @returns 
      */
-    async connect(req, resp) {
+    connect = async(req, resp) => {
         var userToken = req.body ? req.body.userToken ? req.body.userToken : null : null;
         if (userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
@@ -205,7 +197,7 @@ class AccountController {
      * @param {object} req request object from the client 
      * @param {object} resp response object to the client
      */
-    async balances(req, resp) {
+    balances = async(req, resp) => {
         var userToken = req.body ? req.body.userToken ? req.body.userToken : null : null;
         if (userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
@@ -215,11 +207,11 @@ class AccountController {
             if (!userInfo) {
                 return resp.json({ error: -50, data: "Invalid user token or internet disconnected" });
             }
-            var addresses = await accountModel.getAddresses(userToken);
-            if (addresses == undefined || addresses == null || addresses == {}) {
-                return resp.json({ error: -51, data: "No account for you" });
+            let accountInfo = await self.getById(userInfo.account);
+            if (!accountInfo) {
+                return resp.json({ error: -51, data: "Invalid account for get balance"});
             }
-            let ret = await accountService.getBalances(addresses);
+            let ret = await accountService.getBalances(accountInfo);
             return resp.json(ret);
         } catch (error) {
             let errorMessage = error.message.replace("Returned error: ", "");
@@ -231,7 +223,7 @@ class AccountController {
      * @param {object} req request object from the client 
      * @param {object} resp response object to the client
      */
-    async lock(req, resp) {
+    lock = async (req, resp) => {
         var userToken = req.body ? req.body.userToken ? req.body.userToken : null : null;
         if (userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
@@ -249,7 +241,7 @@ class AccountController {
      * @param {object} req request object from the client 
      * @param {object} resp response object to the client
      */
-    async unlock(req, resp) {
+    unlock = async (req, resp) => {
         var userToken = req.body ? req.body.userToken ? req.body.userToken : null : null;
         if (userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
@@ -267,7 +259,7 @@ class AccountController {
         }
     }
 
-    async tokenList(req, resp) {
+    tokenList = async(req, resp) => {
         var userToken = req.body ? req.body.userToken ? req.body.userToken : null : null;
         if (userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
@@ -281,7 +273,7 @@ class AccountController {
         }
     }
 
-    async tokenPriceRate(req, resp) {
+    tokenPriceRate = async(req, resp) => {
         var userToken = req.body ? req.body.userToken ? req.body.userToken : null : null;
         if (userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
@@ -304,7 +296,7 @@ class AccountController {
      * @param {object} req request object from the client
      * @param {object} resp response object to the client
      */
-    async send(req, resp) {
+    send = async(req, resp) => {
         let userToken = req.body ? req.body.userToken ? req.body.userToken : null : null;
         if (userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
@@ -326,11 +318,7 @@ class AccountController {
             if (!userInfo) {
                 return resp.json({ error: -50, data: "Invalid user token or internet disconnected" });
             }
-            let accountInfo = await accountModel.findOne({
-                where: {
-                    user_token: userToken
-                }
-            });
+            let accountInfo = await self.getById(userInfo.account);
             if (!accountInfo) {
                 return resp.json({ error: -51, data: "Not found valid account" });
             }
@@ -349,7 +337,7 @@ class AccountController {
      * @param {object} req request object from the client
      * @param {object} resp response object to the client
      */
-    async getBestPrice(req, resp) {
+    getBestPrice = async(req, resp) => {
         var userToken = req.body ? req.body.userToken ? req.body.userToken : null : null;
         if (userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
@@ -367,7 +355,11 @@ class AccountController {
             return resp.json({ error: -5, data: "Invalid amount to exchange" });
         }
         try {
-            let accountInfo = await accountModel.findOne({ where: { user_token: userToken } });
+            let userInfo = userController.validateUserToken(userToken);
+            if (!userInfo) {
+                return resp.json({ error: -50, data: "Invalid user token or internet disconnected" });
+            }
+            let accountInfo = await self.getById(userInfo.account);
             if (!accountInfo) {
                 return resp.json({ error: -50, data: "Not found valid account" });
             }
@@ -388,7 +380,7 @@ class AccountController {
      * @param {object} req request object from the client
      * @param {object} resp response object to the client
      */
-    async swap(req, resp) {
+    swap = async(req, resp) => {
         var userToken = req.body ? req.body.userToken ? req.body.userToken : null : null;
         if (userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
@@ -418,9 +410,13 @@ class AccountController {
             return resp.json({ error: -7, data: "Invalid deadline" });
         }
         try {
-            let accountInfo = await accountModel.findOne({ where: { user_token: userToken } });
+            let userInfo = userController.validateUserToken(userToken);
+            if (!userInfo) {
+                return resp.json({ error: -50, data: "Invalid user token or internet disconnected" });
+            }
+            let accountInfo = await self.getById(userInfo.account);
             if (!accountInfo) {
-                return resp.json({ error: -50, data: "Not found valid account" });
+                return resp.json({ error: -51, data: "Not found valid account" });
             }
             let ret = await accountService.swapBetweenERC20({
                 accountInfo: accountInfo,
@@ -437,15 +433,15 @@ class AccountController {
         }
     }
 
-    async getById(accountId) {
+    getById = async accountId => {
         let accountInfo = await accountModel.getById(accountId);
-        if (ret === undefined || ret === null) {
-            return { error: -1, data: "Not found the account" };
+        if (accountInfo === undefined) {
+            return null;
         }
-        return { error: 0, data: accountInfo };
+        return accountInfo;
     }
 
-    async addAsset(accountId, assetId) {
+    addAsset = async (accountId, assetId) => {
         return await accountModel.addAsset(accountId, assetId);
     }
 
@@ -453,7 +449,7 @@ class AccountController {
      * Find pawn asset information document by the specified conditions
      * @param {json} jsonWhere search condition to be used
      */
-    async allAsset(accountId) {
+    allAsset = async accountId => {
         let accountInfo = await accountModel.getById(accountId);
         if (ret === undefined || ret === null) {
             return null;
@@ -464,7 +460,7 @@ class AccountController {
         return accountInfo.assets;
     }
 
-    async getPrices(req, resp, next) {
+    getPrices = async(req, resp, next) => {
         var userToken = req.body ? req.body.userToken ? req.body.userToken : null : null;
         if (userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
@@ -474,19 +470,11 @@ class AccountController {
             if (!userInfo) {
                 return resp.json({ error: -50, data: "Invalid user token or internet disconnected" });
             }
-            let accountInfo = await accountModel.findOne({
-                where: {
-                    user_token: userToken
-                }
-            });
+            let accountInfo = await self.getById(userInfo.account);
             if (!accountInfo) {
                 return resp.json({ error: -51, data: "Not found valid account" });
             }
-            let ret = await accountService.getPriceList(accountInfo);
-            if (!ret) {
-                return resp.json({error: -5000, data: "Failed to get price list: Internal Server Error"});
-            }
-            return resp.json(ret);
+            accountService.getPriceList(resp, accountInfo);
         } catch (error) {
             let errorMessage = error.message.replace("Returned error: ", "");
             return resp.json({ error: -100, data: errorMessage });
