@@ -21,9 +21,10 @@ contract OcxLPToken is ERC20 {
         ocxPool = poolAddress;
     }
 
-    function mint(address payable to, uint256 amount) public returns(bool ret) {
+    function mint(address payable to, uint256 amount) public returns(bool) {
         require(msg.sender == ocxPool, "Invalid minter");
         super._mint(to, amount * (10 ** _decimals));
+        return true;
     }
 
     function decimals() public view virtual override returns (uint8) {
