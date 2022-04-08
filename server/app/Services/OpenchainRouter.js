@@ -624,25 +624,19 @@ class OpenchainRouter {
     }
 
     getPriceList = async (resp) => {
-    	console.log("111111111111111111111111111111111111 OpenchainRouter.getPriceList()");
         let ret = await this._unlockAccount();
         if (ret.error) {
-    	    console.log("1111111111155555555555555555555555 OpenchainRouter.getPriceList()", ret);
             return ret;
         }
-	    console.log("2222222222222222222222222222222 OpenchainRouter.getPriceList()");
         let opoAddress = this.getContractAddress(OcxPriceOracle_DeployedInfo);
         const priceOracleContract = new this.web3.eth.Contract(
             OcxPriceOracle_DeployedInfo.abi, 
             opoAddress
         );
-	    console.log("3333333333333333333333333333333 OpenchainRouter.getPriceList()");
         try {
             let gasPrice = await this.web3.eth.getGasPrice();
             gasPrice = (gasPrice * 1.2).toFixed(0);
-	        console.log("444444444444444444444444444444444 OpenchainRouter.getPriceList()");
             if (process.env.IPC_TYPE == 'infura') {
-	            console.log("55555555555555555555555555555 OpenchainRouter.getPriceList()");
                 let dataBinary = priceOracleContract.methods.getEthUsdPrice().encodeABI();
                 const tx = {
                     // this could be provider.addresses[0] if it exists
@@ -682,7 +676,6 @@ class OpenchainRouter {
                     return resp.json({ error: -2, data: err });
                 });
             } else {
-		console.log("========================== my address: ", this.myAddress, ",   Gas price: ", gasPrice);
                 let ret = await priceOracleContract.methods.getEthUsdPrice().call();
                 /*.send({
                     from: this.myAddress,
@@ -691,8 +684,8 @@ class OpenchainRouter {
                 }).then(ret => {
                     return resp.json({ error: 0, data: ret }); // ret;
                 })*/
-		console.log("PricOracle: ETH/USD: ", ret);
-		return resp.json({ error: 0, data: ret }); // ret;
+		console.log("********************** PricOracle: ETH/USD: ", ret);
+		return resp.json({ error: 0, data: {ETH: ret / (10**6)} }); // ret;
             }
 
         } catch (error) {
