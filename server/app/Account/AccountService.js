@@ -15,8 +15,6 @@ const { ethers } = require("ethers")
 
 const OUR_TOKENS = ["ETH", "UNI", "DAI", "PNFT", "OCAT"];
 
-const UNLOCK_ACCOUNT_INTERVAL = process.env.UNLOCK_ACCOUNT_INTERVAL || 15000; // 15s
-
 var gTokenList = {};
 var gPriceList = {};
 var gBalances = {};

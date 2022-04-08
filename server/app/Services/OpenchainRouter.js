@@ -27,6 +27,8 @@ const {
 const DEFAULT_DEADLINE = 300;   // 300s = 5min
 const SLIPPAGE_MAX = 3;         // 3%
 var gOpenchainRouter = null;
+const UNLOCK_ACCOUNT_INTERVAL = process.env.UNLOCK_ACCOUNT_INTERVAL || 15000; // 15s
+
 
 var self;
 
