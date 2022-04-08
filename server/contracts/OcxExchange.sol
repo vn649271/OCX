@@ -32,21 +32,29 @@ contract OcxExchange {
         uniswapRouter = IUniswapV2Router02(UNISWAP_ROUTER_ADDRESS);
     }
 
-    function setPnftAddress(address payable _pnftAddress) public {
-        require(creator == msg.sender, "OcxExchange.setPNFTAddress(): Caller for  must be creator");
-        require(_pnftAddress != address(0), "OcxExchange.setPNFTAddress(): Invalid parameter");
+    modifier callerMustBeCreator {
+        require(creator != address(0), "Invalid creator address");
+        require(msg.sender == creator, "Caller must be creator");
+        _;
+    }
+
+    modifier mustBeNoneZero(address _address) {
+        require(_address != address(0), "The address must can't be zero");
+        _;
+    }
+
+    function setPnftAddress(address payable _pnftAddress) public 
+    callerMustBeCreator mustBeNoneZero(_pnftAddress) {
         pnftAddress = _pnftAddress;
     }
 
-    function setOcatAddress(address payable _ocatAddress) public {
-        require(creator == msg.sender, "OcxExchange.setOcatAddress(): Caller for  must be creator");
-        require(_ocatAddress != address(0), "OcxExchange.setOcatAddress(): Invalid parameter");
+    function setOcatAddress(address payable _ocatAddress) public 
+    callerMustBeCreator mustBeNoneZero(_ocatAddress) {
         ocatAddress = _ocatAddress;
     }
 
-    function setOcxLocalPoolAddress(address payable _ocxLocalPoolAddress) public {
-        require(creator == msg.sender, "OcxExchange.setLocalPoolAddress(): Caller for  must be creator");
-        require(_ocxLocalPoolAddress != address(0), "OcxExchange.setLocalPoolAddress(): Invalid parameter");
+    function setOcxLocalPoolAddress(address payable _ocxLocalPoolAddress) public 
+    callerMustBeCreator mustBeNoneZero(_ocxLocalPoolAddress) {
         ocxLocalPoolAddress = _ocxLocalPoolAddress;
     }
 
@@ -83,7 +91,6 @@ contract OcxExchange {
         require(allowance >= _amountIn, errorText);
         //     Do transferFrom
         TransferHelper.safeTransferFrom(_tokenIn, msg.sender, address(this), _amountIn);
-
 
         address[] memory path = new address[](2);
         path[0] = address(_tokenIn);
@@ -158,7 +165,7 @@ contract OcxExchange {
             string memory _c, 
             string memory _d, 
             string memory _e
-    ) internal view returns (string memory){
+    ) internal pure returns (string memory){
         bytes memory _ba = bytes(_a);
         bytes memory _bb = bytes(_b);
         bytes memory _bc = bytes(_c);
@@ -183,7 +190,7 @@ contract OcxExchange {
             string memory _b, 
             string memory _c, 
             string memory _d
-    ) internal view returns (string memory) {
+    ) internal pure returns (string memory) {
         return strConcat(_a, _b, _c, _d, "");
     }
 
@@ -191,14 +198,14 @@ contract OcxExchange {
             string memory _a, 
             string memory _b, 
             string memory _c
-    ) internal view returns (string memory) {
+    ) internal pure returns (string memory) {
         return strConcat(_a, _b, _c, "", "");
     }
 
     function strConcat(
             string memory _a, 
             string memory _b
-    ) internal view returns (string memory) {
+    ) internal pure returns (string memory) {
         return strConcat(_a, _b, "", "", "");
     }
 }

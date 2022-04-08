@@ -29,6 +29,7 @@ contract PawnNFTs is ERC721 {
     uint256 price;
     uint256 numberOfTransfers;
     bool forSale;
+    bool mintedNativeToken;
   }
 
   // map pawnNft's token id to pawning NFT
@@ -102,7 +103,8 @@ contract PawnNFTs is ERC721 {
       payable(address(0)),
       _price,
       0,
-      true
+      true,
+      false // mintedNativeToken
     );
     // add the token id and it's pawning NFT to all pawning NFTs mapping
     allPawnNFTs[newTokenID] = newPawnNFT;
@@ -111,14 +113,18 @@ contract PawnNFTs is ERC721 {
 
   // get owner of the token
   function getTokenOwner(uint256 _tokenId) public view returns(address) {
-    address _tokenOwner = ownerOf(_tokenId);
-    return _tokenOwner;
+    return ownerOf(_tokenId);
   }
 
   // get metadata of the token
   function getTokenMetaData(uint _tokenId) public view returns(string memory) {
     string memory tokenMetaData = tokenURI(_tokenId);
     return tokenMetaData;
+  }
+
+  function setMintedNativeToken(uint256 _tokenId, bool _mintedNativeToken) public {
+    require(allPawnNFTs[_tokenId].tokenId > 0, "Invalid token id");
+    allPawnNFTs[_tokenId].mintedNativeToken = _mintedNativeToken;
   }
 
   // get total number of tokens minted so far
@@ -174,7 +180,7 @@ contract PawnNFTs is ERC721 {
   }
 
   function _afterTokenTransfer(
-      address from,
+      address /*from*/,
       address to,
       uint256 tokenId
   ) internal virtual override {
