@@ -50,14 +50,24 @@ contract OcxLocalPool {
         creator = payable(msg.sender);
     }
 
+    modifier callerMustBeCreator {
+        require(creator != address(0), "Invalid creator address");
+        require(msg.sender == creator, "Caller must be creator");
+        _;
+    }
+
+    modifier mustBeNoneZero(address _address) {
+        require(_address != address(0), "The address must can't be zero");
+        _;
+    }
+
     /*
      * Error Code
      *  -1: Caller for  must be creator
      *  -2: Invalid parameter
      */
-    function setOcatAddress(address payable _ocatAddress) public {
-        require(creator == msg.sender, "setOcatAddress(): -1");
-        require(_ocatAddress != address(0), "setOcatAddress(): -2");
+    function setOcatAddress(address payable _ocatAddress) public 
+    callerMustBeCreator mustBeNoneZero(_ocatAddress) {
         ocatAddress = _ocatAddress;
     }
 
@@ -66,14 +76,13 @@ contract OcxLocalPool {
      *  -1: Caller for  must be creator
      *  -2: Invalid parameter
      */
-    function setOcxLPAddress(address payable _ocxlpAddress) public {
-        require(creator == msg.sender, "setOcatAddress(): -1");
-        require(_ocxlpAddress != address(0), "setOcatAddress(): -2");
+    function setOcxLPAddress(address payable _ocxlpAddress) public 
+    callerMustBeCreator mustBeNoneZero(_ocxlpAddress) {
         ocxLPAddress = _ocxlpAddress;
         OcxLPToken(ocxLPAddress).setOcxPoolAddress( payable(address(this)) );
     }
 
-    function _compareStrings(string memory a, string memory b) internal view returns (bool) {
+    function _compareStrings(string memory a, string memory b) internal pure returns (bool) {
         return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));
     }
 
@@ -121,7 +130,7 @@ contract OcxLocalPool {
      *  -2: Invalid ETH amount
      *  -7: Insufficient OCAT balance in the pool(3)
      */
-    function swapEthToOcat(uint _amountOutMin, address payable to, uint _deadline) public payable {
+    function swapEthToOcat(uint _amountOutMin, address payable to, uint /*_deadline*/) public payable {
         require(to != address(0) && to != address(this), "swapEthToOcat(): -1");
         require(msg.value > 0, "swapEthToOcat(): -2");
 
@@ -156,7 +165,7 @@ contract OcxLocalPool {
             uint _amountIn, 
             uint _amountOutMin, 
             address payable to, 
-            uint _deadline
+            uint /*_deadline*/
     ) public returns (uint256 amountOut) {
         require(to != address(0), "swapOcatToEth(): -1");
         require(to != address(this), "swapOcatToEth(): -2");

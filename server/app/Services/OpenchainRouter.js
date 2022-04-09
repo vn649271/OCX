@@ -9,6 +9,8 @@ const Pnft_DeployedInfo = require('../../build/contracts/PawnNFTs.json');
 const OcatToken_DeployedInfo = require('../../build/contracts/OcatToken.json');
 const OcxPriceOracle_DeployedInfo = require('../../build/contracts/OcxPriceOracle.json');
 
+const UNLOCK_ACCOUNT_INTERVAL = process.env.UNLOCK_ACCOUNT_INTERVAL || 15000; // 15s
+
 const ocxSwapAbi = OcxExchange_DeployedInfo.abi;
 const ocxLocalPoolAbi = OcxLocalPool_DeployedInfo.abi;
 const pawnNftAbi = Pnft_DeployedInfo.abi;
@@ -58,7 +60,7 @@ class OpenchainRouter {
     async _unlockAccount() {
         try {
             if (process.env.IPC_TYPE != "ganache" && process.env.IPC_TYPE != 'infura') {
-                ret = await web3.eth.personal.unlockAccount(
+                ret = await this.web3.eth.personal.unlockAccount(
                     this.accountInfo.addresses['ETH'], 
                     this.accountInfo.account_password, 
                     UNLOCK_ACCOUNT_INTERVAL
@@ -66,11 +68,14 @@ class OpenchainRouter {
                 if (!ret) {
                     return { error: -250, data: "Failed to unlock for your account" };
                 }
+		if (ret.error) {
+		    return { error: -251, data: ret.message? ret.message : "Unknown error in unlocking your raccount" };
+		}
                 return { error: 0, data: ret };
             }
             return { error: 0, data: null };
         } catch(error) {
-            return { error: -300, data: "Unexpected error for unlocking account"}
+            return { error: -300, data: error.message ? error.message: "Unexpected error for unlocking account"}
         }
     }
 
@@ -407,13 +412,13 @@ class OpenchainRouter {
             const uniRouter02 = new this.web3.eth.Contract(IRouter.abi, UniswapV2Router02Address)
             let ret = await uniRouter02.addLiquidityETH(
                 GOERLI_CONTRACTS.OCAT, 
-                web3.utils.toWei('1000'), 
-                web3.utils.toWei('980'), 
-                web3.utils.toWei('1'), 
+                this.web3.utils.toWei('1000'), 
+                this.web3.utils.toWei('980'), 
+                this.web3.utils.toWei('1'), 
                 this.myAddress, 
                 params.deadline,
                 {
-                    value: web3.utils.toWei('1')
+                    value: this.web3.utils.toWei('1')
                 }
             );
             if (!ret) {
@@ -630,13 +635,10 @@ class OpenchainRouter {
             OcxPriceOracle_DeployedInfo.abi, 
             opoAddress
         );
-
         try {
-            // let gasPrice = await this.web3.eth.getGasPrice();
-            // gasPrice = (gasPrice * 1.2).toFixed(0);
+            let gasPrice = await this.web3.eth.getGasPrice();
+            gasPrice = (gasPrice * 1.2).toFixed(0);
             if (process.env.IPC_TYPE == 'infura') {
-                let gasPrice = await this.web3.eth.getGasPrice();
-                gasPrice = (gasPrice * 1.2).toFixed(0);
                 let dataBinary = priceOracleContract.methods.getEthUsdPrice().encodeABI();
                 const tx = {
                     // this could be provider.addresses[0] if it exists
@@ -676,14 +678,16 @@ class OpenchainRouter {
                     return resp.json({ error: -2, data: err });
                 });
             } else {
-                priceOracleContract.methods.getEthUsdPrice()
-                .send({
+                let ret = await priceOracleContract.methods.getEthUsdPrice().call();
+                /*.send({
                     from: this.myAddress,
                     gas: "500000",
-                    // gasPrice: gasPrice
+                    gasPrice: gasPrice
                 }).then(ret => {
                     return resp.json({ error: 0, data: ret }); // ret;
-                })
+                })*/
+		console.log("********************** PricOracle: ETH/USD: ", ret);
+		return resp.json({ error: 0, data: {ETH: ret / (10**6)} }); // ret;
             }
 
         } catch (error) {

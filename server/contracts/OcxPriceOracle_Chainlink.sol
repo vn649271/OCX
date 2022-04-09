@@ -26,8 +26,7 @@ contract OcxPriceOracle_Chainlink {
         symbolPairList['ETHUSD'] = 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419;
     }
 
-    function getPrice(string memory symbolPair) public returns (int) {
-        (, int price, , ,) = AggregatorV3Interface(symbolPairList[symbolPair]).latestRoundData();
-        return price;
+    function getPrice(string memory symbolPair) public view returns (int price) {
+        (, price, , ,) = AggregatorV3Interface(symbolPairList[symbolPair]).latestRoundData();
     }
 }
