@@ -60,7 +60,7 @@ class WalletPage extends Component {
                 eth: 0,
                 btc: 0,
             },
-            prices: {
+            price: {
                 ETH: 0,
                 BTC: 0,
                 UNI: 0,
@@ -95,6 +95,7 @@ class WalletPage extends Component {
         this.encryptedPassphrase = null;
         this.unlockButton = null;
         this.tempStorage = {};
+        this.priceMonitorTimer = null;
 
         this.onCreateAccont = this.onCreateAccont.bind(this);
         this.onTransfer = this.onTransfer.bind(this);
@@ -184,6 +185,10 @@ class WalletPage extends Component {
             clearInterval(this.balanceTimer);
             this.balanceTimer = null;
         }
+        if (this.priceMonitorTimer) {
+            clearInterval(this.priceMonitorTimer);
+            this.priceMonitorTimer = null;
+        }            
     }
 
     async _startBalanceMonitor() {
@@ -222,22 +227,44 @@ class WalletPage extends Component {
     }
 
     startPriceMonitor = async () => {
-        accountService.getPrices({
-            userToken: self.userToken
-        }).then(resp => {
-            var errorMsg = null;
-            if (resp.error === 0) {
-                for (let i in resp.data) {
-                    self.setPriceInUI(i, (resp.data[i] - 0).toFixed(4));
+        const axios = require("axios");
+        this.priceMonitorTimer = setInterval(
+            function() {
+                var tokens = ['ETH', 'DAI', 'UNI'];
+                for (let i in tokens) {
+                    const options = {
+                        method: 'GET',
+                        url: 'https://api.coinbase.com/v2/prices/' + tokens[i] + '-USD/historic?period=hour',
+                    };
+
+                    axios.request(options).then(function (response) {
+                        let priceData = response.data ? response.data.data ? response.data.data.prices ?
+                                        response.data.data.prices[0] : 0 : 0: 0;
+                        console.log("+++++++++++++++++ ", priceData);
+                        self.setPriceInUI(tokens[i], priceData.price);
+                    }).catch(function (error) {
+                        console.error(error);
+                    });
                 }
-                return;
-            } else if (resp.error === -1000) {
-                errorMsg = "No response for get balance";
-            } else if (resp.error !== 0) {
-                errorMsg = resp.data
-            }
-            self.warning(errorMsg);
-        });
+            }, 
+            BALANCE_CHECKING_INTERVAL
+        );
+        // accountService.getPrices({
+        //     userToken: self.userToken
+        // }).then(resp => {
+        //     var errorMsg = null;
+        //     if (resp.error === 0) {
+        //         for (let i in resp.data) {
+        //             self.setPriceInUI(i, (resp.data[i] - 0).toFixed(4));
+        //         }
+        //         return;
+        //     } else if (resp.error === -1000) {
+        //         errorMsg = "No response for get balance";
+        //     } else if (resp.error !== 0) {
+        //         errorMsg = resp.data
+        //     }
+        //     self.warning(errorMsg);
+        // });
     }
 
     setEncryptKey(encryptKey) {
@@ -312,7 +339,7 @@ class WalletPage extends Component {
     }
 
     setPriceInUI = (token, price) => {
-        var priceMsg = this.state.prices;
+        var priceMsg = this.state.price;
         priceMsg[token] = price;
         this.setState({ price: priceMsg });
     }
@@ -598,19 +625,30 @@ class WalletPage extends Component {
                                     </p>
                                     Balance:
                                     <p className="account-balance-box main-font text-black-400 mb-100 font-20">
-                                        {this.state.balance['ETH']} ETH {this.state.prices['ETH']}
+                                        {this.state.balance['ETH']} ETH
                                     </p>
                                     <p className="account-balance-box main-font text-black-400 mb-100 font-20">
-                                        {this.state.balance['UNI']} UNI {this.state.prices['UNI']}
+                                        {this.state.balance['UNI']} UNI
                                     </p>
                                     <p className="account-balance-box main-font text-black-400 mb-100 font-20">
-                                        {this.state.balance['DAI']} DAI {this.state.prices['DAI']}
+                                        {this.state.balance['DAI']} DAI
                                     </p>
                                     <p className="account-balance-box main-font text-black-400 mb-100 font-20">
-                                        {this.state.balance['OCAT']} OCAT {this.state.prices['OCAT']}
+                                        {this.state.balance['OCAT']} OCAT
                                     </p>
                                     <p className="account-balance-box main-font text-black-400 mb-100 font-20">
-                                        {this.state.balance['PNFT']} PNFT {this.state.prices['PNFT']}
+                                        {this.state.balance['PNFT']} PNFT
+                                    </p>
+
+                                    Prices:
+                                    <p className="account-balance-box main-font text-black-400 mb-100 font-20">
+                                        ETH: ${this.state.price['ETH']}
+                                    </p>
+                                    <p className="account-balance-box main-font text-black-400 mb-100 font-20">
+                                        UNI: ${this.state.price['UNI']}
+                                    </p>
+                                    <p className="account-balance-box main-font text-black-400 mb-100 font-20">
+                                        DAI: ${this.state.price['DAI']}
                                     </p>
                                 </div>
                             </div>
