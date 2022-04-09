@@ -64,6 +64,7 @@
   "scripts": {
     "start": "node backend.js",
     "dev": "nodemon backend.js dev",
+    "deploy-win-ganache": "del .\\build\\contracts\\* | truffle migrate --network ganache",
     "deploy-linux-ganache": "rm ./build/contracts/* | truffle migrate --network ganache",
     "deploy-linux-goerli": "rm ./build/contracts/* | truffle migrate --network goerli",
     "deploy-win-goerli": "del .\\build\\contracts\\* | truffle migrate --network goerli",

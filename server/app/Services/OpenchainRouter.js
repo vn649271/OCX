@@ -3,11 +3,23 @@ const IRouter = require('@uniswap/v2-periphery/build/IUniswapV2Router02.json')
 // const uniswap = require("@studydefi/money-legos/uniswap")
 
 const Erc20_DeployedInfo = require('../../build/contracts/ERC20.json');
+const Weth_DeployedInfo = require('../../build/contracts/WEthToken.json');
+const Uni_DeployedInfo = require('../../build/contracts/GUniToken.json');
+const Dai_DeployedInfo = require('../../build/contracts/GDaiToken.json');
 const OcxExchange_DeployedInfo = require('../../build/contracts/OcxExchange.json');
 const OcxLocalPool_DeployedInfo = require('../../build/contracts/OcxLocalPool.json');
 const Pnft_DeployedInfo = require('../../build/contracts/PawnNFTs.json');
+const PnftExchange_DeployedInfo = require('../../build/contracts/PawnExchange.json');
 const OcatToken_DeployedInfo = require('../../build/contracts/OcatToken.json');
 const OcxPriceOracle_DeployedInfo = require('../../build/contracts/OcxPriceOracle.json');
+
+const TOKEN_CONTRACT_MAP = {
+    WETH: Weth_DeployedInfo,
+    DAI: Dai_DeployedInfo,
+    UNI: Uni_DeployedInfo,
+    OCAT: OcatToken_DeployedInfo,
+    PNFT: Pnft_DeployedInfo
+}
 
 const UNLOCK_ACCOUNT_INTERVAL = process.env.UNLOCK_ACCOUNT_INTERVAL || 15000; // 15s
 
@@ -29,8 +41,6 @@ const {
 const DEFAULT_DEADLINE = 300;   // 300s = 5min
 const SLIPPAGE_MAX = 3;         // 3%
 var gOpenchainRouter = null;
-const UNLOCK_ACCOUNT_INTERVAL = process.env.UNLOCK_ACCOUNT_INTERVAL || 15000; // 15s
-
 
 var self;
 
@@ -84,11 +94,29 @@ class OpenchainRouter {
                     this.accountInfo.addresses['ETH'] : null : null;
     }
 
+    getContractAddress(contractDeployedInfo) {
+        let ipcType = process.env.IPC_TYPE;
+        if (ipcType == undefined) {
+            ipcType = 'geth';
+        }
+        if (contractDeployedInfo == Weth_DeployedInfo ||
+        contractDeployedInfo == Uni_DeployedInfo ||
+        contractDeployedInfo == Dai_DeployedInfo) {
+            if (ipcType == 'geth' || ipcType == 'infura' || ipcType == 'selfnode') {
+                // For WETH, DAI and UNI,  brought built-in address 
+                return ContractAddressMap[process.env.CHAIN_NAME][contractDeployedInfo.contractName];
+            }
+        }
+        return contractDeployedInfo.networks[
+            ChainIDMap[process.env.IPC_TYPE][process.env.CHAIN_NAME]
+        ] ? contractDeployedInfo.networks[
+            ChainIDMap[process.env.IPC_TYPE][process.env.CHAIN_NAME]
+        ].address: null;
+    }
+
     async getBalance(symbol) {
         try {
-            let chainType = process.env.IPC_TYPE;
-            let chainName = process.env.CHAIN_NAME;
-            let tokenContractAddress = ContractAddressMap[chainType][chainName][symbol];
+            this.getContractAddress(TOKEN_CONTRACT_MAP[symbol]);
 
             const tokenContract = new this.web3.eth.Contract(erc20Abi, tokenContractAddress);
             let balanceInWei = await tokenContract.methods.balanceOf(this.myAddress).call();
@@ -107,14 +135,6 @@ class OpenchainRouter {
         }
     }
 
-    getContractAddress(ContractJson) {
-        return ContractJson.networks[
-            ChainIDMap[process.env.IPC_TYPE][process.env.CHAIN_NAME]
-        ] ? ContractJson.networks[
-            ChainIDMap[process.env.IPC_TYPE][process.env.CHAIN_NAME]
-        ].address: null;
-    }
-
     async getBestPrice(params) {
         if (params.sellSymbol === params.buySymbol) {
             return { error: -1, data: "Illegal operation. Selling token must be different than token to buy" };
@@ -124,9 +144,10 @@ class OpenchainRouter {
             return ret;
         }
         try {
-            let WETH_ADDRESS = GOERLI_CONTRACTS['WETH'];
-            let sellTokenAddress = GOERLI_CONTRACTS[params.sellSymbol];
-            let buyTokenAddress = GOERLI_CONTRACTS[params.buySymbol];
+            let WETH_ADDRESS = this.getContractAddress(TOKEN_CONTRACT_MAP['WETH']);
+            let sellTokenAddress = this.getContractAddress(TOKEN_CONTRACT_MAP[params.sellSymbol]);
+            let buyTokenAddress = this.getContractAddress(TOKEN_CONTRACT_MAP[params.buySymbol]);
+
             let amountOutMin = 0;
             if (params.sellSymbol == 'OCAT' || params.buySymbol == 'OCAT') {
                 if ((params.sellSymbol == 'OCAT' && params.buySymbol == 'ETH') ||
@@ -188,10 +209,8 @@ class OpenchainRouter {
             return ret;
         }
         try {
-            let chainType = process.env.IPC_TYPE;
-            let chainName = process.env.CHAIN_NAME;
-            let erc20TokenAddress = ContractAddressMap[chainType][chainName][buySymbol];
-            let ocxExchangeAddress = ContractAddressMap[chainType][chainName].OCX_EXCHANGE;
+            let erc20TokenAddress = this.getContractAddress(TOKEN_CONTRACT_MAP[params.buySymbol]);
+            let ocxExchangeAddress = this.getContractAddress(OcxExchange_DeployedInfo);
 
             const sellAmountInHex = this.web3.utils.toHex(params.sellAmount);
             const buyAmountInHex = this.web3.utils.toHex(params.buyAmountMin);
@@ -242,10 +261,8 @@ class OpenchainRouter {
             return ret;
         }
         try {
-            let chainType = process.env.IPC_TYPE;
-            let chainName = process.env.CHAIN_NAME;
-            let erc20TokenAddress = ContractAddressMap[chainType][chainName][params.sellSymbol];
-            let ocxExchangeAddress = ContractAddressMap[chainType][chainName].OCX_EXCHANGE;
+            let erc20TokenAddress = this.getContractAddress(TOKEN_CONTRACT_MAP[params.sellSymbol]);
+            let ocxExchangeAddress = this.getContractAddress(OcxExchange_DeployedInfo);
 
             const sellAmountInHex = this.web3.utils.toHex(params.sellAmount);
             const buyAmountInHex = this.web3.utils.toHex(params.buyAmountMin);
@@ -331,11 +348,8 @@ class OpenchainRouter {
                 ocxExchangeAddress
             );
 
-            let chainType = process.env.IPC_TYPE;
-            let chainName = process.env.CHAIN_NAME;
-
-            let sellTokenAddress = ContractAddressMap[chainType][chainName][params.sellSymbol];
-            let buyTokenAddress = ContractAddressMap[chainType][chainName][params.buySymbol];
+            let sellTokenAddress = this.getContractAddress(TOKEN_CONTRACT_MAP[params.sellSymbol]);
+            let buyTokenAddress = this.getContractAddress(TOKEN_CONTRACT_MAP[params.buySymbol]);
 
             const path = [sellTokenAddress, buyTokenAddress];
             const sellAmountInHex = this.web3.utils.toHex(params.sellAmount);
