@@ -13,6 +13,8 @@ contract PawnExchange {
     address payable private ocatAddress;
     address payable private creator;
     uint256         private pnftOcatQuote;
+    mapping(address => uint256) private stakeHolders;
+    uint64          private stakeHolderCount;
 
     uint8           private MINT_FEE = 0;
     uint8           private ROLLBACK_FEE = 1;
@@ -25,6 +27,7 @@ contract PawnExchange {
 
     constructor() {
         creator = payable(msg.sender);
+        stakeHolders[msg.sender] = 10000; // 100%
         fees[MINT_FEE] = 50;     // 0.5% 
         fees[ROLLBACK_FEE] = 50; // 0.5%
         pnftOcatQuote = 10;
@@ -50,7 +53,7 @@ contract PawnExchange {
         _;
     }
 
-    modifier nonZeroAddress(address _address) {
+    modifier noneZeroAddress(address _address) {
         require(_address != address(0), "Expected non-zero address");
         _;
     }
@@ -62,12 +65,12 @@ contract PawnExchange {
     }
 
     function setPnftAddress(address payable _pnftAddress) public 
-    validCaller callerMustBeCreator nonZeroAddress(_pnftAddress) {
+    validCaller callerMustBeCreator noneZeroAddress(_pnftAddress) {
         pnftAddress = _pnftAddress;
     }
 
     function setOcatAddress(address payable _ocatAddress) public 
-    validCaller nonZeroAddress(_ocatAddress) callerMustBeCreator {
+    validCaller noneZeroAddress(_ocatAddress) callerMustBeCreator {
         ocatAddress = _ocatAddress;
         OcatToken(ocatAddress).addOperator(address(this));
     }
@@ -77,11 +80,17 @@ contract PawnExchange {
         minPrice = _minPrice;
     }
 
+    function addStakeHolder(address payable stakeHolder, uint256 share) public 
+    callerMustBeCreator noneZeroAddress(msg.sender) {
+        stakeHolders[stakeHolder] = share;
+    }
+
     function exchangeToOcat(uint256 nftID) public 
     validNftID(nftID) validCaller {
         uint256 ocatBalance = IERC20(ocatAddress).balanceOf(address(this));
         // Get price for the NFT
-        (,,,,address currentOwner,,uint256 price,,,bool mintedNativeToken) = PawnNFTs(payable(address(pnftAddress))).allPawnNFTs(nftID);
+        (,,,,address currentOwner,,uint256 price,,,bool mintedNativeToken) = 
+            PawnNFTs(payable(address(pnftAddress))).allPawnNFTs(nftID);
         require(currentOwner == msg.sender, "Not owner");
         require(price >= minPrice, "Too small price for PNFT");
         require(pnftOcatQuote > 0, "Invalid PNFT/OCAT quote");
@@ -95,7 +104,10 @@ contract PawnExchange {
             OcatToken(ocatAddress).mint(quotedPrice);
             PawnNFTs(pnftAddress).setMintedNativeToken(nftID, true);
         } else {
-	    require(ocatBalance >= price, "PawnExchange.exchangeToOcat(): Insufficient balance of OCAT in the contract");
+            require(
+                ocatBalance >= price, 
+                "PawnExchange.exchangeToOcat(): Insufficient balance of OCAT in the contract"
+            );
         }
         // safeTransferFrom: send NFT from caller to the address
         IERC721(pnftAddress).safeTransferFrom(msg.sender, address(this), nftID);
@@ -114,10 +126,12 @@ contract PawnExchange {
         (,,,,,,uint256 price,,,) = PawnNFTs(payable(address(pnftAddress))).allPawnNFTs(nftID);
         // uint256 price = nftItem.price;
         uint256 quotedPrice = price * pnftOcatQuote;
-        require(ocatBalance >= quotedPrice, "PawnExchange.exchangeFromOcat(): Insufficient balance of OCAT in the account");
+        uint256 rollbackFee = quotedPrice * fees[ROLLBACK_FEE] / (10 ** feeDecimal);
+        uint256 realPrice = quotedPrice + rollbackFee;
+        require(ocatBalance >= realPrice, "PawnExchange.exchangeFromOcat(): Insufficient balance of OCAT in the account");
         // safeTransferFrom: send NFT from caller to the address
-        TransferHelper.safeTransferFrom(ocatAddress, msg.sender, address(this), quotedPrice);
-        // Pay OCAT for the NFT
+        TransferHelper.safeTransferFrom(ocatAddress, msg.sender, address(this), realPrice);
+        // Return back PNFT for received OCATs
         IERC721(pnftAddress).safeTransferFrom(address(this), msg.sender, nftID);
         //   Then transfer OCATs from the address to caller
         // TransferHelper.safeTransferFrom(ocatAddress, address(this), msg.sender, quotedPrice);
