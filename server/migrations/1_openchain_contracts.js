@@ -1,7 +1,7 @@
-// const WEthToken = artifacts.require("./WEthToken.sol");
-// const GDaiToken = artifacts.require("./GDaiToken.sol");
-// const GUniToken = artifacts.require("./GUniToken.sol");
-// const OcxLPToken = artifacts.require("./OcxLPToken.sol");
+const WEthToken = artifacts.require("./WEthToken.sol");
+const GDaiToken = artifacts.require("./GDaiToken.sol");
+const GUniToken = artifacts.require("./GUniToken.sol");
+const OcxLPToken = artifacts.require("./OcxLPToken.sol");
 const PawnNFTs = artifacts.require("./PawnNFTs.sol");
 const OcatToken = artifacts.require("./OcatToken.sol");
 const OcxExchange = artifacts.require("./OcxExchange.sol");
@@ -11,10 +11,10 @@ const OcxPriceOracle = artifacts.require("./OcxPriceOracle.sol");
 
 module.exports = async deployer => {
   // console.log("%%%%%%%%%%%%%%% deployer: ", deployer);
-// var wethAddress = null;
-// var gdaiAddress = null;
-// var guniAddress = null;
-// var ocxlpAddress = null;
+    var wethAddress = null;
+    var gdaiAddress = null;
+    var guniAddress = null;
+    var ocxlpAddress = null;
     var ocatAddress = null;
     var ocxLocalPoolAddress = null;
     var pawnExchangeAddress = null;

@@ -12,10 +12,21 @@ contract PawnExchange {
     address payable private pnftAddress;
     address payable private ocatAddress;
     address payable private creator;
-    uint256 private         pnftOcatQuote;
+    uint256         private pnftOcatQuote;
+
+    uint8           private MINT_FEE = 0;
+    uint8           private ROLLBACK_FEE = 1;
+
+    mapping(uint8 => uint8) private fees;
+    uint8           private feeDecimal = 4;
+    uint64          private minPrice = 5000;
+
+    event SwappedToOcat (uint256 realPrice, uint256 fee);
 
     constructor() {
         creator = payable(msg.sender);
+        fees[MINT_FEE] = 50;     // 0.5% 
+        fees[ROLLBACK_FEE] = 50; // 0.5%
         pnftOcatQuote = 10;
     }
 
@@ -61,14 +72,23 @@ contract PawnExchange {
         OcatToken(ocatAddress).addOperator(address(this));
     }
 
-    function exchangeToOcat(uint256 nftID) public validNftID(nftID) validCaller {
+    function setMinPrice(uint8 _minPrice) public 
+    callerMustBeCreator {
+        minPrice = _minPrice;
+    }
+
+    function exchangeToOcat(uint256 nftID) public 
+    validNftID(nftID) validCaller {
         uint256 ocatBalance = IERC20(ocatAddress).balanceOf(address(this));
         // Get price for the NFT
         (,,,,address currentOwner,,uint256 price,,,bool mintedNativeToken) = PawnNFTs(payable(address(pnftAddress))).allPawnNFTs(nftID);
         require(currentOwner == msg.sender, "Not owner");
-        require(price > 0, "Invalid price for PNFT");
+        require(price >= minPrice, "Too small price for PNFT");
         require(pnftOcatQuote > 0, "Invalid PNFT/OCAT quote");
+
         uint256 quotedPrice = pnftOcatQuote * price;
+        uint256 mintFee = quotedPrice * fees[MINT_FEE] / (10 ** feeDecimal);
+        uint256 realPrice = quotedPrice - mintFee;
 
         if (!mintedNativeToken) {
             // Mint some OCATs for this PNFT
@@ -79,8 +99,11 @@ contract PawnExchange {
         }
         // safeTransferFrom: send NFT from caller to the address
         IERC721(pnftAddress).safeTransferFrom(msg.sender, address(this), nftID);
+        // Pay fee in OCAT to this address
+        IERC20(ocatAddress).transfer(address(this), mintFee);
         // Pay OCAT for the NFT
-        IERC20(ocatAddress).transfer(msg.sender, quotedPrice);
+        IERC20(ocatAddress).transfer(msg.sender, realPrice);
+        emit SwappedToOcat(realPrice, mintFee);
         //   Then transfer OCATs from the address to caller
         // TransferHelper.safeTransferFrom(ocatAddress, address(this), msg.sender, quotedPrice);
     }
