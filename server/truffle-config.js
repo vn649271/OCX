@@ -66,8 +66,8 @@ module.exports = {
       skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
     },
     goerli: {
-      // provider: () => new HDWalletProvider(mnemonic, `http://127.0.0.1:8545`),
-      provider: () => new HDWalletProvider(mnemonic, `https://goerli.infura.io/v3/499740cc57444242b52f0c55033fcee0`),
+      provider: () => new HDWalletProvider(mnemonic, `http://127.0.0.1:8545`),
+      // provider: () => new HDWalletProvider(mnemonic, `https://goerli.infura.io/v3/499740cc57444242b52f0c55033fcee0`),
       network_id: "5",       // Any network (default: none)
       gas: 8700000,          // Gas for goerli
       gasPrice: 10000000000,
