@@ -16,43 +16,43 @@ module.exports = async deployer => {
     var guniAddress = null;
     var ocxlpAddress = null;
     var ocatAddress = null;
+    var ocatToken = null;
     var ocxLocalPoolAddress = null;
     var pawnExchangeAddress = null;
+    var pawnExchange = null;
     var pnftAddress = null;
     var ocxPriceOracleAddress = null;
 
-    if (deployer.network == "ganache") {
-        deployer.deploy(WEthToken).then(ret => {
-            wethAddress = ret.address;
-        });
-        deployer.deploy(GDaiToken).then(ret => {
-            gdaiAddress = ret.address;
-        });
-        deployer.deploy(GUniToken).then(ret => {
-            guniAddress = ret.address;
-        });
-    }
+    // if (deployer.network == "ganache") {
+    //     deployer.deploy(WEthToken).then(ocxExchange => {
+    //         wethAddress = ret.address;
+    //     });
+    //     deployer.deploy(GDaiToken).then(ret => {
+    //         gdaiAddress = ret.address;
+    //     });
+    //     deployer.deploy(GUniToken).then(ret => {
+    //         guniAddress = ret.address;
+    //     });
+    // }
     deployer.deploy(OcatToken).then(ret => {
+        ocatToken = ret;
         ocatAddress = ret.address;
     });
-    // deployer.deploy(OcxLPToken).then(ret => {
-    //   ocxlpAddress = ret.address;
-    //   // // Setting deployed OCAT address 
-    //   // await ret.setOcxPoolAddress(ocxLocalPoolAddress);
+    // // deployer.deploy(OcxLPToken).then(ret => {
+    // //   ocxlpAddress = ret.address;
+    // //   // // Setting deployed OCAT address 
+    // //   // await ret.setOcxPoolAddress(ocxLocalPoolAddress);
+    // // });
+    // deployer.deploy(OcxPriceOracle).then(ret => {
+    //     ocxPriceOracleAddress = ret.address;
     // });
-    deployer.deploy(OcxPriceOracle).then(ret => {
-        ocxPriceOracleAddress = ret.address;
-    });
     deployer.deploy(PawnNFTs).then(ret => {
         pnftAddress = ret.address;
     });
 
     deployer.deploy(PawnExchange).then(async ret => {
-        pawnExchangeAddress = ret.address;
-        // Setting deployed OCAT address 
-        await ret.setOcatAddress(ocatAddress);
-        // Setting deployed PNFT address 
-        await ret.setPnftAddress(pnftAddress);
+        pawnExchange = ret;
+        pawnExchangeAddress = pawnExchange.address;
     });
 
     deployer.deploy(OcxLocalPool).then(async ret => {
@@ -63,7 +63,7 @@ module.exports = async deployer => {
         // await ret.setOcxLPAddress(ocxlpAddress);
     });
 
-    deployer.deploy(OcxExchange).then(async ret => {
+    deployer.deploy(OcxExchange).then(async ocxExchange => {
         console.log("\n\n");
         if (deployer.network == "ganache") {
             console.log("    WETH: \"" + wethAddress + "\",");
@@ -74,14 +74,20 @@ module.exports = async deployer => {
         console.log("    OCAT: \"" + ocatAddress + "\",");
         console.log("    PAWN_EXCHANGE: \"" + pawnExchangeAddress + "\",");
         console.log("    OCX_LOCAL_POOL: \"" + ocxLocalPoolAddress + "\",");
-        console.log("    OCX_PRICE_ORACLE: \"" + ocxPriceOracleAddress + "\"");
-        console.log("    OCX_EXCHANGE: \"" + ret.address + "\"");
+        console.log("    OCX_PRICE_ORACLE: \"" + ocxPriceOracleAddress + "\",");
+        console.log("    OCX_EXCHANGE: \"" + ocxExchange.address + "\"");
         console.log("\n\n");
-        // Setting deployed PNFT address 
-        await ret.setPnftAddress(pnftAddress);
         // Setting deployed OCAT address 
-        await ret.setOcatAddress(ocatAddress);
+        await pawnExchange.setOcatAddress(ocatAddress);
+        // Setting deployed PNFT address 
+        await pawnExchange.setPnftAddress(pnftAddress);
+        // Add PawnExchange contract to OcatToken contract as an operator
+        await ocatToken.addOperator(pawnExchangeAddress);
+        // Setting deployed PNFT address 
+        await ocxExchange.setPnftAddress(pnftAddress);
+        // Setting deployed OCAT address 
+        await ocxExchange.setOcatAddress(ocatAddress);
         // Setting deployed Ocx local pool address 
-        await ret.setOcxLocalPoolAddress(ocxLocalPoolAddress);
+        await ocxExchange.setOcxLocalPoolAddress(ocxLocalPoolAddress);
     });
 };

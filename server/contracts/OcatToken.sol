@@ -2,8 +2,9 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "./IOcat.sol";
 
-contract OcatToken is ERC20 {
+contract OcatToken is ERC20, IOcat {
 
     address[]       private allowedOperators;
     address payable private creator;
@@ -17,10 +18,10 @@ contract OcatToken is ERC20 {
     }
 
 
-    modifier isAllowedOperator {
+    modifier isAllowedOperator(address operator) override {
         bool isAllowed = false;
         for (uint8 i = 0; i < allowedOperators.length; i++) {
-            if (msg.sender == allowedOperators[i]) {
+            if (operator == allowedOperators[i]) {
                 isAllowed = true;
                 break;
             }
@@ -29,20 +30,27 @@ contract OcatToken is ERC20 {
         _;
     }
 
-    function addOperator(address _address) public payable {
-        require(_address == creator, "Invalid caller");
+    function addOperator(address operator) public payable override {
+        require(msg.sender == creator, "Invalid caller");
+        require(operator != address(0), "Invalid operator");
+        
         for (uint8 i = 0; i < allowedOperators.length; i++) {
-            if (_address == allowedOperators[i]) {
+            if (operator == allowedOperators[i]) {
                 return;
             }
         }
-        allowedOperators.push(_address);
+        allowedOperators.push(operator);
     }
 
+    function getAllowedOperators() public view  override 
+    returns(address[] memory) {
+        return allowedOperators;
+    }
     /**
         * Custom accessor to create a unique token
     */
-    function mint(uint256 amount) public payable isAllowedOperator {
-        super._mint(msg.sender, amount * (10 ** 18));
+    function mint(address from, uint256 amount) public override
+    isAllowedOperator(from) {
+        super._mint(from, amount * (10 ** 18));
     }
 }
