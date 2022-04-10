@@ -50,7 +50,7 @@ contract PawnExchange {
         _;
     }
 
-    modifier nonZeroAddress(address _address) {
+    modifier noneZeroAddress(address _address) {
         require(_address != address(0), "Expected non-zero address");
         _;
     }
@@ -62,12 +62,12 @@ contract PawnExchange {
     }
 
     function setPnftAddress(address payable _pnftAddress) public 
-    validCaller callerMustBeCreator nonZeroAddress(_pnftAddress) {
+    validCaller callerMustBeCreator noneZeroAddress(_pnftAddress) {
         pnftAddress = _pnftAddress;
     }
 
     function setOcatAddress(address payable _ocatAddress) public 
-    validCaller nonZeroAddress(_ocatAddress) callerMustBeCreator {
+    validCaller noneZeroAddress(_ocatAddress) callerMustBeCreator {
         ocatAddress = _ocatAddress;
         // IOcat(_ocatAddress).addOperator(address(this));
     }
