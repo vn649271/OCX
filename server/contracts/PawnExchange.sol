@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol"; // openzeppelin 4.5 (fo
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import '@uniswap/lib/contracts/libraries/TransferHelper.sol';
 import "./PawnNFTs.sol";
-import "./OcatToken.sol";
+import "./IOcat.sol";
 
 contract PawnExchange {
     
@@ -27,7 +27,7 @@ contract PawnExchange {
         creator = payable(msg.sender);
         fees[MINT_FEE] = 50;     // 0.5% 
         fees[ROLLBACK_FEE] = 50; // 0.5%
-        pnftOcatQuote = 10;
+        pnftOcatQuote = 1;
     }
 
     function onERC721Received(
@@ -41,7 +41,7 @@ contract PawnExchange {
 
     modifier validCaller {
         require(msg.sender != address(this), "Error: Caller couldn't be same to this address");
-        require(msg.sender != address(0), "Invalid caller");
+        require(msg.sender != address(0), "************Invalid caller");
         _;
     }
 
@@ -69,7 +69,7 @@ contract PawnExchange {
     function setOcatAddress(address payable _ocatAddress) public 
     validCaller nonZeroAddress(_ocatAddress) callerMustBeCreator {
         ocatAddress = _ocatAddress;
-        OcatToken(ocatAddress).addOperator(address(this));
+        // IOcat(_ocatAddress).addOperator(address(this));
     }
 
     function setMinPrice(uint8 _minPrice) public 
@@ -78,8 +78,8 @@ contract PawnExchange {
     }
 
     function exchangeToOcat(uint256 nftID) public 
-    validNftID(nftID) validCaller {
-        uint256 ocatBalance = IERC20(ocatAddress).balanceOf(address(this));
+    validNftID(nftID) validCaller 
+    returns (uint256, uint256) {
         // Get price for the NFT
         (,,,,address currentOwner,,uint256 price,,,bool mintedNativeToken) = PawnNFTs(payable(address(pnftAddress))).allPawnNFTs(nftID);
         require(currentOwner == msg.sender, "Not owner");
@@ -92,10 +92,11 @@ contract PawnExchange {
 
         if (!mintedNativeToken) {
             // Mint some OCATs for this PNFT
-            OcatToken(ocatAddress).mint(quotedPrice);
+            IOcat(ocatAddress).mint(address(this), quotedPrice);
             PawnNFTs(pnftAddress).setMintedNativeToken(nftID, true);
         } else {
-	    require(ocatBalance >= price, "PawnExchange.exchangeToOcat(): Insufficient balance of OCAT in the contract");
+            uint256 ocatBalance = IERC20(ocatAddress).balanceOf(address(this));
+	        require(ocatBalance >= price, "PawnExchange.exchangeToOcat(): Insufficient balance of OCAT in the contract");
         }
         // safeTransferFrom: send NFT from caller to the address
         IERC721(pnftAddress).safeTransferFrom(msg.sender, address(this), nftID);
@@ -106,6 +107,7 @@ contract PawnExchange {
         emit SwappedToOcat(realPrice, mintFee);
         //   Then transfer OCATs from the address to caller
         // TransferHelper.safeTransferFrom(ocatAddress, address(this), msg.sender, quotedPrice);
+        return (realPrice, mintFee);
     }
 
     function exchangeFromOcat(uint256 nftID) public {
