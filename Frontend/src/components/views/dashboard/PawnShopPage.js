@@ -9,7 +9,6 @@ import DelayButton from '../../common/DelayButton';
 import Card from '../../common/Card';
 import SimpleTable from '../../common/SimpleTable';
 import CheckBox from '../../common/CheckBox';
-import Toast from '../../common/Toast';
 import SpinButton from '../../common/SpinButton';
 import OcxConfirmDialog from '../../common/OcxConfirmDialog';
 import OcxModalDialog from '../../common/OcxModalDialog';
@@ -663,16 +662,19 @@ class PawnShopPage extends Component {
         if (!msg) {
             return;
         }
-        let t = type ? type : 0;
-        this.setState({'message_box': <Toast message={msg} type={t}/>})
-        setTimeout(function() {self.setState({'message_box':<></>})}, 5000)
+        this.props.showToast(type, msg);
+        // let t = type ? type : 0;
+        // this.setState({'message_box': <Toast message={msg} type={t}/>})
+        // setTimeout(function() {self.setState({'message_box':<></>})}, 500000)
     }
 
     render() {
         return (
             <div>
-                <div className="my-pawnshop-page main-font main-color font-16 m-8">
+                <div className="main-font font-16 z-200">
                     {this.state.message_box}
+                </div>
+                <div className="my-pawnshop-page main-font main-color font-16 m-8">
                     <Card title='Pawn your assets into cryptos'>
                         <div>
                             <div className="inline-flex w-full">
