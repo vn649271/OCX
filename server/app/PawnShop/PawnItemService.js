@@ -64,10 +64,9 @@ class PawnItemService {
         if (!assetInfo) {
             return { error: -208, data: "Invalid asset information to the specified ID" };
         }
-        const ocRouter = await openchainRouterInstance(web3, myAddress);
+        const ocRouter = await openchainRouterInstance(web3, accountInfo);
         try {
             let ret = await ocRouter.mintPawnNft({
-                owner: myAddress, 
                 assetId: assetId, 
                 assetInfo: assetInfo 
             });
@@ -127,7 +126,7 @@ class PawnItemService {
             return { error: -204, data: "Failed to add account" };
         }
         try {
-            const ocRouter = await openchainRouterInstance(web3, myAddress);
+            const ocRouter = await openchainRouterInstance(web3, accountInfo);
             ret = await ocRouter.exchangeToOcat({owner: myAddress, assetInfo: assetInfo});
             if (ret.error) {
                 return { error: -205, data: ret.data };
@@ -177,7 +176,7 @@ class PawnItemService {
             return { error: -204, data: "Failed to add account" };
         }
         try {
-            const ocRouter = await openchainRouterInstance(web3, myAddress);
+            const ocRouter = await openchainRouterInstance(web3, accountInfo);
             ret = await ocRouter.exchangeFromOcat({owner: myAddress, assetInfo: assetInfo});
             if (ret.error) {
                 return { error: -205, data: ret.data };

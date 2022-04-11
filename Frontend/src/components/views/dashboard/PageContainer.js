@@ -42,7 +42,7 @@ class PageContainer extends Component {
         this.setState({show_toast: true});
         this.setState({toast_type: _type});
         this.setState({toast_text: _text});
-        this.toastTimer = setTimeout(this.hideToast, 5000);
+        this.toastTimer = setTimeout(this.hideToast, 10000);
     }
 
     componentDidUpdate(prevProps) {
@@ -84,7 +84,11 @@ class PageContainer extends Component {
     render() {
         return (
             <div className="main-content-container w-full pl-10 pt-10">
-                {this.state.show_toast? <Toast text={this.state.toast_text} type={this.state.toast_type}/> : <></>}
+                {
+                    this.state.show_toast?
+                        <Toast text={this.state.toast_text} type={this.state.toast_type}/> 
+                        : <></>
+                }
                 {this.state.currentPageComponent}
             </div>
         );

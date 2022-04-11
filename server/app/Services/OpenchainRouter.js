@@ -25,7 +25,6 @@ const UNLOCK_ACCOUNT_INTERVAL = process.env.UNLOCK_ACCOUNT_INTERVAL || 15000; //
 
 const ocxSwapAbi = OcxExchange_DeployedInfo.abi;
 const ocxLocalPoolAbi = OcxLocalPool_DeployedInfo.abi;
-const pawnNftAbi = Pnft_DeployedInfo.abi;
 const ocatAbi = OcatToken_DeployedInfo.abi;
 const erc20Abi = Erc20_DeployedInfo.abi;
 
@@ -446,10 +445,7 @@ class OpenchainRouter {
     }
 
     mintPawnNft = async params => {
-        let owner = params ? params.owner ? params.owner : null : null;
-        if (!owner) {
-            return { error: -1, data: "Invalid owner" };
-        }
+        let owner = this.myAddress;
         let assetId = params ? params.assetId ? params.assetId : null : null;
         if (!assetId) {
             return { error: -2, data: "Invalid asset id" };
@@ -492,7 +488,6 @@ class OpenchainRouter {
             }
             console.log("@@@ OpenchainRouter.mintPawnNft(): ", newTokenId);
             return { error: 0, data: newTokenId };
-
         } catch (error) {
             var errMsg = error ?
                 error.message ?
