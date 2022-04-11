@@ -89,11 +89,6 @@ class OpenchainRouter {
         }
     }
 
-    getMyAddress() {
-        return this.accountInfo.addresses ? this.accountInfo.addresses['ETH'] ?
-                    this.accountInfo.addresses['ETH'] : null : null;
-    }
-
     getContractAddress(contractDeployedInfo) {
         let ipcType = process.env.IPC_TYPE;
         if (ipcType == undefined) {
@@ -116,8 +111,7 @@ class OpenchainRouter {
 
     async getBalance(symbol) {
         try {
-            this.getContractAddress(TOKEN_CONTRACT_MAP[symbol]);
-
+            let tokenContractAddress = this.getContractAddress(TOKEN_CONTRACT_MAP[symbol]);
             const tokenContract = new this.web3.eth.Contract(erc20Abi, tokenContractAddress);
             let balanceInWei = await tokenContract.methods.balanceOf(this.myAddress).call();
             let decimals = await tokenContract.methods.decimals().call();

@@ -37341,7 +37341,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.6",
-  "updatedAt": "2022-04-10T07:42:57.103Z",
+  "updatedAt": "2022-04-10T14:19:24.890Z",
   "devdoc": {
     "author": "The Witnet Foundation.",
     "details": "Guides implementation of active price feed polling contracts.",
