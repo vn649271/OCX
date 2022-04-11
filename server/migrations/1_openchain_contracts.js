@@ -22,18 +22,20 @@ module.exports = async deployer => {
     var pawnExchange = null;
     var pnftAddress = null;
     var ocxPriceOracleAddress = null;
+    var ocxExchange = null;
 
-    // if (deployer.network == "ganache") {
-    //     deployer.deploy(WEthToken).then(ocxExchange => {
-    //         wethAddress = ret.address;
-    //     });
-    //     deployer.deploy(GDaiToken).then(ret => {
-    //         gdaiAddress = ret.address;
-    //     });
-    //     deployer.deploy(GUniToken).then(ret => {
-    //         guniAddress = ret.address;
-    //     });
-    // }
+    if (deployer.network == "ganache") {
+        deployer.deploy(WEthToken).then(ret => {
+            ocxExchange = ret;
+            wethAddress = ret.address;
+        });
+        deployer.deploy(GDaiToken).then(ret => {
+            gdaiAddress = ret.address;
+        });
+        deployer.deploy(GUniToken).then(ret => {
+            guniAddress = ret.address;
+        });
+    }
     deployer.deploy(OcatToken).then(ret => {
         ocatToken = ret;
         ocatAddress = ret.address;

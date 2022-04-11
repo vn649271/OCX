@@ -11,6 +11,8 @@ import SimpleTable from '../../common/SimpleTable';
 import CheckBox from '../../common/CheckBox';
 import Toast from '../../common/Toast';
 import SpinButton from '../../common/SpinButton';
+import OcxConfirmDialog from '../../common/OcxConfirmDialog';
+import OcxBasicButton from '../../common/OcxBasicButton';
 
 var rsaCrypt = new JSEncrypt();
 var pawnShopService = new PawnShopService();
@@ -239,6 +241,7 @@ class PawnShopPage extends Component {
             estimated_ocat: 0,
             estimated_fee: '',
         },
+        confirm_dialog: false,
         track_table_data: null,
     }
 
@@ -403,12 +406,14 @@ class PawnShopPage extends Component {
     }
 
     onClickSubmit = async (param, ev, btnCmpnt) => {
+        this.setState({confirm_dialog: true});
+        return;
         try {
             // First upload valuation report
             let ret = await pawnShopService.upload(this.state.inputs.valuation_report);
             if (ret.error - 0 !== 0) {
                 btnCmpnt.stopTimer();
-                this.showMessageBox("Failed to submint: " + ret.data, 1);
+                this.showMessageBox("Failed to submit: " + ret.data, 1);
                 return;
             }
             console.log("Uploading valuation report: ", ret)
@@ -430,6 +435,10 @@ class PawnShopPage extends Component {
         } catch(error) {
             this.showMessageBox(error, 1)
         }
+    }
+
+    onClickModalButton = (clickedButtonType) => {
+        this.setState({confirm_dialog: false}) 
     }
 
     onClickResubmit = ev => {}
@@ -857,6 +866,13 @@ class PawnShopPage extends Component {
                             </div>
                         </div>
                     </Card>
+                </div>
+                <div>
+                    <OcxConfirmDialog 
+                        title='OKOKOK------' 
+                        show={this.state.confirm_dialog}
+                        onClick={ this.onClickModalButton }
+                    />
                 </div>
                 <div className="my-pawnshop-page main-font main-color font-16 m-8 mt-16">
                     <Card title='Tracking'>

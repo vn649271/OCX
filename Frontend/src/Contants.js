@@ -1,5 +1,5 @@
-// const BACKEND_BASE_URL = "http://localhost:5000/api";
-const BACKEND_BASE_URL = "https://eba4-34-80-92-112.ngrok.io/api";
+const BACKEND_BASE_URL = "http://localhost:5000/api";
+// const BACKEND_BASE_URL = "https://eba4-34-80-92-112.ngrok.io/api";
 const GOOGLE_LOGIN_CLIENT_ID = '760003596258-gien4jnstrtgq07u46b14ifa44cmtub0.apps.googleusercontent.com';
 const RECAPTCHA_SITE_KEY = "6LfcUmYdAAAAAIRMTrBktzC2ONu5PlgnOPKkzUtY";
 const BATCHED_VALIDATION = 0; // Validation mode

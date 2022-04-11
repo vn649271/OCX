@@ -37181,7 +37181,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.6",
-  "updatedAt": "2022-04-10T07:42:56.801Z",
+  "updatedAt": "2022-04-10T14:19:24.683Z",
   "devdoc": {
     "details": "EIP2362 Interface for pull oracles https://github.com/adoracles/EIPs/blob/erc-2362/EIPS/eip-2362.md",
     "kind": "dev",

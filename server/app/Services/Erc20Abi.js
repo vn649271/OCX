@@ -58,7 +58,8 @@ const ChainIDMap = {
         goerli: 5
     },
     ganache: {
-        main: 5777
+        main: 5777,
+        goerli: 5777
     }
 }
 
