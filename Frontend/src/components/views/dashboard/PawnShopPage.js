@@ -12,6 +12,7 @@ import CheckBox from '../../common/CheckBox';
 import Toast from '../../common/Toast';
 import SpinButton from '../../common/SpinButton';
 import OcxConfirmDialog from '../../common/OcxConfirmDialog';
+import OcxModalDialog from '../../common/OcxModalDialog';
 import OcxBasicButton from '../../common/OcxBasicButton';
 
 var rsaCrypt = new JSEncrypt();
@@ -249,6 +250,7 @@ class PawnShopPage extends Component {
         super(props);
         self = this;
 
+        this.submitButtonContext = null;
         this.valuation_report = null;
 
         // State Helper
@@ -275,6 +277,7 @@ class PawnShopPage extends Component {
 
         this.onClickBooking = this.onClickBooking.bind(this);
         this.onClickSubmit = this.onClickSubmit.bind(this);
+        this.onClickSubmitConfirm = this.onClickSubmitConfirm.bind(this);
         this.onClickResubmit = this.onClickResubmit.bind(this);
         this.onSelectValuationReport = this.onSelectValuationReport.bind(this);
         this.onClickMint = this.onClickMint.bind(this);
@@ -405,9 +408,15 @@ class PawnShopPage extends Component {
     onClickBooking = ev => {
     }
 
-    onClickSubmit = async (param, ev, btnCmpnt) => {
-        this.setState({confirm_dialog: true});
-        return;
+    onClickSubmitConfirm = async (ret) => {
+        this.setState({confirm_dialog: false});
+        let {param, ev, btnCmpnt} = this.submitButtonContext;
+        console.log("%%%%%%%%%%%%%%", param, ev, btnCmpnt);
+        this.submitButtonContext = null;
+        if (ret == 0 || ret == 1) {
+            btnCmpnt.stopTimer();
+            return;
+        }
         try {
             // First upload valuation report
             let ret = await pawnShopService.upload(this.state.inputs.valuation_report);
@@ -437,8 +446,13 @@ class PawnShopPage extends Component {
         }
     }
 
-    onClickModalButton = (clickedButtonType) => {
-        this.setState({confirm_dialog: false}) 
+    onClickSubmit = (param, ev, btnCmpnt) => {
+        this.submitButtonContext = {
+            param: param,
+            ev: ev,
+            btnCmpnt: btnCmpnt
+        };
+        this.setState({confirm_dialog: true});
     }
 
     onClickResubmit = ev => {}
@@ -868,11 +882,14 @@ class PawnShopPage extends Component {
                     </Card>
                 </div>
                 <div>
+                {
+                    // Submit Confirm Dialog
+                    this.state.confirm_dialog ? 
                     <OcxConfirmDialog 
-                        title='OKOKOK------' 
-                        show={this.state.confirm_dialog}
-                        onClick={ this.onClickModalButton }
-                    />
+                        onClick={ this.onClickSubmitConfirm }
+                    >Are you sure to submit?</OcxConfirmDialog>
+                    :<></>
+                }
                 </div>
                 <div className="my-pawnshop-page main-font main-color font-16 m-8 mt-16">
                     <Card title='Tracking'>

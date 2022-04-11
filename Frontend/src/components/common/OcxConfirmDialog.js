@@ -2,75 +2,71 @@ import React, { useState, useEffect } from "react";
 
 const OcxConfirmDialog = (props) => {
 
-  const {title, show = false, onClick, additionalClassName = ''} = props;
-  const [showModal, setShowModal] = useState(false);
+  const {title = 'Confirm', show = false, onClick, additionalClassName = '', children} = props;
+  const [showModal, setShowModal] = useState(true);
 
   useEffect(() => {
     // Update the document title using the browser API
-    setShowModal(show);
+    // setShowModal(show);
   });
 
-  const onClickCloseButton = (ev) => {
+  const onClickedCancelButton = ev => {
+    setShowModal(false);
     onClick(0);
+  }
+
+  const OnClickedNoButton = ev => {
+    setShowModal(false);
+    onClick(1);
+  }
+
+  const onClickedYesButton = ev => {
+    setShowModal(false);
+    onClick(2);
   }
 
   return (
     <>
       { showModal ?
-      <div className={`flex justify-center items-center overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none` + additionalClassName}>
-        <div className="relative w-auto my-6 mx-auto max-w-3xl">
-          <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-            <div className="flex items-start justify-between p-5 border-b border-solid border-gray-300 rounded-t ">
-              <h3 className="text-3xl font=semibold">{title}</h3>
-              <button
-                className="bg-transparent border-0 text-black float-right"
-                // onClick={() => setShowModal(false)}
-                onClick={onClickCloseButton}
-              >
-                <span className="text-black opacity-7 h-6 w-6 text-xl block bg-gray-400 py-0 rounded-full">
-                  x
-                </span>
-              </button>
-            </div>
-            <div className="relative p-6 flex-auto">
-              <form className="bg-gray-200 shadow-md rounded px-8 pt-6 pb-8 w-full">
-                <label className="block text-black text-sm font-bold mb-1">
-                  First Name
-                </label>
-                <input className="shadow appearance-none border rounded w-full py-2 px-1 text-black" />
-                <label className="block text-black text-sm font-bold mb-1">
-                  Last Name
-                </label>
-                <input className="shadow appearance-none border rounded w-full py-2 px-1 text-black" />
-                <label className="block text-black text-sm font-bold mb-1">
-                  Address
-                </label>
-                <input className="shadow appearance-none border rounded w-full py-2 px-1 text-black" />
-                <label className="block text-black text-sm font-bold mb-1">
-                  City
-                </label>
-                <input className="shadow appearance-none border rounded w-full py-2 px-1 text-black" />
-              </form>
-            </div>
-            <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
-              <button
-                className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1"
-                type="button"
-                onClick={() => setShowModal(false)}
-              >
-                Close
-              </button>
-              <button
-                className="text-white bg-yellow-500 active:bg-yellow-700 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
-                type="button"
-                onClick={() => setShowModal(false)}
-              >
-                Submit
-              </button>
+          <div className="fixed main-font font-16 z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+            <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center lg:block lg:p-0">
+              <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+              <span className="hidden lg:inline-block lg:align-middle lg:h-screen" aria-hidden="true">&#8203;</span>
+              <div className="relative inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all lg:my-8 lg:align-middle lg:max-w-lg lg:w-full">
+                <div className="bg-white px-4 pt-5 pb-4 lg:p-6 lg:pb-4">
+                  <div className="lg:flex main-font lg:items-start">
+                    <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 lg:mx-0 lg:h-10 lg:w-10">
+                      <svg className="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
+                    </div>
+                    <div className="mt-3 text-center lg:mt-0 lg:ml-4 lg:text-left">
+                      <h3 className="leading-6 font-medium text-gray-900" id="modal-title">
+                      { title }
+                      </h3>
+                      <div className="mt-2">
+                        <p className="text-gray-500">
+                        { children }
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-gray-50 px-4 py-3 lg:px-6 lg:flex lg:flex-row-reverse">
+                  <button
+                    className="border border-grey-light p-5 button-bg focus:outline-none rounded text-white hover-transition font-bold uppercase px-6 py-3 shadow hover:shadow-lg focus:outline-none mr-1 mb-1"
+                    type="button"
+                    onClick={onClickedYesButton}
+                  >Yes</button>
+                  <button
+                    className="border border-grey-light p-5 rounded hover-transition hover-transition text-red-500 background-transparent font-bold uppercase px-6 py-3 focus:outline-none mr-1 mb-1"
+                    type="button"
+                    onClick={OnClickedNoButton}
+                  >No</button>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
       : null 
     }
     </>
