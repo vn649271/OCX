@@ -241,7 +241,8 @@ class PawnShopPage extends Component {
             estimated_ocat: 0,
             estimated_fee: '',
         },
-        confirm_dialog: false,
+        show_submit_confirm: false,
+        show_submit_mint: false,
         track_table_data: null,
     }
 
@@ -250,6 +251,7 @@ class PawnShopPage extends Component {
         self = this;
 
         this.submitButtonContext = null;
+        this.mintButtonContext = null;
         this.valuation_report = null;
 
         // State Helper
@@ -280,6 +282,7 @@ class PawnShopPage extends Component {
         this.onClickResubmit = this.onClickResubmit.bind(this);
         this.onSelectValuationReport = this.onSelectValuationReport.bind(this);
         this.onClickMint = this.onClickMint.bind(this);
+        this.onClickMintConfirm = this.onClickMintConfirm.bind(this);
         this.onClickBurn = this.onClickBurn.bind(this);
         this.onClickLoan = this.onClickLoan.bind(this);
         this.onClickRestore = this.onClickRestore.bind(this);
@@ -408,9 +411,8 @@ class PawnShopPage extends Component {
     }
 
     onClickSubmitConfirm = async (ret) => {
-        this.setState({confirm_dialog: false});
+        this.setState({show_submit_confirm: false});
         let {param, ev, btnCmpnt} = this.submitButtonContext;
-        console.log("%%%%%%%%%%%%%%", param, ev, btnCmpnt);
         this.submitButtonContext = null;
         if (ret == 0 || ret == 1) {
             btnCmpnt.stopTimer();
@@ -451,7 +453,7 @@ class PawnShopPage extends Component {
             ev: ev,
             btnCmpnt: btnCmpnt
         };
-        this.setState({confirm_dialog: true});
+        this.setState({show_submit_confirm: true});
     }
 
     onClickResubmit = ev => {}
@@ -459,11 +461,31 @@ class PawnShopPage extends Component {
     onClickDownloadLegalContract = ev => {
     }
 
-    // onClickMint = async (params, ev, buttonComponent) => {
-    onClickMint = async (ev) => {
-        let targetElement = ev.target;
-        let assetId = targetElement.id.replace("tracking-item-mint-", "");
-        let ret = await pawnShopService.mint({ownerToken: this.userToken, assetId: assetId});
+    onClickMint = async (params) => {
+        this.mintButtonContext = {
+            stopWait: params.stopWait,
+            getExtraData: params.getExtraData
+        };
+        this.setState({show_mint_confirm: true});
+    }
+
+    // onClickMintConfirm = async (params, ev, buttonComponent) => {
+    onClickMintConfirm = async ret => {
+        this.setState({show_mint_confirm: false});
+        let { stopWait, getExtraData } = this.mintButtonContext;
+        this.mintButtonContext = null;
+
+        if (ret == 0 || ret == 1) {
+            stopWait();
+            return;
+        }
+
+        // let targetElement = ev.target;
+        // let assetId = targetElement.id.replace("tracking-item-mint-", "");
+        let assetId = getExtraData();
+        console.log("ExtraData: ", assetId);
+        ret = await pawnShopService.mint({ownerToken: this.userToken, assetId: assetId});
+        stopWait();
         if (ret.error - 0 !== 0) {
             this.showMessageBox("Failed to mint: " + ret.data, 1);
             return;
@@ -537,6 +559,7 @@ class PawnShopPage extends Component {
             case 2:
                 actionCol = <SpinButton
                                 id={"tracking-item-resubmit-" + record.id} 
+                                extraData={record.id}
                                 title="Resubmit"
                                 onClick={this.onClickResubmit}
                             />
@@ -547,12 +570,13 @@ class PawnShopPage extends Component {
             case 4: // Once verified, can mint or burn
                 actionCol = <div>
                                 <SpinButton
-                                    id={"tracking-item-mint-" + record.id} 
                                     title="Mint"
+                                    extraData={record.id}
                                     onClick={this.onClickMint}
                                 />
                                 <SpinButton
                                     id={"tracking-item-burn-" + record.id} 
+                                    extraData={record.id}
                                     title="Burn"
                                     onClick={this.onClickBurn}
                                 />
@@ -561,6 +585,7 @@ class PawnShopPage extends Component {
             case 5:// Once minted, can swap into OCAT
                 actionCol = <SpinButton 
                                 id={"tracking-item-loan-" + record.id} 
+                                extraData={record.id}
                                 title="Loan"
                                 onClick={this.onClickLoan} 
                             />
@@ -568,6 +593,7 @@ class PawnShopPage extends Component {
             case 6:
                 actionCol = <SpinButton
                                 id={"tracking-item-restore-" + record.id} 
+                                extraData={record.id}
                                 title="Restore"
                                 onClick={this.onClickRestore}
                             />
@@ -663,17 +689,11 @@ class PawnShopPage extends Component {
             return;
         }
         this.props.showToast(type, msg);
-        // let t = type ? type : 0;
-        // this.setState({'message_box': <Toast message={msg} type={t}/>})
-        // setTimeout(function() {self.setState({'message_box':<></>})}, 500000)
     }
 
     render() {
         return (
             <div>
-                <div className="main-font font-16 z-200">
-                    {this.state.message_box}
-                </div>
                 <div className="my-pawnshop-page main-font main-color font-16 m-8">
                     <Card title='Pawn your assets into cryptos'>
                         <div>
@@ -886,10 +906,18 @@ class PawnShopPage extends Component {
                 <div>
                 {
                     // Submit Confirm Dialog
-                    this.state.confirm_dialog ? 
+                    this.state.show_submit_confirm ? 
                     <OcxConfirmDialog 
                         onClick={ this.onClickSubmitConfirm }
                     >Are you sure to submit?</OcxConfirmDialog>
+                    :<></>
+                }
+                {
+                    // Submit Confirm Dialog
+                    this.state.show_mint_confirm ? 
+                    <OcxConfirmDialog 
+                        onClick={ this.onClickMintConfirm }
+                    >Are you sure to mint?</OcxConfirmDialog>
                     :<></>
                 }
                 </div>
