@@ -15,7 +15,7 @@ export default class Dashboard extends Component {
             redirect: null,
             email: localStorage.email,
             token: localStorage.userToken,
-            targetPageId: null
+            targetPageId: null,
         }
 
         this.validateUser = this.validateUser.bind(this);
@@ -57,7 +57,7 @@ export default class Dashboard extends Component {
                 <Header userToken={this.state.token} />
                 <div className="flex">
                     <SidebarMenu onSelectItem={this.onSelectMenuItem} />
-                    <PageContainer target={this.state.targetPageId} />
+                    <PageContainer target={this.state.targetPageId}/>
                 </div>
                 <Footer />
                 <MobileNav />
