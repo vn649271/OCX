@@ -41,7 +41,8 @@ const WalletIntroPage = (props) => {
   }
 
   const onClickActivateWallet = () => {
-    setActivateWalletShow(true);
+    // setActivateWalletShow(true);
+    onActivateWallet();
   }
 
   const onClickActivateWalletConfirm = (ret) => {
