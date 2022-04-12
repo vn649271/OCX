@@ -462,6 +462,8 @@ class OpenchainRouter {
             let pnftContractAddress = this.getContractAddress(Pnft_DeployedInfo);
             let pawnNftContract = new this.web3.eth.Contract(Pnft_DeployedInfo.abi, pnftContractAddress);
             let priceInWei = this.web3.utils.toWei(assetInfo.estimated_ocat, "ether");
+            let gasPrice = await this.web3.eth.getGasPrice();
+            gasPrice = (gasPrice * 1.2).toFixed(0);
             let ret = await pawnNftContract.methods.mintPawnNFT(
                 assetInfo.asset_name, 
                 assetId, 
@@ -469,7 +471,8 @@ class OpenchainRouter {
             ).send({
                 from: this.myAddress,
                 // gasLimit: "70000"
-                gas: "500000" // on ganache
+                gas: "500000", // on ganache
+                gasPrice: gasPrice
             })
             if (!ret) {
                 return { error: -251, data: "Failed to mint pawning NFT" };

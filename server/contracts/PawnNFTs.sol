@@ -3,9 +3,10 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "./AdministratedContract.sol";
 
 // PawnNFTs smart contract inherits ERC721 interface
-contract PawnNFTs is ERC721 {
+contract PawnNFTs is ERC721, AdministratedContract {
 
   using Counters for Counters.Counter;
 
@@ -15,6 +16,8 @@ contract PawnNFTs is ERC721 {
   string public collectionNameSymbol;
   // total number of pawning NFTs minted
   Counters.Counter private pawnNFTCounter;
+
+  uint64          private minPnftPrice = 5000;
 
   uint  public decimals = 0;
   
@@ -68,10 +71,18 @@ contract PawnNFTs is ERC721 {
     return pawnNFTCounter.current();
   }
 
+  function setMinPnftPrice(uint8 _minPnftPrice) public 
+  callerMustBeAdmin {
+      minPnftPrice = _minPnftPrice;
+  }
+
+
   // mint a new pawning NFT and return token ID
   function mintPawnNFT(string memory _name, string memory _tokenURI, uint256 _price) external returns(uint256) {
     // check if thic fucntion caller is not an zero address account
     require(msg.sender != address(0), "PawnNFTs.mintPawnNFT(): Error: caller of zero address");
+    require(_price >= minPnftPrice, "Too small price");
+
     // increment counter
     pawnNFTCounter.increment();
     uint256 newTokenID = pawnNFTCounter.current();
