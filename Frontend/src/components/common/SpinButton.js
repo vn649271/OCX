@@ -6,7 +6,7 @@ export default function SpinButton(props) {
 
     me = this;
 
-    const defaultClass = "main-font border border-grey-light p-5 button-bg focus:outline-none rounded text-white hover-transition cursor-pointer";
+    const defaultClass = "main-font border border-grey-light p-2 w-min button-bg focus:outline-none rounded text-white hover-transition cursor-pointer";
     const { title, extraData, children } = props;
 
     const [buttonClass, setButtonClass] = React.useState(defaultClass);
@@ -46,12 +46,10 @@ export default function SpinButton(props) {
         {
             status? (
                 <i
-                    className="fa od-spinner"
-                    style={{ marginRight: "7px" }}
+                    className="fa fa-spinner"
                     onClick={handleClick}
-                >( )</i>
+                ></i>
             ):  <i 
-                    style={{ marginRight: "0px" }}
                     onClick={handleClick}
                 ></i>
         }

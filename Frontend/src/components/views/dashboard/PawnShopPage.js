@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { BACKEND_BASE_URL } from '../../../Contants';
 import DropdownList from '../../common/DropdownList';
+import OcxDropdownControlList from '../../common/OcxDropdownControlList';
 import AccountService from '../../../service/Account';
 import PreFileUploadForm from '../../common/PreFileUploadForm';
 import PawnShopService from '../../../service/PawnShop';
 import { JSEncrypt } from 'jsencrypt'
 import DelayButton from '../../common/DelayButton';
-import Card from '../../common/Card';
+import OcxCard from '../../common/OcxCard';
 import SimpleTable from '../../common/SimpleTable';
-import CheckBox from '../../common/CheckBox';
 import SpinButton from '../../common/SpinButton';
 import OcxConfirm from '../../common/OcxConfirm';
 import OcxBasicButton from '../../common/OcxBasicButton';
@@ -241,7 +241,8 @@ class PawnShopPage extends Component {
             estimated_fee: '',
         },
         show_submit_confirm: false,
-        show_submit_mint: false,
+        show_mint_confirm: false,
+        show_burn_confirm: false,
         track_table_data: null,
     }
 
@@ -251,6 +252,7 @@ class PawnShopPage extends Component {
 
         this.submitButtonContext = null;
         this.mintButtonContext = null;
+        this.burnButtonContext = null;
         this.valuation_report = null;
 
         // State Helper
@@ -479,10 +481,7 @@ class PawnShopPage extends Component {
             return;
         }
 
-        // let targetElement = ev.target;
-        // let assetId = targetElement.id.replace("tracking-item-mint-", "");
         let assetId = getExtraData();
-        console.log("ExtraData: ", assetId);
         ret = await pawnShopService.mint({ownerToken: this.userToken, assetId: assetId});
         stopWait();
         if (ret.error - 0 !== 0) {
@@ -493,9 +492,23 @@ class PawnShopPage extends Component {
         this.buildTrackTable(ret.data.all_assets);
     }
 
-    onClickBurn = async (ev) => {
-        let targetElement = ev.target;
-        let assetId = targetElement.id.replace("tracking-item-burn-", "");
+    onClickBurn = async (params) => {
+        this.burnButtonContext = {
+            stopWait: params.stopWait,
+            getExtraData: params.getExtraData
+        };
+        this.setState({show_burn_confirm: true});
+    }
+
+    onClickBurnConfirm = async (ev) => {
+        this.setState({show_burn_confirm: false});
+        let { stopWait, getExtraData } = this.burnButtonContext;
+        this.burnButtonContext = null;
+        if (ret == 0 || ret == 1) {
+            stopWait();
+            return;
+        }
+        let assetId = getExtraData();
         let ret = await pawnShopService.burn({ownerToken: this.userToken, assetId: assetId});
         if (ret.error - 0 !== 0) {
             this.showMessageBox("Failed to burn asset: " + ret.data, 1);
@@ -567,19 +580,35 @@ class PawnShopPage extends Component {
                 actionCol = <span>Resubmitted</span>;
                 break;
             case 4: // Once verified, can mint or burn
-                actionCol = <div>
+                actionCol = <OcxDropdownControlList 
+                                items={COUNTRIES} 
+                                onSelectItem={this.onChangeCountry} 
+                                placeholder="Country"
+                            >
                                 <SpinButton
                                     title="Mint"
                                     extraData={record.id}
                                     onClick={this.onClickMint}
                                 />
                                 <SpinButton
-                                    id={"tracking-item-burn-" + record.id} 
                                     extraData={record.id}
                                     title="Burn"
                                     onClick={this.onClickBurn}
                                 />
-                            </div>
+                            </OcxDropdownControlList>
+                // actionCol = <div>
+                //                 <SpinButton
+                //                     title="Mint"
+                //                     extraData={record.id}
+                //                     onClick={this.onClickMint}
+                //                 />
+                //                 <SpinButton
+                //                     id={"tracking-item-burn-" + record.id} 
+                //                     extraData={record.id}
+                //                     title="Burn"
+                //                     onClick={this.onClickBurn}
+                //                 />
+                //             </div>
                 break;
             case 5:// Once minted, can swap into OCAT
                 actionCol = <SpinButton 
@@ -694,7 +723,7 @@ class PawnShopPage extends Component {
         return (
             <div>
                 <div className="my-pawnshop-page main-font main-color font-16 m-8">
-                    <Card title='Pawn your assets into cryptos'>
+                    <OcxCard title='Pawn your assets into cryptos'>
                         <div>
                             <div className="inline-flex w-full">
                                 <div className="w-4/12" text-align="right">
@@ -900,7 +929,7 @@ class PawnShopPage extends Component {
                                     onClickButtonParam={null} />
                             </div>
                         </div>
-                    </Card>
+                    </OcxCard>
                 </div>
                 <div>
                 {
@@ -919,7 +948,7 @@ class PawnShopPage extends Component {
 
                 }
                 {
-                    // Submit Confirm Dialog
+                    // Mint Confirm Dialog
                     this.state.show_mint_confirm ? 
                     <OcxConfirm
                         show={true}
@@ -927,14 +956,23 @@ class PawnShopPage extends Component {
                     >Are you sure to mint?</OcxConfirm>
                     :<></>
                 }
+                {
+                    // Burn Confirm Dialog
+                    this.state.show_burn_confirm ? 
+                    <OcxConfirm
+                        show={true}
+                        onClick={ this.onClickBurnConfirm }
+                    >Are you sure to burn?</OcxConfirm>
+                    :<></>
+                }
                 </div>
                 <div className="my-pawnshop-page main-font main-color font-16 m-8 mt-16">
-                    <Card title='Tracking'>
+                    <OcxCard title='Tracking'>
                         <SimpleTable 
                             def={TRACKING_TABLE_SCHEMA} 
                             data={this.state.track_table_data}
                         />
-                    </Card>
+                    </OcxCard>
                 </div>
             </div>
         );

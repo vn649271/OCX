@@ -3,6 +3,7 @@ import classNames from "classnames";
 import React from "react";
 
 const Frame: React.FC<{ open?: boolean; onClose: () => void }> = ({
+  additionalClass,
   children,
   open = true,
   onClose
@@ -11,7 +12,7 @@ const Frame: React.FC<{ open?: boolean; onClose: () => void }> = ({
     // overlay: 90% opacity of the bg, `inset-0` to stretch over the entire screen
     <div
       className={classNames(
-        "fixed inset-1 z-10 p-18 text-white bg-gray-600/90 main-font font-16 rounded-lg",
+        "fixed inset-1 z-10 p-18 text-white bg-gray-600/90 main-font font-16 rounded-lg", additionalClass,
         `${open ? "block" : "hidden"}` // control visibility via `open` attribute (or render conditionally)
       )}
     >

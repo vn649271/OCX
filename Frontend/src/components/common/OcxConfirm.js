@@ -1,7 +1,7 @@
 import { useState } from "react";
 import OcxModalComponents from "./OcxModalComponents";
 
-const OcxModal = (props) => {
+const OcxConfirm = (props) => {
 
   const {show = false, children, onClick = () => {}} = props;
 
@@ -23,8 +23,9 @@ const OcxModal = (props) => {
   }
 
   return (
-    <div className="flex justify-center items-center w-full">
+    <div className="fixed justify-center items-center w-full">
       <OcxModalComponents.Frame
+        additionalClass="mt-60"
         open={_show}
         onClose={onClickedCancelButton}
       >
@@ -48,4 +49,4 @@ const OcxModal = (props) => {
   );
 };
 
-export default OcxModal;
+export default OcxConfirm;
