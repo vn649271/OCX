@@ -52,25 +52,25 @@ class PageContainer extends Component {
                     this.setState({ currentPageComponent: <HomeDashPage showToast={this.showToast} /> });
                     break;
                 case 'assets-page':
-                    this.setState({ currentPageComponent: <AssetsPage /> });
+                    this.setState({ currentPageComponent: <AssetsPage showToast={this.showToast} /> });
                     break;
                 case 'wallet-page':
-                    this.setState({ currentPageComponent: <WalletPage /> });
+                    this.setState({ currentPageComponent: <WalletPage showToast={this.showToast} /> });
                     break;
                 case 'log-page':
-                    this.setState({ currentPageComponent: <LogPage /> });
+                    this.setState({ currentPageComponent: <LogPage showToast={this.showToast} /> });
                     break;
                 case 'game-page':
-                    this.setState({ currentPageComponent: <GamePage /> });
+                    this.setState({ currentPageComponent: <GamePage showToast={this.showToast} /> });
                     break;
                 case 'chat-page':
-                    this.setState({ currentPageComponent: <ChatPage /> });
+                    this.setState({ currentPageComponent: <ChatPage showToast={this.showToast} /> });
                     break;
                 case 'help-page':
                     this.setState({ currentPageComponent: <HelpPage /> });
                     break;
                 case 'payment-page':
-                    this.setState({ currentPageComponent: <PaymentPage /> });
+                    this.setState({ currentPageComponent: <PaymentPage showToast={this.showToast} /> });
                     break;
                 case 'shop-page':
                     this.setState({ currentPageComponent: <PawnShopPage showToast={this.showToast} /> });
