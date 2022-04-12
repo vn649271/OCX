@@ -12,6 +12,7 @@ const WalletPage = (props) => {
 
   const [_show, setShow] = useState(show);
   const [show_activate_wallet_confirm, setActivateWalletShow] = useState(false);
+  const [enable_activate_wallet_button, setEnableActivateWalletButton] = useState(false);
 
   const onClickedYesButton = () => {
     setShow(false)
@@ -30,6 +31,7 @@ const WalletPage = (props) => {
 
   const onReadyCheckBoxChanged = val => {
     ready = val;
+    setEnableActivateWalletButton(ready)
   }
 
   const onClickActivateWallet = () => {
@@ -75,6 +77,7 @@ const WalletPage = (props) => {
                 </OcxCard>
                 <div className="justify-center mt-20">
                     <OcxButton 
+                        enabled={enable_activate_wallet_button}
                         label="Activate Wallet"
                         onClick={onClickActivateWallet}
                     />
