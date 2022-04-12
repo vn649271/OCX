@@ -25,23 +25,22 @@ const WalletActivatePage = props => {
   const [lock_account, setLockAccount] = useState(true);
   const [accounts, setAccounts] = useState(null);
   const [show_passphrase_import_dialog, setShowPassPhraseImportDialog] = useState(null);
-
-  var passcode = null;
-  var passcodeConfirm = null;
-  var encryptedPassphrase = null;
+  const [passcode, setPasscode] = useState('');
+  const [passcode_confirm, setPasscodeConfirm] = useState('');
+  const [encrypted_passphrase, setEncryptedPassphrase] = useState('');
 
   const onGeneratePassphrase = ev => {
       let randomWordList = randomWords(24).join(' ');
       let input = this.state.input;
       input.passphrase = randomWordList;
       this.setState({ input: input });
-      encryptedPassphrase = rsaCrypt.encrypt(randomWordList);
+      setEncryptedPassphrase(rsaCrypt.encrypt(randomWordList));
   }
   const onChangePasscode = ev => {
-    passcode = ev.target.value;
+    setPasscode(ev.target.value);
   }
   const onChangePasscodeConfirm = ev => {
-    passcodeConfirm = ev.target.value;
+    setPasscodeConfirm(ev.target.value);
   }
   const onLeaveFromPasscodeInput = event => {
       setHidePasscodeCheckBox(true);
@@ -56,13 +55,13 @@ const WalletActivatePage = props => {
       setShowPassPhraseImportDialog(false);
   }
   const onOkPassphraseImportDialog = async (param) => {
-      encryptedPassphrase = rsaCrypt.encrypt(param.passphrase);
+      setEncryptedPassphrase(rsaCrypt.encrypt(param.passphrase));
       console.log("************* onOkPassphraseImportDialog(): param=", param);
       setShowPassPhraseImportDialog(false);
       let resp = await accountService.restoreAccount({
           userToken: userToken,
           password: hashCode(param.password),
-          passphrase: encryptedPassphrase
+          passphrase: encrypted_passphrase
       });
       if (resp.error === 0) {
           console.log("************* restoreAccount(): response=", resp);
@@ -92,14 +91,14 @@ const WalletActivatePage = props => {
           this.warning("Error: user token invalid(null)");
           return;
       }
-      if (encryptedPassphrase.trim() === "") {
+      if (encrypted_passphrase.trim() === "") {
           this.warning("Invalid passphrase");
           return;
       }
       let resp = await accountService.createAccount({
           userToken: this.userToken,
           password: hashCode(this.state.input.password),
-          passphrase: encryptedPassphrase
+          passphrase: encrypted_passphrase
       });
       btnCmpnt.stopTimer();
       if (resp.error === 0) {
@@ -137,7 +136,7 @@ const WalletActivatePage = props => {
                     type={show_passcode ? "text" : "passcode"}
                     className="passcode-input border border-grey-light bg-gray-100 p-5 font-16 main-font focus:outline-none rounded "
                     name="passcode"
-                    // value={this.state.input.passcode}
+                    // value={passcode}
                     onChange={onChangePasscode}
                     onBlur={onLeaveFromPasscodeInput}
                     placeholder="Passcode" autoComplete="off" />
@@ -146,14 +145,14 @@ const WalletActivatePage = props => {
         </div>
         <PasswordChecklistComponent
             passcode={passcode || ""}
-            confirmPassword={passcodeConfirm || ""}
+            confirmPassword={passcode_confirm || ""}
             hidden={hide_passcode_checklist} />
         <div className="mb-10">
             <input
                 type="passcode"
                 className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded "
                 name="confirm_passcode"
-                // value={passcodeConfirm}
+                // value={passcode_confirm}
                 onChange={onChangePasscodeConfirm}
                 placeholder="Confirm Passcode" autoComplete="off" />
         </div>
@@ -175,9 +174,9 @@ const WalletActivatePage = props => {
         />
         <PasscodeConfirmDialog
             className="passcode-confirm-dialog"
-            show={this.state.show_passcode_confirm_dialog}
-            onOk={this.onOkPasscodeConfirmDialog}
-            onCancel={this.onCancelPasscodeConfirmDialog}
+            show={show_passcode_confirm_dialog}
+            onOk={onOkPasscodeConfirmDialog}
+            onCancel={onCancelPasscodeConfirmDialog}
         />
     </div>
   );

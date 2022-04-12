@@ -7,15 +7,14 @@ const PasscodeResetPage = (props) => {
   // const {show = false, children, onClick = () => {}} = props;
 
   const [message, setMessage] = useState("");
-
-  var email = null;
+  const [email, setEmail] = useState('');
 
   const onChangeEmail = (ev) => {
-    email = ev.target.value;
+    setEmail(ev.target.value);
   }
   const onSendEmail = () => {
     alert(email);
-    setMessage("We will send you a reset passcode link to your email")
+    setMessage("We will send you a passcode reset link to your email")
   }
   return (
     <div className="flex justify-center items-center w-full">
