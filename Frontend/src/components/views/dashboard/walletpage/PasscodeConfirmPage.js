@@ -21,12 +21,10 @@ const PasscodeConfirmPage = props => {
   const [show_passcode, setShowPasscode] = useState(false);
   const [hide_passcode_checklist, setHidePasscodeCheckBox] = useState(false);
   const [show_passphrase_import_dialog, setShowPassPhraseImportDialog] = useState(null);
-
-  var passcode = null;
-  var encryptedPassphrase = null;
+  const [passcode, setPasscode] = useState('');
 
   const onChangePasscode = ev => {
-    passcode = ev.target.value;
+    setPasscode(ev.target.value);
   }
   const onLeaveFromPasswordInput = ev => {
     setHidePasscodeCheckBox(true);
@@ -44,7 +42,7 @@ const PasscodeConfirmPage = props => {
       setShowPassPhraseImportDialog(false);
   }
   const onOkPassphraseImportDialog = async (param) => {
-      encryptedPassphrase = rsaCrypt.encrypt(param.passphrase);
+      let encryptedPassphrase = rsaCrypt.encrypt(param.passphrase);
       console.log("************* onOkPassphraseImportDialog(): param=", param);
       setShowPassPhraseImportDialog(false);
       let resp = await accountService.restoreAccount({
@@ -56,7 +54,6 @@ const PasscodeConfirmPage = props => {
           console.log("************* restoreAccount(): response=", resp);
           setLockAccount(false);
           setAccounts(resp.data);
-          onUnlockedAccount();
           // self.setState({ user_mode: USER_WITH_ACCOUNT });
           return;
       } else if (resp.error === -1000) {
@@ -69,15 +66,18 @@ const PasscodeConfirmPage = props => {
       const {stopWait, getExtraData} = params;
       // this.startBalanceMonitor();
       // Try to unlock
+      let hashedPasscode = hashCode(passcode);
+      console.log("onUnlockAccont(): passcode: ", passcode, ", hashed: ", hashedPasscode);
       let resp = await accountService.unlockAccount({
           userToken: userToken,
-          password: hashCode(passcode),
+          password: hashedPasscode,
       });
       stopWait();
       if (resp.error === 0) {
           // Display unlocked account page
           // self.setPasswordInUI('');
           setLockAccount(false);
+          onUnlockedAccount();
           return;
       } else if (resp.error === -1000) {
           showToast(1, "Invalid response for locking account");
