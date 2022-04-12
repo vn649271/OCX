@@ -10,8 +10,7 @@ import Card from '../../common/Card';
 import SimpleTable from '../../common/SimpleTable';
 import CheckBox from '../../common/CheckBox';
 import SpinButton from '../../common/SpinButton';
-import OcxConfirmDialog from '../../common/OcxConfirmDialog';
-import OcxModalDialog from '../../common/OcxModalDialog';
+import OcxConfirm from '../../common/OcxConfirm';
 import OcxBasicButton from '../../common/OcxBasicButton';
 
 var rsaCrypt = new JSEncrypt();
@@ -906,18 +905,26 @@ class PawnShopPage extends Component {
                 <div>
                 {
                     // Submit Confirm Dialog
+                    // this.state.show_submit_confirm ? 
+                    // <OcxConfirmDialog 
+                    //     onClick={ this.onClickSubmitConfirm }
+                    // >Are you sure to submit?</OcxConfirmDialog>
+                    // :<></>
                     this.state.show_submit_confirm ? 
-                    <OcxConfirmDialog 
+                    <OcxConfirm 
+                        show={true}
                         onClick={ this.onClickSubmitConfirm }
-                    >Are you sure to submit?</OcxConfirmDialog>
+                    >Are you sure to submit?</OcxConfirm>
                     :<></>
+
                 }
                 {
                     // Submit Confirm Dialog
                     this.state.show_mint_confirm ? 
-                    <OcxConfirmDialog 
+                    <OcxConfirm
+                        show={true}
                         onClick={ this.onClickMintConfirm }
-                    >Are you sure to mint?</OcxConfirmDialog>
+                    >Are you sure to mint?</OcxConfirm>
                     :<></>
                 }
                 </div>

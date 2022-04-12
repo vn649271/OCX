@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const OcxConfirmDialog = (props) => {
+const _OcxConfirmDialog = (props) => {
 
   const {title = 'Confirm', show = false, onClick, additionalClassName = '', children} = props;
   const [showModal, setShowModal] = useState(true);
@@ -73,4 +73,4 @@ const OcxConfirmDialog = (props) => {
   )
 };
 
-export default OcxConfirmDialog;
+export default _OcxConfirmDialog;
