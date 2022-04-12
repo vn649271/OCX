@@ -36,7 +36,6 @@ const WalletPage = (props) => {
                 userToken: user_token
             });
             let err = resp.error !== undefined ? resp.error : -1;
-err = 51;
             if (!err) {
                 setAccounts(resp.data.addresses);
                 setUserLevel(USER_WITH_ACCOUNT);
