@@ -453,6 +453,10 @@ input.password-input {
     padding-right: 4em;
 }
 
+input.passcode-input {
+    padding-right: 4em;
+}
+
 .account-password-container.w-half .password-input {
     width: 50%;
 }
@@ -574,7 +578,7 @@ li.sc-gsDKAQ {
     margin-right: 1em !important;
 }
 
-.import-passphrase-button {
+.link-button {
     cursor: pointer;
     color: #01c1cc;
 }

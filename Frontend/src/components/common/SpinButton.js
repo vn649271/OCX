@@ -4,10 +4,11 @@ var me;
 
 export default function SpinButton(props) {
 
-    me = this;
+    const { title, additionalClass, extraData, children } = props;
 
-    const defaultClass = "main-font border border-grey-light p-2 w-min button-bg focus:outline-none rounded text-white hover-transition cursor-pointer";
-    const { title, extraData, children } = props;
+    const baseClass = "main-font font-16 items-center border border-grey-light p-3 w-fit button-bg focus:outline-none rounded text-white hover-transition " + additionalClass;
+    const defaultClass = baseClass + " cursor-pointer";
+    const disabledClass = baseClass + " spin-button-disabled";
 
     const [buttonClass, setButtonClass] = React.useState(defaultClass);
     const [status, setStatus] = React.useState(0); // 0: Normal, 1: Pending
@@ -17,7 +18,7 @@ export default function SpinButton(props) {
             return;
         }
         setStatus(1);
-        setButtonClass(defaultClass.replace("cursor-pointer", "spin-button-disabled"));
+        setButtonClass(disabledClass);
         props.onClick({
             stopWait: stopWait, 
             getExtraData: getExtraData
@@ -46,7 +47,7 @@ export default function SpinButton(props) {
         {
             status? (
                 <i
-                    className="fa fa-spinner"
+                    className="fa fa-spinner mr-2"
                     onClick={handleClick}
                 ></i>
             ):  <i 

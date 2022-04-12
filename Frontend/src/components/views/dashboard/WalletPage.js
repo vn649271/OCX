@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import WalletIntroPage from './walletpage/WalletIntroPage';
 import WalletActivatePage from './walletpage/WalletActivatePage';
+import WalletMainPage from './walletpage/WalletMainPage';
 import PasscodeConfirmPage from './walletpage/PasscodeConfirmPage';
+import PasscodeResetPage from './walletpage/PasscodeResetPage';
 import AccountService from '../../../service/Account';
 import OcxPageSpinLock from '../../common/OcxPageSpinLock';
 
@@ -9,7 +11,8 @@ const UNKNOWN_USER = -1;
 const NEW_USER_0 = 0;
 const NEW_USER_1 = 1;
 const USER_WITH_ACCOUNT = 2;
-
+const USER_ACCOUNT_UNLOCKED = 3;
+const PASSCODE_RESET = 4;
 
 const WalletPage = (props) => {
 
@@ -38,7 +41,11 @@ const WalletPage = (props) => {
             let err = resp.error !== undefined ? resp.error : -1;
             if (!err) {
                 setAccounts(resp.data.addresses);
-                setUserLevel(USER_WITH_ACCOUNT);
+                if (resp.data.locked) {
+                    setUserLevel(USER_WITH_ACCOUNT);
+                } else {
+                    setUserLevel(USER_ACCOUNT_UNLOCKED);
+                }
                 return;
             } else if (err == 51 || err == 52) {
                 setUserLevel(NEW_USER_0);
@@ -48,7 +55,6 @@ const WalletPage = (props) => {
             showToast(1, errorMsg);
         }
     });
-
     const updateCurrentPage = () => {
         switch (user_level) {
         case UNKNOWN_USER:
@@ -56,18 +62,37 @@ const WalletPage = (props) => {
         case NEW_USER_0:
             return <WalletIntroPage onActivateWallet={onActivateWallet} />;
         case NEW_USER_1:
-            return <WalletActivatePage />;
+            return <WalletActivatePage userToken={user_token} onRegisteredAccount={onRegisteredAccount} {...props} />;
         case USER_WITH_ACCOUNT: 
-            return <PasscodeConfirmPage />;
+            return <PasscodeConfirmPage 
+                        userToken={user_token} 
+                        onUnlockedAccount={onUnlockedAccount} 
+                        onResetPasscode={onResetPasscode}
+                        {...props} 
+                    />;
+        case USER_ACCOUNT_UNLOCKED: 
+            return <WalletMainPage userToken={user_token} onLockedAccount={onLockedAccount} {...props} />;
+        case PASSCODE_RESET: 
+            return <PasscodeResetPage userToken={user_token} {...props} />;
         default:
             return null;
         }
     }
-
     const onActivateWallet = () => {
         setUserLevel(NEW_USER_1);
     }
-
+    const onRegisteredAccount = () => {
+        setUserLevel(USER_WITH_ACCOUNT); 
+    }
+    const onResetPasscode = () => {
+        setUserLevel(PASSCODE_RESET);
+    }
+    const onUnlockedAccount = () => {
+        setUserLevel(USER_ACCOUNT_UNLOCKED);
+    }
+    const onLockedAccount = () => {
+        setUserLevel(USER_WITH_ACCOUNT);
+    }
     return (
         <>
             <div>
