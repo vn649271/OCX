@@ -1,7 +1,7 @@
 const { Firestore } = require('@google-cloud/firestore');
 
 const db = new Firestore();
-const collection = 'phones';
+const table_name = 'phones';
 
 /**
  * Declaration of model object for phone information
@@ -15,7 +15,7 @@ function Phone() {
      * @param {object} params parameter object to callback function
      */
     this.getById = function (phoneId, onGet, params) {
-        const phoneRef = db.collection(collection).doc(phoneId);
+        const phoneRef = db.collection(table_name).doc(phoneId);
         const doc = phoneRef.get().then(res => {
             if (!res.exists) {
                 return null;
@@ -30,7 +30,7 @@ function Phone() {
      */
     this.findOne = async function (jsonWhere) {
 
-        const usersRef = db.collection(collection);
+        const usersRef = db.collection(table_name);
         var ret = null;
 
         for (let field in jsonWhere.where) {
@@ -57,7 +57,7 @@ function Phone() {
         jsonPhone.created_at = now;
         jsonPhone.updated_at = now;
 
-        const res = await db.collection(collection).add(jsonPhone);
+        const res = await db.collection(table_name).add(jsonPhone);
         if (res !== null) {
             return res.id;
         }
@@ -70,7 +70,7 @@ function Phone() {
      * @param {string} verifyCode verify code to be set
      */
     this.setVerifyCode = async function (phoneId, verifyCody) {
-        const phoneRef = db.collection(collection).doc(phoneId);
+        const phoneRef = db.collection(table_name).doc(phoneId);
         const res = await phoneRef.update({ verify_code: verifyCody });
         return res;
     }
@@ -81,7 +81,7 @@ function Phone() {
      * @param {integer} status status to be set
      */
     this.setStatus = async function (phoneId, status) {
-        const phoneRef = db.collection(collection).doc(phoneId);
+        const phoneRef = db.collection(table_name).doc(phoneId);
         const res = await phoneRef.update({ status: status });
         return res;
     }
