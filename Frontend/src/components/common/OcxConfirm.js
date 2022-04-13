@@ -37,7 +37,7 @@ const OcxConfirm = (props) => {
             type="button"
             onClick={onClickedYesButton}
           >Yes</button>
-          <span className="ml-2"> </span>
+          <span className="ml-5"> </span>
           <button
             className="border border-grey-light p-1 rounded hover-transition hover-transition text-red-500 background-transparent font-bold uppercase px-3 focus:outline-none mr-1 mb-1"
             type="button"

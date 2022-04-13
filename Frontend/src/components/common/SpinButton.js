@@ -13,6 +13,13 @@ export default function SpinButton(props) {
     const [buttonClass, setButtonClass] = React.useState(defaultClass);
     const [status, setStatus] = React.useState(0); // 0: Normal, 1: Pending
 
+    const handleMouseEvent = ev => {
+        console.log(ev.type);
+    }
+    const handleClick = ev => {
+        console.log(ev.type);
+        _handleClick();
+    };
     const _handleClick = () => {
         if (status) {
             return;
@@ -24,16 +31,10 @@ export default function SpinButton(props) {
             getExtraData: getExtraData
         });
     };
-
-    const handleClick = event => {
-        _handleClick();
-    };
-
     const stopWait = () => {
         setButtonClass(defaultClass);
         setStatus(0);        
     }
-
     const getExtraData = () => {
         return extraData;
     }
@@ -43,6 +44,8 @@ export default function SpinButton(props) {
             id={props.id} 
             className={buttonClass} 
             onClick={handleClick}
+            onMouseDown={handleMouseEvent}
+            onMouseUp={handleMouseEvent}
         >
         {
             status? (

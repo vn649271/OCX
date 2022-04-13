@@ -19,7 +19,7 @@ const PasscodeResetPage = (props) => {
   return (
     <div className="flex justify-center items-center w-full">
       <OcxCard>
-        <span className="main-font font-16 text-gray-500">Please enter your registered Email address</span>
+        <span className="main-font font-16 main-color">Please enter your registered Email address</span>
         <div className="flex justify-center mt-10 mb-20">
           <div>
             <input
@@ -39,7 +39,7 @@ const PasscodeResetPage = (props) => {
         </div>
         <hr/>
         <div className="mt-6">
-          <span className="main-font font-16 text-gray-600">{message}</span>
+          <span className="main-font font-16 main-color">{message}</span>
         </div>
       </OcxCard>
     </div>

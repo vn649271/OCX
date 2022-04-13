@@ -37,7 +37,7 @@ class RegularModal extends Component {
                         {this.props.title}
                     </ModalHeader>
                     <ModalBody>
-                        <p className="text-base leading-relaxed text-gray-600 font-normal">
+                        <p className="text-base leading-relaxed main-color font-normal">
                             {this.props.content}
                         </p>
                     </ModalBody>

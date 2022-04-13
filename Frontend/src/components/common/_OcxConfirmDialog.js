@@ -41,11 +41,11 @@ const _OcxConfirmDialog = (props) => {
                       </svg>
                     </div>
                     <div className="mt-3 text-center lg:mt-0 lg:ml-4 lg:text-left">
-                      <h3 className="leading-6 font-medium text-gray-900" id="modal-title">
+                      <h3 className="leading-6 font-medium main-color" id="modal-title">
                       { title }
                       </h3>
                       <div className="mt-2">
-                        <p className="text-gray-500">
+                        <p className="main-color">
                         { children }
                         </p>
                       </div>

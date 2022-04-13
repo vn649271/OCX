@@ -31,7 +31,7 @@ const OcxCheckBox = props => {
             <div className="ml-3">
                 <label 
                     htmlFor={id}
-                    className="font-medium text-gray-900 dark:text-gray-300"
+                    className="font-medium main-color dark:text-lightgray-color"
                 >{label}</label>
             </div>
         </div>

@@ -30,11 +30,11 @@
 }
 
 .sidebar-items-rounded.active * {
-    color: #00021b;
+    color: #2f2f2f;
 }
 
 .sidebar-items-rounded:hover * {
-    color: #00021b;
+    color: #2f2f2f;
 }
 
 .user-avatar {
@@ -72,13 +72,13 @@
 
 .dashboard-top-part {
     /* background: #bbf1f3; */
-    background: #00021b;
+    background: #2f2f2f;
     height: 100%;
 }
 
 .dashboard-table {
     /* background: #e6c8fa; */
-    background: #00021b;
+    background: #2f2f2f;
 }
 
 .product-item-content {
@@ -87,7 +87,7 @@
 
 .dashboard-pichart {
     /* background: #fef6a1; */
-    background: #00021b;
+    background: #2f2f2f;
 }
 
 .product-middle-line {
@@ -106,7 +106,7 @@
 
 .product-card {
     border-radius: 10px;
-    background: #00021b;
+    background: #2f2f2f;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
     border: 2px rgb(134, 134, 134) solid;

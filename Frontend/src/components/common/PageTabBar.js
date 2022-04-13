@@ -3,7 +3,6 @@ import { Component } from 'react';
 
 const active_class = "inline-block border border-blue-500 rounded py-1 px-3 bg-blue-500 text-white page-tab-item";
 const inactive_class = "inline-block border border-white rounded hover:border-gray-200 text-blue-500 page-tab-item hover:bg-gray-200 py-1 px-3";
-// const disabled_class = "inline-block py-1 px-3 text-gray-400 cursor-not-allowed";
 
 class PageTabBar extends Component {
 

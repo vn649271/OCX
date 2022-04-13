@@ -14,11 +14,11 @@ export default function Header(props) {
     const [value, setValue] = React.useState(new Date());
 
     return (
-        <header className="bg-white main-header py-3">
+        <header className="bg-global main-header py-3">
             <div className='message-part h-10 w-full hidden'>
 
             </div>
-            <div className="flex justify-between main-header-content items-center px-40 ">
+            <div className="flex justify-between main-header-content items-center px-16 ">
                 <div className="flex items-center">
                     <Link to="/home">
                         <div className="main-logo flex items-center hover-transition">
@@ -30,7 +30,7 @@ export default function Header(props) {
                             </span>
                         </div>
                     </Link>
-                    <div className='dashboard_name hidden main-font main-color font-30 pl-24 py-0'>
+                    <div className='dashboard_name hidden main-font main-color font-30 pl-12 py-0'>
                         Dashboard
                     </div>
                     <div className="header-navgation flex items-center font-16 main-color main-font ml-20">
