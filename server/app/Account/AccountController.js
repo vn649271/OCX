@@ -50,6 +50,9 @@ class AccountController {
         try {
             // !!!!!!!!!!!!! Decrypt passphrase
             passphrase = await commonUtils.decrypt(passphrase, userInfo.decrypt_key);
+            if (!passphrase) {
+                return resp.json({ error: -50, data: "Invalid passphrase." });
+            }
             // !!!!!!!!!!!!! Check if the passphrase exists
             var accountInfo = await self.getById(userInfo.account);
             if (accountInfo) {
@@ -81,7 +84,7 @@ class AccountController {
             }
             let addresses = await accountService.create(newAccountObj, resp);
             if (!addresses || addresses.error) {
-                return resp.json({ error: -52, data: "Failed to save new account" });
+                return resp.json({ error: -52, data: "Failed to create new onchain-account" });
             }
             let ret = await userController.setAccountId(userInfo.id, newAccountObj.id);
             if (!ret) {

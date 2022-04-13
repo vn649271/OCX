@@ -1,7 +1,7 @@
 const { Firestore } = require('@google-cloud/firestore');
 
 const db = new Firestore();
-const collection = 'accounts';
+const table_name = 'accounts';
 
 /*
 Data Model
@@ -24,7 +24,7 @@ Data Model
 function AccountModel() {
 
     this.getById = async function(accountId) {
-        const snapshot = await db.collection(collection).doc(accountId).get();
+        const snapshot = await db.collection(table_name).doc(accountId).get();
         if (snapshot.empty) {
             console.info('No matching user information.');
             return null;
@@ -39,7 +39,7 @@ function AccountModel() {
      */
     this.findOne = async function (jsonWhere) {
 
-        const usersRef = db.collection(collection);
+        const usersRef = db.collection(table_name);
         var ret = null;
 
         for (let field in jsonWhere.where) {
@@ -69,7 +69,7 @@ function AccountModel() {
         jsonAccount.assets = [];
         jsonAccount.assets_ganache = [];
 
-        return await db.collection(collection).add(jsonAccount);
+        return await db.collection(table_name).add(jsonAccount);
     }
 
     /**
@@ -77,7 +77,7 @@ function AccountModel() {
      * @param {object} jsonAccount parameter object presenting new user information
      */
     this.getAddresses = async function (userToken) {
-        const usersRef = db.collection(collection);
+        const usersRef = db.collection(table_name);
         var ret = null;
         const snapshot = await usersRef.where('user_token', '==', userToken).get();
         if (snapshot.empty) {
@@ -96,7 +96,7 @@ function AccountModel() {
      * @param {integer} status status to be set
      */
     this.setLock = async function (accountId, lock) {
-        const accountRef = db.collection(collection).doc(accountId);
+        const accountRef = db.collection(table_name).doc(accountId);
         const res = await accountRef.update({ locked: lock });
         return res;
     }
@@ -107,7 +107,7 @@ function AccountModel() {
      * @param {integer} status status to be set
      */
     this.setUserToken = async function (accountId, userToken) {
-        const accountRef = db.collection(collection).doc(accountId);
+        const accountRef = db.collection(table_name).doc(accountId);
         const res = await accountRef.update({ user_token: userToken });
         return res;
     }
@@ -118,7 +118,7 @@ function AccountModel() {
      * @param {integer} status status to be set
      */
     this.setUserPassword = async function (accountId, userPassword) {
-        const accountRef = db.collection(collection).doc(accountId);
+        const accountRef = db.collection(table_name).doc(accountId);
         const res = await accountRef.update({ user_password: userPassword });
         return res;
     }
@@ -129,7 +129,7 @@ function AccountModel() {
      * @param {integer} status status to be set
      */
     this.updateKeyPairs = async function (accountId, symbol, address, secretKey) {
-        const accountRef = db.collection(collection).doc(accountId);
+        const accountRef = db.collection(table_name).doc(accountId);
         const accountSnapshot = await accountRef.get();
         if (accountSnapshot.empty) {
             console.info('No matching account information.');
@@ -149,7 +149,7 @@ function AccountModel() {
      * @param {integer} status status to be set
      */
     this.addAsset = async function (accountId, assetId) {
-        const accountRef = db.collection(collection).doc(accountId);
+        const accountRef = db.collection(table_name).doc(accountId);
         const accountSnapshot = await accountRef.get();
         if (accountSnapshot.empty) {
             console.info('No matching account information.');
