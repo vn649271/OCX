@@ -30,11 +30,11 @@ const WalletActivatePage = props => {
   const [encrypted_passphrase, setEncryptedPassphrase] = useState('');
 
   const onGeneratePassphrase = ev => {
-      let randomWordList = randomWords(24).join(' ');
-      let input = this.state.input;
-      input.passphrase = randomWordList;
-      this.setState({ input: input });
-      setEncryptedPassphrase(rsaCrypt.encrypt(randomWordList));
+    let randomWordList = randomWords(24).join(' ');
+    let input = this.state.input;
+    input.passphrase = randomWordList;
+    this.setState({ input: input });
+    setEncryptedPassphrase(rsaCrypt.encrypt(randomWordList));
   }
   const onChangePasscode = ev => {
     setPasscode(ev.target.value);
@@ -144,7 +144,7 @@ const WalletActivatePage = props => {
             </div>
         </div>
         <PasswordChecklistComponent
-            passcode={passcode || ""}
+            password={passcode || ""}
             confirmPassword={passcode_confirm || ""}
             hidden={hide_passcode_checklist} />
         <div className="mb-10">
