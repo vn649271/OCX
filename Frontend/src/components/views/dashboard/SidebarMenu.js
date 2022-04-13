@@ -27,11 +27,11 @@ class SidebarMenu extends Component {
     render() {
 
         return (
-            <div className="sidebar flex flex-row bg-white text-gray-800 border-none">
+            <div className="sidebar flex flex-row bg-global main-color border-none">
                 <aside
                     className="dashboard-sidebar md:shadow transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in dashboard-table"
                 >
-                    <div className="sidebar-content py-60 md:py-48">
+                    <div className="sidebar-content py-40 md:py-28">
                         <ul className="flex flex-col w-full">
                             <SidebarMenuItem icons="fa fa-tachometer" className="active" id="dashboard-page" title="Dashboard" href="#" onClick={this.onClickItem} />
                             <SidebarMenuItem icons="fa fa-btc" id="assets-page" title="Assets" href="#" onClick={this.onClickItem} />

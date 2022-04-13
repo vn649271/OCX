@@ -30,7 +30,7 @@ export default class SimpleTable extends Component {
                 let cols = [];
                 for(let c in rowData.data) {
                     let colData = rowData.data[c];
-                    cols.push(<td key={"col-" + c} className="px-6 py-4 text-gray-500">{colData.value}</td>);
+                    cols.push(<td key={"col-" + c} className="px-6 py-4 main-color">{colData.value}</td>);
                 }
                 trs.push(<tr 
                             key={rowData.id} 
@@ -49,7 +49,7 @@ export default class SimpleTable extends Component {
                                     <tr>
                                     {
                                         this.props.def ? this.props.def.headers ? this.props.def.headers.map((v, i) => {
-                                            return <th key={i} className="px-6 py-2 text-gray-500 text-left">
+                                            return <th key={i} className="px-6 py-2 main-color text-left">
                                                 {v.title}
                                             </th>
                                         }): null : null

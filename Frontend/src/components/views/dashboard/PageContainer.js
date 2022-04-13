@@ -83,7 +83,7 @@ class PageContainer extends Component {
 
     render() {
         return (
-            <div className="main-content-container w-full pl-10 pt-10">
+            <div className="bg-global main-content-container w-full ml-2 pl-10 pt-32">
                 {
                     this.state.show_toast?
                         <Toast text={this.state.toast_text} type={this.state.toast_type}/> 

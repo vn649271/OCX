@@ -55,7 +55,7 @@ export default class Dashboard extends Component {
         return (
             <div>
                 <Header userToken={this.state.token} />
-                <div className="flex">
+                <div className="flex bg-global">
                     <SidebarMenu onSelectItem={this.onSelectMenuItem} />
                     <PageContainer target={this.state.targetPageId}/>
                 </div>

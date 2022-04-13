@@ -38,18 +38,18 @@ const Frame: React.FC<{ open?: boolean; onClose: () => void }> = ({
 };
 
 const Head: React.FC = ({ children }) => (
-  <div className="block p-4 bg-gray-900 main-font font-16 rounded-lg">
+  <div className="block p-5 bg-gray-900 main-font font-16 rounded-lg">
     <h1 className="font-bold font-18">{children}</h1>
   </div>
 );
 
 const Footer: React.FC = ({ children }) => (
-  <div className="block p-4 bg-gray-900 main-font font-16 lg:flex lg:flex-row-reverse">
+  <div className="block p-5 bg-gray-900 main-font font-16 lg:flex lg:flex-row-reverse">
     {children}
   </div>
 );
 
-const Body: React.FC = ({ children }) => <div className="p-4 main-font font-16 ">{children}</div>;
+const Body: React.FC = ({ children }) => <div className="p-10 pl-20 pr-20 main-font font-16 ">{children}</div>;
 
 const OcxModalComponents = { Frame, Head, Body, Footer };
 

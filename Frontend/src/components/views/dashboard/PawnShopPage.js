@@ -722,7 +722,7 @@ class PawnShopPage extends Component {
     render() {
         return (
             <div>
-                <div className="my-pawnshop-page main-font main-color font-16 m-8">
+                <div className="my-pawnshop-page main-font main-color font-16">
                     <OcxCard title='Pawn your assets into cryptos'>
                         <div>
                             <div className="inline-flex w-full">

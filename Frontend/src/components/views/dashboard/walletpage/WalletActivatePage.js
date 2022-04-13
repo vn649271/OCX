@@ -172,12 +172,6 @@ const WalletActivatePage = props => {
             onOk={onOkPassphraseImportDialog}
             onCancel={onCancelPassphraseImportDialog}
         />
-        <PasscodeConfirmDialog
-            className="passcode-confirm-dialog"
-            show={show_passcode_confirm_dialog}
-            onOk={onOkPasscodeConfirmDialog}
-            onCancel={onCancelPasscodeConfirmDialog}
-        />
     </div>
   );
 };
