@@ -133,13 +133,13 @@ const WalletActivatePage = props => {
             <hr></hr>
             <div className="account-passcode-container block w-full">
                 <input
-                    type={show_passcode ? "text" : "passcode"}
-                    className="passcode-input border border-grey-light bg-gray-100 p-5 font-16 main-font focus:outline-none rounded "
-                    name="passcode"
-                    // value={passcode}
-                    onChange={onChangePasscode}
-                    onBlur={onLeaveFromPasscodeInput}
-                    placeholder="Passcode" autoComplete="off" />
+                  type={show_passcode ? "text" : "passcode"}
+                  className="passcode-input border border-grey-light bg-gray-100 p-5 font-16 main-font focus:outline-none rounded "
+                  name="passcode"
+                  // value={passcode}
+                  onChange={onChangePasscode}
+                  onBlur={onLeaveFromPasscodeInput}
+                  placeholder="Passcode" autoComplete="off" />
                 <i className="ShowPasswordIcon font-16" onClick={togglePasscodeVisiblity}>{eye}</i>
             </div>
         </div>
