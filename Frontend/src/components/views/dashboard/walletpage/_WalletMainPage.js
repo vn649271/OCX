@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import DelayButton from '../../common/DelayButton';
-import PasswordChecklistComponent from "../../common/PasswordChecklistComponent";
+import OcxPasswordChecklist from "../../common/OcxPasswordChecklist";
 import AccountService from '../../../service/Account';
 import { hashCode } from "../../../service/Utils";
 import QRCode from "react-qr-code";
