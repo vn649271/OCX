@@ -72,7 +72,8 @@ contract PawnNFTs is ERC721, AdministratedContract {
   }
 
   function setMinPnftPrice(uint8 _minPnftPrice) public 
-  callerMustBeAdmin {
+  // callerMustBeAdmin 
+  {
       minPnftPrice = _minPnftPrice;
   }
 
