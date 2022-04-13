@@ -53,27 +53,27 @@ contract PawnExchange is AdministratedContract {
     }
 
     function setPnftAddress(address payable _pnftAddress) public 
-    validCaller callerMustBeCreator mustNoneZeroAddress(_pnftAddress) {
+    validCaller onlyCreator mustNoneZeroAddress(_pnftAddress) {
         pnftAddress = _pnftAddress;
     }
 
     function setOcatAddress(address payable _ocatAddress) public 
-    validCaller mustNoneZeroAddress(_ocatAddress) callerMustBeCreator {
+    validCaller mustNoneZeroAddress(_ocatAddress) onlyCreator {
         ocatAddress = _ocatAddress;
     }
 
     function setFeeManager(address payable _feeManager) public 
-    callerMustBeCreator mustNoneZeroAddress(_feeManager) {
+    onlyCreator mustNoneZeroAddress(_feeManager) {
         feeManager = _feeManager;
     }
 
     function setMinPnftPrice(uint8 _minPnftPrice) public 
-    callerMustBeAdmin {
+    onlyAdmin {
         minPnftPrice = _minPnftPrice;
     }
 
     function setFee(FeeType feeType, uint32 feeValue) public
-    callerMustBeAdmin {
+    onlyAdmin {
         fees[feeType] = feeValue;
     }
 

@@ -20,7 +20,7 @@ contract OcxFeeManager {
         _;
     }
 
-    modifier callerMustBeCreator {
+    modifier onlyCreator {
         require(msg.sender != creator, "Caller have not to have zero address");
         _;
     }
@@ -42,7 +42,7 @@ contract OcxFeeManager {
     }
 
     function addOperator(address _address) public payable 
-    callerMustBeCreator mustNoneZeroAddress(_address) {
+    onlyCreator mustNoneZeroAddress(_address) {
         for (uint8 i = 0; i < allowedOperators.length; i++) {
             if (_address == allowedOperators[i]) {
                 return;
