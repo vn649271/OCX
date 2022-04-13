@@ -21,19 +21,18 @@ const WalletActivatePage = props => {
   const {userToken, showToast, onRegisteredAccount} = props;
 
   const [show_passcode, setShowPasscode] = useState(false);
-  const [hide_passcode_checklist, setHidePasscodeCheckBox] = useState(false);
+  const [hide_passcode_checklist, setHidePasscodeCheckBox] = useState(true);
   const [lock_account, setLockAccount] = useState(true);
   const [accounts, setAccounts] = useState(null);
   const [show_passphrase_import_dialog, setShowPassPhraseImportDialog] = useState(null);
   const [passcode, setPasscode] = useState('');
+  const [passphrase, setPassphrase] = useState('');
   const [passcode_confirm, setPasscodeConfirm] = useState('');
   const [encrypted_passphrase, setEncryptedPassphrase] = useState('');
 
   const onGeneratePassphrase = ev => {
-    let randomWordList = randomWords(24).join(' ');
-    let input = this.state.input;
-    input.passphrase = randomWordList;
-    this.setState({ input: input });
+    let randomWordList = randomWords(12).join(' ');
+    setPassphrase(randomWordList);
     setEncryptedPassphrase(rsaCrypt.encrypt(randomWordList));
   }
   const onChangePasscode = ev => {
@@ -115,56 +114,66 @@ const WalletActivatePage = props => {
   }
 
   return (
-    <div className="flex justify-center items-center w-full">
-        <div className="mb-10">
-            <div className="passphrase-container block w-full">
+    <div className="justify-center w-full">
+        <div className="flex justify-center mb-10">
+            <div className="items-start w-1/2">
+              <div className="passphrase-container">
                 <textarea
-                    className="passphrase-box border border-grey-light bg-gray-100 p-5 font-16 main-font focus:outline-none rounded w-full"
+                    className="passphrase-box border border-grey-light bg-gray-100 p-5 mb-5 font-16 main-font focus:outline-none rounded w-full"
                     name="passphrase"
                     // onChange={this.handleInputChange}
-                    // value={this.state.input.passphrase}
+                    value={passphrase}
                     placeholder="Passphrase" autoComplete="off"
                     disabled={true}
                 />
-                <OcxButton
+                <div className="flex justify-end w-full">
+                  <OcxButton
+                    label="Generate"
                     onClick={onGeneratePassphrase}
-                >Generate</OcxButton>
-            </div>
-            <hr></hr>
-            <div className="account-passcode-container block w-full">
+                  />
+                </div>
+              </div>
+              <hr className="mt-10 mb-10"/>
+              <div className="account-passcode-container block w-full mb-5">
+                  <input
+                    type={show_passcode ? "text" : "passcode"}
+                    className="passcode-input border border-grey-light bg-gray-100 w-full p-5 font-16 main-font focus:outline-none rounded "
+                    name="passcode"
+                    // value={passcode}
+                    onChange={onChangePasscode}
+                    onBlur={onLeaveFromPasscodeInput}
+                    placeholder="Passcode" autoComplete="off" 
+                  />
+                  <i className="ShowPasswordIcon font-16" onClick={togglePasscodeVisiblity}>{eye}</i>
+              </div>
+              <PasswordChecklistComponent
+                password={passcode || ""}
+                confirmPassword={passcode_confirm || ""}
+                hidden={hide_passcode_checklist} 
+              />
+              <div className="mb-10 w-full">
                 <input
-                  type={show_passcode ? "text" : "passcode"}
-                  className="passcode-input border border-grey-light bg-gray-100 p-5 font-16 main-font focus:outline-none rounded "
-                  name="passcode"
-                  // value={passcode}
-                  onChange={onChangePasscode}
-                  onBlur={onLeaveFromPasscodeInput}
-                  placeholder="Passcode" autoComplete="off" />
-                <i className="ShowPasswordIcon font-16" onClick={togglePasscodeVisiblity}>{eye}</i>
+                  type="passcode"
+                  className="block border border-grey-light bg-gray-100 w-full p-5 font-16 main-font focus:outline-none rounded "
+                  name="confirm_passcode"
+                  // value={passcode_confirm}
+                  onChange={onChangePasscodeConfirm}
+                  placeholder="Confirm Passcode" autoComplete="off" 
+                />
+              </div>
+              <div id="create-account-button-container" className="flex justify-end w-full">
+                  {/* Send Button */}
+                  <SpinButton
+                      title="New Account"
+                      onClick={onCreateAccont}
+                      extraData={null} />
+              </div>
+              <div className="import-passphrase-container flex justify-end mt-5 mb-5">
+                  <span className="main-font font-16 link-button" onClick={onClickImportPassphrase}>Import passphrase</span>
+              </div>
             </div>
-        </div>
-        <PasswordChecklistComponent
-            password={passcode || ""}
-            confirmPassword={passcode_confirm || ""}
-            hidden={hide_passcode_checklist} />
-        <div className="mb-10">
-            <input
-                type="passcode"
-                className="block border border-grey-light bg-gray-100  w-full p-5 font-16 main-font focus:outline-none rounded "
-                name="confirm_passcode"
-                // value={passcode_confirm}
-                onChange={onChangePasscodeConfirm}
-                placeholder="Confirm Passcode" autoComplete="off" />
-        </div>
-        <div id="create-account-button-container">
-            {/* Send Button */}
-            <SpinButton
-                title="New Account"
-                onClick={onCreateAccont}
-                extraData={null} />
-        </div>
-        <div className="import-passphrase-container">
-            <span className="import-passphrase-button" onClick={onClickImportPassphrase}>Import passphrase</span>
+          </div>
+          <div>
         </div>
         <PassphraseImportDialog
             className="passphrase-import-dialog"

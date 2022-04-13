@@ -6,7 +6,10 @@ export default function SpinButton(props) {
 
     const { title, additionalClass, extraData, children } = props;
 
-    const baseClass = "main-font font-16 items-center border border-grey-light p-3 w-fit button-bg focus:outline-none rounded text-white hover-transition " + additionalClass;
+    const baseClass = "main-font font-16 items-center border border-grey-light " + 
+                    "p-3 w-max button-bg focus:outline-none rounded " +
+                    "text-white hover-transition " + 
+                    (additionalClass ? additionalClass : "");
     const defaultClass = baseClass + " cursor-pointer";
     const disabledClass = baseClass + " spin-button-disabled";
 
