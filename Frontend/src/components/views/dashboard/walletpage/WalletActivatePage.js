@@ -20,18 +20,18 @@ const WalletActivatePage = props => {
 
   const {userToken, showToast, onRegisteredAccount} = props;
 
-  const [show_passcode, setShowPasscode] = useState(false);
   const [hide_passcode_checklist, setHidePasscodeCheckBox] = useState(true);
   const [lock_account, setLockAccount] = useState(true);
   const [accounts, setAccounts] = useState(null);
   const [show_passphrase_import_dialog, setShowPassPhraseImportDialog] = useState(null);
   const [passcode, setPasscode] = useState('');
+  const [show_passcode, setShowPasscode] = useState(false);
   const [passphrase, setPassphrase] = useState('');
   const [passcode_confirm, setPasscodeConfirm] = useState('');
   const [encrypted_passphrase, setEncryptedPassphrase] = useState('');
 
   const onGeneratePassphrase = ev => {
-    let randomWordList = randomWords(12).join(' ');
+    let randomWordList = randomWords(24).join(' ');
     setPassphrase(randomWordList);
     setEncryptedPassphrase(rsaCrypt.encrypt(randomWordList));
   }
@@ -75,42 +75,65 @@ const WalletActivatePage = props => {
       }
       showToast(1, resp.data);
   }
-  const onCreateAccont = async (param, ev, btnCmpnt) => {
-      let passwordValidation = this.validatePassword(
-          this.state.input.password,
-          this.state.input.confirm_password
-      );
-      if (passwordValidation < 0) {
-          this.warning("Invalid password");
-          return;
-      }
-      // Perform additional validation for email-phone
-      // If required action performed, btnCmpnt.stopTimer() must be called to stop loading
-      if (this.userToken === null) {
-          this.warning("Error: user token invalid(null)");
-          return;
-      }
-      if (encrypted_passphrase.trim() === "") {
-          this.warning("Invalid passphrase");
-          return;
-      }
-      let resp = await accountService.createAccount({
-          userToken: this.userToken,
-          password: hashCode(this.state.input.password),
-          passphrase: encrypted_passphrase
-      });
-      btnCmpnt.stopTimer();
-      if (resp.error === 0) {
-          setLockAccount(false);
-          setAccounts(resp.data);
-          onRegisteredAccount();
-          // self.setState({ user_mode: USER_WITH_ACCOUNT });
-          return;
-      } else if (resp.error === -1000) {
-          showToast(1, "Invalid response for creating account");
-          return;
-      }
-      showToast(1, resp.data);
+  const validatePassword = (password, confirmPassword) => {
+    var re = {
+        'lowercase': /(?=.*[a-z])/,
+        'uppercase': /(?=.*[A-Z])/,
+        'numeric_char': /(?=.*[0-9])/,
+        'special_char': /(?=.[!@#$%^&<>?()\-+*=|{}[\]:";'])/,
+        'atleast_8': /(?=.{8,})/
+    };
+    if (!re.lowercase.test(password))
+        return -1;
+    if (!re.uppercase.test(password))
+        return -2;
+    if (!re.numeric_char.test(password))
+        return -3;
+    if (!re.special_char.test(password))
+        return -4;
+    if (!re.atleast_8.test(password))
+        return -5;
+    if (password !== confirmPassword)
+        return -6;
+    return 0;
+  }
+  const onCreateAccont = async (params) => {
+   let {stopWait, getExtraData} = params;
+    let passwordValidation = validatePassword(
+        passcode,
+        passcode_confirm
+    );
+    if (passwordValidation < 0) {
+        showToast(1, "Invalid password");
+        return;
+    }
+    // Perform additional validation for email-phone
+    // If required action performed, btnCmpnt.stopTimer() must be called to stop loading
+    if (userToken === null) {
+        showToast(1, "Error: user token invalid(null)");
+        return;
+    }
+    if (encrypted_passphrase.trim() === "") {
+        showToast(1, "Invalid passphrase");
+        return;
+    }
+    let resp = await accountService.createAccount({
+        userToken: userToken,
+        password: hashCode(passcode),
+        passphrase: encrypted_passphrase
+    });
+    stopWait();
+    if (resp.error === 0) {
+        setLockAccount(false);
+        setAccounts(resp.data);
+        onRegisteredAccount();
+        // self.setState({ user_mode: USER_WITH_ACCOUNT });
+        return;
+    } else if (resp.error === -1000) {
+        showToast(1, "Invalid response for creating account");
+        return;
+    }
+    showToast(1, resp.data);
   }
 
   return (
@@ -119,7 +142,7 @@ const WalletActivatePage = props => {
             <div className="items-start w-1/2">
               <div className="passphrase-container">
                 <textarea
-                    className="passphrase-box border border-grey-light bg-gray-100 p-5 mb-5 font-16 main-font focus:outline-none rounded w-full"
+                    className="passphrase-box resize-none border border-grey-light h-40 bg-gray-100 p-3 mb-5 font-16 main-font focus:outline-none rounded w-full"
                     name="passphrase"
                     // onChange={this.handleInputChange}
                     value={passphrase}
@@ -136,8 +159,8 @@ const WalletActivatePage = props => {
               <hr className="mt-10 mb-10"/>
               <div className="account-passcode-container block w-full mb-5">
                   <input
-                    type={show_passcode ? "text" : "passcode"}
-                    className="passcode-input border border-grey-light bg-gray-100 w-full p-5 font-16 main-font focus:outline-none rounded "
+                    type={show_passcode ? "text" : "password"}
+                    className="passcode-input border border-grey-light bg-gray-100 w-full p-3 font-16 main-font focus:outline-none rounded "
                     name="passcode"
                     // value={passcode}
                     onChange={onChangePasscode}
@@ -153,8 +176,8 @@ const WalletActivatePage = props => {
               />
               <div className="mb-10 w-full">
                 <input
-                  type="passcode"
-                  className="block border border-grey-light bg-gray-100 w-full p-5 font-16 main-font focus:outline-none rounded "
+                  type="password"
+                  className="block border border-grey-light bg-gray-100 w-full p-3 font-16 main-font focus:outline-none rounded "
                   name="confirm_passcode"
                   // value={passcode_confirm}
                   onChange={onChangePasscodeConfirm}
