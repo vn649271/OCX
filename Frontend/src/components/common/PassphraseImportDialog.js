@@ -4,7 +4,7 @@ import ModalHeader from "@material-tailwind/react/ModalHeader";
 import ModalBody from "@material-tailwind/react/ModalBody";
 import ModalFooter from "@material-tailwind/react/ModalFooter";
 import Button from "@material-tailwind/react/Button";
-import PasswordChecklistComponent from "./PasswordChecklistComponent";
+import OcxPasswordChecklist from "./OcxPasswordChecklist";
 import DelayButton from './DelayButton';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
@@ -198,7 +198,7 @@ class PassphraseImportDialog extends Component {
                             <i className="ShowPasswordIcon font-16" onClick={this.togglePasswordVisiblity}>{eye}</i>
                         </div>
                     </div>
-                    <PasswordChecklistComponent
+                    <OcxPasswordChecklist
                         password={this.state.input['new_password'] || ""}
                         confirmPassword={this.state.input['confirm_password'] || ""}
                         hidden={this.state.hidePasswordCheckList} />

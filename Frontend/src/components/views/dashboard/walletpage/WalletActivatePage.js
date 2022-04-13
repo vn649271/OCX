@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import randomWords from 'random-words';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { JSEncrypt } from 'jsencrypt'
 
 import { hashCode } from "../../../../service/Utils";
-import PasswordChecklistComponent from "../../../common/PasswordChecklistComponent";
+import OcxPasswordChecklist from "../../../common/OcxPasswordChecklist";
 import PassphraseImportDialog from '../../../common/PassphraseImportDialog';
 import PasscodeConfirmDialog from '../../../common/PasscodeConfirmDialog';
 import AccountService from '../../../../service/Account';
@@ -29,51 +29,69 @@ const WalletActivatePage = props => {
   const [passphrase, setPassphrase] = useState('');
   const [passcode_confirm, setPasscodeConfirm] = useState('');
   const [encrypted_passphrase, setEncryptedPassphrase] = useState('');
+  const [error, showError] = useState('');
+  const [rsa_crypt_inited, setRsaCryptInited] = useState(false);
 
+  useEffect(() => {
+    let encryptKey = localStorage.getItem("encryptKey");
+    setEncryptKey(encryptKey);
+  });
+
+  const setEncryptKey = encryptKey => {
+    rsaCrypt.setPublicKey(encryptKey);
+    setRsaCryptInited(true);
+  }
   const onGeneratePassphrase = ev => {
-    let randomWordList = randomWords(24).join(' ');
+    let randomWordList = randomWords(12).join(' ');
     setPassphrase(randomWordList);
     setEncryptedPassphrase(rsaCrypt.encrypt(randomWordList));
   }
   const onChangePasscode = ev => {
     setPasscode(ev.target.value);
+    setHidePasscodeCheckBox(false);
   }
   const onChangePasscodeConfirm = ev => {
     setPasscodeConfirm(ev.target.value);
+    let ret = validatePassword(passcode, ev.target.value);
+    if (ret != 0) {
+      showError("Passcode not match");
+    } else {
+      showError("");
+    }
   }
   const onLeaveFromPasscodeInput = event => {
-      setHidePasscodeCheckBox(true);
+    setHidePasscodeCheckBox(true);
   }
   const togglePasscodeVisiblity = () => {
     setShowPasscode(!show_passcode);
   }
   const onClickImportPassphrase = (ev) => {
-      setShowPassPhraseImportDialog(true);
+    setShowPassPhraseImportDialog(true);
   }
   const onCancelPassphraseImportDialog = () => {
-      setShowPassPhraseImportDialog(false);
+    setShowPassPhraseImportDialog(false);
   }
   const onOkPassphraseImportDialog = async (param) => {
-      setEncryptedPassphrase(rsaCrypt.encrypt(param.passphrase));
-      console.log("************* onOkPassphraseImportDialog(): param=", param);
-      setShowPassPhraseImportDialog(false);
-      let resp = await accountService.restoreAccount({
-          userToken: userToken,
-          password: hashCode(param.password),
-          passphrase: encrypted_passphrase
-      });
-      if (resp.error === 0) {
-          console.log("************* restoreAccount(): response=", resp);
-          setLockAccount(false);
-          setAccounts(resp.data);
-          onRegisteredAccount();
-          // self.setState({ user_mode: USER_WITH_ACCOUNT });
-          return;
-      } else if (resp.error === -1000) {
-          showToast(1, "Invalid response for creating account");
-          return;
-      }
-      showToast(1, resp.data);
+    setEncryptedPassphrase(rsaCrypt.encrypt(param.passphrase));
+    console.log("************* onOkPassphraseImportDialog(): param=", param);
+    setShowPassPhraseImportDialog(false);
+    let resp = await accountService.restoreAccount({
+        userToken: userToken,
+        password: hashCode(param.password),
+        passphrase: encrypted_passphrase
+    });
+    if (resp.error === 0) {
+        console.log("************* restoreAccount(): response=", resp);
+        setLockAccount(false);
+        setAccounts(resp.data);
+        onRegisteredAccount();
+        // self.setState({ user_mode: USER_WITH_ACCOUNT });
+        return;
+    } else if (resp.error === -1000) {
+        showToast(1, "Invalid response for creating account");
+        return;
+    }
+    showToast(1, resp.data);
   }
   const validatePassword = (password, confirmPassword) => {
     var re = {
@@ -105,16 +123,24 @@ const WalletActivatePage = props => {
     );
     if (passwordValidation < 0) {
         showToast(1, "Invalid password");
+        stopWait();
         return;
     }
     // Perform additional validation for email-phone
     // If required action performed, btnCmpnt.stopTimer() must be called to stop loading
     if (userToken === null) {
         showToast(1, "Error: user token invalid(null)");
+        stopWait();
         return;
     }
-    if (encrypted_passphrase.trim() === "") {
+    if (encrypted_passphrase === "") {
         showToast(1, "Invalid passphrase");
+        stopWait();
+        return;
+    }
+    if (!rsa_crypt_inited) {
+        showToast(1, "Not inited system modules yet");
+        stopWait();
         return;
     }
     let resp = await accountService.createAccount({
@@ -169,7 +195,7 @@ const WalletActivatePage = props => {
                   />
                   <i className="ShowPasswordIcon font-16" onClick={togglePasscodeVisiblity}>{eye}</i>
               </div>
-              <PasswordChecklistComponent
+              <OcxPasswordChecklist
                 password={passcode || ""}
                 confirmPassword={passcode_confirm || ""}
                 hidden={hide_passcode_checklist} 
@@ -183,6 +209,7 @@ const WalletActivatePage = props => {
                   onChange={onChangePasscodeConfirm}
                   placeholder="Confirm Passcode" autoComplete="off" 
                 />
+                <div className="error-box main-font font-14 text-red-500">{error}</div>
               </div>
               <div id="create-account-button-container" className="flex justify-end w-full">
                   {/* Send Button */}

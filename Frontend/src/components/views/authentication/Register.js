@@ -9,7 +9,7 @@ import RecaptchaComponent from "../../common/Recaptcha";
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
 import { GoogleLogin } from 'react-google-login';
-import PasswordChecklistComponent from "../../common/PasswordChecklistComponent"
+import OcxPasswordChecklist from "../../common/OcxPasswordChecklist"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -688,7 +688,7 @@ export default class Register extends Component {
                     </div>
                     <span className="help-block main-font text-red-400 font-14">{this.state.errors.password}</span>
                   </div>
-                  <PasswordChecklistComponent
+                  <OcxPasswordChecklist
                     password={this.state.input['password'] || ""}
                     confirmPassword={this.state.input['confirm_password'] || ""}
                     hidden={this.state.hidePasswordCheckList}
