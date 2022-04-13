@@ -1,7 +1,7 @@
 const { Firestore } = require('@google-cloud/firestore');
 
 const db = new Firestore();
-const collection = 'pawnitems';
+const table_name = 'pawnitems';
 
 /**
  * 
@@ -30,7 +30,7 @@ const collection = 'pawnitems';
 function PawnItemModel() {
 
     this.getById = async function(pawnItemId) {
-        const snapshot = await db.collection(collection).doc(pawnItemId).get();
+        const snapshot = await db.collection(table_name).doc(pawnItemId).get();
         if (snapshot.empty) {
             console.info('No matching asset information.');
             return null;
@@ -41,7 +41,7 @@ function PawnItemModel() {
 
     this.all = async function() {
         let retArray = [];
-        const pawnAssetsRef = db.collection(collection);
+        const pawnAssetsRef = db.collection(table_name);
         const snapshot = await pawnAssetsRef.get();
         if (snapshot.empty) {
             console.info('No matching pawn asset information.');
@@ -62,7 +62,7 @@ function PawnItemModel() {
      */
     this.findOne = async function (jsonWhere) {
 
-        const pawnAssetsRef = db.collection(collection);
+        const pawnAssetsRef = db.collection(table_name);
         var ret = null;
 
         for (let field in jsonWhere.where) {
@@ -91,7 +91,7 @@ function PawnItemModel() {
         jsonPawnItem.created_at = now;
         jsonPawnItem.updated_at = now;
 
-        let ret = await db.collection(collection).add(jsonPawnItem);
+        let ret = await db.collection(table_name).add(jsonPawnItem);
         if (!ret || ret.id === undefined || !ret.id) {
             return {error: -1, data: "Failed to register new pawn item"};
         }
@@ -106,7 +106,7 @@ function PawnItemModel() {
         let now = new Date();
         data.updated_at = now.toISOString();
 
-        const pawnItemRef = db.collection(collection).doc(id);
+        const pawnItemRef = db.collection(table_name).doc(id);
         const ret = await pawnItemRef.update(data);
 
         return ret;
@@ -119,7 +119,7 @@ function PawnItemModel() {
      * @param {integer} nftId NFT ID to be set
      */
      this.setNftId = async function (pawnItemId, nftId) {
-        const pawnitemsRef = db.collection(collection).doc(pawnItemId);
+        const pawnitemsRef = db.collection(table_name).doc(pawnItemId);
         const res = await pawnitemsRef.update({ nft_id: nftId });
         return res;
     }
@@ -130,7 +130,7 @@ function PawnItemModel() {
      * @param {integer} status status to be set
      */
     this.setStatus = async function (pawnItemId, status) {
-        const pawnitemsRef = db.collection(collection).doc(pawnItemId);
+        const pawnitemsRef = db.collection(table_name).doc(pawnItemId);
         const res = await pawnitemsRef.update({ status: status });
         return res;
     }
