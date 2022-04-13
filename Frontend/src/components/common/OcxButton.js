@@ -14,7 +14,6 @@ export default function OcxButton(props) {
 
     const handleMouseEvent = ev => {
         if (!enabled) return;
-        console.log(ev.type);
         if (ev.type == 'mousedown') {
             setButtonClass(mouseDownClass);
         } else if (ev.type == 'mouseup') {
