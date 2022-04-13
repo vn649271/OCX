@@ -530,7 +530,14 @@ li.sc-gsDKAQ {
 
 .main-content-container {
     padding: 2.5em;
-    caret-color: transparent;
+}
+.main-content-container > div:focus, span:focus, p:focus, button:focus, i:focus {
+    /*caret-color: transparent;*/
+    outline: none;
+}
+
+.resize-none {
+    resize: none;
 }
 
 /**/
