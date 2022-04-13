@@ -5,6 +5,28 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "./AdministratedContract.sol";
 
+  /*
+   * -2: mintPawnNFT(): Error: caller of zero address
+   * -3: Too small price
+   * -4: PawnNFTs.mintPawnNFT(): The token id already exists
+   * -5: PawnNFTs.mintPawnNFT(): The token URI already exists
+   * -6: PawnNFTs.mintPawnNFT(): The token name already exists
+   * -7: Invalid token id
+   * -8: buyToken(): Error: caller of zero address
+   * -9: buyToken(): The token id already exists
+   * -10: buyToken(): Error: token owner of zero address
+   * -11: buyToken(): Error: buyer is token owner
+   * -12: buyToken(): Not enough funds
+   * -13: buyToken(): Token should be for sale
+   * -14: PawnNFTs: transfer from incorrect owner
+   * -15: PawnNFTs: transfer to the zero address
+   * -16: 
+   * -17: 
+   * -18: 
+   * -19: 
+   * -20: 
+   */
+
 // PawnNFTs smart contract inherits ERC721 interface
 contract PawnNFTs is ERC721, AdministratedContract {
 
@@ -22,7 +44,7 @@ contract PawnNFTs is ERC721, AdministratedContract {
   uint  public decimals = 0;
   
   // define pawning NFT struct
-   struct PawnNFT {
+  struct PawnNFT {
     uint256 tokenId;
     string tokenName;
     string tokenURI;
@@ -52,13 +74,24 @@ contract PawnNFTs is ERC721, AdministratedContract {
     collectionNameSymbol = symbol();
   }
 
+  modifier onlyTokenOwner(uint256 _tokenId) virtual {
+    // check if the token id of the token being bought exists or not
+    require(_exists(_tokenId), "-9");
+    address tokenOwner = ownerOf(_tokenId);
+    // token's owner should not be an zero address account
+    require(tokenOwner != address(0), "-10");
+    // the one who wants to buy the token should not be the token's owner
+    require(tokenOwner == msg.sender, "-11");
+    _;
+  }
+
   /**
     * @dev Base URI for computing {tokenURI}. If set, the resulting URI for each
     * token will be the concatenation of the `baseURI` and the `tokenId`. Empty
     * by default, can be overriden in child contracts.
     */
   function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
-    require(_exists(tokenId), "PawnNFTs: Error: Nonexistent token");
+    require(_exists(tokenId), "-1");
     // require(tokenURIs[tokenId] != 0, "PawnNFTs: URI query for token without token URI");
     return tokenURIs[tokenId];
   }
@@ -72,28 +105,25 @@ contract PawnNFTs is ERC721, AdministratedContract {
   }
 
   function setMinPnftPrice(uint8 _minPnftPrice) public 
-  // callerMustBeAdmin 
+  // onlyAdmin 
   {
       minPnftPrice = _minPnftPrice;
   }
 
-
   // mint a new pawning NFT and return token ID
-  function mintPawnNFT(string memory _name, string memory _tokenURI, uint256 _price) external returns(uint256) {
-    // check if thic fucntion caller is not an zero address account
-    require(msg.sender != address(0), "PawnNFTs.mintPawnNFT(): Error: caller of zero address");
-    require(_price >= minPnftPrice, "Too small price");
-
+  function mintPawnNFT(string memory _name, string memory _tokenURI, uint256 _price) external 
+  onlyValidCaller returns(uint256) {
+    require(_price >= minPnftPrice, "-3");
     // increment counter
     pawnNFTCounter.increment();
     uint256 newTokenID = pawnNFTCounter.current();
     // check if a token exists with the above token id => incremented counter
-    require(!_exists(newTokenID), "PawnNFTs.mintPawnNFT(): The token id already exists");
+    require(!_exists(newTokenID), "-4");
 
     // check if the token URI already exists or not
-    require(tokenURIExists[_tokenURI] == 0, "PawnNFTs.mintPawnNFT(): The token URI already exists");
+    require(tokenURIExists[_tokenURI] == 0, "-5");
     // check if the token name already exists or not
-    require(!tokenNameExists[_name], "PawnNFTs.mintPawnNFT(): The token name already exists");
+    require(!tokenNameExists[_name], "-6");
 
     // mint the token
     _mint(msg.sender, newTokenID);
@@ -129,26 +159,26 @@ contract PawnNFTs is ERC721, AdministratedContract {
   }
 
   // get metadata of the token
-  function getTokenMetaData(uint _tokenId) public view returns(string memory) {
-    string memory tokenMetaData = tokenURI(_tokenId);
-    return tokenMetaData;
+  function getTokenMetaData(uint _tokenId) public view 
+  returns(string memory tokenMetaData) {
+    tokenMetaData = tokenURI(_tokenId);
   }
 
   function setMintedNativeToken(uint256 _tokenId, bool _mintedNativeToken) public {
-    require(allPawnNFTs[_tokenId].tokenId > 0, "Invalid token id");
+    require(allPawnNFTs[_tokenId].tokenId > 0, "-7");
     allPawnNFTs[_tokenId].mintedNativeToken = _mintedNativeToken;
   }
 
   // get total number of tokens minted so far
-  function getNumberOfTokensMinted() public view returns(uint256) {
-    uint256 totalNumberOfTokensMinted = totalSupply();
-    return totalNumberOfTokensMinted;
+  function getNumberOfTokensMinted() public view 
+  returns(uint256 totalNumberOfTokensMinted) {
+    totalNumberOfTokensMinted = totalSupply();
   }
 
   // get total number of tokens owned by an address
-  function getTotalNumberOfTokensOwnedByAnAddress(address _owner) public view returns(uint256) {
-    uint256 totalNumberOfTokensOwned = balanceOf(_owner);
-    return totalNumberOfTokensOwned;
+  function getTotalNumberOfTokensOwnedByAnAddress(address _owner) public view 
+  returns(uint256 totalNumberOfTokensOwned) {
+    totalNumberOfTokensOwned = balanceOf(_owner);
   }
 
   // check if the token already exists
@@ -158,24 +188,16 @@ contract PawnNFTs is ERC721, AdministratedContract {
   }
 
   // by a token by passing in the token's id
-  function buyToken(uint256 _tokenId) public payable {
-    // check if the function caller is not an zero account address
-    require(msg.sender != address(0), "buyToken(): Error: caller of zero address");
-    // check if the token id of the token being bought exists or not
-    require(_exists(_tokenId), "buyToken(): The token id already exists");
-    // get the token's owner
-    address tokenOwner = ownerOf(_tokenId);
-    // token's owner should not be an zero address account
-    require(tokenOwner != address(0), "buyToken(): Error: token owner of zero address");
-    // the one who wants to buy the token should not be the token's owner
-    require(tokenOwner != msg.sender, "buyToken(): Error: buyer is token owner");
+  function buyToken(uint256 _tokenId) public payable 
+  onlyValidCaller onlyTokenOwner(_tokenId) {
     // get that token from all pawning NFTs mapping and create a memory of it defined as (struct => PawnNFT)
     PawnNFT memory pawnNft = allPawnNFTs[_tokenId];
     // price sent in to buy should be equal to or more than the token's price
-    require(msg.value >= pawnNft.price, "buyToken(): Not enough funds");
+    require(msg.value >= pawnNft.price, "-12");
     // token should be for sale
-    require(pawnNft.forSale, "buyToken(): Token should be for sale");
+    require(pawnNft.forSale, "-13");
     // transfer the token from owner to the caller of the function (buyer)
+    address tokenOwner = ownerOf(_tokenId);
     _transfer(tokenOwner, msg.sender, _tokenId);
     // get owner of the token
     address payable sendTo = pawnNft.currentOwner;
@@ -197,8 +219,8 @@ contract PawnNFTs is ERC721, AdministratedContract {
       uint256 tokenId
   ) internal virtual override {
     // Now the owner of the token ID is "to"
-    require(ERC721.ownerOf(tokenId) == to, "PawnNFTs: transfer from incorrect owner");
-    require(to != address(0), "PawnNFTs: transfer to the zero address");
+    require(ERC721.ownerOf(tokenId) == to, "-14");
+    require(to != address(0), "-15");
 
     // update token's owner
     PawnNFT memory pawnNft = allPawnNFTs[tokenId];
@@ -210,15 +232,8 @@ contract PawnNFTs is ERC721, AdministratedContract {
     allPawnNFTs[tokenId] = pawnNft;
   }
 
-  function changeTokenPrice(uint256 _tokenId, uint256 _newPrice) public {
-    // require caller of the function is not an empty address
-    require(msg.sender != address(0), "changeTokenPrice(): Error: caller of zero address");
-    // require that token should exist
-    require(_exists(_tokenId), "changeTokenPrice(): Expected to token exists already");
-    // get the token's owner
-    address tokenOwner = ownerOf(_tokenId);
-    // check that Owner different than caller
-    require(tokenOwner == msg.sender, "changeTokenPrice(): Error: owner different than caller");
+  function changeTokenPrice(uint256 _tokenId, uint256 _newPrice) public 
+  onlyValidCaller onlyTokenOwner(_tokenId) {
     // get that token from all pawning NFTs mapping and create a memory of it defined as (struct => PawnNFT)
     PawnNFT memory pawnNft = allPawnNFTs[_tokenId];
     // update token's price with new price
@@ -228,15 +243,8 @@ contract PawnNFTs is ERC721, AdministratedContract {
   }
 
   // switch between set for sale and set not for sale
-  function toggleForSale(uint256 _tokenId) public {
-    // require caller of the function is not an empty address
-    require(msg.sender != address(0), "toggleForSale(): Error: caller of zero address");
-    // require that token should exist
-    require(_exists(_tokenId), "toggleForSale(): Expected to token exists already");
-    // get the token's owner
-    address tokenOwner = ownerOf(_tokenId);
-    // check that Owner different than caller
-    require(tokenOwner == msg.sender, "toggleForSale(): Error: owner different than caller");
+  function toggleForSale(uint256 _tokenId) public 
+  onlyValidCaller onlyTokenOwner(_tokenId) {
     // get that token from all pawning NFTs mapping and create a memory of it defined as (struct => PawnNFT)
     PawnNFT memory pawnNft = allPawnNFTs[_tokenId];
     // if token's forSale is false make it true and vice versa

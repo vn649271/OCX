@@ -32,7 +32,7 @@ contract OcxExchange {
         uniswapRouter = IUniswapV2Router02(UNISWAP_ROUTER_ADDRESS);
     }
 
-    modifier callerMustBeCreator {
+    modifier onlyCreator {
         require(creator != address(0), "Invalid creator address");
         require(msg.sender == creator, "Caller must be creator");
         _;
@@ -44,17 +44,17 @@ contract OcxExchange {
     }
 
     function setPnftAddress(address payable _pnftAddress) public 
-    callerMustBeCreator mustBeNoneZero(_pnftAddress) {
+    onlyCreator mustBeNoneZero(_pnftAddress) {
         pnftAddress = _pnftAddress;
     }
 
     function setOcatAddress(address payable _ocatAddress) public 
-    callerMustBeCreator mustBeNoneZero(_ocatAddress) {
+    onlyCreator mustBeNoneZero(_ocatAddress) {
         ocatAddress = _ocatAddress;
     }
 
     function setOcxLocalPoolAddress(address payable _ocxLocalPoolAddress) public 
-    callerMustBeCreator mustBeNoneZero(_ocxLocalPoolAddress) {
+    onlyCreator mustBeNoneZero(_ocxLocalPoolAddress) {
         ocxLocalPoolAddress = _ocxLocalPoolAddress;
     }
 

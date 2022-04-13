@@ -14,13 +14,18 @@ contract AdministratedContract {
         _;
     }
 
-    modifier callerMustBeCreator virtual {
+    modifier onlyValidCaller virtual {
+        require(msg.sender != address(0), "Expected non-zero address");
+        _;
+    }
+
+    modifier onlyCreator virtual {
         require(creator != address(0), "Invalid creator address");
         require(msg.sender == creator, "For caller expected be creator");
         _;
     }
 
-    modifier callerMustBeAdmin virtual {
+    modifier onlyAdmin virtual {
         require(msg.sender != address(0), "Invalid creator address");
         bool isInAdminGroup = false;
         for (uint8 i = 0; i < adminGroup.length; i++) {
@@ -33,8 +38,11 @@ contract AdministratedContract {
         _;
     }
 
-    function addAdmin(address _admin) public
-    callerMustBeCreator mustNoneZeroAddress(_admin) {
+    function addAdmin(address _admin) public virtual
+    onlyCreator mustNoneZeroAddress(_admin) {
+
+        require(adminGroup.length < 6, "Admin group is full");
+
         for (uint8 i = 0; i < adminGroup.length; i++) {
             if (_admin == adminGroup[i]) {
                 return;
@@ -43,7 +51,8 @@ contract AdministratedContract {
         adminGroup.push(_admin);
     }
 
-    function getAdmins() public view returns(address[] memory) {
+    function getAdmins() public view virtual 
+    returns(address[] memory) {
         return adminGroup;
     }
 }

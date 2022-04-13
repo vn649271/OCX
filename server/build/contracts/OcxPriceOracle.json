@@ -594,7 +594,7 @@
                           }
                         ],
                         "functionName": {
-                          "name": "convert_t_contract$_IWitnetPriceRouter_$8734_to_t_address",
+                          "name": "convert_t_contract$_IWitnetPriceRouter_$8694_to_t_address",
                           "nodeType": "YulIdentifier",
                           "src": "1017:57:36"
                         },
@@ -615,7 +615,7 @@
                 }
               ]
             },
-            "name": "abi_encode_t_contract$_IWitnetPriceRouter_$8734_to_t_address_fromStack",
+            "name": "abi_encode_t_contract$_IWitnetPriceRouter_$8694_to_t_address_fromStack",
             "nodeType": "YulFunctionDefinition",
             "parameters": [
               {
@@ -888,7 +888,7 @@
                       }
                     ],
                     "functionName": {
-                      "name": "abi_encode_t_contract$_IWitnetPriceRouter_$8734_to_t_address_fromStack",
+                      "name": "abi_encode_t_contract$_IWitnetPriceRouter_$8694_to_t_address_fromStack",
                       "nodeType": "YulIdentifier",
                       "src": "1996:70:36"
                     },
@@ -900,7 +900,7 @@
                 }
               ]
             },
-            "name": "abi_encode_tuple_t_contract$_IWitnetPriceRouter_$8734__to_t_address__fromStack_reversed",
+            "name": "abi_encode_tuple_t_contract$_IWitnetPriceRouter_$8694__to_t_address__fromStack_reversed",
             "nodeType": "YulFunctionDefinition",
             "parameters": [
               {
@@ -2407,7 +2407,7 @@
                       }
                     ],
                     "functionName": {
-                      "name": "convert_t_contract$_IWitnetPriceRouter_$8734_to_t_uint160",
+                      "name": "convert_t_contract$_IWitnetPriceRouter_$8694_to_t_uint160",
                       "nodeType": "YulIdentifier",
                       "src": "5252:57:36"
                     },
@@ -2424,7 +2424,7 @@
                 }
               ]
             },
-            "name": "convert_t_contract$_IWitnetPriceRouter_$8734_to_t_address",
+            "name": "convert_t_contract$_IWitnetPriceRouter_$8694_to_t_address",
             "nodeType": "YulFunctionDefinition",
             "parameters": [
               {
@@ -2478,7 +2478,7 @@
                 }
               ]
             },
-            "name": "convert_t_contract$_IWitnetPriceRouter_$8734_to_t_uint160",
+            "name": "convert_t_contract$_IWitnetPriceRouter_$8694_to_t_uint160",
             "nodeType": "YulFunctionDefinition",
             "parameters": [
               {
@@ -3089,7 +3089,7 @@
           }
         ]
       },
-      "contents": "{\n\n    function abi_decode_t_int256_fromMemory(offset, end) -> value {\n        value := mload(offset)\n        validator_revert_t_int256(value)\n    }\n\n    function abi_decode_t_uint256_fromMemory(offset, end) -> value {\n        value := mload(offset)\n        validator_revert_t_uint256(value)\n    }\n\n    function abi_decode_tuple_t_int256t_uint256t_uint256_fromMemory(headStart, dataEnd) -> value0, value1, value2 {\n        if slt(sub(dataEnd, headStart), 96) { revert(0, 0) }\n\n        {\n\n            let offset := 0\n\n            value0 := abi_decode_t_int256_fromMemory(add(headStart, offset), dataEnd)\n        }\n\n        {\n\n            let offset := 32\n\n            value1 := abi_decode_t_uint256_fromMemory(add(headStart, offset), dataEnd)\n        }\n\n        {\n\n            let offset := 64\n\n            value2 := abi_decode_t_uint256_fromMemory(add(headStart, offset), dataEnd)\n        }\n\n    }\n\n    function abi_encode_t_contract$_IWitnetPriceRouter_$8734_to_t_address_fromStack(value, pos) {\n        mstore(pos, convert_t_contract$_IWitnetPriceRouter_$8734_to_t_address(value))\n    }\n\n    function abi_encode_t_int256_to_t_int256_fromStack(value, pos) {\n        mstore(pos, cleanup_t_int256(value))\n    }\n\n    function abi_encode_t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1_to_t_bytes32_fromStack(value, pos) {\n        mstore(pos, convert_t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1_to_t_bytes32(value))\n    }\n\n    function abi_encode_t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1_to_t_bytes32_fromStack(value, pos) {\n        mstore(pos, convert_t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1_to_t_bytes32(value))\n    }\n\n    function abi_encode_tuple_t_contract$_IWitnetPriceRouter_$8734__to_t_address__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_contract$_IWitnetPriceRouter_$8734_to_t_address_fromStack(value0,  add(headStart, 0))\n\n    }\n\n    function abi_encode_tuple_t_int256__to_t_int256__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_int256_to_t_int256_fromStack(value0,  add(headStart, 0))\n\n    }\n\n    function abi_encode_tuple_t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1__to_t_bytes32__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1_to_t_bytes32_fromStack(value0,  add(headStart, 0))\n\n    }\n\n    function abi_encode_tuple_t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1__to_t_bytes32__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1_to_t_bytes32_fromStack(value0,  add(headStart, 0))\n\n    }\n\n    function checked_div_t_int256(x, y) -> r {\n        x := cleanup_t_int256(x)\n        y := cleanup_t_int256(y)\n        if iszero(y) { panic_error_0x12() }\n\n        // overflow for minVal / -1\n        if and(\n            eq(x, 0x8000000000000000000000000000000000000000000000000000000000000000),\n            eq(y, sub(0, 1))\n        ) { panic_error_0x11() }\n\n        r := sdiv(x, y)\n    }\n\n    function checked_mul_t_int256(x, y) -> product {\n        x := cleanup_t_int256(x)\n        y := cleanup_t_int256(y)\n\n        // overflow, if x > 0, y > 0 and x > (maxValue / y)\n        if and(and(sgt(x, 0), sgt(y, 0)), gt(x, div(0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff, y))) { panic_error_0x11() }\n        // underflow, if x > 0, y < 0 and y < (minValue / x)\n        if and(and(sgt(x, 0), slt(y, 0)), slt(y, sdiv(0x8000000000000000000000000000000000000000000000000000000000000000, x))) { panic_error_0x11() }\n        // underflow, if x < 0, y > 0 and x < (minValue / y)\n        if and(and(slt(x, 0), sgt(y, 0)), slt(x, sdiv(0x8000000000000000000000000000000000000000000000000000000000000000, y))) { panic_error_0x11() }\n        // overflow, if x < 0, y < 0 and x < (maxValue / y)\n        if and(and(slt(x, 0), slt(y, 0)), slt(x, sdiv(0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff, y))) { panic_error_0x11() }\n\n        product := mul(x, y)\n    }\n\n    function cleanup_t_int256(value) -> cleaned {\n        cleaned := value\n    }\n\n    function cleanup_t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1(value) -> cleaned {\n        cleaned := value\n    }\n\n    function cleanup_t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1(value) -> cleaned {\n        cleaned := value\n    }\n\n    function cleanup_t_uint160(value) -> cleaned {\n        cleaned := and(value, 0xffffffffffffffffffffffffffffffffffffffff)\n    }\n\n    function cleanup_t_uint256(value) -> cleaned {\n        cleaned := value\n    }\n\n    function convert_t_contract$_IWitnetPriceRouter_$8734_to_t_address(value) -> converted {\n        converted := convert_t_contract$_IWitnetPriceRouter_$8734_to_t_uint160(value)\n    }\n\n    function convert_t_contract$_IWitnetPriceRouter_$8734_to_t_uint160(value) -> converted {\n        converted := cleanup_t_uint160(value)\n    }\n\n    function convert_t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1_to_t_bytes32(value) -> converted {\n        converted := shift_left_0(cleanup_t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1(value))\n    }\n\n    function convert_t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1_to_t_bytes32(value) -> converted {\n        converted := shift_left_0(cleanup_t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1(value))\n    }\n\n    function panic_error_0x11() {\n        mstore(0, 35408467139433450592217433187231851964531694900788300625387963629091585785856)\n        mstore(4, 0x11)\n        revert(0, 0x24)\n    }\n\n    function panic_error_0x12() {\n        mstore(0, 35408467139433450592217433187231851964531694900788300625387963629091585785856)\n        mstore(4, 0x12)\n        revert(0, 0x24)\n    }\n\n    function shift_left_0(value) -> newValue {\n        newValue :=\n\n        shl(0, value)\n\n    }\n\n    function validator_revert_t_int256(value) {\n        if iszero(eq(value, cleanup_t_int256(value))) { revert(0, 0) }\n    }\n\n    function validator_revert_t_uint256(value) {\n        if iszero(eq(value, cleanup_t_uint256(value))) { revert(0, 0) }\n    }\n\n}\n",
+      "contents": "{\n\n    function abi_decode_t_int256_fromMemory(offset, end) -> value {\n        value := mload(offset)\n        validator_revert_t_int256(value)\n    }\n\n    function abi_decode_t_uint256_fromMemory(offset, end) -> value {\n        value := mload(offset)\n        validator_revert_t_uint256(value)\n    }\n\n    function abi_decode_tuple_t_int256t_uint256t_uint256_fromMemory(headStart, dataEnd) -> value0, value1, value2 {\n        if slt(sub(dataEnd, headStart), 96) { revert(0, 0) }\n\n        {\n\n            let offset := 0\n\n            value0 := abi_decode_t_int256_fromMemory(add(headStart, offset), dataEnd)\n        }\n\n        {\n\n            let offset := 32\n\n            value1 := abi_decode_t_uint256_fromMemory(add(headStart, offset), dataEnd)\n        }\n\n        {\n\n            let offset := 64\n\n            value2 := abi_decode_t_uint256_fromMemory(add(headStart, offset), dataEnd)\n        }\n\n    }\n\n    function abi_encode_t_contract$_IWitnetPriceRouter_$8694_to_t_address_fromStack(value, pos) {\n        mstore(pos, convert_t_contract$_IWitnetPriceRouter_$8694_to_t_address(value))\n    }\n\n    function abi_encode_t_int256_to_t_int256_fromStack(value, pos) {\n        mstore(pos, cleanup_t_int256(value))\n    }\n\n    function abi_encode_t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1_to_t_bytes32_fromStack(value, pos) {\n        mstore(pos, convert_t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1_to_t_bytes32(value))\n    }\n\n    function abi_encode_t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1_to_t_bytes32_fromStack(value, pos) {\n        mstore(pos, convert_t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1_to_t_bytes32(value))\n    }\n\n    function abi_encode_tuple_t_contract$_IWitnetPriceRouter_$8694__to_t_address__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_contract$_IWitnetPriceRouter_$8694_to_t_address_fromStack(value0,  add(headStart, 0))\n\n    }\n\n    function abi_encode_tuple_t_int256__to_t_int256__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_int256_to_t_int256_fromStack(value0,  add(headStart, 0))\n\n    }\n\n    function abi_encode_tuple_t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1__to_t_bytes32__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1_to_t_bytes32_fromStack(value0,  add(headStart, 0))\n\n    }\n\n    function abi_encode_tuple_t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1__to_t_bytes32__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1_to_t_bytes32_fromStack(value0,  add(headStart, 0))\n\n    }\n\n    function checked_div_t_int256(x, y) -> r {\n        x := cleanup_t_int256(x)\n        y := cleanup_t_int256(y)\n        if iszero(y) { panic_error_0x12() }\n\n        // overflow for minVal / -1\n        if and(\n            eq(x, 0x8000000000000000000000000000000000000000000000000000000000000000),\n            eq(y, sub(0, 1))\n        ) { panic_error_0x11() }\n\n        r := sdiv(x, y)\n    }\n\n    function checked_mul_t_int256(x, y) -> product {\n        x := cleanup_t_int256(x)\n        y := cleanup_t_int256(y)\n\n        // overflow, if x > 0, y > 0 and x > (maxValue / y)\n        if and(and(sgt(x, 0), sgt(y, 0)), gt(x, div(0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff, y))) { panic_error_0x11() }\n        // underflow, if x > 0, y < 0 and y < (minValue / x)\n        if and(and(sgt(x, 0), slt(y, 0)), slt(y, sdiv(0x8000000000000000000000000000000000000000000000000000000000000000, x))) { panic_error_0x11() }\n        // underflow, if x < 0, y > 0 and x < (minValue / y)\n        if and(and(slt(x, 0), sgt(y, 0)), slt(x, sdiv(0x8000000000000000000000000000000000000000000000000000000000000000, y))) { panic_error_0x11() }\n        // overflow, if x < 0, y < 0 and x < (maxValue / y)\n        if and(and(slt(x, 0), slt(y, 0)), slt(x, sdiv(0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff, y))) { panic_error_0x11() }\n\n        product := mul(x, y)\n    }\n\n    function cleanup_t_int256(value) -> cleaned {\n        cleaned := value\n    }\n\n    function cleanup_t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1(value) -> cleaned {\n        cleaned := value\n    }\n\n    function cleanup_t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1(value) -> cleaned {\n        cleaned := value\n    }\n\n    function cleanup_t_uint160(value) -> cleaned {\n        cleaned := and(value, 0xffffffffffffffffffffffffffffffffffffffff)\n    }\n\n    function cleanup_t_uint256(value) -> cleaned {\n        cleaned := value\n    }\n\n    function convert_t_contract$_IWitnetPriceRouter_$8694_to_t_address(value) -> converted {\n        converted := convert_t_contract$_IWitnetPriceRouter_$8694_to_t_uint160(value)\n    }\n\n    function convert_t_contract$_IWitnetPriceRouter_$8694_to_t_uint160(value) -> converted {\n        converted := cleanup_t_uint160(value)\n    }\n\n    function convert_t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1_to_t_bytes32(value) -> converted {\n        converted := shift_left_0(cleanup_t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1(value))\n    }\n\n    function convert_t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1_to_t_bytes32(value) -> converted {\n        converted := shift_left_0(cleanup_t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1(value))\n    }\n\n    function panic_error_0x11() {\n        mstore(0, 35408467139433450592217433187231851964531694900788300625387963629091585785856)\n        mstore(4, 0x11)\n        revert(0, 0x24)\n    }\n\n    function panic_error_0x12() {\n        mstore(0, 35408467139433450592217433187231851964531694900788300625387963629091585785856)\n        mstore(4, 0x12)\n        revert(0, 0x24)\n    }\n\n    function shift_left_0(value) -> newValue {\n        newValue :=\n\n        shl(0, value)\n\n    }\n\n    function validator_revert_t_int256(value) {\n        if iszero(eq(value, cleanup_t_int256(value))) { revert(0, 0) }\n    }\n\n    function validator_revert_t_uint256(value) {\n        if iszero(eq(value, cleanup_t_uint256(value))) { revert(0, 0) }\n    }\n\n}\n",
       "id": 36,
       "language": "Yul",
       "name": "#utility.yul"
@@ -3103,24 +3103,24 @@
     "absolutePath": "project:/contracts/OcxPriceOracle.sol",
     "exportedSymbols": {
       "IERC165": [
-        8646
+        8606
       ],
       "IERC2362": [
         2965
       ],
       "IWitnetPriceRouter": [
-        8734
+        8694
       ],
       "OcxPriceOracle": [
-        5724
+        5747
       ]
     },
-    "id": 5725,
+    "id": 5748,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 5662,
+        "id": 5685,
         "literals": [
           "solidity",
           "^",
@@ -3133,11 +3133,11 @@
       {
         "absolutePath": "witnet-solidity-bridge/contracts/interfaces/IWitnetPriceRouter.sol",
         "file": "witnet-solidity-bridge/contracts/interfaces/IWitnetPriceRouter.sol",
-        "id": 5663,
+        "id": 5686,
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
-        "scope": 5725,
-        "sourceUnit": 8735,
+        "scope": 5748,
+        "sourceUnit": 8695,
         "src": "57:76:28",
         "symbolAliases": [],
         "unitAlias": ""
@@ -3148,9 +3148,9 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "fullyImplemented": true,
-        "id": 5724,
+        "id": 5747,
         "linearizedBaseContracts": [
-          5724
+          5747
         ],
         "name": "OcxPriceOracle",
         "nameLocation": "144:14:28",
@@ -3159,33 +3159,33 @@
           {
             "constant": false,
             "functionSelector": "f887ea40",
-            "id": 5666,
+            "id": 5689,
             "mutability": "mutable",
             "name": "router",
             "nameLocation": "191:6:28",
             "nodeType": "VariableDeclaration",
-            "scope": 5724,
+            "scope": 5747,
             "src": "165:32:28",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8734",
+              "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8694",
               "typeString": "contract IWitnetPriceRouter"
             },
             "typeName": {
-              "id": 5665,
+              "id": 5688,
               "nodeType": "UserDefinedTypeName",
               "pathNode": {
-                "id": 5664,
+                "id": 5687,
                 "name": "IWitnetPriceRouter",
                 "nodeType": "IdentifierPath",
-                "referencedDeclaration": 8734,
+                "referencedDeclaration": 8694,
                 "src": "165:18:28"
               },
-              "referencedDeclaration": 8734,
+              "referencedDeclaration": 8694,
               "src": "165:18:28",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8734",
+                "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8694",
                 "typeString": "contract IWitnetPriceRouter"
               }
             },
@@ -3193,26 +3193,26 @@
           },
           {
             "body": {
-              "id": 5676,
+              "id": 5699,
               "nodeType": "Block",
               "src": "461:201:28",
               "statements": [
                 {
                   "expression": {
-                    "id": 5674,
+                    "id": 5697,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
-                      "id": 5670,
+                      "id": 5693,
                       "name": "router",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 5666,
+                      "referencedDeclaration": 5689,
                       "src": "570:6:28",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8734",
+                        "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8694",
                         "typeString": "contract IWitnetPriceRouter"
                       }
                     },
@@ -3222,7 +3222,7 @@
                       "arguments": [
                         {
                           "hexValue": "307831634633416139444246343838306437393739343537323642393442396432393136343231314245",
-                          "id": 5672,
+                          "id": 5695,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -3244,18 +3244,18 @@
                             "typeString": "address"
                           }
                         ],
-                        "id": 5671,
+                        "id": 5694,
                         "name": "IWitnetPriceRouter",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 8734,
+                        "referencedDeclaration": 8694,
                         "src": "579:18:28",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_type$_t_contract$_IWitnetPriceRouter_$8734_$",
+                          "typeIdentifier": "t_type$_t_contract$_IWitnetPriceRouter_$8694_$",
                           "typeString": "type(contract IWitnetPriceRouter)"
                         }
                       },
-                      "id": 5673,
+                      "id": 5696,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -3266,29 +3266,29 @@
                       "src": "579:62:28",
                       "tryCall": false,
                       "typeDescriptions": {
-                        "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8734",
+                        "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8694",
                         "typeString": "contract IWitnetPriceRouter"
                       }
                     },
                     "src": "570:71:28",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8734",
+                      "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8694",
                       "typeString": "contract IWitnetPriceRouter"
                     }
                   },
-                  "id": 5675,
+                  "id": 5698,
                   "nodeType": "ExpressionStatement",
                   "src": "570:71:28"
                 }
               ]
             },
             "documentation": {
-              "id": 5667,
+              "id": 5690,
               "nodeType": "StructuredDocumentation",
               "src": "208:234:28",
               "text": " IMPORTANT: replace the address below with the WitnetPriceRouter address\n of the network you are using! Please find the address here:\n https://docs.witnet.io/smart-contracts/price-feeds/contract-addresses"
             },
-            "id": 5677,
+            "id": 5700,
             "implemented": true,
             "kind": "constructor",
             "modifiers": [],
@@ -3296,18 +3296,18 @@
             "nameLocation": "-1:-1:-1",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5668,
+              "id": 5691,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "458:2:28"
             },
             "returnParameters": {
-              "id": 5669,
+              "id": 5692,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "461:0:28"
             },
-            "scope": 5724,
+            "scope": 5747,
             "src": "447:215:28",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -3315,13 +3315,13 @@
           },
           {
             "body": {
-              "id": 5691,
+              "id": 5714,
               "nodeType": "Block",
               "src": "826:113:28",
               "statements": [
                 {
                   "expression": {
-                    "id": 5689,
+                    "id": 5712,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -3329,11 +3329,11 @@
                     "leftHandSide": {
                       "components": [
                         {
-                          "id": 5683,
+                          "id": 5706,
                           "name": "_price",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 5681,
+                          "referencedDeclaration": 5704,
                           "src": "837:6:28",
                           "typeDescriptions": {
                             "typeIdentifier": "t_int256",
@@ -3343,7 +3343,7 @@
                         null,
                         null
                       ],
-                      "id": 5684,
+                      "id": 5707,
                       "isConstant": false,
                       "isInlineArray": false,
                       "isLValue": true,
@@ -3362,7 +3362,7 @@
                       "arguments": [
                         {
                           "hexValue": "307832346265656164343332313665343930616132343065663064333265313863353762656561313638663036656162623934663531393338363864353030393436",
-                          "id": 5687,
+                          "id": 5710,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -3385,18 +3385,18 @@
                           }
                         ],
                         "expression": {
-                          "id": 5685,
+                          "id": 5708,
                           "name": "router",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 5666,
+                          "referencedDeclaration": 5689,
                           "src": "849:6:28",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8734",
+                            "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8694",
                             "typeString": "contract IWitnetPriceRouter"
                           }
                         },
-                        "id": 5686,
+                        "id": 5709,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -3410,7 +3410,7 @@
                           "typeString": "function (bytes32) view external returns (int256,uint256,uint256)"
                         }
                       },
-                      "id": 5688,
+                      "id": 5711,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -3431,20 +3431,20 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 5690,
+                  "id": 5713,
                   "nodeType": "ExpressionStatement",
                   "src": "836:96:28"
                 }
               ]
             },
             "documentation": {
-              "id": 5678,
+              "id": 5701,
               "nodeType": "StructuredDocumentation",
               "src": "672:87:28",
               "text": "Returns the BTC / USD price (6 decimals), ultimately provided by the Witnet oracle."
             },
             "functionSelector": "64b60700",
-            "id": 5692,
+            "id": 5715,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
@@ -3452,23 +3452,23 @@
             "nameLocation": "773:14:28",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5679,
+              "id": 5702,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "787:2:28"
             },
             "returnParameters": {
-              "id": 5682,
+              "id": 5705,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5681,
+                  "id": 5704,
                   "mutability": "mutable",
                   "name": "_price",
                   "nameLocation": "818:6:28",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5692,
+                  "scope": 5715,
                   "src": "811:13:28",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -3477,7 +3477,7 @@
                     "typeString": "int256"
                   },
                   "typeName": {
-                    "id": 5680,
+                    "id": 5703,
                     "name": "int256",
                     "nodeType": "ElementaryTypeName",
                     "src": "811:6:28",
@@ -3491,7 +3491,7 @@
               ],
               "src": "810:15:28"
             },
-            "scope": 5724,
+            "scope": 5747,
             "src": "764:175:28",
             "stateMutability": "view",
             "virtual": false,
@@ -3499,13 +3499,13 @@
           },
           {
             "body": {
-              "id": 5706,
+              "id": 5729,
               "nodeType": "Block",
               "src": "1103:113:28",
               "statements": [
                 {
                   "expression": {
-                    "id": 5704,
+                    "id": 5727,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -3513,11 +3513,11 @@
                     "leftHandSide": {
                       "components": [
                         {
-                          "id": 5698,
+                          "id": 5721,
                           "name": "_price",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 5696,
+                          "referencedDeclaration": 5719,
                           "src": "1114:6:28",
                           "typeDescriptions": {
                             "typeIdentifier": "t_int256",
@@ -3527,7 +3527,7 @@
                         null,
                         null
                       ],
-                      "id": 5699,
+                      "id": 5722,
                       "isConstant": false,
                       "isInlineArray": false,
                       "isLValue": true,
@@ -3546,7 +3546,7 @@
                       "arguments": [
                         {
                           "hexValue": "307833643135663730313864623563633830383338623638343336316161613130306266616466386131316530326435633163393265396336616634373632366338",
-                          "id": 5702,
+                          "id": 5725,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -3569,18 +3569,18 @@
                           }
                         ],
                         "expression": {
-                          "id": 5700,
+                          "id": 5723,
                           "name": "router",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 5666,
+                          "referencedDeclaration": 5689,
                           "src": "1126:6:28",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8734",
+                            "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8694",
                             "typeString": "contract IWitnetPriceRouter"
                           }
                         },
-                        "id": 5701,
+                        "id": 5724,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -3594,7 +3594,7 @@
                           "typeString": "function (bytes32) view external returns (int256,uint256,uint256)"
                         }
                       },
-                      "id": 5703,
+                      "id": 5726,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -3615,20 +3615,20 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 5705,
+                  "id": 5728,
                   "nodeType": "ExpressionStatement",
                   "src": "1113:96:28"
                 }
               ]
             },
             "documentation": {
-              "id": 5693,
+              "id": 5716,
               "nodeType": "StructuredDocumentation",
               "src": "949:87:28",
               "text": "Returns the ETH / USD price (6 decimals), ultimately provided by the Witnet oracle."
             },
             "functionSelector": "a0a8045e",
-            "id": 5707,
+            "id": 5730,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
@@ -3636,23 +3636,23 @@
             "nameLocation": "1050:14:28",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5694,
+              "id": 5717,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1064:2:28"
             },
             "returnParameters": {
-              "id": 5697,
+              "id": 5720,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5696,
+                  "id": 5719,
                   "mutability": "mutable",
                   "name": "_price",
                   "nameLocation": "1095:6:28",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5707,
+                  "scope": 5730,
                   "src": "1088:13:28",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -3661,7 +3661,7 @@
                     "typeString": "int256"
                   },
                   "typeName": {
-                    "id": 5695,
+                    "id": 5718,
                     "name": "int256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1088:6:28",
@@ -3675,7 +3675,7 @@
               ],
               "src": "1087:15:28"
             },
-            "scope": 5724,
+            "scope": 5747,
             "src": "1041:175:28",
             "stateMutability": "view",
             "virtual": false,
@@ -3683,7 +3683,7 @@
           },
           {
             "body": {
-              "id": 5722,
+              "id": 5745,
               "nodeType": "Block",
               "src": "1446:71:28",
               "statements": [
@@ -3693,7 +3693,7 @@
                       "typeIdentifier": "t_int256",
                       "typeString": "int256"
                     },
-                    "id": 5720,
+                    "id": 5743,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -3705,14 +3705,14 @@
                             "typeIdentifier": "t_int256",
                             "typeString": "int256"
                           },
-                          "id": 5716,
+                          "id": 5739,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
                           "lValueRequested": false,
                           "leftExpression": {
                             "hexValue": "31303030303030",
-                            "id": 5713,
+                            "id": 5736,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": true,
@@ -3732,18 +3732,18 @@
                             "arguments": [],
                             "expression": {
                               "argumentTypes": [],
-                              "id": 5714,
+                              "id": 5737,
                               "name": "getBtcUsdPrice",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 5692,
+                              "referencedDeclaration": 5715,
                               "src": "1474:14:28",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_function_internal_view$__$returns$_t_int256_$",
                                 "typeString": "function () view returns (int256)"
                               }
                             },
-                            "id": 5715,
+                            "id": 5738,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
@@ -3765,7 +3765,7 @@
                           }
                         }
                       ],
-                      "id": 5717,
+                      "id": 5740,
                       "isConstant": false,
                       "isInlineArray": false,
                       "isLValue": false,
@@ -3784,18 +3784,18 @@
                       "arguments": [],
                       "expression": {
                         "argumentTypes": [],
-                        "id": 5718,
+                        "id": 5741,
                         "name": "getEthUsdPrice",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 5707,
+                        "referencedDeclaration": 5730,
                         "src": "1494:14:28",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_internal_view$__$returns$_t_int256_$",
                           "typeString": "function () view returns (int256)"
                         }
                       },
-                      "id": 5719,
+                      "id": 5742,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -3816,21 +3816,21 @@
                       "typeString": "int256"
                     }
                   },
-                  "functionReturnParameters": 5712,
-                  "id": 5721,
+                  "functionReturnParameters": 5735,
+                  "id": 5744,
                   "nodeType": "Return",
                   "src": "1456:54:28"
                 }
               ]
             },
             "documentation": {
-              "id": 5708,
+              "id": 5731,
               "nodeType": "StructuredDocumentation",
               "src": "1226:153:28",
               "text": "Returns the BTC / ETH price (6 decimals), derived from the ETH/USD and \n the BTC/USD pairs that were ultimately provided by the Witnet oracle."
             },
             "functionSelector": "00e80f32",
-            "id": 5723,
+            "id": 5746,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
@@ -3838,23 +3838,23 @@
             "nameLocation": "1393:14:28",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5709,
+              "id": 5732,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1407:2:28"
             },
             "returnParameters": {
-              "id": 5712,
+              "id": 5735,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5711,
+                  "id": 5734,
                   "mutability": "mutable",
                   "name": "_price",
                   "nameLocation": "1438:6:28",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5723,
+                  "scope": 5746,
                   "src": "1431:13:28",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -3863,7 +3863,7 @@
                     "typeString": "int256"
                   },
                   "typeName": {
-                    "id": 5710,
+                    "id": 5733,
                     "name": "int256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1431:6:28",
@@ -3877,14 +3877,14 @@
               ],
               "src": "1430:15:28"
             },
-            "scope": 5724,
+            "scope": 5747,
             "src": "1384:133:28",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "public"
           }
         ],
-        "scope": 5725,
+        "scope": 5748,
         "src": "135:1384:28",
         "usedErrors": []
       }
@@ -3895,24 +3895,24 @@
     "absolutePath": "project:/contracts/OcxPriceOracle.sol",
     "exportedSymbols": {
       "IERC165": [
-        8646
+        8606
       ],
       "IERC2362": [
         2965
       ],
       "IWitnetPriceRouter": [
-        8734
+        8694
       ],
       "OcxPriceOracle": [
-        5724
+        5747
       ]
     },
-    "id": 5725,
+    "id": 5748,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 5662,
+        "id": 5685,
         "literals": [
           "solidity",
           "^",
@@ -3925,11 +3925,11 @@
       {
         "absolutePath": "witnet-solidity-bridge/contracts/interfaces/IWitnetPriceRouter.sol",
         "file": "witnet-solidity-bridge/contracts/interfaces/IWitnetPriceRouter.sol",
-        "id": 5663,
+        "id": 5686,
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
-        "scope": 5725,
-        "sourceUnit": 8735,
+        "scope": 5748,
+        "sourceUnit": 8695,
         "src": "57:76:28",
         "symbolAliases": [],
         "unitAlias": ""
@@ -3940,9 +3940,9 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "fullyImplemented": true,
-        "id": 5724,
+        "id": 5747,
         "linearizedBaseContracts": [
-          5724
+          5747
         ],
         "name": "OcxPriceOracle",
         "nameLocation": "144:14:28",
@@ -3951,33 +3951,33 @@
           {
             "constant": false,
             "functionSelector": "f887ea40",
-            "id": 5666,
+            "id": 5689,
             "mutability": "mutable",
             "name": "router",
             "nameLocation": "191:6:28",
             "nodeType": "VariableDeclaration",
-            "scope": 5724,
+            "scope": 5747,
             "src": "165:32:28",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8734",
+              "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8694",
               "typeString": "contract IWitnetPriceRouter"
             },
             "typeName": {
-              "id": 5665,
+              "id": 5688,
               "nodeType": "UserDefinedTypeName",
               "pathNode": {
-                "id": 5664,
+                "id": 5687,
                 "name": "IWitnetPriceRouter",
                 "nodeType": "IdentifierPath",
-                "referencedDeclaration": 8734,
+                "referencedDeclaration": 8694,
                 "src": "165:18:28"
               },
-              "referencedDeclaration": 8734,
+              "referencedDeclaration": 8694,
               "src": "165:18:28",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8734",
+                "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8694",
                 "typeString": "contract IWitnetPriceRouter"
               }
             },
@@ -3985,26 +3985,26 @@
           },
           {
             "body": {
-              "id": 5676,
+              "id": 5699,
               "nodeType": "Block",
               "src": "461:201:28",
               "statements": [
                 {
                   "expression": {
-                    "id": 5674,
+                    "id": 5697,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
-                      "id": 5670,
+                      "id": 5693,
                       "name": "router",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 5666,
+                      "referencedDeclaration": 5689,
                       "src": "570:6:28",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8734",
+                        "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8694",
                         "typeString": "contract IWitnetPriceRouter"
                       }
                     },
@@ -4014,7 +4014,7 @@
                       "arguments": [
                         {
                           "hexValue": "307831634633416139444246343838306437393739343537323642393442396432393136343231314245",
-                          "id": 5672,
+                          "id": 5695,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -4036,18 +4036,18 @@
                             "typeString": "address"
                           }
                         ],
-                        "id": 5671,
+                        "id": 5694,
                         "name": "IWitnetPriceRouter",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 8734,
+                        "referencedDeclaration": 8694,
                         "src": "579:18:28",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_type$_t_contract$_IWitnetPriceRouter_$8734_$",
+                          "typeIdentifier": "t_type$_t_contract$_IWitnetPriceRouter_$8694_$",
                           "typeString": "type(contract IWitnetPriceRouter)"
                         }
                       },
-                      "id": 5673,
+                      "id": 5696,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -4058,29 +4058,29 @@
                       "src": "579:62:28",
                       "tryCall": false,
                       "typeDescriptions": {
-                        "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8734",
+                        "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8694",
                         "typeString": "contract IWitnetPriceRouter"
                       }
                     },
                     "src": "570:71:28",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8734",
+                      "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8694",
                       "typeString": "contract IWitnetPriceRouter"
                     }
                   },
-                  "id": 5675,
+                  "id": 5698,
                   "nodeType": "ExpressionStatement",
                   "src": "570:71:28"
                 }
               ]
             },
             "documentation": {
-              "id": 5667,
+              "id": 5690,
               "nodeType": "StructuredDocumentation",
               "src": "208:234:28",
               "text": " IMPORTANT: replace the address below with the WitnetPriceRouter address\n of the network you are using! Please find the address here:\n https://docs.witnet.io/smart-contracts/price-feeds/contract-addresses"
             },
-            "id": 5677,
+            "id": 5700,
             "implemented": true,
             "kind": "constructor",
             "modifiers": [],
@@ -4088,18 +4088,18 @@
             "nameLocation": "-1:-1:-1",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5668,
+              "id": 5691,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "458:2:28"
             },
             "returnParameters": {
-              "id": 5669,
+              "id": 5692,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "461:0:28"
             },
-            "scope": 5724,
+            "scope": 5747,
             "src": "447:215:28",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -4107,13 +4107,13 @@
           },
           {
             "body": {
-              "id": 5691,
+              "id": 5714,
               "nodeType": "Block",
               "src": "826:113:28",
               "statements": [
                 {
                   "expression": {
-                    "id": 5689,
+                    "id": 5712,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -4121,11 +4121,11 @@
                     "leftHandSide": {
                       "components": [
                         {
-                          "id": 5683,
+                          "id": 5706,
                           "name": "_price",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 5681,
+                          "referencedDeclaration": 5704,
                           "src": "837:6:28",
                           "typeDescriptions": {
                             "typeIdentifier": "t_int256",
@@ -4135,7 +4135,7 @@
                         null,
                         null
                       ],
-                      "id": 5684,
+                      "id": 5707,
                       "isConstant": false,
                       "isInlineArray": false,
                       "isLValue": true,
@@ -4154,7 +4154,7 @@
                       "arguments": [
                         {
                           "hexValue": "307832346265656164343332313665343930616132343065663064333265313863353762656561313638663036656162623934663531393338363864353030393436",
-                          "id": 5687,
+                          "id": 5710,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -4177,18 +4177,18 @@
                           }
                         ],
                         "expression": {
-                          "id": 5685,
+                          "id": 5708,
                           "name": "router",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 5666,
+                          "referencedDeclaration": 5689,
                           "src": "849:6:28",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8734",
+                            "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8694",
                             "typeString": "contract IWitnetPriceRouter"
                           }
                         },
-                        "id": 5686,
+                        "id": 5709,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -4202,7 +4202,7 @@
                           "typeString": "function (bytes32) view external returns (int256,uint256,uint256)"
                         }
                       },
-                      "id": 5688,
+                      "id": 5711,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -4223,20 +4223,20 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 5690,
+                  "id": 5713,
                   "nodeType": "ExpressionStatement",
                   "src": "836:96:28"
                 }
               ]
             },
             "documentation": {
-              "id": 5678,
+              "id": 5701,
               "nodeType": "StructuredDocumentation",
               "src": "672:87:28",
               "text": "Returns the BTC / USD price (6 decimals), ultimately provided by the Witnet oracle."
             },
             "functionSelector": "64b60700",
-            "id": 5692,
+            "id": 5715,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
@@ -4244,23 +4244,23 @@
             "nameLocation": "773:14:28",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5679,
+              "id": 5702,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "787:2:28"
             },
             "returnParameters": {
-              "id": 5682,
+              "id": 5705,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5681,
+                  "id": 5704,
                   "mutability": "mutable",
                   "name": "_price",
                   "nameLocation": "818:6:28",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5692,
+                  "scope": 5715,
                   "src": "811:13:28",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -4269,7 +4269,7 @@
                     "typeString": "int256"
                   },
                   "typeName": {
-                    "id": 5680,
+                    "id": 5703,
                     "name": "int256",
                     "nodeType": "ElementaryTypeName",
                     "src": "811:6:28",
@@ -4283,7 +4283,7 @@
               ],
               "src": "810:15:28"
             },
-            "scope": 5724,
+            "scope": 5747,
             "src": "764:175:28",
             "stateMutability": "view",
             "virtual": false,
@@ -4291,13 +4291,13 @@
           },
           {
             "body": {
-              "id": 5706,
+              "id": 5729,
               "nodeType": "Block",
               "src": "1103:113:28",
               "statements": [
                 {
                   "expression": {
-                    "id": 5704,
+                    "id": 5727,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -4305,11 +4305,11 @@
                     "leftHandSide": {
                       "components": [
                         {
-                          "id": 5698,
+                          "id": 5721,
                           "name": "_price",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 5696,
+                          "referencedDeclaration": 5719,
                           "src": "1114:6:28",
                           "typeDescriptions": {
                             "typeIdentifier": "t_int256",
@@ -4319,7 +4319,7 @@
                         null,
                         null
                       ],
-                      "id": 5699,
+                      "id": 5722,
                       "isConstant": false,
                       "isInlineArray": false,
                       "isLValue": true,
@@ -4338,7 +4338,7 @@
                       "arguments": [
                         {
                           "hexValue": "307833643135663730313864623563633830383338623638343336316161613130306266616466386131316530326435633163393265396336616634373632366338",
-                          "id": 5702,
+                          "id": 5725,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -4361,18 +4361,18 @@
                           }
                         ],
                         "expression": {
-                          "id": 5700,
+                          "id": 5723,
                           "name": "router",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 5666,
+                          "referencedDeclaration": 5689,
                           "src": "1126:6:28",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8734",
+                            "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8694",
                             "typeString": "contract IWitnetPriceRouter"
                           }
                         },
-                        "id": 5701,
+                        "id": 5724,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -4386,7 +4386,7 @@
                           "typeString": "function (bytes32) view external returns (int256,uint256,uint256)"
                         }
                       },
-                      "id": 5703,
+                      "id": 5726,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -4407,20 +4407,20 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 5705,
+                  "id": 5728,
                   "nodeType": "ExpressionStatement",
                   "src": "1113:96:28"
                 }
               ]
             },
             "documentation": {
-              "id": 5693,
+              "id": 5716,
               "nodeType": "StructuredDocumentation",
               "src": "949:87:28",
               "text": "Returns the ETH / USD price (6 decimals), ultimately provided by the Witnet oracle."
             },
             "functionSelector": "a0a8045e",
-            "id": 5707,
+            "id": 5730,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
@@ -4428,23 +4428,23 @@
             "nameLocation": "1050:14:28",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5694,
+              "id": 5717,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1064:2:28"
             },
             "returnParameters": {
-              "id": 5697,
+              "id": 5720,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5696,
+                  "id": 5719,
                   "mutability": "mutable",
                   "name": "_price",
                   "nameLocation": "1095:6:28",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5707,
+                  "scope": 5730,
                   "src": "1088:13:28",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -4453,7 +4453,7 @@
                     "typeString": "int256"
                   },
                   "typeName": {
-                    "id": 5695,
+                    "id": 5718,
                     "name": "int256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1088:6:28",
@@ -4467,7 +4467,7 @@
               ],
               "src": "1087:15:28"
             },
-            "scope": 5724,
+            "scope": 5747,
             "src": "1041:175:28",
             "stateMutability": "view",
             "virtual": false,
@@ -4475,7 +4475,7 @@
           },
           {
             "body": {
-              "id": 5722,
+              "id": 5745,
               "nodeType": "Block",
               "src": "1446:71:28",
               "statements": [
@@ -4485,7 +4485,7 @@
                       "typeIdentifier": "t_int256",
                       "typeString": "int256"
                     },
-                    "id": 5720,
+                    "id": 5743,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -4497,14 +4497,14 @@
                             "typeIdentifier": "t_int256",
                             "typeString": "int256"
                           },
-                          "id": 5716,
+                          "id": 5739,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
                           "lValueRequested": false,
                           "leftExpression": {
                             "hexValue": "31303030303030",
-                            "id": 5713,
+                            "id": 5736,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": true,
@@ -4524,18 +4524,18 @@
                             "arguments": [],
                             "expression": {
                               "argumentTypes": [],
-                              "id": 5714,
+                              "id": 5737,
                               "name": "getBtcUsdPrice",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 5692,
+                              "referencedDeclaration": 5715,
                               "src": "1474:14:28",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_function_internal_view$__$returns$_t_int256_$",
                                 "typeString": "function () view returns (int256)"
                               }
                             },
-                            "id": 5715,
+                            "id": 5738,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
@@ -4557,7 +4557,7 @@
                           }
                         }
                       ],
-                      "id": 5717,
+                      "id": 5740,
                       "isConstant": false,
                       "isInlineArray": false,
                       "isLValue": false,
@@ -4576,18 +4576,18 @@
                       "arguments": [],
                       "expression": {
                         "argumentTypes": [],
-                        "id": 5718,
+                        "id": 5741,
                         "name": "getEthUsdPrice",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 5707,
+                        "referencedDeclaration": 5730,
                         "src": "1494:14:28",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_internal_view$__$returns$_t_int256_$",
                           "typeString": "function () view returns (int256)"
                         }
                       },
-                      "id": 5719,
+                      "id": 5742,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -4608,21 +4608,21 @@
                       "typeString": "int256"
                     }
                   },
-                  "functionReturnParameters": 5712,
-                  "id": 5721,
+                  "functionReturnParameters": 5735,
+                  "id": 5744,
                   "nodeType": "Return",
                   "src": "1456:54:28"
                 }
               ]
             },
             "documentation": {
-              "id": 5708,
+              "id": 5731,
               "nodeType": "StructuredDocumentation",
               "src": "1226:153:28",
               "text": "Returns the BTC / ETH price (6 decimals), derived from the ETH/USD and \n the BTC/USD pairs that were ultimately provided by the Witnet oracle."
             },
             "functionSelector": "00e80f32",
-            "id": 5723,
+            "id": 5746,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
@@ -4630,23 +4630,23 @@
             "nameLocation": "1393:14:28",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5709,
+              "id": 5732,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1407:2:28"
             },
             "returnParameters": {
-              "id": 5712,
+              "id": 5735,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5711,
+                  "id": 5734,
                   "mutability": "mutable",
                   "name": "_price",
                   "nameLocation": "1438:6:28",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5723,
+                  "scope": 5746,
                   "src": "1431:13:28",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -4655,7 +4655,7 @@
                     "typeString": "int256"
                   },
                   "typeName": {
-                    "id": 5710,
+                    "id": 5733,
                     "name": "int256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1431:6:28",
@@ -4669,14 +4669,14 @@
               ],
               "src": "1430:15:28"
             },
-            "scope": 5724,
+            "scope": 5747,
             "src": "1384:133:28",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "public"
           }
         ],
-        "scope": 5725,
+        "scope": 5748,
         "src": "135:1384:28",
         "usedErrors": []
       }
@@ -4689,7 +4689,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.6",
-  "updatedAt": "2022-04-13T08:46:30.271Z",
+  "updatedAt": "2022-04-13T11:34:58.735Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",

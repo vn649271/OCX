@@ -50,7 +50,7 @@ contract OcxLocalPool {
         creator = payable(msg.sender);
     }
 
-    modifier callerMustBeCreator {
+    modifier onlyCreator {
         require(creator != address(0), "Invalid creator address");
         require(msg.sender == creator, "Caller must be creator");
         _;
@@ -67,7 +67,7 @@ contract OcxLocalPool {
      *  -2: Invalid parameter
      */
     function setOcatAddress(address payable _ocatAddress) public 
-    callerMustBeCreator mustBeNoneZero(_ocatAddress) {
+    onlyCreator mustBeNoneZero(_ocatAddress) {
         ocatAddress = _ocatAddress;
     }
 
@@ -77,7 +77,7 @@ contract OcxLocalPool {
      *  -2: Invalid parameter
      */
     function setOcxLPAddress(address payable _ocxlpAddress) public 
-    callerMustBeCreator mustBeNoneZero(_ocxlpAddress) {
+    onlyCreator mustBeNoneZero(_ocxlpAddress) {
         ocxLPAddress = _ocxlpAddress;
         OcxLPToken(ocxLPAddress).setOcxPoolAddress( payable(address(this)) );
     }
