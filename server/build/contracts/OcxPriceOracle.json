@@ -594,7 +594,7 @@
                           }
                         ],
                         "functionName": {
-                          "name": "convert_t_contract$_IWitnetPriceRouter_$8736_to_t_address",
+                          "name": "convert_t_contract$_IWitnetPriceRouter_$8734_to_t_address",
                           "nodeType": "YulIdentifier",
                           "src": "1017:57:36"
                         },
@@ -615,7 +615,7 @@
                 }
               ]
             },
-            "name": "abi_encode_t_contract$_IWitnetPriceRouter_$8736_to_t_address_fromStack",
+            "name": "abi_encode_t_contract$_IWitnetPriceRouter_$8734_to_t_address_fromStack",
             "nodeType": "YulFunctionDefinition",
             "parameters": [
               {
@@ -888,7 +888,7 @@
                       }
                     ],
                     "functionName": {
-                      "name": "abi_encode_t_contract$_IWitnetPriceRouter_$8736_to_t_address_fromStack",
+                      "name": "abi_encode_t_contract$_IWitnetPriceRouter_$8734_to_t_address_fromStack",
                       "nodeType": "YulIdentifier",
                       "src": "1996:70:36"
                     },
@@ -900,7 +900,7 @@
                 }
               ]
             },
-            "name": "abi_encode_tuple_t_contract$_IWitnetPriceRouter_$8736__to_t_address__fromStack_reversed",
+            "name": "abi_encode_tuple_t_contract$_IWitnetPriceRouter_$8734__to_t_address__fromStack_reversed",
             "nodeType": "YulFunctionDefinition",
             "parameters": [
               {
@@ -2407,7 +2407,7 @@
                       }
                     ],
                     "functionName": {
-                      "name": "convert_t_contract$_IWitnetPriceRouter_$8736_to_t_uint160",
+                      "name": "convert_t_contract$_IWitnetPriceRouter_$8734_to_t_uint160",
                       "nodeType": "YulIdentifier",
                       "src": "5252:57:36"
                     },
@@ -2424,7 +2424,7 @@
                 }
               ]
             },
-            "name": "convert_t_contract$_IWitnetPriceRouter_$8736_to_t_address",
+            "name": "convert_t_contract$_IWitnetPriceRouter_$8734_to_t_address",
             "nodeType": "YulFunctionDefinition",
             "parameters": [
               {
@@ -2478,7 +2478,7 @@
                 }
               ]
             },
-            "name": "convert_t_contract$_IWitnetPriceRouter_$8736_to_t_uint160",
+            "name": "convert_t_contract$_IWitnetPriceRouter_$8734_to_t_uint160",
             "nodeType": "YulFunctionDefinition",
             "parameters": [
               {
@@ -3089,7 +3089,7 @@
           }
         ]
       },
-      "contents": "{\n\n    function abi_decode_t_int256_fromMemory(offset, end) -> value {\n        value := mload(offset)\n        validator_revert_t_int256(value)\n    }\n\n    function abi_decode_t_uint256_fromMemory(offset, end) -> value {\n        value := mload(offset)\n        validator_revert_t_uint256(value)\n    }\n\n    function abi_decode_tuple_t_int256t_uint256t_uint256_fromMemory(headStart, dataEnd) -> value0, value1, value2 {\n        if slt(sub(dataEnd, headStart), 96) { revert(0, 0) }\n\n        {\n\n            let offset := 0\n\n            value0 := abi_decode_t_int256_fromMemory(add(headStart, offset), dataEnd)\n        }\n\n        {\n\n            let offset := 32\n\n            value1 := abi_decode_t_uint256_fromMemory(add(headStart, offset), dataEnd)\n        }\n\n        {\n\n            let offset := 64\n\n            value2 := abi_decode_t_uint256_fromMemory(add(headStart, offset), dataEnd)\n        }\n\n    }\n\n    function abi_encode_t_contract$_IWitnetPriceRouter_$8736_to_t_address_fromStack(value, pos) {\n        mstore(pos, convert_t_contract$_IWitnetPriceRouter_$8736_to_t_address(value))\n    }\n\n    function abi_encode_t_int256_to_t_int256_fromStack(value, pos) {\n        mstore(pos, cleanup_t_int256(value))\n    }\n\n    function abi_encode_t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1_to_t_bytes32_fromStack(value, pos) {\n        mstore(pos, convert_t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1_to_t_bytes32(value))\n    }\n\n    function abi_encode_t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1_to_t_bytes32_fromStack(value, pos) {\n        mstore(pos, convert_t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1_to_t_bytes32(value))\n    }\n\n    function abi_encode_tuple_t_contract$_IWitnetPriceRouter_$8736__to_t_address__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_contract$_IWitnetPriceRouter_$8736_to_t_address_fromStack(value0,  add(headStart, 0))\n\n    }\n\n    function abi_encode_tuple_t_int256__to_t_int256__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_int256_to_t_int256_fromStack(value0,  add(headStart, 0))\n\n    }\n\n    function abi_encode_tuple_t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1__to_t_bytes32__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1_to_t_bytes32_fromStack(value0,  add(headStart, 0))\n\n    }\n\n    function abi_encode_tuple_t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1__to_t_bytes32__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1_to_t_bytes32_fromStack(value0,  add(headStart, 0))\n\n    }\n\n    function checked_div_t_int256(x, y) -> r {\n        x := cleanup_t_int256(x)\n        y := cleanup_t_int256(y)\n        if iszero(y) { panic_error_0x12() }\n\n        // overflow for minVal / -1\n        if and(\n            eq(x, 0x8000000000000000000000000000000000000000000000000000000000000000),\n            eq(y, sub(0, 1))\n        ) { panic_error_0x11() }\n\n        r := sdiv(x, y)\n    }\n\n    function checked_mul_t_int256(x, y) -> product {\n        x := cleanup_t_int256(x)\n        y := cleanup_t_int256(y)\n\n        // overflow, if x > 0, y > 0 and x > (maxValue / y)\n        if and(and(sgt(x, 0), sgt(y, 0)), gt(x, div(0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff, y))) { panic_error_0x11() }\n        // underflow, if x > 0, y < 0 and y < (minValue / x)\n        if and(and(sgt(x, 0), slt(y, 0)), slt(y, sdiv(0x8000000000000000000000000000000000000000000000000000000000000000, x))) { panic_error_0x11() }\n        // underflow, if x < 0, y > 0 and x < (minValue / y)\n        if and(and(slt(x, 0), sgt(y, 0)), slt(x, sdiv(0x8000000000000000000000000000000000000000000000000000000000000000, y))) { panic_error_0x11() }\n        // overflow, if x < 0, y < 0 and x < (maxValue / y)\n        if and(and(slt(x, 0), slt(y, 0)), slt(x, sdiv(0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff, y))) { panic_error_0x11() }\n\n        product := mul(x, y)\n    }\n\n    function cleanup_t_int256(value) -> cleaned {\n        cleaned := value\n    }\n\n    function cleanup_t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1(value) -> cleaned {\n        cleaned := value\n    }\n\n    function cleanup_t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1(value) -> cleaned {\n        cleaned := value\n    }\n\n    function cleanup_t_uint160(value) -> cleaned {\n        cleaned := and(value, 0xffffffffffffffffffffffffffffffffffffffff)\n    }\n\n    function cleanup_t_uint256(value) -> cleaned {\n        cleaned := value\n    }\n\n    function convert_t_contract$_IWitnetPriceRouter_$8736_to_t_address(value) -> converted {\n        converted := convert_t_contract$_IWitnetPriceRouter_$8736_to_t_uint160(value)\n    }\n\n    function convert_t_contract$_IWitnetPriceRouter_$8736_to_t_uint160(value) -> converted {\n        converted := cleanup_t_uint160(value)\n    }\n\n    function convert_t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1_to_t_bytes32(value) -> converted {\n        converted := shift_left_0(cleanup_t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1(value))\n    }\n\n    function convert_t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1_to_t_bytes32(value) -> converted {\n        converted := shift_left_0(cleanup_t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1(value))\n    }\n\n    function panic_error_0x11() {\n        mstore(0, 35408467139433450592217433187231851964531694900788300625387963629091585785856)\n        mstore(4, 0x11)\n        revert(0, 0x24)\n    }\n\n    function panic_error_0x12() {\n        mstore(0, 35408467139433450592217433187231851964531694900788300625387963629091585785856)\n        mstore(4, 0x12)\n        revert(0, 0x24)\n    }\n\n    function shift_left_0(value) -> newValue {\n        newValue :=\n\n        shl(0, value)\n\n    }\n\n    function validator_revert_t_int256(value) {\n        if iszero(eq(value, cleanup_t_int256(value))) { revert(0, 0) }\n    }\n\n    function validator_revert_t_uint256(value) {\n        if iszero(eq(value, cleanup_t_uint256(value))) { revert(0, 0) }\n    }\n\n}\n",
+      "contents": "{\n\n    function abi_decode_t_int256_fromMemory(offset, end) -> value {\n        value := mload(offset)\n        validator_revert_t_int256(value)\n    }\n\n    function abi_decode_t_uint256_fromMemory(offset, end) -> value {\n        value := mload(offset)\n        validator_revert_t_uint256(value)\n    }\n\n    function abi_decode_tuple_t_int256t_uint256t_uint256_fromMemory(headStart, dataEnd) -> value0, value1, value2 {\n        if slt(sub(dataEnd, headStart), 96) { revert(0, 0) }\n\n        {\n\n            let offset := 0\n\n            value0 := abi_decode_t_int256_fromMemory(add(headStart, offset), dataEnd)\n        }\n\n        {\n\n            let offset := 32\n\n            value1 := abi_decode_t_uint256_fromMemory(add(headStart, offset), dataEnd)\n        }\n\n        {\n\n            let offset := 64\n\n            value2 := abi_decode_t_uint256_fromMemory(add(headStart, offset), dataEnd)\n        }\n\n    }\n\n    function abi_encode_t_contract$_IWitnetPriceRouter_$8734_to_t_address_fromStack(value, pos) {\n        mstore(pos, convert_t_contract$_IWitnetPriceRouter_$8734_to_t_address(value))\n    }\n\n    function abi_encode_t_int256_to_t_int256_fromStack(value, pos) {\n        mstore(pos, cleanup_t_int256(value))\n    }\n\n    function abi_encode_t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1_to_t_bytes32_fromStack(value, pos) {\n        mstore(pos, convert_t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1_to_t_bytes32(value))\n    }\n\n    function abi_encode_t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1_to_t_bytes32_fromStack(value, pos) {\n        mstore(pos, convert_t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1_to_t_bytes32(value))\n    }\n\n    function abi_encode_tuple_t_contract$_IWitnetPriceRouter_$8734__to_t_address__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_contract$_IWitnetPriceRouter_$8734_to_t_address_fromStack(value0,  add(headStart, 0))\n\n    }\n\n    function abi_encode_tuple_t_int256__to_t_int256__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_int256_to_t_int256_fromStack(value0,  add(headStart, 0))\n\n    }\n\n    function abi_encode_tuple_t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1__to_t_bytes32__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1_to_t_bytes32_fromStack(value0,  add(headStart, 0))\n\n    }\n\n    function abi_encode_tuple_t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1__to_t_bytes32__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1_to_t_bytes32_fromStack(value0,  add(headStart, 0))\n\n    }\n\n    function checked_div_t_int256(x, y) -> r {\n        x := cleanup_t_int256(x)\n        y := cleanup_t_int256(y)\n        if iszero(y) { panic_error_0x12() }\n\n        // overflow for minVal / -1\n        if and(\n            eq(x, 0x8000000000000000000000000000000000000000000000000000000000000000),\n            eq(y, sub(0, 1))\n        ) { panic_error_0x11() }\n\n        r := sdiv(x, y)\n    }\n\n    function checked_mul_t_int256(x, y) -> product {\n        x := cleanup_t_int256(x)\n        y := cleanup_t_int256(y)\n\n        // overflow, if x > 0, y > 0 and x > (maxValue / y)\n        if and(and(sgt(x, 0), sgt(y, 0)), gt(x, div(0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff, y))) { panic_error_0x11() }\n        // underflow, if x > 0, y < 0 and y < (minValue / x)\n        if and(and(sgt(x, 0), slt(y, 0)), slt(y, sdiv(0x8000000000000000000000000000000000000000000000000000000000000000, x))) { panic_error_0x11() }\n        // underflow, if x < 0, y > 0 and x < (minValue / y)\n        if and(and(slt(x, 0), sgt(y, 0)), slt(x, sdiv(0x8000000000000000000000000000000000000000000000000000000000000000, y))) { panic_error_0x11() }\n        // overflow, if x < 0, y < 0 and x < (maxValue / y)\n        if and(and(slt(x, 0), slt(y, 0)), slt(x, sdiv(0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff, y))) { panic_error_0x11() }\n\n        product := mul(x, y)\n    }\n\n    function cleanup_t_int256(value) -> cleaned {\n        cleaned := value\n    }\n\n    function cleanup_t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1(value) -> cleaned {\n        cleaned := value\n    }\n\n    function cleanup_t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1(value) -> cleaned {\n        cleaned := value\n    }\n\n    function cleanup_t_uint160(value) -> cleaned {\n        cleaned := and(value, 0xffffffffffffffffffffffffffffffffffffffff)\n    }\n\n    function cleanup_t_uint256(value) -> cleaned {\n        cleaned := value\n    }\n\n    function convert_t_contract$_IWitnetPriceRouter_$8734_to_t_address(value) -> converted {\n        converted := convert_t_contract$_IWitnetPriceRouter_$8734_to_t_uint160(value)\n    }\n\n    function convert_t_contract$_IWitnetPriceRouter_$8734_to_t_uint160(value) -> converted {\n        converted := cleanup_t_uint160(value)\n    }\n\n    function convert_t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1_to_t_bytes32(value) -> converted {\n        converted := shift_left_0(cleanup_t_rational_16620584220734357580364100983969522249246162358700867698029489923206249711942_by_1(value))\n    }\n\n    function convert_t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1_to_t_bytes32(value) -> converted {\n        converted := shift_left_0(cleanup_t_rational_27629892325171020526641021277971271646949243421859939025885288576727802848968_by_1(value))\n    }\n\n    function panic_error_0x11() {\n        mstore(0, 35408467139433450592217433187231851964531694900788300625387963629091585785856)\n        mstore(4, 0x11)\n        revert(0, 0x24)\n    }\n\n    function panic_error_0x12() {\n        mstore(0, 35408467139433450592217433187231851964531694900788300625387963629091585785856)\n        mstore(4, 0x12)\n        revert(0, 0x24)\n    }\n\n    function shift_left_0(value) -> newValue {\n        newValue :=\n\n        shl(0, value)\n\n    }\n\n    function validator_revert_t_int256(value) {\n        if iszero(eq(value, cleanup_t_int256(value))) { revert(0, 0) }\n    }\n\n    function validator_revert_t_uint256(value) {\n        if iszero(eq(value, cleanup_t_uint256(value))) { revert(0, 0) }\n    }\n\n}\n",
       "id": 36,
       "language": "Yul",
       "name": "#utility.yul"
@@ -3103,13 +3103,13 @@
     "absolutePath": "project:/contracts/OcxPriceOracle.sol",
     "exportedSymbols": {
       "IERC165": [
-        8648
+        8646
       ],
       "IERC2362": [
         2965
       ],
       "IWitnetPriceRouter": [
-        8736
+        8734
       ],
       "OcxPriceOracle": [
         5724
@@ -3137,7 +3137,7 @@
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
         "scope": 5725,
-        "sourceUnit": 8737,
+        "sourceUnit": 8735,
         "src": "57:76:28",
         "symbolAliases": [],
         "unitAlias": ""
@@ -3169,7 +3169,7 @@
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8736",
+              "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8734",
               "typeString": "contract IWitnetPriceRouter"
             },
             "typeName": {
@@ -3179,13 +3179,13 @@
                 "id": 5664,
                 "name": "IWitnetPriceRouter",
                 "nodeType": "IdentifierPath",
-                "referencedDeclaration": 8736,
+                "referencedDeclaration": 8734,
                 "src": "165:18:28"
               },
-              "referencedDeclaration": 8736,
+              "referencedDeclaration": 8734,
               "src": "165:18:28",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8736",
+                "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8734",
                 "typeString": "contract IWitnetPriceRouter"
               }
             },
@@ -3212,7 +3212,7 @@
                       "referencedDeclaration": 5666,
                       "src": "570:6:28",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8736",
+                        "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8734",
                         "typeString": "contract IWitnetPriceRouter"
                       }
                     },
@@ -3248,10 +3248,10 @@
                         "name": "IWitnetPriceRouter",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 8736,
+                        "referencedDeclaration": 8734,
                         "src": "579:18:28",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_type$_t_contract$_IWitnetPriceRouter_$8736_$",
+                          "typeIdentifier": "t_type$_t_contract$_IWitnetPriceRouter_$8734_$",
                           "typeString": "type(contract IWitnetPriceRouter)"
                         }
                       },
@@ -3266,13 +3266,13 @@
                       "src": "579:62:28",
                       "tryCall": false,
                       "typeDescriptions": {
-                        "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8736",
+                        "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8734",
                         "typeString": "contract IWitnetPriceRouter"
                       }
                     },
                     "src": "570:71:28",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8736",
+                      "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8734",
                       "typeString": "contract IWitnetPriceRouter"
                     }
                   },
@@ -3392,7 +3392,7 @@
                           "referencedDeclaration": 5666,
                           "src": "849:6:28",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8736",
+                            "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8734",
                             "typeString": "contract IWitnetPriceRouter"
                           }
                         },
@@ -3576,7 +3576,7 @@
                           "referencedDeclaration": 5666,
                           "src": "1126:6:28",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8736",
+                            "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8734",
                             "typeString": "contract IWitnetPriceRouter"
                           }
                         },
@@ -3895,13 +3895,13 @@
     "absolutePath": "project:/contracts/OcxPriceOracle.sol",
     "exportedSymbols": {
       "IERC165": [
-        8648
+        8646
       ],
       "IERC2362": [
         2965
       ],
       "IWitnetPriceRouter": [
-        8736
+        8734
       ],
       "OcxPriceOracle": [
         5724
@@ -3929,7 +3929,7 @@
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
         "scope": 5725,
-        "sourceUnit": 8737,
+        "sourceUnit": 8735,
         "src": "57:76:28",
         "symbolAliases": [],
         "unitAlias": ""
@@ -3961,7 +3961,7 @@
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8736",
+              "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8734",
               "typeString": "contract IWitnetPriceRouter"
             },
             "typeName": {
@@ -3971,13 +3971,13 @@
                 "id": 5664,
                 "name": "IWitnetPriceRouter",
                 "nodeType": "IdentifierPath",
-                "referencedDeclaration": 8736,
+                "referencedDeclaration": 8734,
                 "src": "165:18:28"
               },
-              "referencedDeclaration": 8736,
+              "referencedDeclaration": 8734,
               "src": "165:18:28",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8736",
+                "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8734",
                 "typeString": "contract IWitnetPriceRouter"
               }
             },
@@ -4004,7 +4004,7 @@
                       "referencedDeclaration": 5666,
                       "src": "570:6:28",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8736",
+                        "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8734",
                         "typeString": "contract IWitnetPriceRouter"
                       }
                     },
@@ -4040,10 +4040,10 @@
                         "name": "IWitnetPriceRouter",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 8736,
+                        "referencedDeclaration": 8734,
                         "src": "579:18:28",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_type$_t_contract$_IWitnetPriceRouter_$8736_$",
+                          "typeIdentifier": "t_type$_t_contract$_IWitnetPriceRouter_$8734_$",
                           "typeString": "type(contract IWitnetPriceRouter)"
                         }
                       },
@@ -4058,13 +4058,13 @@
                       "src": "579:62:28",
                       "tryCall": false,
                       "typeDescriptions": {
-                        "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8736",
+                        "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8734",
                         "typeString": "contract IWitnetPriceRouter"
                       }
                     },
                     "src": "570:71:28",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8736",
+                      "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8734",
                       "typeString": "contract IWitnetPriceRouter"
                     }
                   },
@@ -4184,7 +4184,7 @@
                           "referencedDeclaration": 5666,
                           "src": "849:6:28",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8736",
+                            "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8734",
                             "typeString": "contract IWitnetPriceRouter"
                           }
                         },
@@ -4368,7 +4368,7 @@
                           "referencedDeclaration": 5666,
                           "src": "1126:6:28",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8736",
+                            "typeIdentifier": "t_contract$_IWitnetPriceRouter_$8734",
                             "typeString": "contract IWitnetPriceRouter"
                           }
                         },
@@ -4689,7 +4689,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.6",
-  "updatedAt": "2022-04-11T15:37:50.828Z",
+  "updatedAt": "2022-04-13T08:46:30.271Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
