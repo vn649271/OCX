@@ -1,4 +1,5 @@
 import { Component } from "react";
+import OcxSpinner from './OcxSpinner';
 
 
 export default class SimpleTable extends Component {
@@ -24,9 +25,8 @@ export default class SimpleTable extends Component {
 
     render() {
         var trs = [];
-        if (this.state.data && this.state.data.status == 1) {
-			if (this.state.data.status != undefined && 
-			this.state.data.status == 1) {
+        if (this.state.data && this.state.data.status != undefined) {
+			if (this.state.data.status == 1) {
 	            for (let r in this.state.data.data) {
     	            let rowData = this.state.data.data[r];
         	        let cols = [];
@@ -42,7 +42,12 @@ export default class SimpleTable extends Component {
 				}
             } else if (this.state.data.status == 2) {
 				// Waiting status
-				trs = <tr>Waiting...</tr>;
+				trs =   
+                    <tr>
+                        <td colSpan="8" style={{textAlign:'center'}}>
+                            <OcxSpinner />
+                        </td>
+                    </tr>;
 			}
         }
         return (
