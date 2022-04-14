@@ -254,10 +254,13 @@ class PawnShopPage extends Component {
         this.mintButtonContext = null;
         this.burnButtonContext = null;
         this.valuation_report = null;
+        this.priceMonitorTimer = null;
+		this.prices = {};
 
         // State Helper
         this.clearAllFields = this.clearAllFields.bind(this);
-
+		this.startPriceMonitor = this.startPriceMonitor.bind(this);
+		this.priceMonitor = this.priceMonitor.bind(this);
         this.setAssetName = this.setAssetName.bind(this);
         this.setAssetType = this.setAssetType.bind(this);
         this.setAssetDescription = this.setAssetDescription.bind(this);
@@ -295,18 +298,86 @@ class PawnShopPage extends Component {
         this.showMessageBox = this.showMessageBox.bind(this);
     }
 
+    async componentDidMount() {
+
+        this.userToken = localStorage.getItem("userToken");
+        this.encryptKey = localStorage.getItem("encryptKey");
+        this.setEncryptKey(this.encryptKey);
+
+        // Try to connect to my account
+        let resp = await accountService.connectAccount({
+            userToken: this.userToken
+        });
+        var errorMsg = null;
+        if (resp.error !== undefined) {
+            switch (resp.error) {
+            case 0:
+                this.setState({ accounts: resp.data.addresses });
+                this.setState({ connected_hotwallet: USER_WITH_ACCOUNT });
+                this.startPriceMonitor();
+                break;
+            case 51:
+            case 52:
+                this.setState({ connected_hotwallet: NEW_USER });
+                return;
+            case -1000:
+                errorMsg = "No response for get balance";
+                break;
+            default:
+                errorMsg = resp.data;
+                break;
+            }
+        } else {
+            errorMsg = "Invalid response for connecting to my account"
+        }
+        if (errorMsg) {
+            this.showMessageBox(errorMsg.toString(), 1);
+			return;
+        }
+        // Get all pawn assets items for this user
+        console.log("Get all pawn assets items for the user");
+        // this.trackTableUpdateTimer = setInterval(this.updateTrackTable, 60000);
+        this.updateTrackTable();
+    }
+
+    componentWillUnmount = () => {
+        if (this.priceMonitorTimer) {
+            clearInterval(this.priceMonitorTimer);
+        }
+    }
+
+    startPriceMonitor = () => {
+        this.priceMonitorTimer = setInterval(this.priceMonitor, 10000);
+		this.priceMonitor();
+    }
+
+    priceMonitor = async () => {
+        accountService.getPrices({
+			userToken: this.userToken
+		}).then(ret => {
+			if (ret.error != undefined && ret.error == 0) {
+			    self.prices = ret.data;
+				if (self.prices['PNFT_MINT_FEE']) {
+					self.setEstimatedFee(self.prices['PNFT_MINT_FEE']);
+				}
+		    	console.log("PRICES: ",ret.data);
+			}
+		});
+    }
+
+    setPrices = prices => {
+        this.setState({prices: prices});
+    }
     setAssetName = name => {
         let inputs = this.state.inputs;
         inputs.asset_name = name;
         this.setState({inputs}) 
     }
-
     setAssetType = _type => {
         let inputs = this.state.inputs;
         inputs.asset_type = _type;
         this.setState({inputs}) 
     }
-
     setAssetDescription = asset_description => {
         let inputs = this.state.inputs;
         inputs.asset_description = asset_description;
@@ -444,7 +515,9 @@ class PawnShopPage extends Component {
             this.buildTrackTable(ret.data.all_assets);
             this.showMessageBox("Success: " + ret.data);
         } catch(error) {
-            this.showMessageBox(error, 1)
+			console.log(error);
+			btnCmpnt.stopTimer();
+            //this.showMessageBox(error, 1)
         }
     }
 
@@ -548,8 +621,13 @@ class PawnShopPage extends Component {
           inputs
         });
         if (ev.target.name === 'price_percentage' || ev.target.name === 'price') {
-            // this.setState({'quote_price': this.state.price_percentage * this.state.price / 100});
-            this.setQuotePrice(this.state.price_percentage * this.state.price / 100);
+            let reportedPrice = this.state.inputs.price ? this.state.inputs.price : 0;
+            let quote = this.state.inputs.price_percentage ? this.state.inputs.price_percentage: 0;
+			let quotedPrice = (reportedPrice * quote) / 100; 
+            this.setQuotePrice(quotedPrice);
+			let ocatPrice = this.prices['OCAT'] ? this.prices['OCAT']: 0;
+			let pnftMintFee = this.prices['PNFT_MINT_FEE'] ? this.prices['PNFT_MINT_FEE']: 0;
+			this.setEstimatedOcat(quotedPrice - quotedPrice * ocatPrice * pnftMintFee);
         }
     }
 
@@ -648,46 +726,6 @@ class PawnShopPage extends Component {
         this.setState({
             track_table_data: trackTableData
         });
-    }
-
-    async componentDidMount() {
-
-        this.userToken = localStorage.getItem("userToken");
-        this.encryptKey = localStorage.getItem("encryptKey");
-        this.setEncryptKey(this.encryptKey);
-
-        // Try to connect to my account
-        let resp = await accountService.connectAccount({
-            userToken: this.userToken
-        });
-        var errorMsg = null;
-        if (resp.error !== undefined) {
-            switch (resp.error) {
-            case 0:
-                this.setState({ accounts: resp.data.addresses });
-                this.setState({ connected_hotwallet: USER_WITH_ACCOUNT });
-                break;
-            case 51:
-            case 52:
-                this.setState({ connected_hotwallet: NEW_USER });
-                return;
-            case -1000:
-                errorMsg = "No response for get balance";
-                break;
-            default:
-                errorMsg = resp.data;
-                break;
-            }
-        } else {
-            errorMsg = "Invalid response for connecting to my account"
-        }
-        if (errorMsg) {
-            this.showMessageBox(errorMsg, 1);
-        }
-        // Get all pawn assets items for this user
-        console.log("Get all pawn assets items for the user");
-        // this.trackTableUpdateTimer = setInterval(this.updateTrackTable, 60000);
-        this.updateTrackTable();
     }
 
     async updateTrackTable() {
@@ -825,7 +863,7 @@ class PawnShopPage extends Component {
                             </div>
                             <div className="mt-20">
                                 <div className="inline-flex w-full">
-                                    <div>
+                                    <div className="mr-5">
                                         {/* <label>Valuation Price</label> */}
                                         <input
                                             type="number"
@@ -837,7 +875,7 @@ class PawnShopPage extends Component {
                                             onChange={this.handleInputChange} autoComplete="off"
                                         />
                                     </div>
-                                    <div>
+                                    <div className="mr-5">
                                         {/* <label>Percentage of value</label> */}
                                         <input
                                             type="number"
@@ -850,7 +888,7 @@ class PawnShopPage extends Component {
                                             onChange={this.handleInputChange} autoComplete="off"
                                         />
                                     </div>
-                                    <div>
+                                    <div className="mr-5">
                                         {/* <label>Quote Price</label> */}
                                         <input
                                             type="number"
@@ -859,11 +897,12 @@ class PawnShopPage extends Component {
                                             name="quote_price"
                                             id="quote_price"
                                             placeholder="Quote Price"
-                                            value={this.state.quote_price}
-                                            onChange={this.handleInputChange} autoComplete="off"
+                                            value={this.state.inputs.quote_price}
+                                            readOnly
+                                            // onChange={this.handleInputChange} autoComplete="off"
                                         />
                                     </div>
-                                    <div>
+                                    <div className="mr-5">
                                         {/* <label>Estimated OCAT</label> */}
                                         <input
                                             type="number"
@@ -872,8 +911,8 @@ class PawnShopPage extends Component {
                                             name="estimated_ocat"
                                             id="estimated_ocat"
                                             placeholder="Estimated OCAT"
-                                            value={this.state.estimated_ocat}
-                                            onChange={this.handleInputChange} 
+                                            value={this.state.inputs.estimated_ocat}
+                                            readOnly
                                             autoComplete="off"
                                         />
                                     </div>
@@ -901,15 +940,18 @@ class PawnShopPage extends Component {
                                     </div>
                                     <div className="w-4/12 mr-5">
                                         <label>Estimated Fee</label>
-                                        <input
-                                            type="number"
-                                            className="block border border-grey-light bg-gray-100 w-100 p-5 font-16 main-font focus:outline-none rounded "
-                                            name="estimated_fee"
-                                            id="estimated_fee"
-                                            placeholder="Estimated Fee"
-                                            value={this.state.estimated_fee}
-                                            onChange={this.handleInputChange} autoComplete="off"
-                                        />
+										<div className="w-1/2">
+	                                        <input
+    	                                        type="number"
+        	                                    className="block border border-grey-light bg-gray-100 w-30 p-5 font-16 main-font focus:outline-none rounded align-right"
+            	                                name="estimated_fee"
+                	                            id="estimated_fee"
+                    	                        placeholder="Estimated Fee"
+                        	                    value={this.state.inputs.estimated_fee * 100}
+												readOnly
+                                	            autoComplete="off"
+                                    	    />
+										</div>
                                     </div>
                                     <div className="w-4/12 mr-5">
                                         <a href="#" className="px-4 py-1  text-blue-500 bg-blue-200 rounded-lg">Click here to download legal contract</a>

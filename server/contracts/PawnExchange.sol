@@ -21,8 +21,6 @@ contract PawnExchange is OcxBase {
 
     constructor() {
         creator = payable(msg.sender);
-        fees[FeeType.PNFT_OCAT_SWAP_FEE] = 50; // 0.5% 
-        fees[FeeType.OCAT_PNFT_SWAP_FEE] = 50; // 0.5%
     }
 
     function onERC721Received(
@@ -58,15 +56,6 @@ contract PawnExchange is OcxBase {
     function setFee(FeeType feeType, uint32 feeValue) public
     onlyAdmin {
         fees[feeType] = feeValue;
-    }
-
-    function getFee(FeeType feeType) public view returns(uint32) {
-        require(
-            feeType == FeeType.PNFT_OCAT_SWAP_FEE ||
-            feeType == FeeType.OCAT_PNFT_SWAP_FEE,
-            "Invalid fee type"
-        );
-        return fees[feeType];
     }
 
     function exchangeToOcat(uint256 nftID) public 

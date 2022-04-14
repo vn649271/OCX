@@ -68,7 +68,6 @@ contract PawnNFTs is ERC721, OcxBase {
   constructor() ERC721("Openchain Pawning NFTs Collection", "PNFT") {
     // collectionName = name();
     // collectionNameSymbol = symbol();
-    fees[FeeType.PNFT_MINT_FEE] = 50;     // 0.5% 
   }
 
   modifier onlyTokenOwner(uint256 _tokenId) virtual {

@@ -2,8 +2,9 @@
 pragma solidity ^0.8.0;
 
 import "witnet-solidity-bridge/contracts/interfaces/IWitnetPriceRouter.sol";
+import "./OcxBase.sol";
 
-contract OcxPriceOracle {
+contract OcxPriceOracle is OcxBase {
     IWitnetPriceRouter public router;
     
     /**

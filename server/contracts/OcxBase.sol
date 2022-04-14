@@ -13,7 +13,10 @@ contract OcxBase is OcxAdmin {
 
     constructor() {
         ocatPrice = 1;
-    }
+        fees[FeeType.PNFT_OCAT_SWAP_FEE] = 50; // 0.5% 
+        fees[FeeType.OCAT_PNFT_SWAP_FEE] = 50; // 0.5%
+        fees[FeeType.PNFT_MINT_FEE] = 50;     // 0.5% 
+   }
 
     modifier onlyValidCaller virtual {
         require(msg.sender != address(0), "Expected non-zero address");
@@ -24,6 +27,7 @@ contract OcxBase is OcxAdmin {
         require(_price > 0, "Invalid price");
         ocatPrice = _price;
     }
+    function getOcatPrice() public view returns(uint256) { return ocatPrice; }
     function setOcatAddress(address payable _ocatAddress) public 
     onlyValidCaller onlyValidAddress(_ocatAddress) onlyAdmin {
         ocatAddress = _ocatAddress;
@@ -31,5 +35,8 @@ contract OcxBase is OcxAdmin {
     function setPnftAddress(address payable _pnftAddress) public 
     onlyValidCaller onlyCreator onlyValidAddress(_pnftAddress) {
         pnftAddress = _pnftAddress;
+    }
+    function getFee(FeeType feeType) public view returns(uint32) {
+        return fees[feeType];
     }
 }

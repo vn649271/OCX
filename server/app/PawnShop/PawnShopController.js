@@ -1,3 +1,6 @@
+const fs = require("fs");
+const mkdirp = require('mkdirp')
+ 
 const {
     ASSET_PENDING,
     ASSET_SUBMITTED,
@@ -40,6 +43,14 @@ class PawnShopController {
      */
     upload = async(req, resp) => {
         const newpath = process.env.HOME + "/Public" + process.env.PAWNSHOP_ASSET_UPLOAD_PATH;
+        let exist = fs.existsSync(newpath);
+        if (!exist) {
+            // return value is the first directory created
+            const ret = mkdirp.sync(newpath);
+            if (!ret) {
+                return resp.json({ error: -1, data: "Failed to upload files due to system internal error." });    
+            }
+        }
         const file = req.files ? req.files.file ? req.files.file : null : null;
         if (!file) {
             return resp.json({ error: -1, data: "Invalid request paramter for PawnShop" });
