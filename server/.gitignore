@@ -1,11 +1,9 @@
-/node_modules
 /package-lock.json
-
-node_modules
-.env
+/node_modules
 coverage
 coverage.json
 typechain
+/build
 
 #Hardhat files
 cache
