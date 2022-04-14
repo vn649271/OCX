@@ -5,7 +5,7 @@ var me;
 
 export default function SpinButton(props) {
 
-    const { title, additionalClass, extraData, children } = props;
+    const { title, additionalClass, extraData, children, renderMode=0 } = props;
 
     const baseClass = "main-font font-16 items-center border border-grey-light " + 
                     "p-3 w-max button-bg focus:outline-none rounded " +
@@ -51,7 +51,11 @@ export default function SpinButton(props) {
             onMouseDown={handleMouseEvent}
             onMouseUp={handleMouseEvent}
         >
-            {status?(<OcxSpinner size='8' margin='mr-5 mt-1' color='white'/>):<></>} 
+            {status?
+                renderMode==0?
+                    <OcxSpinner size='8' margin='mr-5 mt-1' color='white'/>:
+                <OcxSpinner size='8' margin='-mb-9' color='white'/>:
+            <></>} 
             {props.title}
         </div>
     );

@@ -300,6 +300,7 @@ class PawnShopPage extends Component {
     }
 
     async componentDidMount() {
+        this.buildTrackTable({status: 2}); // Waiting status for data
 
         this.userToken = localStorage.getItem("userToken");
         this.encryptKey = localStorage.getItem("encryptKey");
@@ -675,11 +676,13 @@ class PawnShopPage extends Component {
                                     title="Mint"
                                     extraData={record.id}
                                     onClick={this.onClickMint}
+                                    renderMode="1"
                                 />
                                 <SpinButton
                                     extraData={record.id}
                                     title="Burn"
                                     onClick={this.onClickBurn}
+                                    renderMode="1"
                                 />
                             </OcxDropdownControlList>
                 // actionCol = <div>
@@ -740,7 +743,6 @@ class PawnShopPage extends Component {
     }
 
     async updateTrackTable() {
-		this.buildTrackTable({status: 2}); // Waiting status for data
         let ret = await pawnShopService.getPawnAssets({userToken: this.userToken});
         if (ret.error - 0 < 0) {
             this.showMessageBox("Failed to update track table: " + ret.data, 1);
