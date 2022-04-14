@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./CommonTypes.sol";
+import "./OcxCommon.sol";
 
 contract OcxFeeManager {
 
@@ -15,7 +15,7 @@ contract OcxFeeManager {
 
     receive() external payable {}
 
-    modifier mustNoneZeroAddress(address _address) {
+    modifier onlyValidAddress(address _address) {
         require(_address != address(0), "Caller have not to have zero address");
         _;
     }
@@ -37,12 +37,12 @@ contract OcxFeeManager {
         _;
     }
 
-    constructor() mustNoneZeroAddress(msg.sender) {
+    constructor() onlyValidAddress(msg.sender) {
         creator = payable(msg.sender);
     }
 
     function addOperator(address _address) public payable 
-    onlyCreator mustNoneZeroAddress(_address) {
+    onlyCreator onlyValidAddress(_address) {
         for (uint8 i = 0; i < allowedOperators.length; i++) {
             if (_address == allowedOperators[i]) {
                 return;
@@ -52,7 +52,7 @@ contract OcxFeeManager {
     }
 
     function setContractFee(address contractAddress, uint8 feeType, uint8 feeValue) public 
-    mustNoneZeroAddress(contractAddress) callerMustBeAllowed {
+    onlyValidAddress(contractAddress) callerMustBeAllowed {
         contractFee[contractAddress].fees[feeType] = feeValue;
     }
 }
