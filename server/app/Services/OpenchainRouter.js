@@ -464,7 +464,7 @@ class OpenchainRouter {
             let priceInWei = this.web3.utils.toWei(assetInfo.estimated_ocat, "ether");
             let gasPrice = await this.web3.eth.getGasPrice();
             gasPrice = (gasPrice * 1.2).toFixed(0);
-            let ret = await pawnNftContract.methods.mintPawnNFT(
+            let ret = await pawnNftContract.methods.mint(
                 assetInfo.asset_name, 
                 assetId, 
                 priceInWei
