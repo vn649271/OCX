@@ -642,60 +642,17 @@ class OpenchainRouter {
             opoAddress
         );
         try {
-            let gasPrice = await this.web3.eth.getGasPrice();
-            gasPrice = (gasPrice * 1.2).toFixed(0);
-            if (process.env.IPC_TYPE == 'infura') {
-                let dataBinary = priceOracleContract.methods.getEthUsdPrice().encodeABI();
-                const tx = {
-                    // this could be provider.addresses[0] if it exists
-                    from: this.myAddress, 
-                    // target address, this could be a smart contract address
-                    // to: toAddress, 
-                    // optional if you want to specify the gas limit 
-                    gas: "150000", //gasLimit, 
-                    // optional if you are invoking say a payable function 
-                    // value: value,
-                    gasPrice: gasPrice,
-                    // this encodes the ABI of the method and the arguements
-                    data: dataBinary
-                };
-                const signPromise = this.web3.eth.accounts.signTransaction(
-                    tx, 
-                    this.accountInfo.secret_keys['ETH']
-                );
-                signPromise.then((signedTx) => {
-                    // raw transaction string may be available in .raw or 
-                    // .rawTransaction depending on which signTransaction
-                    // function was called
-                    const sentTx = this.web3.eth.sendSignedTransaction(signedTx.raw || signedTx.rawTransaction);
-                    sentTx.on("receipt", receipt => {
-                        // do something when receipt comes back
-                        console.log(receipt);
-                        return resp.json({ error: 0, data: receipt });
-                    });
-                    sentTx.on("error", err => {
-                        // do something on transaction error
-                        console.log(err)
-                        return resp.json({ error: -1, data: err });
-                    });
-                }).catch((err) => {
-                    // do something when promise fails
-                    console.log(err)
-                    return resp.json({ error: -2, data: err });
-                });
-            } else {
-                let ret = await priceOracleContract.methods.getEthUsdPrice().call();
-                /*.send({
-                    from: this.myAddress,
-                    gas: "500000",
-                    gasPrice: gasPrice
-                }).then(ret => {
-                    return resp.json({ error: 0, data: ret }); // ret;
-                })*/
-		console.log("********************** PricOracle: ETH/USD: ", ret);
-		return resp.json({ error: 0, data: {ETH: ret / (10**6)} }); // ret;
-            }
-
+            let ethPrice = 3400000000; // await priceOracleContract.methods.getEthUsdPrice().call();
+            let ocatPrice = await priceOracleContract.methods.getOcatPrice().call();
+            let mintFee = await priceOracleContract.methods.getFee(2/*PNFT_MINT_FEE*/).call();
+            return resp.json({ 
+                error: 0, 
+                data: {
+                    ETH: ethPrice / (10**6), 
+                    OCAT: ocatPrice, 
+                    PNFT_MINT_FEE: mintFee / (10 ** 4)
+                } 
+            }); // ret;
         } catch (error) {
             return resp.json({ error: -300, data: error });
         }

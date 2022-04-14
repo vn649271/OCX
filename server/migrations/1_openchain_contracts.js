@@ -7,7 +7,7 @@ const PawnNFTs = artifacts.require("./PawnNFTs.sol");
 const OcxExchange = artifacts.require("./OcxExchange.sol");
 const PawnExchange = artifacts.require("./PawnExchange.sol");
 const OcxLocalPool = artifacts.require("./OcxLocalPool.sol");
-// const OcxPriceOracle = artifacts.require("./OcxPriceOracle.sol");
+const OcxPriceOracle = artifacts.require("./OcxPriceOracle.sol");
 const OcxFeeManager = artifacts.require("./OcxFeeManager.sol");
 
 module.exports = async deployer => {
@@ -46,9 +46,9 @@ module.exports = async deployer => {
     //   // // Setting deployed OCAT address 
     //   // await ret.setOcxPoolAddress(ocxLocalPoolAddress);
     // });
-    // deployer.deploy(OcxPriceOracle).then(ret => {
-    //     ocxPriceOracleAddress = ret.address;
-    // });
+    deployer.deploy(OcxPriceOracle).then(ret => {
+        ocxPriceOracleAddress = ret.address;
+    });
 
     deployer.deploy(PawnExchange).then(async ret => {
         pawnExchange = ret;
