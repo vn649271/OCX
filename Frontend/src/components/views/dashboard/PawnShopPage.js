@@ -573,11 +573,11 @@ class PawnShopPage extends Component {
         this.setState({show_burn_confirm: true});
     }
 
-    onClickBurnConfirm = async (ev) => {
+    onClickBurnConfirm = async (retCode) => {
         this.setState({show_burn_confirm: false});
         let { stopWait, getExtraData } = this.burnButtonContext;
         this.burnButtonContext = null;
-        if (ret == 0 || ret == 1) {
+        if (retCode == 0 || retCode == 1) {
             stopWait();
             return;
         }
@@ -762,9 +762,9 @@ class PawnShopPage extends Component {
             <div>
                 <div className="my-pawnshop-page main-font main-color font-16">
                     <OcxCard title='Pawn your assets into cryptos'>
-                        <div>
+                        <div className="mt-10">
                             <div className="inline-flex w-full">
-                                <div className="w-4/12" text-align="right">
+                                <div className="w-4/12 mr-5" text-align="right">
                                     {/* <p className="block">Asset Type:</p> */}
                                     <DropdownList 
                                         items={ASSET_TYPES} 
@@ -775,7 +775,7 @@ class PawnShopPage extends Component {
                                 <div className="w-4/12">
                                     <input
                                         type="text"
-                                        className="inline-flex block border border-grey-light ml-10 bg-gray-100 w-200 p-5 font-16 main-font focus:outline-none rounded "
+                                        className="inline-flex block border border-grey-light ml-10 bg-gray-100 w-200 p-3 font-16 main-font focus:outline-none rounded "
                                         name="asset_name"
                                         id="asset_name"
                                         placeholder="Asset Name"
@@ -787,10 +787,10 @@ class PawnShopPage extends Component {
                         </div>
                         <div className="mt-20">
                             <div className="inline-flex w-full">
-                                <div className="w-4/12">
+                                <div className="w-4/12 mr-5">
                                     <input
                                         type="text"
-                                        className="inline-flex border border-grey-light bg-gray-100 w-full mt-5 p-5 font-16 main-font focus:outline-none rounded "
+                                        className="inline-flex border border-grey-light bg-gray-100 w-full mt-5 p-3 font-16 main-font focus:outline-none rounded "
                                         name="asset_description"
                                         id="asset_description"
                                         placeholder="Asset Description"
@@ -798,10 +798,10 @@ class PawnShopPage extends Component {
                                         onChange={this.handleInputChange} autoComplete="off" 
                                     />                    
                                 </div>
-                                <div className="w-4/12">
+                                <div className="w-4/12 mr-5">
                                     <input
                                         type="text"
-                                        className="inline-flex block border border-grey-light bg-gray-100 w-full mt-5 p-5 font-16 main-font focus:outline-none rounded "
+                                        className="inline-flex block border border-grey-light bg-gray-100 w-full mt-5 p-3 font-16 main-font focus:outline-none rounded "
                                         name="asset_address_street"
                                         id="asset_address_street"
                                         placeholder="Asset Address"
@@ -809,11 +809,11 @@ class PawnShopPage extends Component {
                                         onChange={this.handleInputChange} autoComplete="off" 
                                     />
                                 </div>
-                                <div className="w-4/12">
+                                <div className="w-4/12 mr-5">
                                     {/* <label>City</label> */}
                                     <input
                                         type="text"
-                                        className="block border border-grey-light bg-gray-100 w-100 mt-5 p-5 font-16 main-font focus:outline-none rounded "
+                                        className="block border border-grey-light bg-gray-100 w-100 mt-5 p-3 font-16 main-font focus:outline-none rounded "
                                         name="asset_address_city"
                                         id="asset_address_city"
                                         placeholder="City"
@@ -851,7 +851,7 @@ class PawnShopPage extends Component {
                                         {/* <label>Zip Code</label> */}
                                         <input
                                             type="number"
-                                            className="block border border-grey-light bg-gray-100 w-100 p-5 font-16 main-font focus:outline-none rounded "
+                                            className="block border border-grey-light bg-gray-100 w-100 p-3 font-16 main-font focus:outline-none rounded "
                                             name="asset_address_zipcode"
                                             id="asset_address_zipcode"
                                             placeholder="Zip Code"
@@ -867,7 +867,7 @@ class PawnShopPage extends Component {
                                         {/* <label>Valuation Price</label> */}
                                         <input
                                             type="number"
-                                            className="block border border-grey-light bg-gray-100 w-100 p-5 font-16 main-font focus:outline-none rounded "
+                                            className="block border border-grey-light bg-gray-100 w-100 p-3 font-16 main-font focus:outline-none rounded "
                                             name="price"
                                             id="price"
                                             placeholder="Valuation Price"
@@ -880,7 +880,7 @@ class PawnShopPage extends Component {
                                         <input
                                             type="number"
                                             text-align="right"
-                                            className="block border border-grey-light bg-gray-100 w-100 p-5 font-16 main-font focus:outline-none rounded "
+                                            className="block border border-grey-light bg-gray-100 w-100 p-3 font-16 main-font focus:outline-none rounded "
                                             name="price_percentage"
                                             id="price_percentage"
                                             placeholder="Percentage of value"
@@ -893,7 +893,7 @@ class PawnShopPage extends Component {
                                         <input
                                             type="number"
                                             text-align="right"
-                                            className="block border border-grey-light bg-gray-100 w-100 p-5 font-16 main-font focus:outline-none rounded "
+                                            className="block border border-grey-light bg-gray-100 w-100 p-3 font-16 main-font focus:outline-none rounded "
                                             name="quote_price"
                                             id="quote_price"
                                             placeholder="Quote Price"
@@ -907,7 +907,7 @@ class PawnShopPage extends Component {
                                         <input
                                             type="number"
                                             text-align="right"
-                                            className="block border border-grey-light bg-gray-100 w-100 p-5 font-16 main-font focus:outline-none rounded "
+                                            className="block border border-grey-light bg-gray-100 w-100 p-3 font-16 main-font focus:outline-none rounded "
                                             name="estimated_ocat"
                                             id="estimated_ocat"
                                             placeholder="Estimated OCAT"
@@ -934,7 +934,7 @@ class PawnShopPage extends Component {
                                     <div className="w-4/12 mr-5">
                                         <label>You don't have a valuation report book a valuation time and date</label>
                                         <button
-                                            className="block border border-grey-light button-bg p-5 hover-transition main-font focus:outline-none rounded text-white verify-button"
+                                            className="block border border-grey-light button-bg p-3 hover-transition main-font focus:outline-none rounded text-white verify-button"
                                             onClick={this.onClickBooking}
                                         >Booking me</button>
                                     </div>
@@ -943,7 +943,7 @@ class PawnShopPage extends Component {
 										<div className="w-1/2">
 	                                        <input
     	                                        type="number"
-        	                                    className="block border border-grey-light bg-gray-100 w-30 p-5 font-16 main-font focus:outline-none rounded align-right"
+        	                                    className="block border border-grey-light bg-gray-100 w-30 p-3 font-16 main-font focus:outline-none rounded align-right"
             	                                name="estimated_fee"
                 	                            id="estimated_fee"
                     	                        placeholder="Estimated Fee"
