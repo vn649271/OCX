@@ -1,9 +1,29 @@
+import { useState, useEffect } from 'react';
+import classNames from "classnames";
 
 const OcxSpinner = props => {
-	return (	
-	    <div className="flex justify-center mt-10 mb-10">
+	const {size, margin='mt-10 mb-10', color='gray'} = props;
+
+	const [_size, setSize] = useState(size);
+	const [_margin, setMargin] = useState(margin);
+
+	useEffect(() => {
+		setSize(size);
+		setMargin(margin);
+	});
+
+	return (
+	    <div className={classNames("flex justify-center", `${_margin}`)}>
 	        <div style={{'borderTopColor':'transparent'}}
-	            className="w-16 h-16 border-4 border-gray-300 border-solid rounded-full animate-spin"></div>
+	            className={
+	            	classNames(
+	            		`w-${_size} h-${_size}`, 
+	            		"border-2", 
+	            		`border-${color}-500`, 
+	            		"border-solid rounded-full animate-spin"
+	            	)
+	            }
+	        />
 	    </div>
 	);
 }

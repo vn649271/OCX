@@ -1008,8 +1008,8 @@ class PawnShopPage extends Component {
                 <div className="my-pawnshop-page main-font main-color font-16 mt-16">
                     <OcxCard title='Tracking'>
                         <SimpleTable 
-                            def={TRACKING_TABLE_SCHEMA} 
-                            data={this.state.track_table_data}
+                            colDef={TRACKING_TABLE_SCHEMA} 
+                            tableData={this.state.track_table_data}
                         />
                     </OcxCard>
                 </div>
