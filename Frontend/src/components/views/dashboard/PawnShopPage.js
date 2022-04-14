@@ -8,6 +8,7 @@ import PawnShopService from '../../../service/PawnShop';
 import { JSEncrypt } from 'jsencrypt'
 import DelayButton from '../../common/DelayButton';
 import OcxCard from '../../common/OcxCard';
+import OcxInput from '../../common/OcxInput';
 import SimpleTable from '../../common/SimpleTable';
 import SpinButton from '../../common/SpinButton';
 import OcxConfirm from '../../common/OcxConfirm';
@@ -512,7 +513,7 @@ class PawnShopPage extends Component {
             this.setState({new_asset_id: ret.data.new_id});
             btnCmpnt.stopTimer();
             this.clearAllFields();
-            this.buildTrackTable(ret.data.all_assets);
+            this.buildTrackTable({status: 1, data: ret.data.all_assets});
             this.showMessageBox("Success: " + ret.data);
         } catch(error) {
 			console.log(error);
@@ -562,7 +563,7 @@ class PawnShopPage extends Component {
             return;
         }
         this.showMessageBox("Success to mint: " + ret.data);
-        this.buildTrackTable(ret.data.all_assets);
+        this.buildTrackTable({status: 1, data: ret.data.all_assets});
     }
 
     onClickBurn = async (params) => {
@@ -599,7 +600,7 @@ class PawnShopPage extends Component {
             return;
         }
         this.showMessageBox("Loaned successfully");
-        this.buildTrackTable(ret.data.all_assets);
+        this.buildTrackTable({status: 1, data: ret.data.all_assets});
     }
 
     onClickRestore = async (ev) => {
@@ -611,7 +612,7 @@ class PawnShopPage extends Component {
             return;
         }
         this.showMessageBox("Rerstored successfully");
-        this.buildTrackTable(ret.data.all_assets);
+        this.buildTrackTable({status: 1, data: ret.data.all_assets});
     }
 
     handleInputChange = ev => {
@@ -631,7 +632,14 @@ class PawnShopPage extends Component {
         }
     }
 
-    buildTrackTable = (assets) => {
+    buildTrackTable = (assetData) => {
+		if (assetData.status == 2) { // is waiting to load data?
+	        this.setState({
+	            track_table_data: {	status: 2 }
+	        });
+			return;
+		}
+		let assets = assetData.data;
         console.log("buildTrackTable(): ", assets);
         let trackTableData = [];
         assets.forEach(record => {
@@ -724,11 +732,15 @@ class PawnShopPage extends Component {
             trackTableData.push(row);
         });
         this.setState({
-            track_table_data: trackTableData
+            track_table_data: {
+				status: 1,
+				data: trackTableData
+			}
         });
     }
 
     async updateTrackTable() {
+		this.buildTrackTable({status: 2}); // Waiting status for data
         let ret = await pawnShopService.getPawnAssets({userToken: this.userToken});
         if (ret.error - 0 < 0) {
             this.showMessageBox("Failed to update track table: " + ret.data, 1);
@@ -737,7 +749,7 @@ class PawnShopPage extends Component {
             this.showMessageBox(ret.data, 2);
             return;
         }
-        this.buildTrackTable(ret.data);
+        this.buildTrackTable({status: 1, data: ret.data});
     }
 
     componentDidUpdate(prevProps) {
@@ -773,52 +785,44 @@ class PawnShopPage extends Component {
                                     />
                                 </div>
                                 <div className="w-4/12">
-                                    <input
-                                        type="text"
-                                        className="inline-flex block border border-grey-light ml-10 bg-gray-100 w-200 p-3 font-16 main-font focus:outline-none rounded "
-                                        name="asset_name"
+									<OcxInput 
+										name="asset_name"
                                         id="asset_name"
                                         placeholder="Asset Name"
                                         value={this.state.asset_name}
-                                        onChange={this.handleInputChange} autoComplete="off" 
-                                    />                    
-                                </div>
+                                        onChange={this.handleInputChange} 
+									/>
+                               </div>
                             </div>
                         </div>
                         <div className="mt-20">
                             <div className="inline-flex w-full">
                                 <div className="w-4/12 mr-5">
-                                    <input
-                                        type="text"
-                                        className="inline-flex border border-grey-light bg-gray-100 w-full mt-5 p-3 font-16 main-font focus:outline-none rounded "
+                                    <OcxInput
                                         name="asset_description"
                                         id="asset_description"
                                         placeholder="Asset Description"
                                         value={this.state.asset_description}
-                                        onChange={this.handleInputChange} autoComplete="off" 
+                                        onChange={this.handleInputChange}
                                     />                    
                                 </div>
                                 <div className="w-4/12 mr-5">
-                                    <input
-                                        type="text"
-                                        className="inline-flex block border border-grey-light bg-gray-100 w-full mt-5 p-3 font-16 main-font focus:outline-none rounded "
+                                    <OcxInput
                                         name="asset_address_street"
                                         id="asset_address_street"
                                         placeholder="Asset Address"
                                         value={this.state.asset_address_street}
-                                        onChange={this.handleInputChange} autoComplete="off" 
+                                        onChange={this.handleInputChange}
                                     />
                                 </div>
                                 <div className="w-4/12 mr-5">
                                     {/* <label>City</label> */}
-                                    <input
-                                        type="text"
-                                        className="block border border-grey-light bg-gray-100 w-100 mt-5 p-3 font-16 main-font focus:outline-none rounded "
+                                    <OcxInput
                                         name="asset_address_city"
                                         id="asset_address_city"
                                         placeholder="City"
                                         value={this.state.asset_address_city}
-                                        onChange={this.handleInputChange} autoComplete="off"
+                                        onChange={this.handleInputChange}
                                     />
                                 </div>                    
                             </div>
@@ -849,14 +853,13 @@ class PawnShopPage extends Component {
 
                                     <div className="w-3/12">
                                         {/* <label>Zip Code</label> */}
-                                        <input
+                                        <OcxInput
                                             type="number"
-                                            className="block border border-grey-light bg-gray-100 w-100 p-3 font-16 main-font focus:outline-none rounded "
                                             name="asset_address_zipcode"
                                             id="asset_address_zipcode"
                                             placeholder="Zip Code"
                                             value={this.state.asset_address_zipcode}
-                                            onChange={this.handleInputChange} autoComplete="off"
+                                            onChange={this.handleInputChange}
                                         />
                                     </div>
                                 </div>
@@ -865,27 +868,25 @@ class PawnShopPage extends Component {
                                 <div className="inline-flex w-full">
                                     <div className="mr-5">
                                         {/* <label>Valuation Price</label> */}
-                                        <input
+                                        <OcxInput
                                             type="number"
-                                            className="block border border-grey-light bg-gray-100 w-100 p-3 font-16 main-font focus:outline-none rounded "
                                             name="price"
                                             id="price"
                                             placeholder="Valuation Price"
                                             value={this.state.price}
-                                            onChange={this.handleInputChange} autoComplete="off"
+                                            onChange={this.handleInputChange}
                                         />
                                     </div>
                                     <div className="mr-5">
                                         {/* <label>Percentage of value</label> */}
-                                        <input
+                                        <OcxInput
                                             type="number"
                                             text-align="right"
-                                            className="block border border-grey-light bg-gray-100 w-100 p-3 font-16 main-font focus:outline-none rounded "
                                             name="price_percentage"
                                             id="price_percentage"
                                             placeholder="Percentage of value"
                                             value={this.state.price_percentage}
-                                            onChange={this.handleInputChange} autoComplete="off"
+                                            onChange={this.handleInputChange}
                                         />
                                     </div>
                                     <div className="mr-5">
@@ -893,21 +894,17 @@ class PawnShopPage extends Component {
                                         <input
                                             type="number"
                                             text-align="right"
-                                            className="block border border-grey-light bg-gray-100 w-100 p-3 font-16 main-font focus:outline-none rounded "
                                             name="quote_price"
                                             id="quote_price"
                                             placeholder="Quote Price"
                                             value={this.state.inputs.quote_price}
                                             readOnly
-                                            // onChange={this.handleInputChange} autoComplete="off"
                                         />
                                     </div>
                                     <div className="mr-5">
                                         {/* <label>Estimated OCAT</label> */}
                                         <input
                                             type="number"
-                                            text-align="right"
-                                            className="block border border-grey-light bg-gray-100 w-100 p-3 font-16 main-font focus:outline-none rounded "
                                             name="estimated_ocat"
                                             id="estimated_ocat"
                                             placeholder="Estimated OCAT"
@@ -1008,7 +1005,7 @@ class PawnShopPage extends Component {
                     :<></>
                 }
                 </div>
-                <div className="my-pawnshop-page main-font main-color font-16 m-8 mt-16">
+                <div className="my-pawnshop-page main-font main-color font-16 mt-16">
                     <OcxCard title='Tracking'>
                         <SimpleTable 
                             def={TRACKING_TABLE_SCHEMA} 
