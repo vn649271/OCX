@@ -2,3 +2,4 @@
 /Integrated/.env.development
 /Frontend/package-lock.json
 /server/node_modules
+/server/build
