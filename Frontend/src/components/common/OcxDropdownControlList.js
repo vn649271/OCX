@@ -35,7 +35,7 @@ console.log(itemIndex); return;
     return (
         <Menu as="div" className="relative inline-block text-left mt-3">
             <div>                
-                <Menu.Button className="justify-center w-full shadow-sm px-4 py-2 bg-white main-font font-16 main-color hover:bg-gray-50">
+                <Menu.Button className="justify-center w-full shadow-sm pr-2 bg-white main-font font-16 main-color hover:bg-gray-50">
                     <div className="inline-flex">{selectedItem}</div>
                     <ChevronDownIcon className="inline-flex -mr-1 ml-5 h-5 w-5" aria-hidden="true" />
                 </Menu.Button>

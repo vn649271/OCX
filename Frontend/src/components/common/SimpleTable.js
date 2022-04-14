@@ -24,20 +24,26 @@ export default class SimpleTable extends Component {
 
     render() {
         var trs = [];
-        if (this.state.data) {
-            for (let r in this.state.data) {
-                let rowData = this.state.data[r];
-                let cols = [];
-                for(let c in rowData.data) {
-                    let colData = rowData.data[c];
-                    cols.push(<td key={"col-" + c} className="px-6 py-4 main-color">{colData.value}</td>);
-                }
-                trs.push(<tr 
-                            key={rowData.id} 
-                            id={"tr" + rowData.id} 
-                            className="whitespace-nowrap"
-                        >{cols}</tr>)
-            }            
+        if (this.state.data && this.state.data.status == 1) {
+			if (this.state.data.status != undefined && 
+			this.state.data.status == 1) {
+	            for (let r in this.state.data.data) {
+    	            let rowData = this.state.data.data[r];
+        	        let cols = [];
+            	    for(let c in rowData.data) {
+               		    let colData = rowData.data[c];
+	                    cols.push(<td key={"col-" + c} className="px-6 py-4 main-color">{colData.value}</td>);
+    	            }
+        	        trs.push(<tr 
+            	                key={rowData.id} 
+                	            id={"tr" + rowData.id} 
+                    	        className="whitespace-nowrap"
+                        	>{cols}</tr>);
+				}
+            } else if (this.state.data.status == 2) {
+				// Waiting status
+				trs = <tr>Waiting...</tr>;
+			}
         }
         return (
             <div className="container main-font font-16 w-full mx-auto">
