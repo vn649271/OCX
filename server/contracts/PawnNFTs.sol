@@ -3,7 +3,9 @@ pragma solidity ^0.8.0;
 
 // import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "./AdministratedContract.sol";
+import "./OcxBase.sol";
+import "./IOcat.sol";
+import "./OcxCommon.sol";
 
 /*
  * -2: mint(): Error: caller of zero address
@@ -28,15 +30,12 @@ import "./AdministratedContract.sol";
  */
 
 // PawnNFTs smart contract inherits ERC721 interface
-contract PawnNFTs is ERC721, AdministratedContract {
+contract PawnNFTs is ERC721, OcxBase {
 
-  // this contract's token collection name
-  // string public collectionName;
-  // this contract's token symbol
-  // string public collectionNameSymbol;
+  address payable manager;
+
   // total number of pawning NFTs minted
   uint256 private totalSupply;
-
   uint64  private minPnftPrice = 5000;
 
   uint8   public decimals = 0;
@@ -52,7 +51,6 @@ contract PawnNFTs is ERC721, AdministratedContract {
     uint256 price;
     uint256 numberOfTransfers;
     bool forSale;
-    bool mintedNativeToken;
   }
 
   // map pawnNft's token id to pawning NFT
@@ -70,6 +68,7 @@ contract PawnNFTs is ERC721, AdministratedContract {
   constructor() ERC721("Openchain Pawning NFTs Collection", "PNFT") {
     // collectionName = name();
     // collectionNameSymbol = symbol();
+    fees[FeeType.PNFT_MINT_FEE] = 50;     // 0.5% 
   }
 
   modifier onlyTokenOwner(uint256 _tokenId) virtual {
@@ -83,6 +82,11 @@ contract PawnNFTs is ERC721, AdministratedContract {
     // the one who wants to buy the token should not be the token's owner
     require(tokenOwner == msg.sender, "-11");
     _;
+  }
+
+  function setManager(address payable _manager) public 
+  onlyCreator onlyValidAddress(_manager) {
+    manager = _manager;
   }
 
   function setMinPnftPrice(uint8 _minPnftPrice) public 
@@ -117,6 +121,9 @@ contract PawnNFTs is ERC721, AdministratedContract {
     // make token name passed as exists
     tokenNameExists[_name] = true;
 
+    // Mint new OCATs for this PNFT
+    (uint256 realPrice, uint256 mintFee,) = getExpectedPrices(_price);
+    IOcat(ocatAddress).mint(manager, realPrice + mintFee);
     // creat a new pawning NFT (struct) and pass in new values
     allPawnNFTs[newTokenID] = PawnNFT(
       newTokenID,
@@ -125,15 +132,18 @@ contract PawnNFTs is ERC721, AdministratedContract {
       payable(msg.sender),
       payable(msg.sender),
       payable(address(0)),
-      _price,
-      0,
-      true,
-      false // mintedNativeToken
+      realPrice,
+      0,    // number of transfers
+      true // for sale
     );
-    // add the token id and it's pawning NFT to all pawning NFTs mapping
-    // allPawnNFTs[newTokenID] = newPawnNFT;
   }
-
+  function getExpectedPrices(uint256 originalPrice) public view
+  returns(uint256 realPrice, uint256 mintFee, uint256 _ocatPrice) {
+    uint256 quotedPrice = ocatPrice * originalPrice;
+    _ocatPrice = ocatPrice;
+    mintFee = quotedPrice * fees[FeeType.PNFT_MINT_FEE] / (10 ** FEE_DECIMAL);
+    realPrice = quotedPrice - mintFee;
+  }
   // get owner of the token
   function getTokenOwner(uint256 _tokenId) public view returns(address) {
     return ownerOf(_tokenId);
@@ -143,11 +153,6 @@ contract PawnNFTs is ERC721, AdministratedContract {
   function getTokenMetaData(uint _tokenId) public view 
   returns(string memory tokenMetaData) {
     tokenMetaData = tokenURI(_tokenId);
-  }
-
-  function setMintedNativeToken(uint256 _tokenId, bool _mintedNativeToken) public {
-    require(allPawnNFTs[_tokenId].tokenId > 0, "-7");
-    allPawnNFTs[_tokenId].mintedNativeToken = _mintedNativeToken;
   }
 
   // check if the token already exists
