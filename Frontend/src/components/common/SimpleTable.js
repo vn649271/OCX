@@ -1,80 +1,77 @@
-import { Component } from "react";
+import { useState, useEffect } from "react";
 import OcxSpinner from './OcxSpinner';
 
+const TableTrs = (props) => {
 
-export default class SimpleTable extends Component {
+}
 
-    constructor(props) {
-        super(props);
+const SimpleTable = props => {
 
-        this.state = {
-            data: props.data
-        }
-    }
+    const {colDef = null, tableData = null} = props;
 
-    componentWillReceiveProps(nextProps) {
-        console.log("SimpleTable.componentWillReceiveProps(): ", nextProps);
-        this.setState({data: nextProps.data});
-    }
+    // const [_colDef, setColDef] = useState(colDef);
+    const [_data, setData] = useState(tableData);
+    const [trs, setTRs] = useState([]);
 
-    // componentDidUpdate(prevProps) {
-    //     if (prevProps.data != this.props.data) {
-    //         this.setState({data: this.props.data});
-    //     }
-    // }
+    useEffect(() => {
+        setData(tableData);
+        var _trs = [];
+        return null;
+    });
 
-    render() {
-        var trs = [];
-        if (this.state.data && this.state.data.status != undefined) {
-			if (this.state.data.status == 1) {
-	            for (let r in this.state.data.data) {
-    	            let rowData = this.state.data.data[r];
-        	        let cols = [];
-            	    for(let c in rowData.data) {
-               		    let colData = rowData.data[c];
-	                    cols.push(<td key={"col-" + c} className="px-6 py-4 main-color">{colData.value}</td>);
-    	            }
-        	        trs.push(<tr 
-            	                key={rowData.id} 
-                	            id={"tr" + rowData.id} 
-                    	        className="whitespace-nowrap"
-                        	>{cols}</tr>);
-				}
-            } else if (this.state.data.status == 2) {
-				// Waiting status
-				trs =   
-                    <tr>
-                        <td colSpan="8" style={{textAlign:'center'}}>
-                            <OcxSpinner />
-                        </td>
-                    </tr>;
-			}
-        }
-        return (
-            <div className="container main-font font-16 w-full mx-auto">
-                <div className="flex">
-                    <div className="w-full">
-                        <div className="border-b border-gray-200 shadow">
-                            <table className="w-full">
-                                <thead className="bg-gray-50">
-                                    <tr>
-                                    {
-                                        this.props.def ? this.props.def.headers ? this.props.def.headers.map((v, i) => {
-                                            return <th key={i} className="px-6 py-2 main-color text-left">
-                                                {v.title}
-                                            </th>
-                                        }): null : null
-                                    }
-                                    </tr>
-                                </thead>
-                                <tbody className="bg-white">
-                                    {trs}
-                                </tbody>
-                            </table>
-                        </div>
+    return (
+        <div className="container main-font font-16 w-full mx-auto">
+            <div className="flex">
+                <div className="w-full">
+                    <div className="border-b border-gray-200 shadow">
+                        <table className="w-full">
+                            <thead className="bg-gray-50">
+                                <tr>
+                                {
+                                    colDef ? colDef.headers ? colDef.headers.map((v, i) => {
+                                        return <th key={i} className="px-6 py-2 main-color text-left">
+                                            {v.title}
+                                        </th>
+                                    }): null : null
+                                }
+                                </tr>
+                            </thead>
+                            <tbody className="bg-white">
+                           {
+                               (_data && _data.status != undefined ?
+                                    (_data.status == 1 ?
+                                        _data.data.map((r, i) => {
+                                            return (<tr 
+                                                        key={r.id} 
+                                                        id={"tr" + r.id} 
+                                                        className="whitespace-nowrap"
+                                                    >{
+                                                        r.data.map((c, j) => {
+                                                            return <td key={"col-" + j} className="px-6 py-4 main-color">{c.value}</td>
+                                                        })
+                                                    }</tr>)
+                                        })
+                                    : _data.status == 2 ? // Waiting status
+                                        
+                                            <tr>
+                                                <td colSpan="8" style={{textAlign:'center'}}>
+                                                    <OcxSpinner size='16' />
+                                                </td>
+                                            </tr>
+                                        
+                                        : null
+                                    )
+                                : null
+                                )
+                                
+                            }
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-        );        
-    }
+        </div>
+    );        
 }
+
+export default SimpleTable;

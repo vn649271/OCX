@@ -1,4 +1,5 @@
 import React, { Component, useStyles } from 'react';
+import OcxSpinner from './OcxSpinner';
 
 var me;
 
@@ -50,17 +51,8 @@ export default function SpinButton(props) {
             onMouseDown={handleMouseEvent}
             onMouseUp={handleMouseEvent}
         >
-        {
-            status? (
-                <i
-                    className="fa fa-spinner mr-2"
-                    onClick={handleClick}
-                ></i>
-            ):  <i 
-                    onClick={handleClick}
-                ></i>
-        }
-        {props.title}
+            {status?(<OcxSpinner size='8' margin='mr-5 mt-1' color='white'/>):<></>} 
+            {props.title}
         </div>
     );
 }

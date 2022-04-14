@@ -8,6 +8,7 @@ import RecaptchaComponent from "../../common/Recaptcha";
 import { GoogleLogin } from 'react-google-login';
 import Alert from "../../common/Alert";
 import { GOOGLE_LOGIN_CLIENT_ID } from "../../../Contants";
+import OcxSpinner from '../../common/OcxSpinner';
 
 var me;
 
@@ -141,7 +142,6 @@ export default class Login extends Component {
     }
     me.setState({ loading: true })
     me.setState({ disableGoogleButton: true });
-
     login(user, res => {
       me.setState({ loading: false })
       me.setState({ disableGoogleButton: false });
@@ -189,7 +189,6 @@ export default class Login extends Component {
       email: me.state.email,
       password: hash
     }
-
     login(user, res => {
       me.setState({ loading: false });
       me.setState({ disableGoogleButton: false });
@@ -313,14 +312,11 @@ export default class Login extends Component {
                 value="Login"
               /> */}
             <button
-              className="spinner-button w-full text-center m-0 py-3 rounded button-bg text-white hover-transition font-14 main-font focus:outline-none m"
+              className="spinner-button flex inline justify-center w-full text-center m-0 py-3 rounded button-bg text-white hover-transition font-14 main-font focus:outline-none m"
               onClick={this.onSubmit}
               disabled={this.state.loading}>
               {this.state.loading && (
-                <i
-                  className="fa od-spinner"
-                  style={{ marginRight: "15px" }}
-                >( )</i>
+                <OcxSpinner size='8' margin='mr-5 mt-1' color='white'/>
               )}
               {this.state.loading && <span>Login</span>}
               {!this.state.loading && <span>Login</span>}
