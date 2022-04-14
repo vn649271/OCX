@@ -1,13 +1,13 @@
 const WEthToken = artifacts.require("./WEthToken.sol");
 const GDaiToken = artifacts.require("./GDaiToken.sol");
 const GUniToken = artifacts.require("./GUniToken.sol");
-const OcxLPToken = artifacts.require("./OcxLPToken.sol");
-const PawnNFTs = artifacts.require("./PawnNFTs.sol");
 const OcatToken = artifacts.require("./OcatToken.sol");
+// const OcxLPToken = artifacts.require("./OcxLPToken.sol");
+const PawnNFTs = artifacts.require("./PawnNFTs.sol");
 const OcxExchange = artifacts.require("./OcxExchange.sol");
 const PawnExchange = artifacts.require("./PawnExchange.sol");
 const OcxLocalPool = artifacts.require("./OcxLocalPool.sol");
-const OcxPriceOracle = artifacts.require("./OcxPriceOracle.sol");
+// const OcxPriceOracle = artifacts.require("./OcxPriceOracle.sol");
 const OcxFeeManager = artifacts.require("./OcxFeeManager.sol");
 
 module.exports = async deployer => {
@@ -32,39 +32,23 @@ module.exports = async deployer => {
     var ocxFeeManager = null;
     var adminAddress = "0xADB366C070DFB857DC63ebF797EFE615B0567C1B";
 
-    if (deployer.network == "ganache") {
-        deployer.deploy(WEthToken).then(ret => {
-            weth = ret;
-            wethAddress = ret.address;
-        });
-        deployer.deploy(GDaiToken).then(ret => {
-            gdai = ret;
-            gdaiAddress = ret.address;
-        });
-        deployer.deploy(GUniToken).then(ret => {
-            guni = ret;
-            guniAddress = ret.address;
-        });
-        let accounts = await web3.eth.getAccounts();
-        console.log(accounts);
-        adminAddress = accounts[1];
-    }
-    deployer.deploy(OcatToken).then(ret => {
-        ocatToken = ret;
-        ocatAddress = ret.address;
-    });
-    // // deployer.deploy(OcxLPToken).then(ret => {
-    // //   ocxlpAddress = ret.address;
-    // //   // // Setting deployed OCAT address 
-    // //   // await ret.setOcxPoolAddress(ocxLocalPoolAddress);
-    // // });
-    // deployer.deploy(OcxPriceOracle).then(ret => {
-    //     ocxPriceOracleAddress = ret.address;
-    // });
     deployer.deploy(PawnNFTs).then(ret => {
         pnftAddress = ret.address;
         pnft = ret;
     });
+
+    deployer.deploy(OcatToken).then(ret => {
+        ocatToken = ret;
+        ocatAddress = ret.address;
+    });
+    // deployer.deploy(OcxLPToken).then(ret => {
+    //   ocxlpAddress = ret.address;
+    //   // // Setting deployed OCAT address 
+    //   // await ret.setOcxPoolAddress(ocxLocalPoolAddress);
+    // });
+    // deployer.deploy(OcxPriceOracle).then(ret => {
+    //     ocxPriceOracleAddress = ret.address;
+    // });
 
     deployer.deploy(PawnExchange).then(async ret => {
         pawnExchange = ret;
@@ -88,6 +72,18 @@ module.exports = async deployer => {
     deployer.deploy(OcxExchange).then(async ocxExchange => {
         console.log("\n\n");
         if (deployer.network == "ganache") {
+            deployer.deploy(WEthToken).then(ret => {
+                weth = ret;
+                wethAddress = ret.address;
+            });
+            deployer.deploy(GDaiToken).then(ret => {
+                gdai = ret;
+                gdaiAddress = ret.address;
+            });
+            deployer.deploy(GUniToken).then(ret => {
+                guni = ret;
+                guniAddress = ret.address;
+            });
             console.log("    WETH: \"" + wethAddress + "\",");
             console.log("    DAI: \"" + gdaiAddress + "\",");
             console.log("    UNI: \"" + guniAddress + "\",");
