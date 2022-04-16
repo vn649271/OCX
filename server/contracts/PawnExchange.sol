@@ -9,8 +9,6 @@ import "./PawnNFTs.sol";
 
 contract PawnExchange is OcxBase {
     
-    address payable private feeManager;
-
     // 2 of 4: for calculation of percentage, another 2: for no fraction
     // For example: 0.5% = 50 / (10 ** (2 + 2)) => 50
     //              0.5% of 20000 = (50 * 20000) / (10 ** 4) = 100
@@ -41,11 +39,6 @@ contract PawnExchange is OcxBase {
     modifier validNftID(uint256 nftId) {
         require(nftId > 0, "Invalid NFT ID");
         _;
-    }
-
-    function setFeeManager(address payable _feeManager) public 
-    onlyCreator onlyValidAddress(_feeManager) {
-        feeManager = _feeManager;
     }
 
     function setMinPnftPrice(uint8 _minPnftPrice) public 

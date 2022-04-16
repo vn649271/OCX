@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-contract OcxLPToken is ERC20 {
+contract OcxToken is ERC20 {
 
     address payable private ocxPool;
     address payable private creator;
@@ -16,10 +16,10 @@ contract OcxLPToken is ERC20 {
         _decimals = 3;
     }
 
-    function setOcxPoolAddress(address payable poolAddress) public {
-        require(msg.sender == creator , "Invalid sender");
-        ocxPool = poolAddress;
-    }
+    // function setOcxPoolAddress(address payable poolAddress) public {
+    //     require(msg.sender == creator , "Invalid sender");
+    //     ocxPool = poolAddress;
+    // }
 
     function mint(address payable to, uint256 amount) public returns(bool) {
         require(msg.sender == ocxPool, "Invalid minter");

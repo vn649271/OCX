@@ -42,13 +42,13 @@ contract OcxExchange is OcxBase {
         address[] memory path = new address[](2);
         path[0] = uniswapRouter.WETH();
         path[1] = address(_tokenOut);
-        if (_tokenOut != ocatAddress) {
-            uniswapRouter.swapExactETHForTokens(_amountOutMin, path, msg.sender, _deadline);
-        } else {
-            OcxLocalPool(ocxLocalPoolAddress).swapEthToOcat{
-                value: msg.value
-            }(_amountOutMin, payable(msg.sender), _deadline);
-        }
+        // if (_tokenOut != ocatAddress) {
+        uniswapRouter.swapExactETHForTokens(_amountOutMin, path, msg.sender, _deadline);
+        // } else {
+        //     OcxLocalPool(ocxLocalPoolAddress).swapEthToOcat{
+        //         value: msg.value
+        //     }(_amountOutMin, payable(msg.sender), _deadline);
+        // }
     }
 
     function swapToETH(
@@ -70,38 +70,38 @@ contract OcxExchange is OcxBase {
         address[] memory path = new address[](2);
         path[0] = address(_tokenIn);
         path[1] = uniswapRouter.WETH();
-        if (_tokenIn != ocatAddress) {
+        // if (_tokenIn != ocatAddress) {
             // approve
-            require(
-                sellTokenContract.approve(
-                    address(UNISWAP_ROUTER_ADDRESS), 
-                    _amountIn
-                ), 
-                'OcxExchange.swapToETH(): approve for the router failed.'
-            );
-            uniswapRouter.swapExactTokensForETH(
-                _amountIn, 
-                _amountOutMin, 
-                path, 
-                msg.sender, 
-                _deadline
-            );
-        } else {
-            // approve
-            require(
-                sellTokenContract.approve(
-                    address(ocxLocalPoolAddress), 
-                    _amountIn
-                ), 
-                'OcxExchange.swapToETH(): approve for the router failed.'
-            );
-            OcxLocalPool(ocxLocalPoolAddress).swapOcatToEth(
-                _amountIn,
-                _amountOutMin, 
-                payable(msg.sender), 
-                _deadline
-            );
-        }
+        require(
+            sellTokenContract.approve(
+                address(UNISWAP_ROUTER_ADDRESS), 
+                _amountIn
+            ), 
+            'OcxExchange.swapToETH(): approve for the router failed.'
+        );
+        uniswapRouter.swapExactTokensForETH(
+            _amountIn, 
+            _amountOutMin, 
+            path, 
+            msg.sender, 
+            _deadline
+        );
+        // } else {
+        //     // approve
+        //     require(
+        //         sellTokenContract.approve(
+        //             address(ocxLocalPoolAddress), 
+        //             _amountIn
+        //         ), 
+        //         'OcxExchange.swapToETH(): approve for the router failed.'
+        //     );
+        //     OcxLocalPool(ocxLocalPoolAddress).swapOcatToEth(
+        //         _amountIn,
+        //         _amountOutMin, 
+        //         payable(msg.sender), 
+        //         _deadline
+        //     );
+        // }
     }
 
     function swapForERC20(

@@ -17,7 +17,6 @@ contract OcatToken is ERC20, IOcat {
         allowedOperators.push(msg.sender);
     }
 
-
     modifier isAllowedOperator(address operator) override {
         bool isAllowed = false;
         for (uint8 i = 0; i < allowedOperators.length; i++) {
@@ -51,6 +50,6 @@ contract OcatToken is ERC20, IOcat {
     */
     function mint(address from, uint256 amount) public override
     isAllowedOperator(from) {
-        super._mint(from, amount * (10 ** 18));
+        super._mint(from, amount * (10 ** decimals()));
     }
 }

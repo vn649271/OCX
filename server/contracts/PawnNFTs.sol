@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 // import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./OcxBase.sol";
 import "./IOcat.sol";
 import "./OcxCommon.sol";
@@ -43,7 +44,7 @@ contract PawnNFTs is ERC721, OcxBase {
   // define pawning NFT struct
   struct PawnNFT {
     uint256 tokenId;
-    string tokenName;
+    bytes32 tokenName;
     string tokenURI;
     address payable mintedBy;
     address payable currentOwner;
@@ -58,7 +59,7 @@ contract PawnNFTs is ERC721, OcxBase {
   // 
   mapping(uint256 => string) public tokenURIs;
   // check if token name exists
-  mapping(string => bool) public tokenNameExists;
+  mapping(bytes32 => bool) public tokenNameExists;
   // check if token URI exists
   mapping(string => uint256) public tokenURIExists;
 
@@ -95,13 +96,13 @@ contract PawnNFTs is ERC721, OcxBase {
   }
 
   // mint a new pawning NFT and return token ID
-  function mint(string memory _name, string memory _tokenURI, uint256 _price) external 
-  returns(uint256 newTokenID) {
+  function mint(bytes32 _name, string memory _tokenURI, uint256 _price) external 
+  returns(uint256 newTokenID, uint256 realPrice, uint256 mintFee) {
     require(msg.sender != address(0), "Only valid caller");
     require(_price >= minPnftPrice, "-3");
     // increment counter
-    newTokenID = totalSupply;
     totalSupply++;
+    newTokenID = totalSupply;
     // check if a token exists with the above token id => incremented counter
     require(!_exists(newTokenID), "-4");
 
@@ -121,7 +122,7 @@ contract PawnNFTs is ERC721, OcxBase {
     tokenNameExists[_name] = true;
 
     // Mint new OCATs for this PNFT
-    (uint256 realPrice, uint256 mintFee,) = getExpectedPrices(_price);
+    (realPrice, mintFee,) = getExpectedPrices(_price);
     IOcat(ocatAddress).mint(manager, realPrice + mintFee);
     // creat a new pawning NFT (struct) and pass in new values
     allPawnNFTs[newTokenID] = PawnNFT(
@@ -131,14 +132,14 @@ contract PawnNFTs is ERC721, OcxBase {
       payable(msg.sender),
       payable(msg.sender),
       payable(address(0)),
-      realPrice,
+      realPrice * (10 ** ERC20(ocatAddress).decimals()),
       0,    // number of transfers
       true // for sale
     );
   }
   function getExpectedPrices(uint256 originalPrice) public view
   returns(uint256 realPrice, uint256 mintFee, uint256 _ocatPrice) {
-    uint256 quotedPrice = ocatPrice * originalPrice;
+    uint256 quotedPrice = ocatPrice * originalPrice * (10 ** ERC20(ocatAddress).decimals());
     _ocatPrice = ocatPrice;
     mintFee = quotedPrice * fees[FeeType.PNFT_MINT_FEE] / (10 ** FEE_DECIMAL);
     realPrice = quotedPrice - mintFee;
@@ -161,7 +162,7 @@ contract PawnNFTs is ERC721, OcxBase {
 
   // by a token by passing in the token's id
   function buyToken(uint256 _tokenId) public payable 
-  onlyTokenOwner(_tokenId) {
+  onlyValidCaller {
     // price sent in to buy should be equal to or more than the token's price
     require(msg.value >= allPawnNFTs[_tokenId].price, "-12");
     // token should be for sale
