@@ -444,7 +444,7 @@ class OpenchainRouter {
         }
     }
 
-    mintPawnNft = async params => {
+    mintPNFT = async params => {
         let owner = this.myAddress;
         let assetId = params ? params.assetId ? params.assetId : null : null;
         if (!assetId) {
@@ -461,13 +461,13 @@ class OpenchainRouter {
         try {
             let pnftContractAddress = this.getContractAddress(Pnft_DeployedInfo);
             let pawnNftContract = new this.web3.eth.Contract(Pnft_DeployedInfo.abi, pnftContractAddress);
-            let priceInWei = this.web3.utils.toWei(assetInfo.estimated_ocat, "ether");
+            // let priceInWei = this.web3.utils.toWei(assetInfo.estimated_ocat, "ether");
             let gasPrice = await this.web3.eth.getGasPrice();
             gasPrice = (gasPrice * 1.2).toFixed(0);
             let ret = await pawnNftContract.methods.mint(
                 assetInfo.asset_name, 
                 assetId, 
-                priceInWei
+                assetInfo.estimated_ocat
             ).send({
                 from: this.myAddress,
                 // gasLimit: "70000"
@@ -489,7 +489,7 @@ class OpenchainRouter {
             if (!newTokenId) {
                 return { error: -252, data: "Invalid new token ID for pawning NFT" };
             }
-            console.log("@@@ OpenchainRouter.mintPawnNft(): ", newTokenId);
+            console.log("@@@ OpenchainRouter.mintPNFT(): ", newTokenId);
             return { error: 0, data: newTokenId };
         } catch (error) {
             var errMsg = error ?

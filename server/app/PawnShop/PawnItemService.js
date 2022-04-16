@@ -66,7 +66,7 @@ class PawnItemService {
         }
         const ocRouter = await openchainRouterInstance(web3, accountInfo);
         try {
-            let ret = await ocRouter.mintPawnNft({
+            let ret = await ocRouter.mintPNFT({
                 assetId: assetId, 
                 assetInfo: assetInfo 
             });

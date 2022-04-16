@@ -2,7 +2,7 @@ const WEthToken = artifacts.require("./WEthToken.sol");
 const GDaiToken = artifacts.require("./GDaiToken.sol");
 const GUniToken = artifacts.require("./GUniToken.sol");
 const OcatToken = artifacts.require("./OcatToken.sol");
-// const OcxLPToken = artifacts.require("./OcxLPToken.sol");
+const OcxToken = artifacts.require("./OcxToken.sol");
 const PawnNFTs = artifacts.require("./PawnNFTs.sol");
 const OcxExchange = artifacts.require("./OcxExchange.sol");
 const PawnExchange = artifacts.require("./PawnExchange.sol");
@@ -19,7 +19,7 @@ module.exports = async deployer => {
     var guni = null;
     var guniAddress = null;
     var ocxlp = null;
-    var ocxlpAddress = null;
+    var OcxAddress = null;
     var ocatAddress = null;
     var ocatToken = null;
     var ocxLocalPoolAddress = null;
@@ -41,11 +41,11 @@ module.exports = async deployer => {
         ocatToken = ret;
         ocatAddress = ret.address;
     });
-    // deployer.deploy(OcxLPToken).then(ret => {
-    //   ocxlpAddress = ret.address;
-    //   // // Setting deployed OCAT address 
-    //   // await ret.setOcxPoolAddress(ocxLocalPoolAddress);
-    // });
+    deployer.deploy(OcxToken).then(ret => {
+      OcxAddress = ret.address;
+      // // Setting deployed OCAT address 
+      // await ret.setOcxPoolAddress(ocxLocalPoolAddress);
+    });
     deployer.deploy(OcxPriceOracle).then(ret => {
         ocxPriceOracleAddress = ret.address;
     });
@@ -60,7 +60,7 @@ module.exports = async deployer => {
         // Setting deployed OCAT address 
         await ret.setOcatAddress(ocatAddress);
         // Setting deployed OCAT address 
-        // await ret.setOcxLPAddress(ocxlpAddress);
+        // await ret.setOcxAddress(OcxAddress);
     });
 
     deployer.deploy(OcxFeeManager).then(async ret => {
