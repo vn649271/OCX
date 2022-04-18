@@ -176,7 +176,7 @@ class AccountController {
             return resp.json({ error: -2, data: "Invalid user token or internet disconnected" });
         }
         try {
-            if (userInfoObj.account === undefined || !userInfoObj.account) {
+            if (userInfoObj.account === undefined || !userInfoObj.account || userInfoObj.account == "") {
                 return resp.json({ error: 51, data: "No account" });
             }
             let ret = await accountModel.getById(userInfoObj.account);

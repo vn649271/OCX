@@ -7,11 +7,19 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 // import DatePicker from '@mui/lab/DatePicker';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import Stack from '@mui/material/Stack';
-import React from 'react';
+import {useEffect, useState } from 'react';
 // import { style } from '@mui/system';
 
 export default function Header(props) {
-    const [value, setValue] = React.useState(new Date());
+    
+    const {pageTitle = 'Dashboard'} = props;
+
+    const [value, setValue] = useState(new Date());
+    const [_pageTitle, setPageTitle] = useState(pageTitle);
+
+    useEffect(() => {
+        setPageTitle(pageTitle);
+    });
 
     return (
         <header className="bg-global main-header py-3">
@@ -31,7 +39,7 @@ export default function Header(props) {
                         </div>
                     </Link>
                     <div className='dashboard_name hidden main-font main-color font-30 pl-12 py-0'>
-                        Dashboard
+                        {_pageTitle}
                     </div>
                     <div className="header-navgation flex items-center font-16 main-color main-font ml-20">
                         <Link to="/exchange"> <span className="header-nav_items main-color px-5 py-2">Exchange</span></Link>

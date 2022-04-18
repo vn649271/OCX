@@ -24,9 +24,17 @@ class PageContainer extends Component {
             toast_type: 0,
             toast_text: '',
         }
+        this.setPageTitle = props.setPageTitle;
+        this.setSelectedPageTitle = this.setSelectedPageTitle.bind(this);
         this.showToast = this.showToast.bind(this);
         this.hideToast = this.hideToast.bind(this);
         this.toastTimer = null;
+    }
+
+    setSelectedPageTitle(_title) {
+        if (this.setPageTitle) {
+            this.setPageTitle(_title);
+        }
     }
 
     hideToast() {
@@ -49,30 +57,39 @@ class PageContainer extends Component {
         if (prevProps.target !== this.props.target) {
             switch (this.props.target) {
                 case 'dashboard-page':
+                    this.setSelectedPageTitle('Dashboard');
                     this.setState({ currentPageComponent: <HomeDashPage showToast={this.showToast} /> });
                     break;
                 case 'assets-page':
+                    this.setSelectedPageTitle('Assets');
                     this.setState({ currentPageComponent: <AssetsPage showToast={this.showToast} /> });
                     break;
                 case 'wallet-page':
+                    this.setSelectedPageTitle('Wallet');
                     this.setState({ currentPageComponent: <WalletPage showToast={this.showToast} /> });
                     break;
                 case 'log-page':
+                    this.setSelectedPageTitle('Log');
                     this.setState({ currentPageComponent: <LogPage showToast={this.showToast} /> });
                     break;
                 case 'game-page':
+                    this.setSelectedPageTitle('Game');
                     this.setState({ currentPageComponent: <GamePage showToast={this.showToast} /> });
                     break;
                 case 'chat-page':
+                    this.setSelectedPageTitle('Chat');
                     this.setState({ currentPageComponent: <ChatPage showToast={this.showToast} /> });
                     break;
                 case 'help-page':
+                    this.setSelectedPageTitle('Help');
                     this.setState({ currentPageComponent: <HelpPage /> });
                     break;
                 case 'payment-page':
+                    this.setSelectedPageTitle('Payment');
                     this.setState({ currentPageComponent: <PaymentPage showToast={this.showToast} /> });
                     break;
                 case 'shop-page':
+                    this.setSelectedPageTitle('Pawn Shop');
                     this.setState({ currentPageComponent: <PawnShopPage showToast={this.showToast} /> });
                     break;
                 default:
