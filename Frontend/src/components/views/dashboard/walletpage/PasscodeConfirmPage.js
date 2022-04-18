@@ -88,30 +88,34 @@ const PasscodeConfirmPage = props => {
 
 
   return (
-    <div className="flex justify-center items-center w-full mt-50">
+    <div className="items-center w-full -ml-5">
       <div className="w-2/3">
-        <div className="flex justify-center w-full mt-20 mb-20">
-          <div className="account-password-container w-5/12 block">
-              <input
-                  type={show_passcode ? "text" : "password"}
-                  className="password-input border border-grey-light bg-gray-100 p-3 w-full font-16 main-font focus:outline-none rounded "
-                  name="password"
-                  // value={this.state.input.password}
-                  onChange={onChangePasscode}
-                  onBlur={onLeaveFromPasswordInput}
-                  // onKeyPress={this.onKeyPressedForUnlock}
-                  placeholder="Passcode" autoComplete="off" />
-              <i className="ShowPasswordIcon font-16" onClick={togglePasscodeVisiblity}>{eye}</i>
+        <div className="justify-center w-full">
+          <div className="flex justify-center w-full mb-20">
+            <div className="account-password-container w-5/12 block">
+                <input
+                    type={show_passcode ? "text" : "password"}
+                    className="password-input border border-grey-light bg-gray-100 p-3 w-full font-16 main-font focus:outline-none rounded "
+                    name="password"
+                    // value={this.state.input.password}
+                    onChange={onChangePasscode}
+                    onBlur={onLeaveFromPasswordInput}
+                    // onKeyPress={this.onKeyPressedForUnlock}
+                    placeholder="Passcode" autoComplete="off" />
+                <i className="ShowPasswordIcon font-16" onClick={togglePasscodeVisiblity}>{eye}</i>
+            </div>
+            {/* Unlock Button */}
+            <SpinButton
+              additionalClass="ml-8"
+              title="Unlock"
+              onClick={onUnlockAccont}
+              extraData={null} 
+            />
           </div>
-          {/* Unlock Button */}
-          <SpinButton
-            additionalClass="ml-8"
-            title="Unlock"
-            onClick={onUnlockAccont}
-            extraData={null} 
-          />
+          <div className="flex justify-center">
+            <hr className="w-2/3"/>
+          </div>
         </div>
-        <hr/>
         <div className="flex justify-center w-full">
           <div className="flex justify-center w-1/3 passcode-reset-container main-font font-16 mt-10">
               <p className="link-button" onClick={onClickPasscodeReset}>Reset Passcode</p>
