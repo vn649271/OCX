@@ -113,7 +113,11 @@ const PasscodeConfirmPage = props => {
             />
           </div>
           <div className="flex justify-center">
-            <hr className="w-2/3"/>
+            <div className="flex justify-center w-9/12">
+              <div className="flex justify-center w-11/12">
+                <hr className="w-10/12"/>
+              </div>
+            </div>
           </div>
         </div>
         <div className="flex justify-center w-full">
