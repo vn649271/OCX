@@ -13,7 +13,7 @@ import {
 } from 'react-admin';
 
 import visitors from '../visitors';
-import orders from '../orders';
+import orders from '../pawnshop';
 import invoices from '../invoices';
 import products from '../products';
 import categories from '../categories';

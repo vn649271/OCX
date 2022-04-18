@@ -11,7 +11,7 @@ import {
     FieldProps,
 } from 'react-admin';
 
-import Basket from '../orders/Basket';
+import Basket from '../pawnshop/Basket';
 import { Customer, Invoice } from '../types';
 
 const CustomerField = ({ record }: FieldProps<Customer>) =>

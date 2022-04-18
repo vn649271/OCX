@@ -87,14 +87,14 @@ class PawnShopController {
 
     getList = async (req, resp) => {
         let ret = await pawnItemModel.all();
+        resp.set('Content-Range', 'pawnshop 0-9/3');
+        resp.set('Access-Control-Expose-Headers', 'Content-Range');
         if (!ret) {
             return resp.json({});
         }
         ret.map(item => {
             item.statusText = ASSET_STATUS_LABELS[item.status - 0];
         });
-        resp.set('Content-Range', 'pawnshop 0-9/3');
-        resp.set('Access-Control-Expose-Headers', 'Content-Range');
         return resp.json(ret);
     }
 
@@ -126,7 +126,7 @@ class PawnShopController {
         }
         let hisAllAssets = await this._getAssetFor(userInfo.account);
         if (!hisAllAssets || hisAllAssets.length === undefined || hisAllAssets.length < 1) {
-            return resp.json({ error: 1, data: "No result for the assets for this user" });
+            return resp.json({ error: 1, data: "No assets for the user" });
         }
         return resp.json({error: 0, data: hisAllAssets});        
     }

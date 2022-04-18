@@ -11,6 +11,7 @@ import {
     BooleanField,
     TextField,
     TextInput,
+    NumberInput,
     Link as RALink,
     Toolbar,
     useTranslate,
@@ -48,64 +49,12 @@ const OrderTitle = ({ record }: OrderTitleProps) => {
     ) : null;
 };
 
-// const CustomerDetails = ({ record }: { record?: Customer }) => (
-//     <Box display="flex" flexDirection="column">
-//         <Typography
-//             component={RouterLink}
-//             color="primary"
-//             to={`/customers/${record?.id}`}
-//             style={{ textDecoration: 'none' }}
-//         >
-//             {record?.first_name} {record?.last_name}
-//         </Typography>
-//         <Typography
-//             component={Link}
-//             color="primary"
-//             href={`mailto:${record?.email}`}
-//             style={{ textDecoration: 'none' }}
-//         >
-//             {record?.email}
-//         </Typography>
-//     </Box>
-// );
-
-// const CustomerAddress = ({ record }: { record?: Customer }) => (
-//     <Box>
-//         <Typography>
-//             {record?.first_name} {record?.last_name}
-//         </Typography>
-//         <Typography>{record?.address}</Typography>
-//         <Typography>
-//             {record?.city}, {record?.stateAbbr} {record?.zipcode}
-//         </Typography>
-//     </Box>
-// );
-
 const useEditStyles = makeStyles({
     root: { alignItems: 'flex-start' },
 });
 
 const Spacer = () => <Box m={1}>&nbsp;</Box>;
-
-{/* 
-data: {
-    asset_name: '',
-    asset_type: '',
-    asset_description: '',
-    asset_address: '',
-    asset_address_street: '',
-    asset_address_city: '',
-    asset_address_state: '',
-    asset_address_zipcode: '',
-    asset_address_country: '',
-    valuation_report: '',
-    price: 0,
-    price_percentage: 0,
-    quote_price: 0,
-    estimated_ocat: 0,
-    estimated_fee: '',
-    verified: false
-} */}
+{}
 
 const OrderForm = (props: any) => {
     const translate = useTranslate();
@@ -291,7 +240,7 @@ const OrderForm = (props: any) => {
                                                 source="estimated_fee"
                                                 resource="pawnshop"
                                             >
-                                                <TextField
+                                                <NumberInput
                                                     source="estimated_fee"
                                                     resource="pawnshop"
                                                     record={formProps.record}

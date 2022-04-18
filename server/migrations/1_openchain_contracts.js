@@ -8,7 +8,7 @@ const OcxExchange = artifacts.require("./OcxExchange.sol");
 const PawnExchange = artifacts.require("./PawnExchange.sol");
 const OcxLocalPool = artifacts.require("./OcxLocalPool.sol");
 const OcxPriceOracle = artifacts.require("./OcxPriceOracle.sol");
-const OcxFeeManager = artifacts.require("./OcxFeeManager.sol");
+const OcxOcatEthPool = artifacts.require("./OcxOcatEthPool.sol");
 
 module.exports = async deployer => {
   // console.log("%%%%%%%%%%%%%%% deployer: ", deployer);
@@ -19,17 +19,24 @@ module.exports = async deployer => {
     var guni = null;
     var guniAddress = null;
     var ocxlp = null;
-    var OcxAddress = null;
-    var ocatAddress = null;
+    var ocxAddress = "0x03c694f8786E75e9dB9FD5EC67d6550430F58CaD";
+    var ocxToken = null;
+    var ocatAddress = "0x031bc87a988cc288D74D676FCa1EDF649b08f72f";
     var ocatToken = null;
-    var ocxLocalPoolAddress = null;
-    var pawnExchangeAddress = null;
+    var ocxLocalPoolAddress = "0xE6493296FD87C0f83Cd809F2a8788A03093Cdd3A";
+    var ocxLocalPool = null;
+    var pawnExchangeAddress = "0xD5F87244a36342E1dBf7EF685B2E2fC194f9076d";
     var pawnExchange = null;
+    var pnftAddress = "0x5373E474Fdf8A6c4B11f25ef0C5E693386EdFCe0";
     var pnft = null;
-    var pnftAddress = null;
-    var ocxPriceOracleAddress = null;
+    var ocxPriceOracleAddress = "0xcf00bD00a8044a673Bd0C1263e001c9431f8f18c";
+    var ocxPriceOracle = null;
+    var ocxExchangeAddress = "0xf0B1281ab662e0B933181Ac7923D46aE5969C744";
     var ocxExchange = null;
+    var ocxFeeManagerAddress = "0xc6e523EE327AB5d381c2D4F4188568377Ea87Cd4";
     var ocxFeeManager = null;
+    var ocxOcatEthPoolAddress = null;
+    var ocxOcatEthPool = null;
     var adminAddress = "0xADB366C070DFB857DC63ebF797EFE615B0567C1B";
 
     deployer.deploy(PawnNFTs).then(ret => {
@@ -42,36 +49,30 @@ module.exports = async deployer => {
         ocatAddress = ret.address;
     });
     deployer.deploy(OcxToken).then(ret => {
-      OcxAddress = ret.address;
+      ocxAddress = ret.address;
       // // Setting deployed OCAT address 
       // await ret.setOcxPoolAddress(ocxLocalPoolAddress);
     });
-    deployer.deploy(OcxPriceOracle).then(ret => {
-        ocxPriceOracleAddress = ret.address;
-    });
-
-    deployer.deploy(PawnExchange).then(async ret => {
+    deployer.deploy(PawnExchange).then(ret => {
         pawnExchange = ret;
         pawnExchangeAddress = pawnExchange.address;
     });
 
-    deployer.deploy(OcxLocalPool).then(async ret => {
+    deployer.deploy(OcxLocalPool).then(ret => {
+        ocxLocalPool = ret;
         ocxLocalPoolAddress = ret.address;
-        // Setting deployed OCAT address 
-        await ret.setOcatAddress(ocatAddress);
-        // Setting deployed OCAT address 
-        // await ret.setOcxAddress(OcxAddress);
     });
 
-    deployer.deploy(OcxFeeManager).then(async ret => {
-        ocxFeeManager = ret
-        // // Setting deployed OCAT address 
-        // await ret.setOcatAddress(ocatAddress);
+    deployer.deploy(OcxPriceOracle).then(ret => {
+        ocxPriceOracleAddress = ret.address;
     });
 
     deployer.deploy(OcxExchange).then(async ocxExchange => {
         console.log("\n\n");
         if (deployer.network == "ganache") {
+            deployer.deploy(OcxOcatEthPool).then(ret => {
+                ocxOcatEthPoolAddress = ret.address;
+            });
             deployer.deploy(WEthToken).then(ret => {
                 weth = ret;
                 wethAddress = ret.address;
@@ -96,20 +97,23 @@ module.exports = async deployer => {
         console.log("    OCX_EXCHANGE: \"" + ocxExchange.address + "\"");
         console.log("\n\n");
         // Setup deployed OCAT address 
-        await pawnExchange.setOcatAddress(ocatAddress);
+        pawnExchange.setOcatAddress(ocatAddress);
         // Setup deployed PNFT address 
-        await pawnExchange.setPnftAddress(pnftAddress);
-        // Setup fee manager
-        await pawnExchange.setFeeManager(ocxFeeManager.address);
+        pawnExchange.setPnftAddress(pnftAddress);
+        // // Setup fee manager
+        // pawnExchange.setFeeManager(ocxFeeManager.address);
         // Setup administrator
-        await pawnExchange.addAdmin(adminAddress);
+        pawnExchange.addAdmin(adminAddress);
         // Add PawnExchange contract to OcatToken contract as an operator
-        await ocatToken.addOperator(pawnExchangeAddress);
+        ocatToken.addAdmin(adminAddress);
+        ocatToken.addAdmin(pawnExchangeAddress);
         // Setting deployed PNFT address 
-        await ocxExchange.setPnftAddress(pnftAddress);
+        ocxExchange.setPnftAddress(pnftAddress);
         // Setting deployed OCAT address 
-        await ocxExchange.setOcatAddress(ocatAddress);
+        ocxExchange.setOcatAddress(ocatAddress);
         // Setting deployed Ocx local pool address 
-        await ocxExchange.setOcxLocalPoolAddress(ocxLocalPoolAddress);
+        ocxExchange.setOcxLocalPoolAddress(ocxLocalPoolAddress);
+        // Setting deployed OCAT address 
+        ocxLocalPool.setOcatAddress(ocatAddress);
     });
 };
