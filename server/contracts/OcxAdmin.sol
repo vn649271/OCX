@@ -7,6 +7,7 @@ contract OcxAdmin {
 
     constructor() {
         creator = payable(msg.sender);
+        addAdmin(msg.sender);
 	}
 
     modifier onlyCreator virtual {

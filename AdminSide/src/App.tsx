@@ -10,7 +10,7 @@ import customRoutes from './routes';
 import englishMessages from './i18n/en';
 
 import visitors from './visitors';
-import orders from './orders';
+import orders from './pawnshop';
 import products from './products';
 import invoices from './invoices';
 import categories from './categories';

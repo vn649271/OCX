@@ -147,7 +147,7 @@ const TabbedDatagrid = (props: TabbedDatagridProps) => {
                     <Datagrid {...props} optimized rowClick="edit">
                         <TextField label="Name" source="asset_name" />
                         <TextField label="Type" source="asset_type" />
-                        <NumberField label="Zip Code" source="asset_address_zipcode" />
+                        {/*<NumberField label="Zip Code" source="asset_address_zipcode" />*/}
                         <TextField label="Country" source="asset_address_country" />
                         <NumberField 
                             label="Price" 
@@ -157,7 +157,7 @@ const TabbedDatagrid = (props: TabbedDatagridProps) => {
                                 currency: 'AUD',
                             }}
                         />
-                        <NumberField label="Price Percentage" source="price_percentage" />
+                        {/*<NumberField label="Price Percentage" source="price_percentage" />*/}
                         <NumberField 
                             label="Quote Price" 
                             source="quote_price" 
@@ -166,21 +166,11 @@ const TabbedDatagrid = (props: TabbedDatagridProps) => {
                                 currency: 'AUD',
                             }}
                         />
-                        <TextField label="Estimated Fee" source="estimated_fee" />
+                        {/*<TextField label="Estimated Fee" source="estimated_fee" />*/}
                         <NumberField label="Estimated OCAT" source="estimated_ocat" />
                         <DateField source="created_at" showTime />
                         <TextField label="Status" source="statusText"/>
                         <EditButton label="Action" basePath="/pawnshop" />
-                        {/* <CustomerReferenceField />
-                        <ReferenceField
-                            source="customer_id"
-                            reference="customers"
-                            link={false}
-                            label="resources.pawnshop.fields.address"
-                        >
-                            <AddressField />
-                        </ReferenceField> */}
-                        {/* <NbItemsField /> */}
                     </Datagrid>
                 </ListContextProvider>
             </div>

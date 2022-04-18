@@ -27,7 +27,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import { makeStyles } from '@material-ui/core/styles';
 
-import order from '../orders';
+import order from '../pawnshop';
 import review from '../reviews';
 import StarRatingField from '../reviews/StarRatingField';
 import { Order as OrderRecord, Review as ReviewRecord } from '../types';
