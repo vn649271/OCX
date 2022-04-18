@@ -163,8 +163,8 @@ const WalletActivatePage = props => {
   }
 
   return (
-    <div className="justify-center w-full">
-        <div className="flex justify-center mb-10">
+    <div className="flex justify-start w-full">
+        <div className="flex justify-start w-full mb-10 ml-36">
             <div className="items-start w-1/2">
               <div className="passphrase-container">
                 <textarea

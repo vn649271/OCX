@@ -16,10 +16,12 @@ export default class Dashboard extends Component {
             email: localStorage.email,
             token: localStorage.userToken,
             targetPageId: null,
+            selectedPageTitle: null,
         }
 
         this.validateUser = this.validateUser.bind(this);
         this.onSelectMenuItem = this.onSelectMenuItem.bind(this);
+        this.setPageTitle = this.setPageTitle.bind(this);
     }
 
     validateUser = token => {
@@ -48,16 +50,20 @@ export default class Dashboard extends Component {
         }
     }
 
+    setPageTitle(title) {
+        this.setState({selectedPageTitle: title});
+    }
+
     render() {
         if (this.state.redirect) {
             return <Redirect to={this.state.redirect} />
         }
         return (
             <div>
-                <Header userToken={this.state.token} />
+                <Header userToken={this.state.token} pageTitle={this.state.selectedPageTitle} />
                 <div className="flex bg-global">
                     <SidebarMenu onSelectItem={this.onSelectMenuItem} />
-                    <PageContainer target={this.state.targetPageId}/>
+                    <PageContainer target={this.state.targetPageId} setPageTitle={this.setPageTitle}/>
                 </div>
                 <Footer />
                 <MobileNav />
