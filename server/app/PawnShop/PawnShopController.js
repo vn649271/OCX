@@ -90,7 +90,7 @@ class PawnShopController {
         resp.set('Content-Range', 'pawnshop 0-9/3');
         resp.set('Access-Control-Expose-Headers', 'Content-Range');
         if (!ret) {
-            return resp.json({});
+            return resp.json({data: []});
         }
         ret.map(item => {
             item.statusText = ASSET_STATUS_LABELS[item.status - 0];

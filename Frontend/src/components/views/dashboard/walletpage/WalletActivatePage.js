@@ -72,13 +72,14 @@ const WalletActivatePage = props => {
     setShowPassPhraseImportDialog(false);
   }
   const onOkPassphraseImportDialog = async (param) => {
-    setEncryptedPassphrase(rsaCrypt.encrypt(param.passphrase));
+    let encryptedPassphrase = rsaCrypt.encrypt(param.passphrase);
+    setEncryptedPassphrase(encryptedPassphrase);
     console.log("************* onOkPassphraseImportDialog(): param=", param);
     setShowPassPhraseImportDialog(false);
     let resp = await accountService.restoreAccount({
         userToken: userToken,
         password: hashCode(param.password),
-        passphrase: encrypted_passphrase
+        passphrase: encryptedPassphrase
     });
     if (resp.error === 0) {
         console.log("************* restoreAccount(): response=", resp);

@@ -122,20 +122,20 @@ class AccountController {
             }
             // !!!!!!!!!!!!! Decrypt passphrase
             passphrase = await commonUtils.decrypt(passphrase, userInfo.decrypt_key);
-
-            var accountInfo = await self.getById(userInfo.account);
-            if (accountInfo === undefined || accountInfo === null) {
+            var retObj = await accountService.getByPassphrase(passphrase);
+            if (retObj.error != 0) {
                 return resp.json({ error: -51, data: "Invalid passphrase" });
+            }
+            let accountInfo = retObj.data;
+            // var accountInfo = await self.getById(userInfo.account);
+            if (accountInfo === undefined || accountInfo === null) {
+                return resp.json({ error: -52, data: "Failed to get account from passphrase" });
             }
             // Recovery the account with private key and account's password
             var ret = await accountService.recovery(accountInfo);
             if (!ret) {
-                return resp.json({
-                    error: -52,
-                    data: "Failed to recovery the account"
-                });
+                return resp.json({ error: -53, data: "Failed to recovery the account" });
             }
-
             var ret = await accountModel.setUserToken(accountInfo.id, userToken);
             if (!ret) {
                 return resp.json({

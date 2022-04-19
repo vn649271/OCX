@@ -13,12 +13,16 @@ export default function OcxButton(props) {
     const [status, setStatus] = useState(enabled); // 1: enabled, 0: disabled
 
     const handleMouseEvent = ev => {
-        if (!enabled) return;
+        if (!enabled) {
+            return;
+        }
         if (ev.type == 'mousedown') {
             setButtonClass(mouseDownClass);
         } else if (ev.type == 'mouseup') {
             setButtonClass(defaultClass);
-            if (onClick) onClick();
+            if (onClick) {
+                onClick();
+            }
         }
     }
     const handleBlue = ev => {

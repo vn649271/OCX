@@ -883,7 +883,6 @@ class PawnShopPage extends Component {
                                         {/* <label>Percentage of value</label> */}
                                         <OcxInput
                                             type="number"
-                                            text-align="right"
                                             name="price_percentage"
                                             id="price_percentage"
                                             placeholder="Percentage of value"
@@ -893,25 +892,24 @@ class PawnShopPage extends Component {
                                     </div>
                                     <div className="mr-5">
                                         {/* <label>Quote Price</label> */}
-                                        <input
+                                        <OcxInput
                                             type="number"
-                                            text-align="right"
                                             name="quote_price"
                                             id="quote_price"
                                             placeholder="Quote Price"
+                                            readOnly={true}
                                             value={this.state.inputs.quote_price}
-                                            readOnly
                                         />
                                     </div>
                                     <div className="mr-5">
                                         {/* <label>Estimated OCAT</label> */}
-                                        <input
+                                        <OcxInput
                                             type="number"
                                             name="estimated_ocat"
                                             id="estimated_ocat"
                                             placeholder="Estimated OCAT"
                                             value={this.state.inputs.estimated_ocat}
-                                            readOnly
+                                            readOnly={true}
                                             autoComplete="off"
                                         />
                                     </div>

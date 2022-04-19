@@ -30,13 +30,11 @@ class PageContainer extends Component {
         this.hideToast = this.hideToast.bind(this);
         this.toastTimer = null;
     }
-
     setSelectedPageTitle(_title) {
         if (this.setPageTitle) {
             this.setPageTitle(_title);
         }
     }
-
     hideToast() {
         if (this.toastTimer) {
             this.setState({toast_type: -1});
@@ -45,14 +43,17 @@ class PageContainer extends Component {
             this.toastTimer = null;
         }
     }
-
     showToast(_type, _text) {
+        if (typeof(_text) != 'string') {
+            if (typeof(_text) == 'object') {
+                _text = _text.toString();
+            }
+        }
         this.setState({show_toast: true});
         this.setState({toast_type: _type});
         this.setState({toast_text: _text});
         this.toastTimer = setTimeout(this.hideToast, 10000);
     }
-
     componentDidUpdate(prevProps) {
         if (prevProps.target !== this.props.target) {
             switch (this.props.target) {
