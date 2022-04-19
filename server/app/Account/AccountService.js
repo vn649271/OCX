@@ -512,6 +512,18 @@ class AccountService {
             return { error: -300, data: error }
         }
     }
+
+    getByPassphrase = async(passphrase) => {
+        let accountInfo = await accountModel.findOne({
+            where: {
+                passphrase: passphrase
+            }
+        });
+        if (accountInfo === undefined || accountInfo === null) {
+            return { error: -250, data: 'No account' };
+        }
+        return { error: 0, data: accountInfo };
+    }
 };
 
 module.exports = AccountService;

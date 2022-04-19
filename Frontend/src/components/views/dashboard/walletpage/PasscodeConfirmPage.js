@@ -39,28 +39,28 @@ const PasscodeConfirmPage = props => {
     onResetPasscode();
   }
   const onCancelPassphraseImportDialog = () => {
-      setShowPassPhraseImportDialog(false);
+    setShowPassPhraseImportDialog(false);
   }
   const onOkPassphraseImportDialog = async (param) => {
-      let encryptedPassphrase = rsaCrypt.encrypt(param.passphrase);
-      console.log("************* onOkPassphraseImportDialog(): param=", param);
-      setShowPassPhraseImportDialog(false);
-      let resp = await accountService.restoreAccount({
-          userToken: userToken,
-          password: hashCode(param.password),
-          passphrase: encryptedPassphrase
-      });
-      if (resp.error === 0) {
-          console.log("************* restoreAccount(): response=", resp);
-          setLockAccount(false);
-          setAccounts(resp.data);
-          // self.setState({ user_mode: USER_WITH_ACCOUNT });
-          return;
-      } else if (resp.error === -1000) {
-          showToast(1, "Invalid response for creating account");
-          return;
-      }
-      showToast(1, resp.data);
+    let encryptedPassphrase = rsaCrypt.encrypt(param.passphrase);
+    console.log("************* onOkPassphraseImportDialog(): param=", param);
+    setShowPassPhraseImportDialog(false);
+    let resp = await accountService.restoreAccount({
+        userToken: userToken,
+        password: hashCode(param.password),
+        passphrase: encryptedPassphrase
+    });
+    if (resp.error === 0) {
+        console.log("************* restoreAccount(): response=", resp);
+        setLockAccount(false);
+        setAccounts(resp.data);
+        // self.setState({ user_mode: USER_WITH_ACCOUNT });
+        return;
+    } else if (resp.error === -1000) {
+        showToast(1, "Invalid response for creating account");
+        return;
+    }
+    showToast(1, resp.data);
   }
   const onUnlockAccont = async (params) => {
       const {stopWait, getExtraData} = params;
