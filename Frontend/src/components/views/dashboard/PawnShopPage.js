@@ -237,10 +237,11 @@ class PawnShopPage extends Component {
             valuation_report: {},
             price: 0,
             price_percentage: 0,
-            quote_price: 0,
-            estimated_ocat: 0,
-            estimated_fee: '',
         },
+		quote_price: '',
+        estimated_ocat: '',
+		estimated_fee: 0,
+		estimated_fee_text: 'A$350 + A$6/Day',
         show_submit_confirm: false,
         show_mint_confirm: false,
         show_burn_confirm: false,
@@ -429,15 +430,11 @@ class PawnShopPage extends Component {
     }
 
     setQuotePrice = quotePrice => {
-        let inputs = this.state.inputs;
-        inputs.quote_price = quotePrice;
-        this.setState({inputs}) 
+        this.setState({quote_price: quotePrice ? quotePrice: ''}) 
     }
 
-    setEstimatedOcat = estimated_ocat => {
-        let inputs = this.state.inputs;
-        inputs.estimated_ocat = estimated_ocat;
-        this.setState({inputs}) 
+    setEstimatedOcat = estimatedOcat => {
+        this.setState({estimated_ocat: estimatedOcat ? estimatedOcat: ''}) 
     }
 
     setEstimatedFee = estimatedFee => {
@@ -461,20 +458,22 @@ class PawnShopPage extends Component {
     }
 
     clearAllFields = () => {
-        this.setState({ 'asset_name': '' });
-        this.setState({ 'asset_type': '' });
-        this.setState({ 'asset_description': ''});
-        this.setState({ 'asset_address_street': ''});
-        this.setState({ 'asset_address_city': ''});
-        this.setState({ 'asset_address_state': ''});
-        this.setState({ 'asset_address_zipcode': ''});
-        this.setState({ 'asset_address_country': ''});
-        this.setState({ 'valuation_report': ''});
-        this.setState({ 'price': 0 });
-        this.setState({ 'price_percentage': 0 });
-        this.setState({ 'quote_price': 0 });
-        this.setState({ 'estimated_ocat': 0 });
-        this.setState({ 'estimated_fee': '' });
+		let inputs = this.state.inputs;
+        inputs.asset_name = '';
+        inputs.asset_type = '';
+        inputs.asset_description = '';
+        inputs.asset_address_street = '';
+        inputs.asset_address_city = '';
+        inputs.asset_address_state = '';
+        inputs.asset_address_zipcode = '';
+        inputs.asset_address_country = '';
+        inputs.valuation_report = '';
+        inputs.price = 0;
+        inputs.price_percentage = 0;
+
+		this.setState(inputs);
+		this.setQuotePrice('');
+		this.setEstimatedOcat('');
     }
 
     onSelectValuationReport = fileInfo => {
@@ -482,6 +481,15 @@ class PawnShopPage extends Component {
     }
 
     onClickBooking = ev => {
+    }
+
+    onClickSubmit = (param, ev, btnCmpnt) => {
+        this.submitButtonContext = {
+            param: param,
+            ev: ev,
+            btnCmpnt: btnCmpnt
+        };
+        this.setState({show_submit_confirm: true});
     }
 
     onClickSubmitConfirm = async (ret) => {
@@ -498,6 +506,7 @@ class PawnShopPage extends Component {
             if (ret.error - 0 !== 0) {
                 btnCmpnt.stopTimer();
                 this.showMessageBox("Failed to submit: " + ret.data, 1);
+				this.setValuationReport(null);
                 return;
             }
             console.log("Uploading valuation report: ", ret)
@@ -521,15 +530,6 @@ class PawnShopPage extends Component {
 			btnCmpnt.stopTimer();
             //this.showMessageBox(error, 1)
         }
-    }
-
-    onClickSubmit = (param, ev, btnCmpnt) => {
-        this.submitButtonContext = {
-            param: param,
-            ev: ev,
-            btnCmpnt: btnCmpnt
-        };
-        this.setState({show_submit_confirm: true});
     }
 
     onClickResubmit = ev => {}
@@ -626,10 +626,11 @@ class PawnShopPage extends Component {
             let reportedPrice = this.state.inputs.price ? this.state.inputs.price : 0;
             let quote = this.state.inputs.price_percentage ? this.state.inputs.price_percentage: 0;
 			let quotedPrice = (reportedPrice * quote) / 100; 
-            this.setQuotePrice(quotedPrice);
+            this.setQuotePrice(quotedPrice?quotedPrice:'');
 			let ocatPrice = this.prices['OCAT'] ? this.prices['OCAT']: 0;
 			let pnftMintFee = this.prices['PNFT_MINT_FEE'] ? this.prices['PNFT_MINT_FEE']: 0;
-			this.setEstimatedOcat(quotedPrice - quotedPrice * ocatPrice * pnftMintFee);
+			let estimatedOcat = quotedPrice - quotedPrice * ocatPrice * pnftMintFee;
+			this.setEstimatedOcat(estimatedOcat? estimatedOcat: '');
         }
     }
 
@@ -885,7 +886,7 @@ class PawnShopPage extends Component {
                                             type="number"
                                             name="price_percentage"
                                             id="price_percentage"
-                                            placeholder="Percentage of value"
+                                            placeholder="Pawn to Token Ratio"
                                             value={this.state.price_percentage}
                                             onChange={this.handleInputChange}
                                         />
@@ -898,7 +899,7 @@ class PawnShopPage extends Component {
                                             id="quote_price"
                                             placeholder="Quote Price"
                                             readOnly={true}
-                                            value={this.state.inputs.quote_price}
+                                            value={this.state.quote_price}
                                         />
                                     </div>
                                     <div className="mr-5">
@@ -908,7 +909,7 @@ class PawnShopPage extends Component {
                                             name="estimated_ocat"
                                             id="estimated_ocat"
                                             placeholder="Estimated OCAT"
-                                            value={this.state.inputs.estimated_ocat}
+                                            value={this.state.estimated_ocat}
                                             readOnly={true}
                                             autoComplete="off"
                                         />
@@ -938,14 +939,12 @@ class PawnShopPage extends Component {
                                     <div className="w-4/12 mr-5">
                                         <label>Estimated Fee</label>
 										<div className="w-1/2">
-	                                        <input
-    	                                        type="number"
-        	                                    className="block border border-grey-light bg-gray-100 w-30 p-3 font-16 main-font focus:outline-none rounded align-right"
+	                                        <OcxInput
             	                                name="estimated_fee"
                 	                            id="estimated_fee"
                     	                        placeholder="Estimated Fee"
-                        	                    value={this.state.inputs.estimated_fee * 100}
-												readOnly
+                        	                    value={this.state.estimated_fee_text}
+												readOnly={true}
                                 	            autoComplete="off"
                                     	    />
 										</div>

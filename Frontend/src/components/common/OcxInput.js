@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 
 export default function OcxInput(props) {
-
 	const {
 		type = 'text',
 		additionalClassName = '', 
@@ -13,7 +12,7 @@ export default function OcxInput(props) {
 		autoComplete = 'off',
 	} = props;
 
-    const _baseClass = "inline-flex block border border-grey-light ml-10 bg-gray-100 w-200 p-3 font-16 main-font focus:outline-none rounded ";
+    const _baseClass = "inline-flex block border border-grey-light bg-gray-100 w-200 p-3 font-16 main-font focus:outline-none rounded ";
 
     const [_class, setClass] = useState(_baseClass);
     const [_value, setValue] = useState(value);
@@ -29,7 +28,7 @@ export default function OcxInput(props) {
 		if (!is_change) {
 			setValue(value);
 		}
-    });
+    }, []);
 
 	const handleInputChange = ev => {
 		setValue(ev.target.value);
@@ -46,6 +45,7 @@ export default function OcxInput(props) {
 	            name={name}
 	            id={id}
 	            placeholder={placeholder}
+			    datatip={placeholder}
 	            value={_value}
 	            autoComplete={autoComplete}
 				readOnly={readOnly}

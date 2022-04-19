@@ -106,6 +106,7 @@ class PawnShopController {
         var allAssetsForUser = [];
         for (let i in allAssetIDs) {
             let assetInfo = await pawnItemModel.getById(allAssetIDs[i]);
+            if (assetInfo == undefined) continue;
             assetInfo.id = allAssetIDs[i];
             allAssetsForUser.push(assetInfo);
         }
