@@ -28,7 +28,7 @@ export default function OcxInput(props) {
 		if (!is_change) {
 			setValue(value);
 		}
-    }, []);
+    });
 
 	const handleInputChange = ev => {
 		setValue(ev.target.value);

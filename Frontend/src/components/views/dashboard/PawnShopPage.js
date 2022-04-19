@@ -235,8 +235,8 @@ class PawnShopPage extends Component {
             asset_address_zipcode: '',
             asset_address_country: '',
             valuation_report: {},
-            price: 0,
-            price_percentage: 0,
+            price: '',
+            price_percentage: '',
         },
 		quote_price: '',
         estimated_ocat: '',
@@ -876,7 +876,7 @@ class PawnShopPage extends Component {
                                             name="price"
                                             id="price"
                                             placeholder="Valuation Price"
-                                            value={this.state.price}
+                                            value={this.state.inputs.price}
                                             onChange={this.handleInputChange}
                                         />
                                     </div>
@@ -887,7 +887,7 @@ class PawnShopPage extends Component {
                                             name="price_percentage"
                                             id="price_percentage"
                                             placeholder="Pawn to Token Ratio"
-                                            value={this.state.price_percentage}
+                                            value={this.state.inputs.price_percentage}
                                             onChange={this.handleInputChange}
                                         />
                                     </div>
