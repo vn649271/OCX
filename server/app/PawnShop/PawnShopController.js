@@ -198,11 +198,14 @@ class PawnShopController {
         if (userInfo.account === undefined || !userInfo.account) {
             return resp.json({ error: -3, data: "No account for you" });
         }
-
         try {
+            let accountInfo = await accountController.getById(userInfo.account);
+            if (!accountInfo) {
+                return resp.json({ error: 52, data: "Not found the account" });
+            }
             assetData.status = ASSET_SUBMITTED; // Submitted
             // Save the pawn item data into firestore
-            let ret = await pawnItemModel.create(assetData);
+            let ret = await pawnItemService.create(assetData, accountInfo);
             if (!ret || ret.error === undefined) {
                 return resp.json({ error: -2, data: "Failed to save pawn item" });
             }
@@ -400,6 +403,27 @@ class PawnShopController {
             return resp.json({ error: 0, data: { all_assets: hisAllAssets } });
         } catch (error) {
             return resp.json({ error: -100, data: error.message });
+        }
+    }
+    getFees = async(req, resp, next) => {
+        var userToken = req.body ? req.body.userToken ? req.body.userToken : null : null;
+        if (userToken === null) {
+            return resp.json({ error: -1, data: "Invalid request" });
+        }
+        try {
+            let userInfo = userController.validateUserToken(userToken);
+            if (!userInfo) {
+                return resp.json({ error: -50, data: "Invalid user token or internet disconnected" });
+            }
+            let accountInfo = await accountController.getById(userInfo.account);
+            if (!accountInfo) {
+                return resp.json({ error: -51, data: "Not found valid account" });
+            }
+            let ret = await pawnItemService.getFeeList(accountInfo);
+            return resp.json(ret);
+        } catch (error) {
+            let errorMessage = error.message.replace("Returned error: ", "");
+            return resp.json({ error: -100, data: errorMessage });
         }
     }
 }

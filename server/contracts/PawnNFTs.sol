@@ -4,9 +4,7 @@ pragma solidity ^0.8.0;
 // import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "./OcxBase.sol";
-import "./IOcat.sol";
-import "./OcxCommon.sol";
-
+import "./IOcxPriceOracle.sol";
 /*
  * -2: mint(): Error: caller of zero address
  * -3: Too small price
@@ -32,11 +30,8 @@ import "./OcxCommon.sol";
 // PawnNFTs smart contract inherits ERC721 interface
 contract PawnNFTs is ERC721, OcxBase {
 
-  address payable manager;
-
   // total number of pawning NFTs minted
   uint256 private totalSupply;
-  uint64  private minPnftPrice = 5000;
 
   uint8   public decimals = 0;
   
@@ -66,7 +61,7 @@ contract PawnNFTs is ERC721, OcxBase {
   receive() external payable {}
 
   // initialize contract while deployment with contract's collection name and token
-  constructor() ERC721("Openchain Pawning NFTs Collection", "PNFT") {
+  constructor() ERC721("Openchain Pawning NFT", "PNFT") {
     // collectionName = name();
     // collectionNameSymbol = symbol();
   }
@@ -74,32 +69,13 @@ contract PawnNFTs is ERC721, OcxBase {
   modifier onlyTokenOwner(uint256 _tokenId) virtual {
     // check if the token id of the token being bought exists or not
     require(_exists(_tokenId), "-9");
-    address tokenOwner = ownerOf(_tokenId);
-    // token's owner should not be an zero address account
-    require(tokenOwner != address(0), "-10");
     // sender should not be an zero address account
-    require(msg.sender != address(0), "-10");
-    // the one who wants to buy the token should not be the token's owner
-    require(tokenOwner == msg.sender, "-11");
+    require(ownerOf(_tokenId) == msg.sender, "-11");
     _;
   }
-
-  function setManager(address payable _manager) public 
-  onlyCreator onlyValidAddress(_manager) {
-    manager = _manager;
-  }
-
-  function setMinPnftPrice(uint8 _minPnftPrice) public 
-  // onlyAdmin 
-  {
-      minPnftPrice = _minPnftPrice;
-  }
-
   // mint a new pawning NFT and return token ID
   function mint(bytes32 _name, string memory _tokenURI, uint256 _price) external 
-  returns(uint256 newTokenID, uint256 realOcats, uint256 mintFee) {
-    require(msg.sender != address(0), "Only valid caller");
-    require(_price >= minPnftPrice, "-3");
+  onlyValidCaller returns(uint256 newTokenID, uint256 realOcats, uint256 mintFee) {
     // increment counter
     totalSupply++;
     newTokenID = totalSupply;
@@ -122,7 +98,8 @@ contract PawnNFTs is ERC721, OcxBase {
     tokenNameExists[_name] = true;
 
     // Mint new OCATs for this PNFT
-    (realOcats, mintFee,) = getExpectedPrices(_price);
+    (uint256 applicationFee, uint256 valuationFee) = IOcxPriceOracle(ocxPriceOracleAddress).getSubmitFee();
+    realOcats = _price - applicationFee - valuationFee;
     // creat a new pawning NFT (struct) and pass in new values
     allPawnNFTs[newTokenID] = PawnNFT(
       newTokenID,
@@ -137,29 +114,19 @@ contract PawnNFTs is ERC721, OcxBase {
       true // for sale
     );
   }
-  function getExpectedPrices(uint256 originalPrice) public view
-  returns(uint256 realOcats, uint256 mintFee, uint256 _ocatPrice) {
-    uint256 quotedOcats = convertToOcat(originalPrice);
-    _ocatPrice = ocatPrice;
-    mintFee = quotedOcats * fees[FeeType.PNFT_MINT_FEE] / (10 ** FEE_DECIMAL);
-    realOcats = quotedOcats - mintFee;
-  }
   // get owner of the token
   function getTokenOwner(uint256 _tokenId) public view returns(address) {
     return ownerOf(_tokenId);
   }
-
   // get metadata of the token
   function getTokenMetaData(uint _tokenId) public view 
   returns(string memory tokenMetaData) {
     tokenMetaData = tokenURI(_tokenId);
   }
-
   // check if the token already exists
   function exists(uint256 _tokenId) public view returns(bool tokenExists) {
     tokenExists = _exists(_tokenId);
   }
-
   // by a token by passing in the token's id
   function buyToken(uint256 _tokenId) public payable 
   onlyValidCaller {
@@ -193,18 +160,12 @@ contract PawnNFTs is ERC721, OcxBase {
     allPawnNFTs[tokenId].currentOwner = payable(to);
     allPawnNFTs[tokenId].numberOfTransfers += 1;
   }
-  function changeTokenPrice(uint256 _tokenId, uint256 _newPrice) public 
+  function changeTokenPriceAndFee(uint256 _tokenId, uint256 _newPrice, uint256 _fee) public 
   // onlyTokenOwner(_tokenId) {
   onlyAdmin 
   {
     // update token's price with new price
     allPawnNFTs[_tokenId].price = _newPrice;
-  }
-  function setFee(uint256 _tokenId, uint256 _fee) public 
-  // onlyTokenOwner(_tokenId) {
-  onlyAdmin 
-  {
-    // update token's price with new price
     allPawnNFTs[_tokenId].fee = _fee;
   }
   // switch between set for sale and set not for sale

@@ -39,6 +39,8 @@ const {
 
 const DEFAULT_DEADLINE = 300;   // 300s = 5min
 const SLIPPAGE_MAX = 3;         // 3%
+const PAWN_MINIMUM_PRICE = 5000;
+
 var gOpenchainRouter = null;
 
 var self;
@@ -631,10 +633,100 @@ class OpenchainRouter {
         }
     }
 
-    getPriceList = async (resp) => {
+    getTokenPrices = async() => {
+        try {
+            let opoAddress = this.getContractAddress(OcxPriceOracle_DeployedInfo);
+            const priceOracleContract = new this.web3.eth.Contract(
+                OcxPriceOracle_DeployedInfo.abi, 
+                opoAddress
+            );
+            let ethPrice = 3400000000; // await priceOracleContract.methods.getEthUsdPrice().call();
+            ethPrice = ethPrice / (10 ** 6);
+            let ocatPrice = await priceOracleContract.methods.getOcatPrice().call();
+            return {error: 0, data: {
+                eth: ethPrice, 
+                ocat: ocatPrice, 
+            }};
+        } catch (error) {
+            return { error: -300, data: error };
+        }
+    }
+
+    getFeeList = async () => {
         let ret = await this._unlockAccount();
         if (ret.error) {
             return ret;
+        }
+        try {
+            // let opoAddress = this.getContractAddress(OcxPriceOracle_DeployedInfo);
+            // const priceOracleContract = new this.web3.eth.Contract(
+            //     OcxPriceOracle_DeployedInfo.abi, 
+            //     opoAddress
+            // );
+            // let ethPrice = 3400000000; // await priceOracleContract.methods.getEthUsdPrice().call();
+            // ethPrice = ethPrice / (10 ** 6);
+            // let ocatPrice = await priceOracleContract.methods.getOcatPrice().call();
+            let feeListRet = await this._getFeeList();
+            // if (feeListRet.error < 0) {
+            //     return {error: -250, data: "Failed to get fee list"};
+            // }
+            // return {error: 0, data: {
+            //     eth: ethPrice, 
+            //     ocat: ocatPrice, 
+            // }};
+            return feeListRet;
+        } catch (error) {
+            return { error: -300, data: error };
+        }
+    }
+
+    _getFeeList = async () => {
+        let ret = await this.getSubmitFee();
+        if (ret.error < 0) {
+            return {error: -1, data: "Failed to get submition fee"};
+        }
+        let submitCommission = ret.data;
+        ret = await this.getWeeklyFee();
+        if (ret.error < 0) {
+            return {error: -2, data: "Failed to get weekly fee"};
+        }
+        let weeklyFee = ret.data;
+        return { 
+            error: 0, 
+            data: {
+                submit: submitCommission,
+                weekly: weeklyFee
+            } 
+        }; // ret;
+    }
+
+    getSubmitFee = async () => {
+        // Load values of fee for submition
+        let opoAddress = this.getContractAddress(OcxPriceOracle_DeployedInfo);
+        const priceOracleContract = new this.web3.eth.Contract(
+            OcxPriceOracle_DeployedInfo.abi, 
+            opoAddress
+        );
+        let submitFeeData = await priceOracleContract.methods.getSubmitFee().call();
+        console.log("************* SUBMIT FEE ", submitFeeData);
+        return {
+            error: 0,
+            data: {
+                application: submitFeeData.application,
+                valuation: submitFeeData.valuation
+            }
+        }
+    }
+
+    getWeeklyFee = async (basePrice) => {
+        if (basePrice == undefined) {
+            basePrice = 0;
+        }
+        if (basePrice < 0) {
+            return {
+                error: -1,
+                data: "Invalid base price"
+            }
         }
         let opoAddress = this.getContractAddress(OcxPriceOracle_DeployedInfo);
         const priceOracleContract = new this.web3.eth.Contract(
@@ -642,19 +734,14 @@ class OpenchainRouter {
             opoAddress
         );
         try {
-            let ethPrice = 3400000000; // await priceOracleContract.methods.getEthUsdPrice().call();
-            let ocatPrice = await priceOracleContract.methods.getOcatPrice().call();
-            let mintFee = await priceOracleContract.methods.getFee(2/*PNFT_MINT_FEE*/).call();
-            return resp.json({ 
-                error: 0, 
-                data: {
-                    ETH: ethPrice / (10**6), 
-                    OCAT: ocatPrice, 
-                    PNFT_MINT_FEE: mintFee / (10 ** 4)
-                } 
-            }); // ret;
-        } catch (error) {
-            return resp.json({ error: -300, data: error });
+            let weeklyFeeData = await priceOracleContract.methods.getWeeklyFee(basePrice.toString()).call();
+            return {
+                error: 0,
+                data: weeklyFeeData.value / Math.pow(10, weeklyFeeData.feeDecimals)
+            }
+        } catch(error) {
+            console.log("OpenchainRouter.getWeeklyFee(): ", error);
+            return { error: -300, data: error }
         }
     }
 }

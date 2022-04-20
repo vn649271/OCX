@@ -33,6 +33,27 @@ class PawnItemService {
         setTimeout(getWeb3Obj, 12000, initWeb3);
     }
 
+    async create(assetData, accountInfo) {
+        try {
+            if (accountInfo.addresses == undefined || accountInfo.addresses == {}) {
+                return { error: -201, data: "No account for you" };
+            }
+            // Load pawn ratio from valuation report
+            // Calculate and add the fee information and quoted amount of OCAT
+            let ret = await this.getFeeList(accountInfo);
+            if (ret.error < 0) {
+                return {error: -1, data: "Failed to get initial fee"};
+            }
+            let submitFee = ret.data.submit;
+            assetData.quoted_price = (assetData.reported_price * assetData.price_percentage) / 100 - 
+                                    (submitFee.application + submitFee.valuation);
+            ret = await pawnItemModel.create(assetData);
+        } catch (error) {
+            let errorMessage = error.message.replace("Returned error: ", "");
+            return { error: -300, data: errorMessage };
+        }
+    }
+
     /**
      * @param {object} newPawnItemObj list of symbols for getting info of
      */
@@ -190,6 +211,33 @@ class PawnItemService {
         } catch (error) {
             let errorMessage = error.message.replace("Returned error: ", "");
             return { error: -300, data: errorMessage };
+        }
+    }
+    getFeeList = async(accountInfo) => {
+        if (web3 == null) {
+            return {
+                error: -200,
+                data: "Geth node is not ready yet. Please retry a while later."
+            };
+        }
+        if (accountInfo.addresses == undefined || accountInfo.addresses == {}) {
+            return {
+                error: -201,
+                data: "No account for you"
+            };
+        }
+        let ret = null;
+        const ocRouter = await openchainRouterInstance(web3, accountInfo);
+        if (!ocRouter) {
+            return {
+                error: -202,
+                data: "Invalid account for you"
+            };
+        }
+        try {
+            return await ocRouter.getFeeList();
+        } catch (error) {
+            return resp.json({ error: -300, data: error });
         }
     }
 };

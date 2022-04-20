@@ -33,6 +33,12 @@ app.use("/api/account", Account);
  var PawnShop = require("./app/routes/PawnShop");
  app.use("/api/pawnshop", PawnShop);
  
+/**
+ * Router for Price Oracle
+ */
+ var priceOracle = require("./app/routes/PriceOracle");
+ app.use("/api/price", priceOracle);
+ 
  /**
  * Router for recaptcha
  */
