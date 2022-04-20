@@ -12,15 +12,14 @@ contract OcxBase is OcxAdmin {
     address payable             internal ocatAddress;
     address payable             internal ocxAddress;
     address payable             internal pnftAddress;
-    address payable             internal feeManager;
+    address payable             internal ocxPriceOracleAddress;
 
 
     constructor() {
         ocatPrice = 100;
-        fees[FeeType.PNFT_OCAT_SWAP_FEE] = 65; // 0.65% 
-        fees[FeeType.OCAT_PNFT_SWAP_FEE] = 65; // 0.65%
-        fees[FeeType.PNFT_MINT_FEE] = 65;     // 0.65% 
-   }
+        fees[FeeType.PNFT_OCAT_SWAP_FEE] = 8; // 0.8% 
+        fees[FeeType.OCAT_PNFT_SWAP_FEE] = 8; // 0.8%
+    }
 
     modifier onlyValidCaller virtual {
         require(msg.sender != address(0), "Expected non-zero address");
@@ -30,7 +29,7 @@ contract OcxBase is OcxAdmin {
         return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));
     }
     function setOcatAddress(address payable _ocatAddress) public 
-    onlyValidCaller onlyValidAddress(_ocatAddress) onlyAdmin {
+    onlyCreator onlyValidAddress(_ocatAddress) onlyAdmin {
         ocatAddress = _ocatAddress;
     }
     function getOcatPrice() public view returns(uint256) { 
@@ -54,11 +53,15 @@ contract OcxBase is OcxAdmin {
     }
     function getFee(FeeType feeType) public view returns(uint256) {
         require(feeType > FeeType.PNFT_OCAT_SWAP_FEE && 
-                feeType <= FeeType.PNFT_MINT_FEE, "Invalid fee type"); 
+                feeType <= FeeType.FEE_TYPE_SIZE, "Invalid fee type"); 
         return fees[feeType];
     }
     function setOcxAddress(address payable _ocxAddress) public 
     onlyCreator onlyValidAddress(_ocxAddress) {
         ocxAddress = _ocxAddress;
+    }
+    function setOcxPriceOracleAddress(address payable _ocxPriceOracleAddress) public 
+    onlyCreator onlyValidAddress(_ocxPriceOracleAddress) {
+        ocxPriceOracleAddress = _ocxPriceOracleAddress;
     }
 }

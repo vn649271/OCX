@@ -5,6 +5,7 @@ import OcxDropdownControlList from '../../common/OcxDropdownControlList';
 import AccountService from '../../../service/Account';
 import PreFileUploadForm from '../../common/PreFileUploadForm';
 import PawnShopService from '../../../service/PawnShop';
+import PriceOracleService from '../../../service/PriceOracle';
 import { JSEncrypt } from 'jsencrypt'
 import DelayButton from '../../common/DelayButton';
 import OcxCard from '../../common/OcxCard';
@@ -16,6 +17,7 @@ import OcxBasicButton from '../../common/OcxBasicButton';
 
 var rsaCrypt = new JSEncrypt();
 var pawnShopService = new PawnShopService();
+var priceOracleService = new PriceOracleService();
 const accountService = new AccountService();
 const UPLOAD_URL = BACKEND_BASE_URL + "/pawnshop/upload";
 
@@ -235,17 +237,17 @@ class PawnShopPage extends Component {
             asset_address_zipcode: '',
             asset_address_country: '',
             valuation_report: {},
-            price: '',
+            reported_price: '',
             price_percentage: '',
         },
-		quote_price: '',
+		quoted_price: '',
         estimated_ocat: '',
-		estimated_fee: 0,
-		estimated_fee_text: 'A$350 + A$6/Day',
+		estimated_fee: '',
         show_submit_confirm: false,
         show_mint_confirm: false,
         show_burn_confirm: false,
         track_table_data: null,
+        prices: null,
     }
 
     constructor(props) {
@@ -257,7 +259,7 @@ class PawnShopPage extends Component {
         this.burnButtonContext = null;
         this.valuation_report = null;
         this.priceMonitorTimer = null;
-		this.prices = {};
+		this.fees = {};
 
         // State Helper
         this.clearAllFields = this.clearAllFields.bind(this);
@@ -273,7 +275,7 @@ class PawnShopPage extends Component {
         this.setValuationReport = this.setValuationReport.bind(this);
         this.setPrice = this.setPrice.bind(this);
         this.setPricePercentage = this.setPricePercentage.bind(this);
-        this.setQuotePrice = this.setQuotePrice.bind(this);
+        this.setQuotedPrice = this.setQuotedPrice.bind(this);
         this.setEstimatedOcat = this.setEstimatedOcat.bind(this);
         this.setEstimatedFee = this.setEstimatedFee.bind(this);
 
@@ -296,6 +298,8 @@ class PawnShopPage extends Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.buildTrackTable = this.buildTrackTable.bind(this);
         this.updateTrackTable = this.updateTrackTable.bind(this);
+        this.getFeeList = this.getFeeList.bind(this);
+        this.setPrices = this.setPrices.bind(this);
 
         this.showMessageBox = this.showMessageBox.bind(this);
     }
@@ -352,24 +356,34 @@ class PawnShopPage extends Component {
     startPriceMonitor = () => {
         this.priceMonitorTimer = setInterval(this.priceMonitor, 10000);
 		this.priceMonitor();
+        this.getFeeList();
+    }
+
+    getFeeList = () => {
+        pawnShopService.getFeeList({
+            userToken: this.userToken
+        }).then(ret => {
+            if (ret.error != undefined && ret.error == 0) {
+                this.fees = ret.data;
+                self.setEstimatedFee(ret.data);
+                console.log("FEE: ", ret.data);
+            }
+        });
     }
 
     priceMonitor = async () => {
-        accountService.getPrices({
-			userToken: this.userToken
-		}).then(ret => {
-			if (ret.error != undefined && ret.error == 0) {
-			    self.prices = ret.data;
-				if (self.prices['PNFT_MINT_FEE']) {
-					self.setEstimatedFee(self.prices['PNFT_MINT_FEE']);
-				}
-		    	console.log("PRICES: ",ret.data);
-			}
-		});
+        priceOracleService.getPrices({
+            userToken: this.userToken
+        }).then(ret => {
+            if (ret.error != undefined && ret.error == 0) {
+                self.setPrices(ret.data);
+                console.log("PRICES: ", ret.data);
+            }
+        });
     }
 
     setPrices = prices => {
-        this.setState({prices: prices});
+        self.setState({prices: prices});
     }
     setAssetName = name => {
         let inputs = this.state.inputs;
@@ -413,7 +427,7 @@ class PawnShopPage extends Component {
 
     setPrice = price => {
         let inputs = this.state.inputs;
-        inputs.price = price;
+        inputs.reported_price = price;
         this.setState({inputs}) 
     }
 
@@ -429,18 +443,22 @@ class PawnShopPage extends Component {
         this.setState({inputs}) 
     }
 
-    setQuotePrice = quotePrice => {
-        this.setState({quote_price: quotePrice ? quotePrice: ''}) 
+    setQuotedPrice = quotePrice => {
+        this.setState({quoted_price: quotePrice ? quotePrice: ''}) 
     }
 
     setEstimatedOcat = estimatedOcat => {
         this.setState({estimated_ocat: estimatedOcat ? estimatedOcat: ''}) 
     }
 
-    setEstimatedFee = estimatedFee => {
-        let inputs = this.state.inputs;
-        inputs.estimated_fee = estimatedFee;
-        this.setState({inputs}) 
+    setEstimatedFee = (fees) => {
+        let submit = fees.submit, 
+            weekly_fee = fees.weekly;
+        let estimatedFee =
+            "$" + ((submit.application - 0) + (submit.valuation - 0)) +
+            " + $" + 
+            weekly_fee + "/W";
+        this.setState({estimated_fee: estimatedFee});
     }
 
     onChangeAssetType = itemIndex => {
@@ -468,11 +486,11 @@ class PawnShopPage extends Component {
         inputs.asset_address_zipcode = '';
         inputs.asset_address_country = '';
         inputs.valuation_report = '';
-        inputs.price = 0;
+        inputs.reported_price = 0;
         inputs.price_percentage = 0;
 
 		this.setState(inputs);
-		this.setQuotePrice('');
+		this.setQuotedPrice('');
 		this.setEstimatedOcat('');
     }
 
@@ -524,7 +542,7 @@ class PawnShopPage extends Component {
             btnCmpnt.stopTimer();
             this.clearAllFields();
             this.buildTrackTable({status: 1, data: ret.data.all_assets});
-            this.showMessageBox("Success: " + ret.data);
+            this.showMessageBox("Success to create a PNFT for your asset. You can check about it follow track table");
         } catch(error) {
 			console.log(error);
 			btnCmpnt.stopTimer();
@@ -620,16 +638,29 @@ class PawnShopPage extends Component {
         let inputs = this.state.inputs;
         inputs[ev.target.name] = ev.target.value;
         this.setState({
-          inputs
+            inputs
         });
-        if (ev.target.name === 'price_percentage' || ev.target.name === 'price') {
-            let reportedPrice = this.state.inputs.price ? this.state.inputs.price : 0;
-            let quote = this.state.inputs.price_percentage ? this.state.inputs.price_percentage: 0;
-			let quotedPrice = (reportedPrice * quote) / 100; 
-            this.setQuotePrice(quotedPrice?quotedPrice:'');
-			let ocatPrice = this.prices['OCAT'] ? this.prices['OCAT']: 0;
-			let pnftMintFee = this.prices['PNFT_MINT_FEE'] ? this.prices['PNFT_MINT_FEE']: 0;
-			let estimatedOcat = quotedPrice - quotedPrice * ocatPrice * pnftMintFee;
+        if (ev.target.name === 'price_percentage' || ev.target.name === 'reported_price') {
+            let reportedPrice = this.state.inputs.reported_price ? this.state.inputs.reported_price : 0;
+            let pricePercentage = this.state.inputs.price_percentage ? this.state.inputs.price_percentage: 0;
+            if (reportedPrice == 0 || pricePercentage == 0) {
+                return;
+            }
+            if (this.state.prices.ocat == undefined) {
+                console.log("Not got price of tokens yet. Please wait a while");
+                return;
+            }
+            let ocatPrice = this.state.prices.ocat ? this.state.prices.ocat: 0;
+			let quotedPrice = (reportedPrice * pricePercentage * ocatPrice) / 100; 
+            this.setQuotedPrice(quotedPrice?quotedPrice:'');
+
+			let submitFee = 0;
+            if (this.fees.submit != undefined && 
+            this.fees.submit.application != undefined &&
+            this.fees.submit.valuation != undefined) {
+                submitFee = this.fees.submit.application + this.fees.submit.valuation
+            }
+			let estimatedOcat = quotedPrice - submitFee;
 			this.setEstimatedOcat(estimatedOcat? estimatedOcat: '');
         }
     }
@@ -873,10 +904,10 @@ class PawnShopPage extends Component {
                                         {/* <label>Valuation Price</label> */}
                                         <OcxInput
                                             type="number"
-                                            name="price"
-                                            id="price"
+                                            name="reported_price"
+                                            id="reported_price"
                                             placeholder="Valuation Price"
-                                            value={this.state.inputs.price}
+                                            value={this.state.inputs.reported_price}
                                             onChange={this.handleInputChange}
                                         />
                                     </div>
@@ -895,11 +926,11 @@ class PawnShopPage extends Component {
                                         {/* <label>Quote Price</label> */}
                                         <OcxInput
                                             type="number"
-                                            name="quote_price"
-                                            id="quote_price"
+                                            name="quoted_price"
+                                            id="quoted_price"
                                             placeholder="Quote Price"
                                             readOnly={true}
-                                            value={this.state.quote_price}
+                                            value={this.state.quoted_price}
                                         />
                                     </div>
                                     <div className="mr-5">
@@ -941,9 +972,10 @@ class PawnShopPage extends Component {
 										<div className="w-1/2">
 	                                        <OcxInput
             	                                name="estimated_fee"
+                                                additionalClassName="text-right"
                 	                            id="estimated_fee"
                     	                        placeholder="Estimated Fee"
-                        	                    value={this.state.estimated_fee_text}
+                        	                    value={this.state.estimated_fee}
 												readOnly={true}
                                 	            autoComplete="off"
                                     	    />

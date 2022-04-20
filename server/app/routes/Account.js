@@ -15,6 +15,5 @@ account.post("/swap", accountController.swap);
 account.post("/tokenList", accountController.tokenList);
 account.post("/tokenPriceRate", accountController.tokenPriceRate);
 account.post("/getBestPrice", accountController.getBestPrice);
-account.post("/prices", accountController.getPrices);
 
 module.exports = account;

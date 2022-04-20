@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 enum FeeType {
     PNFT_OCAT_SWAP_FEE,
     OCAT_PNFT_SWAP_FEE,
-    PNFT_MINT_FEE
+    FEE_TYPE_SIZE
 }
 
 address constant UNISWAP_ROUTER_ADDRESS = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;

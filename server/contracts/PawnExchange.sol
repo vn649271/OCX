@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol"; // openzeppelin 4.5 (fo
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import '@uniswap/lib/contracts/libraries/TransferHelper.sol';
 import './OcxBase.sol';
+import './IOcat.sol';
 import "./PawnNFTs.sol";
 
 contract PawnExchange is OcxBase {
@@ -12,7 +13,6 @@ contract PawnExchange is OcxBase {
     // 2 of 4: for calculation of percentage, another 2: for no fraction
     // For example: 0.5% = 50 / (10 ** (2 + 2)) => 50
     //              0.5% of 20000 = (50 * 20000) / (10 ** 4) = 100
-    uint64          private minPnftPrice = 5000;
 
     event SwappedToOcat (uint256 realOcats, uint256 swapfee);
     event SwappedFromOcat(uint256 realOcats, uint256 swapBackFee);
@@ -41,11 +41,6 @@ contract PawnExchange is OcxBase {
         _;
     }
 
-    function setMinPnftPrice(uint8 _minPnftPrice) public 
-    onlyAdmin {
-        minPnftPrice = _minPnftPrice;
-    }
-
     function collectFee(uint256 fee) public {
         IERC20(ocatAddress).transfer(address(this), fee);
     }
@@ -57,7 +52,6 @@ contract PawnExchange is OcxBase {
         (,,, address currentOwner,, uint256 price, uint256 mintFee, uint256 numberOfTransfers,) = 
             PawnNFTs(payable(address(pnftAddress))).allPawnNFTs(nftID);
         require(currentOwner == msg.sender, "Not owner");
-        require(price >= minPnftPrice, "Too small price for PNFT");
         require(ocatPrice > 0, "Invalid PNFT/OCAT quote");
 
         uint256 quotedOcats = convertToOcat(price);

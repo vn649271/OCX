@@ -100,10 +100,10 @@ module.exports = async deployer => {
         pawnExchange.setOcatAddress(ocatAddress);
         // Setup deployed PNFT address 
         pawnExchange.setPnftAddress(pnftAddress);
-        // // Setup fee manager
-        // pawnExchange.setFeeManager(ocxFeeManager.address);
         // Setup administrator
         pawnExchange.addAdmin(adminAddress);
+        // Set address of OcxPriceOracle to PawnNFTs contract
+        pnft.setOcxPriceOracleAddress(ocxPriceOracleAddress);
         // Add PawnExchange contract to OcatToken contract as an operator
         ocatToken.addAdmin(adminAddress);
         ocatToken.addAdmin(pawnExchangeAddress);

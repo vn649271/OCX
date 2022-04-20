@@ -494,25 +494,6 @@ class AccountService {
         }
     }
 
-    getPriceList = async(resp, accountInfo) => {
-        if (web3 == null) {
-            return { error: -200, data: "Geth node is not ready yet. Please retry a while later." }
-        }
-        if (accountInfo.addresses == undefined || accountInfo.addresses == {}) {
-            return { error: -201, data: "No account for you" };
-        }
-        let ret = null;
-        const ocRouter = await openchainRouterInstance(web3, accountInfo);
-        if (!ocRouter) {
-            return { error: -202, data: "Invalid account for you"};
-        }
-        try {
-            ocRouter.getPriceList(resp);
-        } catch (error) {
-            return { error: -300, data: error }
-        }
-    }
-
     getByPassphrase = async(passphrase) => {
         let accountInfo = await accountModel.findOne({
             where: {
