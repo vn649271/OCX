@@ -205,14 +205,14 @@ const STATES = {
 
 const TRACKING_TABLE_SCHEMA = {
     headers: [
-        { title: 'Date' },
-        { title: 'Asset ID' },
-        { title: 'Asset Type' },
-        { title: 'Asset Name' },
-        { title: 'Estimated OCAT' },
-        { title: 'Management Fees' },
-        { title: 'Status' },
-        { title: 'Action' },
+        { title: 'Date', field_name: 'created_at' },
+        { title: 'Asset ID', field_name: 'id' },
+        { title: 'Asset Type', field_name: 'asset_type' },
+        { title: 'Asset Name', field_name: 'asset_name' },
+        { title: 'Estimated OCAT', field_name: 'estimated_ocat' },
+        { title: 'Management Fees', field_name: 'estimated_fee' },
+        { title: 'Status', field_name: 'status' },
+        { title: 'Action', name: '' },
     ]
 }
 
@@ -356,7 +356,6 @@ class PawnShopPage extends Component {
     startPriceMonitor = () => {
         this.priceMonitorTimer = setInterval(this.priceMonitor, 10000);
 		this.priceMonitor();
-        this.getFeeList();
     }
 
     getFeeList = () => {
@@ -372,6 +371,7 @@ class PawnShopPage extends Component {
     }
 
     priceMonitor = async () => {
+        this.getFeeList();
         priceOracleService.getPrices({
             userToken: this.userToken
         }).then(ret => {
@@ -654,12 +654,13 @@ class PawnShopPage extends Component {
 			let quotedPrice = (reportedPrice * pricePercentage * ocatPrice) / 100; 
             this.setQuotedPrice(quotedPrice?quotedPrice:'');
 
-			let submitFee = 0;
-            if (this.fees.submit != undefined && 
-            this.fees.submit.application != undefined &&
-            this.fees.submit.valuation != undefined) {
-                submitFee = this.fees.submit.application + this.fees.submit.valuation
-            }
+            if (this.fees.submit == undefined ||
+            this.fees.submit.application == undefined ||
+            this.fees.submit.valuation == undefined) {
+                this.showMessageBox("Failed to get fee information. Please retry a while later", 1);
+                return;
+            } 
+            let submitFee = (this.fees.submit.application - 0) + (this.fees.submit.valuation - 0)
 			let estimatedOcat = quotedPrice - submitFee;
 			this.setEstimatedOcat(estimatedOcat? estimatedOcat: '');
         }
@@ -684,13 +685,13 @@ class PawnShopPage extends Component {
             // "Minted",        // 5
             // "Loaned",        // 6
             // "Burned",        // 7
-            let statusCol = <span>{ASSET_STATUS_LABELS[record.status - 0]}</span>;
+            let statusCol = <span>{ASSET_STATUS_LABELS[record[TRACKING_TABLE_SCHEMA.headers[6].field_name]]}</span>;
             let actionCol = <span></span>;
             switch (record.status) {
             case 2:
                 actionCol = <SpinButton
-                                id={"tracking-item-resubmit-" + record.id} 
-                                extraData={record.id}
+                                id={"tracking-item-resubmit-" + record[TRACKING_TABLE_SCHEMA.headers[1].field_name]} 
+                                extraData={record[TRACKING_TABLE_SCHEMA.headers[1].field_name]}
                                 title="Resubmit"
                                 onClick={this.onClickResubmit}
                             />
@@ -706,12 +707,12 @@ class PawnShopPage extends Component {
                             >
                                 <SpinButton
                                     title="Mint"
-                                    extraData={record.id}
+                                    extraData={record[TRACKING_TABLE_SCHEMA.headers[1].field_name]}
                                     onClick={this.onClickMint}
                                     renderMode="1"
                                 />
                                 <SpinButton
-                                    extraData={record.id}
+                                    extraData={record[TRACKING_TABLE_SCHEMA.headers[1].field_name]}
                                     title="Burn"
                                     onClick={this.onClickBurn}
                                     renderMode="1"
@@ -720,12 +721,12 @@ class PawnShopPage extends Component {
                 // actionCol = <div>
                 //                 <SpinButton
                 //                     title="Mint"
-                //                     extraData={record.id}
+                //                     extraData={record[TRACKING_TABLE_SCHEMA.headers[1].field_name]}
                 //                     onClick={this.onClickMint}
                 //                 />
                 //                 <SpinButton
-                //                     id={"tracking-item-burn-" + record.id} 
-                //                     extraData={record.id}
+                //                     id={"tracking-item-burn-" + record[TRACKING_TABLE_SCHEMA.headers[1].field_name]} 
+                //                     extraData={record[TRACKING_TABLE_SCHEMA.headers[1].field_name]}
                 //                     title="Burn"
                 //                     onClick={this.onClickBurn}
                 //                 />
@@ -733,16 +734,16 @@ class PawnShopPage extends Component {
                 break;
             case 5:// Once minted, can swap into OCAT
                 actionCol = <SpinButton 
-                                id={"tracking-item-loan-" + record.id} 
-                                extraData={record.id}
+                                id={"tracking-item-loan-" + record[TRACKING_TABLE_SCHEMA.headers[1].field_name]} 
+                                extraData={record[TRACKING_TABLE_SCHEMA.headers[1].field_name]}
                                 title="Loan"
                                 onClick={this.onClickLoan} 
                             />
                 break;
             case 6:
                 actionCol = <SpinButton
-                                id={"tracking-item-restore-" + record.id} 
-                                extraData={record.id}
+                                id={"tracking-item-restore-" + record[TRACKING_TABLE_SCHEMA.headers[1].field_name]} 
+                                extraData={record[TRACKING_TABLE_SCHEMA.headers[1].field_name]}
                                 title="Restore"
                                 onClick={this.onClickRestore}
                             />
@@ -752,14 +753,14 @@ class PawnShopPage extends Component {
             }
 
             let row = {
-                id: record.id,
+                id: record[TRACKING_TABLE_SCHEMA.headers[1].field_name],
                 data: [
-                    { value: new Date(record.created_at).toLocaleString() },
-                    { value: record.id },
-                    { value: record.asset_type },
-                    { value: record.asset_name },
-                    { value: record.estimated_ocat },
-                    { value: record.estimated_fee },
+                    { value: new Date(record[TRACKING_TABLE_SCHEMA.headers[0]]).toLocaleString() },
+                    { value: record[TRACKING_TABLE_SCHEMA.headers[1].field_name] },
+                    { value: record[TRACKING_TABLE_SCHEMA.headers[2].field_name] },
+                    { value: record[TRACKING_TABLE_SCHEMA.headers[3].field_name] },
+                    { value: record[TRACKING_TABLE_SCHEMA.headers[4].field_name] },
+                    { value: record[TRACKING_TABLE_SCHEMA.headers[5].field_name] },
                     { value: statusCol },
                     { value: actionCol },
                 ]
