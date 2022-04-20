@@ -243,7 +243,10 @@ class PawnShopPage extends Component {
         },
 		quoted_price: '',
         estimated_ocat: '',
-		estimated_fee: '',
+		// estimated_fee: '',
+        application_fee: '',
+        valuation_fee: '',
+        weekly_fee: '',
         show_submit_confirm: false,
         show_submit_success_modal: false,
         show_mint_confirm: false,
@@ -479,11 +482,10 @@ class PawnShopPage extends Component {
     setEstimatedFee = (fees) => {
         let submit = fees.submit, 
             weekly_fee = fees.weekly;
-        let estimatedFee =
-            "$" + ((submit.application - 0) + (submit.valuation - 0)) +
-            " + $" + 
-            weekly_fee + "/W";
-        this.setState({estimated_fee: estimatedFee});
+        this.setState({application_fee: "$" + submit.application});
+        this.setState({valuation_fee: "$" + submit.valuation});
+        this.setState({weekly_fee: "$" + weekly_fee + "/W"});
+        // this.setState({estimated_fee: estimatedFee});
     }
 
     onChangeAssetType = itemIndex => {
@@ -782,7 +784,7 @@ class PawnShopPage extends Component {
             let row = {
                 id: record[TRACKING_TABLE_SCHEMA.headers[1].field_name],
                 data: [
-                    { value: new Date(record[TRACKING_TABLE_SCHEMA.headers[0]]).toLocaleString() },
+                    { value: new Date(record[TRACKING_TABLE_SCHEMA.headers[0].field_name]).toLocaleString() },
                     { value: record[TRACKING_TABLE_SCHEMA.headers[1].field_name] },
                     { value: record[TRACKING_TABLE_SCHEMA.headers[2].field_name] },
                     { value: record[TRACKING_TABLE_SCHEMA.headers[3].field_name] },
@@ -986,6 +988,52 @@ class PawnShopPage extends Component {
                                     </div>
                                 </div>
                             </div>
+                            <div className="mt-10">
+                                <div className="inline-flex w-full">
+                                    <div className="w-3/12 mr-5">
+                                        <label>Application Fee</label>
+										<div className="w-full">
+	                                        <OcxInput
+            	                                name="application_fee"
+                                                additionalClassName="text-right"
+                	                            id="application_fee"
+                    	                        placeholder="Application Fee"
+                        	                    value={this.state.application_fee}
+												readOnly={true}
+                                	            autoComplete="off"
+                                    	    />
+										</div>
+                                    </div>
+                                    <div className="w-3/12 mr-5">
+                                        <label>Valuation Fee</label>
+                                        <div className="w-full">
+                                            <OcxInput
+                                                name="valuation_fee"
+                                                additionalClassName="text-right"
+                                                id="valuation_fee"
+                                                placeholder="Valuation Fee"
+                                                value={this.state.valuation_fee}
+                                                readOnly={true}
+                                                autoComplete="off"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="w-3/12 mr-5">
+                                        <label>Weekly Fee</label>
+                                        <div className="w-full">
+                                            <OcxInput
+                                                name="weekly_fee"
+                                                additionalClassName="text-right"
+                                                id="weekly_fee"
+                                                placeholder="Weekly Fee"
+                                                value={this.state.weekly_fee}
+                                                readOnly={true}
+                                                autoComplete="off"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div className="mt-20">
                                 <div className="inline-flex w-full">
                                     <div className="w-3/12 mr-5">
@@ -999,28 +1047,14 @@ class PawnShopPage extends Component {
                             </div>
                             <div className="mt-20">
                                 <div className="inline-flex w-full">
-                                    <div className="w-4/12 mr-5">
+                                    <div className="w-3/12 mr-5">
                                         <label>You don't have a valuation report book a valuation time and date</label>
                                         <button
                                             className="block border border-grey-light button-bg p-3 hover-transition main-font focus:outline-none rounded text-white verify-button"
                                             onClick={this.onClickBooking}
                                         >Booking me</button>
                                     </div>
-                                    <div className="w-4/12 mr-5">
-                                        <label>Estimated Fee</label>
-										<div className="w-1/2">
-	                                        <OcxInput
-            	                                name="estimated_fee"
-                                                additionalClassName="text-right"
-                	                            id="estimated_fee"
-                    	                        placeholder="Estimated Fee"
-                        	                    value={this.state.estimated_fee}
-												readOnly={true}
-                                	            autoComplete="off"
-                                    	    />
-										</div>
-                                    </div>
-                                    <div className="w-4/12 mr-5">
+                                    <div className="w-3/12 mr-5">
                                         <a href="#" className="px-4 py-1  text-blue-500 bg-blue-200 rounded-lg">Click here to download legal contract</a>
                                     </div>
                                 </div>

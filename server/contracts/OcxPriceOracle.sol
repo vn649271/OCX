@@ -9,8 +9,8 @@ contract OcxPriceOracle is OcxBase {
     uint64  public applicationFee = 100;
     uint64  public valuationFee = 50;
     uint64  private minimumPawnablePrice = 5000;
-    uint64  private defaultWeeklyFee = 6;
-    uint8  public weeklyFeeDecimals = 4;
+    uint64  private weeklyFeePercentage = 624; // 6.24%
+    uint8  public weeklyFeeDecimals = 6;
     /**
      * IMPORTANT: replace the address below with the WitnetPriceRouter address
      * of the network you are using! Please find the address here:
@@ -35,7 +35,7 @@ contract OcxPriceOracle is OcxBase {
         if (assetPrice <= minimumPawnablePrice) {
             assetPrice = minimumPawnablePrice;
         }
-        value = assetPrice * 12;
+        value = assetPrice * ((weeklyFeePercentage * 100) / 52);
     }
     /// Returns the BTC / USD price (6 decimals), ultimately provided by the Witnet oracle.
     function getBtcUsdPrice() public view returns (int256 _price) {
