@@ -658,22 +658,7 @@ class OpenchainRouter {
             return ret;
         }
         try {
-            // let opoAddress = this.getContractAddress(OcxPriceOracle_DeployedInfo);
-            // const priceOracleContract = new this.web3.eth.Contract(
-            //     OcxPriceOracle_DeployedInfo.abi, 
-            //     opoAddress
-            // );
-            // let ethPrice = 3400000000; // await priceOracleContract.methods.getEthUsdPrice().call();
-            // ethPrice = ethPrice / (10 ** 6);
-            // let ocatPrice = await priceOracleContract.methods.getOcatPrice().call();
             let feeListRet = await this._getFeeList();
-            // if (feeListRet.error < 0) {
-            //     return {error: -250, data: "Failed to get fee list"};
-            // }
-            // return {error: 0, data: {
-            //     eth: ethPrice, 
-            //     ocat: ocatPrice, 
-            // }};
             return feeListRet;
         } catch (error) {
             return { error: -300, data: error };

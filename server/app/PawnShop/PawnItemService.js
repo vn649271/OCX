@@ -45,9 +45,10 @@ class PawnItemService {
                 return {error: -1, data: "Failed to get initial fee"};
             }
             let submitFee = ret.data.submit;
-            assetData.quoted_price = (assetData.reported_price * assetData.price_percentage) / 100 - 
-                                    (submitFee.application + submitFee.valuation);
-            ret = await pawnItemModel.create(assetData);
+            let estimatedFee = (submitFee.application - 0) + (submitFee.valuation - 0);
+            assetData.estimated_ocat = (assetData.reported_price * assetData.price_percentage) / 100 - estimatedFee;
+            assetData.estimated_fee = estimatedFee;
+            return await pawnItemModel.create(assetData);
         } catch (error) {
             let errorMessage = error.message.replace("Returned error: ", "");
             return { error: -300, data: errorMessage };
