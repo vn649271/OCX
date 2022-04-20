@@ -10,6 +10,7 @@ import { JSEncrypt } from 'jsencrypt'
 import DelayButton from '../../common/DelayButton';
 import OcxCard from '../../common/OcxCard';
 import OcxInput from '../../common/OcxInput';
+import OcxModal from '../../common/OcxModal';
 import SimpleTable from '../../common/SimpleTable';
 import SpinButton from '../../common/SpinButton';
 import OcxConfirm from '../../common/OcxConfirm';
@@ -244,7 +245,9 @@ class PawnShopPage extends Component {
         estimated_ocat: '',
 		estimated_fee: '',
         show_submit_confirm: false,
+        show_submit_success_modal: false,
         show_mint_confirm: false,
+        submit_success_info: null,
         show_burn_confirm: false,
         track_table_data: null,
         prices: null,
@@ -537,12 +540,13 @@ class PawnShopPage extends Component {
                 this.showMessageBox("Failed to create new pawn NFT: " + ret.data, 1);
                 return;
             }
-
             this.setState({new_asset_id: ret.data.new_id});
+            this.setState({submit_success_info: ret.data.new_id});
+            this.setState({show_submit_success_modal: true});
             btnCmpnt.stopTimer();
             this.clearAllFields();
             this.buildTrackTable({status: 1, data: ret.data.all_assets});
-            this.showMessageBox("Success to create a PNFT for your asset. You can check about it follow track table");
+            // this.showMessageBox("Success to create a PNFT for your asset. You can check about it follow track table");
         } catch(error) {
 			console.log(error);
 			btnCmpnt.stopTimer();
@@ -808,6 +812,14 @@ class PawnShopPage extends Component {
         return (
             <div>
                 <div className="my-pawnshop-page main-font main-color font-16">
+                    {
+                        this.state.show_submit_success_modal ? 
+                        <OcxModal 
+                            title="Success"
+                            show={this.state.show_submit_success_modal}
+                        >{this.state.submit_success_info}</OcxModal>
+                        :<></>
+                    }
                     <OcxCard title='Pawn your assets into cryptos'>
                         <div className="mt-10">
                             <div className="inline-flex w-full">
@@ -1004,19 +1016,12 @@ class PawnShopPage extends Component {
                 </div>
                 <div>
                 {
-                    // Submit Confirm Dialog
-                    // this.state.show_submit_confirm ? 
-                    // <OcxConfirmDialog 
-                    //     onClick={ this.onClickSubmitConfirm }
-                    // >Are you sure to submit?</OcxConfirmDialog>
-                    // :<></>
                     this.state.show_submit_confirm ? 
                     <OcxConfirm 
                         show={true}
                         onClick={ this.onClickSubmitConfirm }
                     >Are you sure to submit?</OcxConfirm>
                     :<></>
-
                 }
                 {
                     // Mint Confirm Dialog
