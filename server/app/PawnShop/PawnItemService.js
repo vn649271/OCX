@@ -42,13 +42,23 @@ class PawnItemService {
             // Calculate and add the fee information and quoted amount of OCAT
             let ret = await this.getFeeList(accountInfo);
             if (ret.error < 0) {
-                return {error: -1, data: "Failed to get initial fee"};
+                return {error: -202, data: "Failed to get initial fee"};
             }
             let submitFee = ret.data.submit;
             let estimatedFee = (submitFee.application - 0) + (submitFee.valuation - 0);
-            assetData.estimated_ocat = (assetData.reported_price * assetData.price_percentage) / 100 - estimatedFee;
+            assetData.estimated_ocat = (assetData.reported_price * assetData.convert_ratio) / 100 - estimatedFee;
             assetData.estimated_fee = estimatedFee;
-            return await pawnItemModel.create(assetData);
+            ret = await pawnItemModel.create(assetData);
+            if (ret.error < 0) {
+                return {error: -203, data: ret.data};
+            }
+            let newId = ret.data;
+            let newAssetInfo = await pawnItemModel.getById(newId);
+            if (!newAssetInfo) {
+                return { error: -204, data: 'Failed to get new inserted asset information'};
+            }
+            newAssetInfo['id'] = newId;
+            return { error: 0, data: newAssetInfo };
         } catch (error) {
             let errorMessage = error.message.replace("Returned error: ", "");
             return { error: -300, data: errorMessage };
