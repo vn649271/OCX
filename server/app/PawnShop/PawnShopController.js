@@ -212,7 +212,8 @@ class PawnShopController {
             if (ret.error != 0) {
                 return resp.json({ error: -3, data: ret.data });
             }
-            let newAssetId = ret.data;
+            let newSubmittedAsset = ret.data;
+            let newAssetId = newSubmittedAsset.id;
             ret = await accountController.addAsset(userInfo.account, newAssetId);
             if (!ret) {
                 return resp.json({ error: -3, data: "Failed to register the asset" });
@@ -221,7 +222,7 @@ class PawnShopController {
             if (!hisAllAssets || hisAllAssets.length === undefined || hisAllAssets.length < 1) {
                 return resp.json({ error: -4, data: "Failed to get all pawn assets for you" });
             }
-            return resp.json({ error: 0, data: { new_id: newAssetId, all_assets: hisAllAssets } });
+            return resp.json({ error: 0, data: { new_asset_info: newSubmittedAsset, all_assets: hisAllAssets } });
         } catch (error) {
             return resp.json({ error: -100, data: error.message });
         }

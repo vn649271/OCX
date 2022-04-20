@@ -90,13 +90,16 @@ function PawnItemModel() {
         now = now.toISOString();
         jsonPawnItem.created_at = now;
         jsonPawnItem.updated_at = now;
-
-        let ret = await db.collection(table_name).add(jsonPawnItem);
-        if (!ret || ret.id === undefined || !ret.id) {
-            return {error: -1, data: "Failed to register new pawn item"};
+        try {
+            let ret = await db.collection(table_name).add(jsonPawnItem);
+            if (!ret || ret.id === undefined || !ret.id) {
+                return {error: -1, data: "Failed to register new pawn item"};
+            }
+            // Get all submitted assets for the user
+            return {error: 0, data: ret.id };
+        } catch (error) {
+            return {error: -1, data: error }
         }
-        // Get all submitted assets for the user
-        return {error: 0, data: ret.id };
     }
 
     this.save = async function (params) {

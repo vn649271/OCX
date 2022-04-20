@@ -222,7 +222,7 @@ var self = null;
 class PawnShopPage extends Component {
     
     state = {
-        new_asset_id: "",
+        new_asset_info: "",
         accounts: null,
         connected_hotwallet: 0,
         message: '',
@@ -239,7 +239,7 @@ class PawnShopPage extends Component {
             asset_address_country: '',
             valuation_report: {},
             reported_price: '',
-            price_percentage: '',
+            convert_ratio: '',
         },
 		quoted_price: '',
         estimated_ocat: '',
@@ -277,7 +277,7 @@ class PawnShopPage extends Component {
         this.setCountry = this.setCountry.bind(this);
         this.setValuationReport = this.setValuationReport.bind(this);
         this.setPrice = this.setPrice.bind(this);
-        this.setPricePercentage = this.setPricePercentage.bind(this);
+        this.setConvertRatio = this.setConvertRatio.bind(this);
         this.setQuotedPrice = this.setQuotedPrice.bind(this);
         this.setEstimatedOcat = this.setEstimatedOcat.bind(this);
         this.setEstimatedFee = this.setEstimatedFee.bind(this);
@@ -303,6 +303,7 @@ class PawnShopPage extends Component {
         this.updateTrackTable = this.updateTrackTable.bind(this);
         this.getFeeList = this.getFeeList.bind(this);
         this.setPrices = this.setPrices.bind(this);
+        this.showNewSubmit = this.showNewSubmit.bind(this);
 
         this.showMessageBox = this.showMessageBox.bind(this);
     }
@@ -384,6 +385,27 @@ class PawnShopPage extends Component {
             }
         });
     }
+    showNewSubmit = newSubmitInfo => {
+        if (newSubmitInfo == undefined || !newSubmitInfo) {
+            this.showMessageBox("Failed to show new submitted information");
+            return;
+        }
+        var newSubmitInfoCmp = <div>
+            <p>Name: { newSubmitInfo.asset_name }</p>
+            <p>Type: { newSubmitInfo.asset_type }</p>
+            <p>Description: { newSubmitInfo.asset_description }</p>
+            <p>Country: { newSubmitInfo.asset_address_country }</p>
+            <p>City: { newSubmitInfo.asset_address_city }</p>
+            <p>Street: { newSubmitInfo.asset_address_street }</p>
+            <p>Zip Code: { newSubmitInfo.asset_address_zipcode }</p>
+            <p>Reported Price: ${newSubmitInfo.reported_price}</p>
+            <p>Asset-Token convert ratio: { newSubmitInfo.convert_ratio }%</p>
+            <p>Estimated OCAT: { newSubmitInfo.estimated_ocat }</p>
+            <p>Estimated Fee: ${newSubmitInfo.estimated_fee}</p>
+            <p>Created At: { newSubmitInfo.created_at }</p>
+        </div>;
+        this.setState({submit_success_info: newSubmitInfoCmp});
+    }
 
     setPrices = prices => {
         self.setState({prices: prices});
@@ -440,9 +462,9 @@ class PawnShopPage extends Component {
         this.setState({inputs}) 
     }
 
-    setPricePercentage = price_percentage => {
+    setConvertRatio = convert_ratio => {
         let inputs = this.state.inputs;
-        inputs.price_percentage = price_percentage;
+        inputs.convert_ratio = convert_ratio;
         this.setState({inputs}) 
     }
 
@@ -490,7 +512,7 @@ class PawnShopPage extends Component {
         inputs.asset_address_country = '';
         inputs.valuation_report = '';
         inputs.reported_price = 0;
-        inputs.price_percentage = 0;
+        inputs.convert_ratio = 0;
 
 		this.setState(inputs);
 		this.setQuotedPrice('');
@@ -540,8 +562,9 @@ class PawnShopPage extends Component {
                 this.showMessageBox("Failed to create new pawn NFT: " + ret.data, 1);
                 return;
             }
-            this.setState({new_asset_id: ret.data.new_id});
-            this.setState({submit_success_info: ret.data.new_id});
+            this.setState({new_asset_info: ret.data.new_asset_info});
+            console.log(this.state.new_asset_info);
+            this.showNewSubmit(ret.data.new_asset_info);
             this.setState({show_submit_success_modal: true});
             btnCmpnt.stopTimer();
             this.clearAllFields();
@@ -644,13 +667,13 @@ class PawnShopPage extends Component {
         this.setState({
             inputs
         });
-        if (ev.target.name === 'price_percentage' || ev.target.name === 'reported_price') {
+        if (ev.target.name === 'convert_ratio' || ev.target.name === 'reported_price') {
             let reportedPrice = this.state.inputs.reported_price ? this.state.inputs.reported_price : 0;
-            let pricePercentage = this.state.inputs.price_percentage ? this.state.inputs.price_percentage: 0;
+            let pricePercentage = this.state.inputs.convert_ratio ? this.state.inputs.convert_ratio: 0;
             if (reportedPrice == 0 || pricePercentage == 0) {
                 return;
             }
-            if (this.state.prices.ocat == undefined) {
+            if (this.state.prices == undefined || this.state.prices.ocat == undefined) {
                 console.log("Not got price of tokens yet. Please wait a while");
                 return;
             }
@@ -817,7 +840,10 @@ class PawnShopPage extends Component {
                         <OcxModal 
                             title="Success"
                             show={this.state.show_submit_success_modal}
-                        >{this.state.submit_success_info}</OcxModal>
+                        >
+                        Minted PNFT for your asset successfully
+                        {this.state.submit_success_info}
+                        </OcxModal>
                         :<></>
                     }
                     <OcxCard title='Pawn your assets into cryptos'>
@@ -928,10 +954,10 @@ class PawnShopPage extends Component {
                                         {/* <label>Percentage of value</label> */}
                                         <OcxInput
                                             type="number"
-                                            name="price_percentage"
-                                            id="price_percentage"
+                                            name="convert_ratio"
+                                            id="convert_ratio"
                                             placeholder="Pawn to Token Ratio"
-                                            value={this.state.inputs.price_percentage}
+                                            value={this.state.inputs.convert_ratio}
                                             onChange={this.handleInputChange}
                                         />
                                     </div>
