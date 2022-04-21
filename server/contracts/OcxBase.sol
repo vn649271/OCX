@@ -7,13 +7,12 @@ import "./OcxCommon.sol";
 contract OcxBase is OcxAdmin {
 
     mapping(FeeType => uint256) internal fees;
-    uint256                     internal ocatPrice;
+    uint256                     public ocatPrice;
     uint8                       constant OCAT_PRICE_DECIMALS = 2;
-    address payable             internal ocatAddress;
-    address payable             internal ocxAddress;
-    address payable             internal pnftAddress;
-    address payable             internal ocxPriceOracleAddress;
-
+    address payable             public ocatAddress;
+    address payable             public ocxAddress;
+    address payable             public pnftAddress;
+    address payable             public ocxPriceOracleAddress;
 
     constructor() {
         ocatPrice = 100;

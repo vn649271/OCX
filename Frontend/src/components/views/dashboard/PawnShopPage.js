@@ -217,6 +217,12 @@ const TRACKING_TABLE_SCHEMA = {
     ]
 }
 
+const   SUBMIT = 1, 
+        MINT = 2, 
+        BURN = 3, 
+        LOAN = 4,
+        RESTORE = 5;
+
 var self = null;
 
 class PawnShopPage extends Component {
@@ -247,9 +253,13 @@ class PawnShopPage extends Component {
         application_fee: '',
         valuation_fee: '',
         weekly_fee: '',
-        show_submit_confirm: false,
+        show_confirm: false,
         show_submit_success_modal: false,
         show_mint_confirm: false,
+        show_loan_confirm: false,
+        show_restore_confirm: false,
+        confirm_handler: null,
+        confirm_text: "",
         submit_success_info: null,
         show_burn_confirm: false,
         track_table_data: null,
@@ -260,11 +270,9 @@ class PawnShopPage extends Component {
         super(props);
         self = this;
 
-        this.submitButtonContext = null;
-        this.mintButtonContext = null;
-        this.burnButtonContext = null;
         this.valuation_report = null;
         this.priceMonitorTimer = null;
+        this.confirmContext = null;
 		this.fees = {};
 
         // State Helper
@@ -299,7 +307,9 @@ class PawnShopPage extends Component {
         this.onClickMintConfirm = this.onClickMintConfirm.bind(this);
         this.onClickBurn = this.onClickBurn.bind(this);
         this.onClickLoan = this.onClickLoan.bind(this);
+        this.onClickLoanConfirm = this.onClickLoanConfirm.bind(this);
         this.onClickRestore = this.onClickRestore.bind(this);
+        this.onClickRestoreConfirm = this.onClickRestoreConfirm.bind(this);
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.buildTrackTable = this.buildTrackTable.bind(this);
@@ -307,6 +317,8 @@ class PawnShopPage extends Component {
         this.getFeeList = this.getFeeList.bind(this);
         this.setPrices = this.setPrices.bind(this);
         this.showNewSubmit = this.showNewSubmit.bind(this);
+        this.showConfirm = this.showConfirm.bind(this);
+        this.closeConfirm = this.closeConfirm.bind(this);
 
         this.showMessageBox = this.showMessageBox.bind(this);
     }
@@ -364,7 +376,6 @@ class PawnShopPage extends Component {
         this.priceMonitorTimer = setInterval(this.priceMonitor, 10000);
 		this.priceMonitor();
     }
-
     getFeeList = () => {
         pawnShopService.getFeeList({
             userToken: this.userToken
@@ -376,7 +387,6 @@ class PawnShopPage extends Component {
             }
         });
     }
-
     priceMonitor = async () => {
         this.getFeeList();
         priceOracleService.getPrices({
@@ -387,6 +397,36 @@ class PawnShopPage extends Component {
                 console.log("PRICES: ", ret.data);
             }
         });
+    }
+    showConfirm = params => {
+        switch (params.id) {
+        case SUBMIT:
+            this.setState({confirm_handler: this.onClickSubmitConfirm});
+            this.setState({confirm_text: 'Are you sure to submit?'});
+            break;
+        case MINT:
+            this.setState({confirm_handler: this.onClickMintConfirm});
+            this.setState({confirm_text: 'Are you sure to mint?'});
+            break;
+        case BURN:
+            this.setState({confirm_handler: this.onClickBurnConfirm});
+            this.setState({confirm_text: 'Are you sure to burn?'});
+            break;
+        case LOAN:
+            this.setState({confirm_handler: this.onClickLoanConfirm});
+            this.setState({confirm_text: 'Are you sure to loan?'});
+            break;
+        case RESTORE:
+            this.setState({confirm_handler: this.onClickRestoreConfirm});
+            this.setState({confirm_text: 'Are you sure to restore?'});
+            break;
+        }
+        this.confirmContext = params.context ? params.context : null;
+        this.setState({show_confirm: true});
+    }
+    closeConfirm = () => {
+        this.setState({show_confirm: false});
+        return this.confirmContext;
     }
     showNewSubmit = newSubmitInfo => {
         if (newSubmitInfo == undefined || !newSubmitInfo) {
@@ -528,28 +568,21 @@ class PawnShopPage extends Component {
     onClickBooking = ev => {
     }
 
-    onClickSubmit = (param, ev, btnCmpnt) => {
-        this.submitButtonContext = {
-            param: param,
-            ev: ev,
-            btnCmpnt: btnCmpnt
-        };
-        this.setState({show_submit_confirm: true});
+    onClickSubmit = params => {
+        this.showConfirm({ id: SUBMIT, context: params });
     }
 
-    onClickSubmitConfirm = async (ret) => {
-        this.setState({show_submit_confirm: false});
-        let {param, ev, btnCmpnt} = this.submitButtonContext;
-        this.submitButtonContext = null;
-        if (ret == 0 || ret == 1) {
-            btnCmpnt.stopTimer();
+    onClickSubmitConfirm = async retCode => {
+        let { stopWait, getExtraData } = this.closeConfirm();
+        if (retCode == 0 || retCode == 1) {
+            stopWait();
             return;
         }
         try {
             // First upload valuation report
             let ret = await pawnShopService.upload(this.state.inputs.valuation_report);
             if (ret.error - 0 !== 0) {
-                btnCmpnt.stopTimer();
+                stopWait();
                 this.showMessageBox("Failed to submit: " + ret.data, 1);
 				this.setValuationReport(null);
                 return;
@@ -560,7 +593,7 @@ class PawnShopPage extends Component {
             submitData.valuation_report = ret.data;
             ret = await pawnShopService.create({userToken: this.userToken, data: submitData});
             if (ret.error - 0 !== 0) {
-                btnCmpnt.stopTimer();
+                stopWait();
                 this.showMessageBox("Failed to create new pawn NFT: " + ret.data, 1);
                 return;
             }
@@ -568,13 +601,13 @@ class PawnShopPage extends Component {
             console.log(this.state.new_asset_info);
             this.showNewSubmit(ret.data.new_asset_info);
             this.setState({show_submit_success_modal: true});
-            btnCmpnt.stopTimer();
+            stopWait();
             this.clearAllFields();
             this.buildTrackTable({status: 1, data: ret.data.all_assets});
             // this.showMessageBox("Success to create a PNFT for your asset. You can check about it follow track table");
         } catch(error) {
 			console.log(error);
-			btnCmpnt.stopTimer();
+			stopWait();
             //this.showMessageBox(error, 1)
         }
     }
@@ -585,26 +618,16 @@ class PawnShopPage extends Component {
     }
 
     onClickMint = async (params) => {
-        this.mintButtonContext = {
-            stopWait: params.stopWait,
-            getExtraData: params.getExtraData
-        };
-        this.setState({show_mint_confirm: true});
+        this.showConfirm({ id: MINT, context: params });
     }
-
-    // onClickMintConfirm = async (params, ev, buttonComponent) => {
-    onClickMintConfirm = async ret => {
-        this.setState({show_mint_confirm: false});
-        let { stopWait, getExtraData } = this.mintButtonContext;
-        this.mintButtonContext = null;
-
-        if (ret == 0 || ret == 1) {
+    onClickMintConfirm = async retCode => {
+        let { stopWait, getExtraData } = this.closeConfirm();
+        if (retCode == 0 || retCode == 1) {
             stopWait();
             return;
         }
-
         let assetId = getExtraData();
-        ret = await pawnShopService.mint({ownerToken: this.userToken, assetId: assetId});
+        let ret = await pawnShopService.mint({ownerToken: this.userToken, assetId: assetId});
         stopWait();
         if (ret.error - 0 !== 0) {
             this.showMessageBox("Failed to mint: " + ret.data, 1);
@@ -613,19 +636,12 @@ class PawnShopPage extends Component {
         this.showMessageBox("Success to mint: " + ret.data);
         this.buildTrackTable({status: 1, data: ret.data.all_assets});
     }
-
     onClickBurn = async (params) => {
-        this.burnButtonContext = {
-            stopWait: params.stopWait,
-            getExtraData: params.getExtraData
-        };
-        this.setState({show_burn_confirm: true});
+        this.showConfirm({ id: BURN, context: params });
     }
 
     onClickBurnConfirm = async (retCode) => {
-        this.setState({show_burn_confirm: false});
-        let { stopWait, getExtraData } = this.burnButtonContext;
-        this.burnButtonContext = null;
+        let { stopWait, getExtraData } = this.closeConfirm();
         if (retCode == 0 || retCode == 1) {
             stopWait();
             return;
@@ -638,11 +654,18 @@ class PawnShopPage extends Component {
         }
         this.showMessageBox("Success to burn: " + ret.data);
     }
-
-    onClickLoan = async (ev) => {
-        let assetId = ev.target.id.replace("tracking-item-loan-", "");
+    onClickLoan = async params => {
+        this.showConfirm({ id: LOAN, context: params });
+    }
+    onClickLoanConfirm = async retCode => {
+        let { stopWait, getExtraData } = this.closeConfirm();
+        if (retCode == 0 || retCode == 1) {
+            stopWait();
+            return;
+        }
+        let assetId = getExtraData();
         let ret = await pawnShopService.loan({ownerToken: this.userToken, assetId: assetId});
-        
+        stopWait();
         if (ret.error - 0 !== 0) {
             this.showMessageBox("Failed to loan: " + ret.data, 1);
             return;
@@ -650,11 +673,18 @@ class PawnShopPage extends Component {
         this.showMessageBox("Loaned successfully");
         this.buildTrackTable({status: 1, data: ret.data.all_assets});
     }
-
-    onClickRestore = async (ev) => {
-        let assetId = ev.target.id.replace("tracking-item-restore-", "");
+    onClickRestore = async params => {
+        this.showConfirm({ id: RESTORE, context: params });
+    }
+    onClickRestoreConfirm = async retCode => {
+        let { stopWait, getExtraData } = this.closeConfirm();
+        if (retCode == 0 || retCode == 1) {
+            stopWait();
+            return;
+        }
+        let assetId = getExtraData();
         let ret = await pawnShopService.restore({ownerToken: this.userToken, assetId: assetId});
-        
+        stopWait();
         if (ret.error - 0 !== 0) {
             this.showMessageBox("Failed to return back: " + ret.data, 1);
             return;
@@ -662,7 +692,6 @@ class PawnShopPage extends Component {
         this.showMessageBox("Rerstored successfully");
         this.buildTrackTable({status: 1, data: ret.data.all_assets});
     }
-
     handleInputChange = ev => {
         let inputs = this.state.inputs;
         inputs[ev.target.name] = ev.target.value;
@@ -719,7 +748,6 @@ class PawnShopPage extends Component {
             switch (record.status) {
             case 2:
                 actionCol = <SpinButton
-                                id={"tracking-item-resubmit-" + record[TRACKING_TABLE_SCHEMA.headers[1].field_name]} 
                                 extraData={record[TRACKING_TABLE_SCHEMA.headers[1].field_name]}
                                 title="Resubmit"
                                 onClick={this.onClickResubmit}
@@ -736,12 +764,12 @@ class PawnShopPage extends Component {
                             >
                                 <SpinButton
                                     title="Mint"
-                                    extraData={record[TRACKING_TABLE_SCHEMA.headers[1].field_name]}
+                                    extraData={record[TRACKING_TABLE_SCHEMA.headers[1].field_name]} // id
                                     onClick={this.onClickMint}
                                     renderMode="1"
                                 />
                                 <SpinButton
-                                    extraData={record[TRACKING_TABLE_SCHEMA.headers[1].field_name]}
+                                    extraData={record[TRACKING_TABLE_SCHEMA.headers[1].field_name]} // id
                                     title="Burn"
                                     onClick={this.onClickBurn}
                                     renderMode="1"
@@ -763,18 +791,18 @@ class PawnShopPage extends Component {
                 break;
             case 5:// Once minted, can swap into OCAT
                 actionCol = <SpinButton 
-                                id={"tracking-item-loan-" + record[TRACKING_TABLE_SCHEMA.headers[1].field_name]} 
                                 extraData={record[TRACKING_TABLE_SCHEMA.headers[1].field_name]}
                                 title="Loan"
                                 onClick={this.onClickLoan} 
+                                renderMode="1"
                             />
                 break;
             case 6:
                 actionCol = <SpinButton
-                                id={"tracking-item-restore-" + record[TRACKING_TABLE_SCHEMA.headers[1].field_name]} 
                                 extraData={record[TRACKING_TABLE_SCHEMA.headers[1].field_name]}
                                 title="Restore"
                                 onClick={this.onClickRestore}
+                                renderMode="1"
                             />
                 break;
             default:
@@ -1064,41 +1092,21 @@ class PawnShopPage extends Component {
                                     className="border border-grey-light button-bg p-5 hover-transition main-font focus:outline-none rounded text-white verify-button"
                                     onClick={this.onClickSubmit}
                                 >Submit</button> */}
-                                <DelayButton
-                                    captionInDelay="Submitting"
-                                    caption="Submit"
-                                    maxDelayInterval={30}
-                                    onClickButton={this.onClickSubmit}
-                                    onClickButtonParam={null} />
+                                <SpinButton
+                                    title="Submit"
+                                    onClick={this.onClickSubmit}
+                                />
                             </div>
                         </div>
                     </OcxCard>
                 </div>
                 <div>
                 {
-                    this.state.show_submit_confirm ? 
+                    this.state.show_confirm ?
                     <OcxConfirm 
                         show={true}
-                        onClick={ this.onClickSubmitConfirm }
-                    >Are you sure to submit?</OcxConfirm>
-                    :<></>
-                }
-                {
-                    // Mint Confirm Dialog
-                    this.state.show_mint_confirm ? 
-                    <OcxConfirm
-                        show={true}
-                        onClick={ this.onClickMintConfirm }
-                    >Are you sure to mint?</OcxConfirm>
-                    :<></>
-                }
-                {
-                    // Burn Confirm Dialog
-                    this.state.show_burn_confirm ? 
-                    <OcxConfirm
-                        show={true}
-                        onClick={ this.onClickBurnConfirm }
-                    >Are you sure to burn?</OcxConfirm>
+                        onClick={ this.state.confirm_handler }
+                    >{ this.state.confirm_text }</OcxConfirm>
                     :<></>
                 }
                 </div>

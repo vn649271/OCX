@@ -33,7 +33,17 @@ module.exports = {
    *
    * $ truffle test --network <network-name>
    */
-
+  compilers: {
+    solc: {
+      version: '^0.8.0',
+      settings: {
+        optimizer: {
+          enabled: true,
+          runs: 5000000
+        }
+      }
+    }
+  },
   networks: {
     // Useful for testing. The `development` name is special - truffle uses it by default
     // if it's defined here and no other network is specified at the command line.

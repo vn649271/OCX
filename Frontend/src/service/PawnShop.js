@@ -38,7 +38,6 @@ export default function PawnShopService() {
         _params['url'] = BACKEND_BASE_URL + "/pawnshop/create";
         return await this._sendRequest(_params);
     }
-
     /**
      * Submit to create a new pawn item.
      * @param {string} userToken    user token
@@ -52,28 +51,24 @@ export default function PawnShopService() {
         _params['url'] = BACKEND_BASE_URL + "/pawnshop/mint";
         return await this._sendRequest(_params);
     }
-
     this.burn = async (params) => {
         let _params = {};
         _params['data'] = params;
         _params['url'] = BACKEND_BASE_URL + "/pawnshop/burn";
         return await this._sendRequest(_params);
     }
-
     this.loan = async (params) => {
         let _params = {};
         _params['data'] = params;
         _params['url'] = BACKEND_BASE_URL + "/pawnshop/loan";
         return await this._sendRequest(_params);
     }
-
     this.restore = async (params) => {
         let _params = {};
         _params['data'] = params;
         _params['url'] = BACKEND_BASE_URL + "/pawnshop/restore";
         return await this._sendRequest(_params);
     }
-
     this.upload = async (params) => {
         try {
             const formData = new FormData();
@@ -90,10 +85,10 @@ export default function PawnShopService() {
             }
             return ret;
         } catch (ex) {
-            console.log("Uploading valuation report: ", ex)
+            console.log("Uploading valuation report: ", ex);
+            return { error: -2000, data: ex };
         }
     }
-
     /**
      * Connect to specified account.
      * @param {string} userToken    user token
@@ -107,7 +102,6 @@ export default function PawnShopService() {
         _params['url'] = BACKEND_BASE_URL + "/pawnshop/assets";
         return await this._sendRequest(_params);
     }
-
     /**
      * Connect to specified account.
      * @param {string} userToken    user token
