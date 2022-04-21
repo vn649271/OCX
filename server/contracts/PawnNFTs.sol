@@ -76,7 +76,8 @@ contract PawnNFTs is ERC721, OcxBase {
   }
   // mint a new pawning NFT and return token ID
   function mint(string memory _name, string memory _tokenURI, uint256 _price) external 
-  onlyValidCaller returns(uint256 newTokenID, uint256 realOcats, uint256 mintFee) {
+  onlyValidCaller onlyValidAddress(ocxPriceOracleAddress)
+  returns(uint256 newTokenID, uint256 realOcats, uint256 mintFee) {
     // increment counter
     totalSupply++;
     newTokenID = totalSupply;

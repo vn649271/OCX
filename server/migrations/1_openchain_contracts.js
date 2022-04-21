@@ -67,22 +67,11 @@ module.exports = async deployer => {
         ocxPriceOracleAddress = ret.address;
     });
 
-    // Setup deployed OCAT address 
-    pawnExchange.setOcatAddress(ocatAddress);
-    // Setup deployed PNFT address 
-    pawnExchange.setPnftAddress(pnftAddress);
-    // Setup administrator
-    pawnExchange.addAdmin(adminAddress);
-    // Set address of OcxPriceOracle to PawnNFTs contract
-    pnft.setOcxPriceOracleAddress(ocxPriceOracleAddress);
-    // Add PawnExchange contract to OcatToken contract as an operator
-    ocatToken.addAdmin(adminAddress);
-    ocatToken.addAdmin(pawnExchangeAddress);
-    // Setting deployed OCAT address 
-    ocxLocalPool.setOcatAddress(ocatAddress);
 
     deployer.deploy(OcxExchange).then(async ocxExchange => {
+
         console.log("\n\n");
+
         if (deployer.network == "ganache") {
             deployer.deploy(OcxOcatEthPool).then(ret => {
                 ocxOcatEthPoolAddress = ret.address;

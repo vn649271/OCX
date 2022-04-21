@@ -11,7 +11,6 @@ contract OcatToken is ERC20, OcxAdmin {
     receive() external payable {}
 
     constructor() ERC20("OpenchainDex Stable Coin", "OCAT") {
-        // super._mint(msg.sender, (10 ** 8) * (10 ** 18));
         _decimals = 9;
     }
 
