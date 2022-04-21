@@ -21,7 +21,7 @@ contract OcxBase is OcxAdmin {
     }
 
     modifier onlyValidCaller virtual {
-        require(msg.sender != address(0), "Expected non-zero address");
+        require(msg.sender != address(0), "Expected non-zero address of caller");
         _;
     }
     function _compareStrings(string memory a, string memory b) internal pure returns (bool) {
