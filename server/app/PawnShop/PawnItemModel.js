@@ -17,7 +17,7 @@ const table_name = 'pawnitems';
         valuationReport: '',
         price: 0,
         price_percentage: 0,
-        quote_price: 0,
+        quoted_price: 0,
         estimated_ocat: 0,
         estimated_fee: '',
     }

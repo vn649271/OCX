@@ -4,7 +4,6 @@ pragma solidity ^0.8.0;
 // import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "./OcxBase.sol";
-import "./IOcxPriceOracle.sol";
 
 /*
  * -2: mint(): Error: caller of zero address
@@ -44,9 +43,9 @@ contract PawnNFTs is ERC721, OcxBase {
     // address payable mintedBy;
     address payable currentOwner;
     address payable previousOwner;
-    uint256 price;
-    uint256 fee;
-    uint256 numberOfTransfers;
+    uint256 originalPrice; // In OCAT
+    uint256 price;        // In OCAT
+    uint256 txCounter;
     bool forSale;
   }
 
@@ -76,8 +75,8 @@ contract PawnNFTs is ERC721, OcxBase {
   }
   // mint a new pawning NFT and return token ID
   function mint(string memory _name, string memory _tokenURI, uint256 _price) external 
-  onlyValidCaller onlyValidAddress(ocxPriceOracleAddress)
-  returns(uint256 newTokenID, uint256 realOcats, uint256 mintFee) {
+  onlyValidCaller
+  returns(uint256 newTokenID, uint256 estimatedOcats) {
     // increment counter
     totalSupply++;
     newTokenID = totalSupply;
@@ -99,10 +98,7 @@ contract PawnNFTs is ERC721, OcxBase {
     // make token name passed as exists
     tokenNameExists[_name] = true;
 
-    (uint64 applicationFee, uint64 valuationFee) = 
-      IOcxPriceOracle(ocxPriceOracleAddress).getSubmitFee();
-    mintFee = convertToOcat(applicationFee + valuationFee);
-    realOcats = convertToOcat(_price - mintFee);
+    estimatedOcats = convertToOcat(_price);
     // creat a new pawning NFT (struct) and pass in new values
     allPawnNFTs[newTokenID] = PawnNFT(
       newTokenID,
@@ -111,8 +107,8 @@ contract PawnNFTs is ERC721, OcxBase {
       // payable(msg.sender),
       payable(msg.sender),
       payable(address(0)),
-      realOcats,
-      mintFee, // Default fee, can changed by admin later
+      estimatedOcats, // Original price
+      estimatedOcats, // Current price
       0,    // number of transfers
       true // for sale
     );
@@ -146,7 +142,7 @@ contract PawnNFTs is ERC721, OcxBase {
     // update the token's current owner
     allPawnNFTs[_tokenId].currentOwner = payable(msg.sender);
     // update the how many times this token was transfered
-    allPawnNFTs[_tokenId].numberOfTransfers += 1;
+    allPawnNFTs[_tokenId].txCounter += 1;
   }
   function _afterTokenTransfer(
       address /*from*/,
@@ -161,15 +157,14 @@ contract PawnNFTs is ERC721, OcxBase {
     allPawnNFTs[tokenId].previousOwner = allPawnNFTs[tokenId].currentOwner;
     // update the token's current owner
     allPawnNFTs[tokenId].currentOwner = payable(to);
-    allPawnNFTs[tokenId].numberOfTransfers += 1;
+    allPawnNFTs[tokenId].txCounter += 1;
   }
-  function changeTokenPriceAndFee(uint256 _tokenId, uint256 _newPrice, uint256 _fee) public 
+  function changePrice(uint256 _tokenId, uint256 _newPrice) public 
   // onlyTokenOwner(_tokenId) {
   onlyAdmin 
   {
     // update token's price with new price
     allPawnNFTs[_tokenId].price = _newPrice;
-    allPawnNFTs[_tokenId].fee = _fee;
   }
   // switch between set for sale and set not for sale
   function toggleForSale(uint256 _tokenId) public 

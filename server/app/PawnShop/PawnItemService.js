@@ -46,7 +46,8 @@ class PawnItemService {
             }
             let submitFee = ret.data.submit;
             let estimatedFee = (submitFee.application - 0) + (submitFee.valuation - 0);
-            assetData.estimated_ocat = (assetData.reported_price * assetData.convert_ratio) / 100 - estimatedFee;
+            assetData.quoted_price = (assetData.reported_price * assetData.convert_ratio) / 100;
+            assetData.estimated_ocat = assetData.quoted_price - estimatedFee;
             assetData.estimated_fee = estimatedFee;
             ret = await pawnItemModel.create(assetData);
             if (ret.error < 0) {

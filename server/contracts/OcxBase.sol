@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import "./OcxAdmin.sol";
 import "./OcxCommon.sol";
+import './IOcat.sol';
 
 contract OcxBase is OcxAdmin {
 
@@ -13,6 +14,7 @@ contract OcxBase is OcxAdmin {
     address payable             public ocxAddress;
     address payable             public pnftAddress;
     address payable             public ocxPriceOracleAddress;
+    uint8                       constant FEE_DECIMAL = 3;
 
     constructor() {
         ocatPrice = 100;
@@ -31,16 +33,18 @@ contract OcxBase is OcxAdmin {
     onlyCreator onlyValidAddress(_ocatAddress) onlyAdmin {
         ocatAddress = _ocatAddress;
     }
-    function getOcatPrice() public view returns(uint256) { 
-        return ocatPrice / (10 ** OCAT_PRICE_DECIMALS);
+    function getOcatPrice() public view returns(uint256 value, uint256 decimals) { 
+        value = ocatPrice;
+        decimals = OCAT_PRICE_DECIMALS;
     }
     function setOcatPrice(uint256 _price) public 
     onlyAdmin {
         require(_price > 0, "Invalid price");
         ocatPrice = _price;
     }
-    function convertToOcat(uint256 price) public view returns(uint256 _ocatPrice) {
-        _ocatPrice = ocatPrice * price / (10 ** OCAT_PRICE_DECIMALS);
+    function convertToOcat(uint256 price) public returns(uint256 _ocatPrice) {
+        _ocatPrice = (price * (10 ** IOcat(ocatAddress).decimals()) * ocatPrice) / 
+                    (10 ** OCAT_PRICE_DECIMALS);
     }
     function setPnftAddress(address payable _pnftAddress) public 
     onlyCreator onlyValidAddress(_pnftAddress) {
