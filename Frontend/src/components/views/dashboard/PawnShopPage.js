@@ -361,8 +361,6 @@ class PawnShopPage extends Component {
 			return;
         }
         // Get all pawn assets items for this user
-        console.log("Get all pawn assets items for the user");
-        // this.trackTableUpdateTimer = setInterval(this.updateTrackTable, 60000);
         this.updateTrackTable();
     }
 
@@ -383,7 +381,6 @@ class PawnShopPage extends Component {
             if (ret.error != undefined && ret.error == 0) {
                 this.fees = ret.data;
                 self.setEstimatedFee(ret.data);
-                console.log("FEE: ", ret.data);
             }
         });
     }
@@ -394,7 +391,6 @@ class PawnShopPage extends Component {
         }).then(ret => {
             if (ret.error != undefined && ret.error == 0) {
                 self.setPrices(ret.data);
-                console.log("PRICES: ", ret.data);
             }
         });
     }
@@ -732,7 +728,6 @@ class PawnShopPage extends Component {
 			return;
 		}
 		let assets = assetData.data;
-        console.log("buildTrackTable(): ", assets);
         let trackTableData = [];
         assets.forEach(record => {
             // "Pending",       // 0
