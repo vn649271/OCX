@@ -5,6 +5,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "./OcxBase.sol";
 import "./IOcxPriceOracle.sol";
+
 /*
  * -2: mint(): Error: caller of zero address
  * -3: Too small price
@@ -38,7 +39,7 @@ contract PawnNFTs is ERC721, OcxBase {
   // define pawning NFT struct
   struct PawnNFT {
     uint256 tokenId;
-    bytes32 tokenName;
+    string tokenName;
     string tokenURI;
     // address payable mintedBy;
     address payable currentOwner;
@@ -54,7 +55,7 @@ contract PawnNFTs is ERC721, OcxBase {
   // 
   // mapping(uint256 => string) public tokenURIs;
   // check if token name exists
-  mapping(bytes32 => bool) public tokenNameExists;
+  mapping(string => bool) public tokenNameExists;
   // check if token URI exists
   mapping(string => uint256) public tokenURIExists;
 
@@ -74,7 +75,7 @@ contract PawnNFTs is ERC721, OcxBase {
     _;
   }
   // mint a new pawning NFT and return token ID
-  function mint(bytes32 _name, string memory _tokenURI, uint256 _price) external 
+  function mint(string memory _name, string memory _tokenURI, uint256 _price) external 
   onlyValidCaller returns(uint256 newTokenID, uint256 realOcats, uint256 mintFee) {
     // increment counter
     totalSupply++;
@@ -97,9 +98,10 @@ contract PawnNFTs is ERC721, OcxBase {
     // make token name passed as exists
     tokenNameExists[_name] = true;
 
-    // Mint new OCATs for this PNFT
-    (uint256 applicationFee, uint256 valuationFee) = IOcxPriceOracle(ocxPriceOracleAddress).getSubmitFee();
-    realOcats = _price - applicationFee - valuationFee;
+    (uint64 applicationFee, uint64 valuationFee) = 
+      IOcxPriceOracle(ocxPriceOracleAddress).getSubmitFee();
+    mintFee = convertToOcat(applicationFee + valuationFee);
+    realOcats = convertToOcat(_price - mintFee);
     // creat a new pawning NFT (struct) and pass in new values
     allPawnNFTs[newTokenID] = PawnNFT(
       newTokenID,

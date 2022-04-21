@@ -5,6 +5,7 @@ import "witnet-solidity-bridge/contracts/interfaces/IWitnetPriceRouter.sol";
 import "./OcxBase.sol";
 
 contract OcxPriceOracle is OcxBase {
+
     IWitnetPriceRouter public router;
     uint64  public applicationFee = 100;
     uint64  public valuationFee = 50;
@@ -25,7 +26,7 @@ contract OcxPriceOracle is OcxBase {
         applicationFee = _applicationFee;
         valuationFee = _valuationFee;
     }
-    function getSubmitFee() public view returns (uint256 application, uint256 valuation) {
+    function getSubmitFee() public view returns (uint64 application, uint64 valuation) {
         application = applicationFee;
         valuation = valuationFee;
     }

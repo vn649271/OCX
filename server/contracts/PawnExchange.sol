@@ -41,47 +41,41 @@ contract PawnExchange is OcxBase {
         _;
     }
 
-    function collectFee(uint256 fee) public {
-        IERC20(ocatAddress).transfer(address(this), fee);
-    }
-
     function exchangeToOcat(uint256 nftID) public 
     validNftID(nftID) validCaller 
     returns (uint256 realOcats, uint256 swapFee) {
         // Get price for the NFT
-        (,,, address currentOwner,, uint256 price, uint256 mintFee, uint256 numberOfTransfers,) = 
+        (,,, address currentOwner,, uint256 quotedOcats, uint256 mintFee, uint256 numberOfTransfers,) = 
             PawnNFTs(payable(address(pnftAddress))).allPawnNFTs(nftID);
         require(currentOwner == msg.sender, "Not owner");
         require(ocatPrice > 0, "Invalid PNFT/OCAT quote");
 
-        uint256 quotedOcats = convertToOcat(price);
-        swapFee = (quotedOcats * fees[FeeType.PNFT_OCAT_SWAP_FEE]) / (10 ** FEE_DECIMAL);
-        realOcats = quotedOcats - swapFee;
         if (numberOfTransfers == 0) { // If it is first swap operation, then mint OCATs
             IOcat(ocatAddress).mint(address(this), quotedOcats + mintFee);
         }
         // uint256 ocatBalance = IERC20(ocatAddress).balanceOf(address(this));
-        // require(ocatBalance >= price, "PawnExchange.exchangeToOcat(): Insufficient balance of OCAT in the contract");
+        // require(ocatBalance >= priceInOcat, "PawnExchange.exchangeToOcat(): Insufficient balance of OCAT in the contract");
         // safeTransferFrom: send NFT from caller to the address
         IERC721(pnftAddress).safeTransferFrom(msg.sender, address(this), nftID);
         // Pay fee in OCAT to this address
-        uint256 totalFee = swapFee;
+        swapFee = (quotedOcats * fees[FeeType.PNFT_OCAT_SWAP_FEE]) / (10 ** FEE_DECIMAL);
+        uint256 txFee = swapFee;
         if (numberOfTransfers == 0) {
-            totalFee += mintFee;
+            txFee = mintFee;
+            realOcats = quotedOcats;
+        } else {
+            realOcats = quotedOcats - swapFee;
         }
-        collectFee(totalFee);
-        // Pay OCAT for the NFT
+        // Pay OCAT for the NFT except swap fee or mint fee 
         IERC20(ocatAddress).transfer(msg.sender, realOcats);
-        emit SwappedToOcat(realOcats, totalFee);
+        emit SwappedToOcat(realOcats, txFee);
     }
 
     function exchangeFromOcat(uint256 nftID) public 
     onlyValidCaller returns(uint256 realOcats, uint256 swapBackFee) {
         uint256 ocatBalance = IERC20(ocatAddress).balanceOf(msg.sender);
         // Get price for the NFT
-        (,,,,,uint256 price,,,) = PawnNFTs(payable(address(pnftAddress))).allPawnNFTs(nftID);
-        // uint256 price = nftItem.price;
-        uint256 quotedOcats = convertToOcat(price);
+        (,,,,,uint256 quotedOcats,,,) = PawnNFTs(payable(address(pnftAddress))).allPawnNFTs(nftID);
         swapBackFee = quotedOcats * fees[FeeType.OCAT_PNFT_SWAP_FEE] / (10 ** FEE_DECIMAL);
         realOcats = quotedOcats - swapBackFee;
 
