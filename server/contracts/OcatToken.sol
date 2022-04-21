@@ -19,7 +19,7 @@ contract OcatToken is ERC20, OcxAdmin {
     */
     function mint(uint256 amount) external payable
     onlyAdmin {
-        super._mint(msg.sender, amount * (10 ** _decimals));
+        super._mint(msg.sender, amount);
     }
     function decimals() public view virtual override returns (uint8) {
         return _decimals;

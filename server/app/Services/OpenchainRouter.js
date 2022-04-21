@@ -57,7 +57,7 @@ class OpenchainRouter {
             return 'It seem to be caused an error in access to blockchain';
         }
         if (typeof errorObj == 'object') {
-            var errMsg = errorObj.message ? errorObj.message.replace('Returned error: ', '') :
+            return errorObj.message ? errorObj.message.replace('Returned error: ', '') :
                 "Unknown error in send transaction for swap";
         } else {
             return errorObj.toString();
@@ -453,7 +453,7 @@ class OpenchainRouter {
             let ret = await pawnNftContract.methods.mint(
                 assetInfo.asset_name, 
                 assetId, 
-                assetInfo.estimated_ocat
+                assetInfo.quoted_price
             ).send({
                 from: this.myAddress,
                 // gasLimit: "70000"
@@ -615,10 +615,10 @@ class OpenchainRouter {
             );
             let ethPrice = 3400000000; // await priceOracleContract.methods.getEthUsdPrice().call();
             ethPrice = ethPrice / (10 ** 6);
-            let ocatPrice = await priceOracleContract.methods.getOcatPrice().call();
+            let ocatPriceData = await priceOracleContract.methods.getOcatPrice().call();
             return {error: 0, data: {
                 eth: ethPrice, 
-                ocat: ocatPrice, 
+                ocat: ocatPriceData.value / ocatPriceData.decimals, 
             }};
         } catch (error) {
             var errMsg = this.defaultErrorHanlder(error);
