@@ -4,8 +4,6 @@ pragma solidity ^0.8.0;
 // import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "./OcxBase.sol";
-import "./IOcxPriceOracle.sol";
-
 /*
  * -2: mint(): Error: caller of zero address
  * -3: Too small price
@@ -100,8 +98,6 @@ contract PawnNFTs is ERC721, OcxBase {
     tokenNameExists[_name] = true;
 
     estimatedOcats = convertToOcat(_price);
-    (uint64 applicationFee, uint64 valuationFee) = 
-          IOcxPriceOracle(ocxPriceOracleAddress).getSubmitFee();
     // creat a new pawning NFT (struct) and pass in new values
     allPawnNFTs[newTokenID] = PawnNFT(
       newTokenID,
@@ -111,7 +107,8 @@ contract PawnNFTs is ERC721, OcxBase {
       payable(msg.sender),
       payable(address(0)),
       estimatedOcats, // Original price
-      estimatedOcats - convertToOcat(applicationFee + valuationFee), // Current price
+      estimatedOcats - 
+        (estimatedOcats * fees[FeeType.PNFT_MINT_FEE]) / (10 ** FEE_DECIMAL), // Current price
       0,    // number of transfers
       true // for sale
     );

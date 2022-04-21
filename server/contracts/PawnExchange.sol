@@ -67,10 +67,6 @@ contract PawnExchange is OcxBase {
         require(ocatBalanceOfContract >= currentPrice, "Insufficient OCAT balance of the contract");
         // Pay OCAT for the NFT except swap fee or mint fee 
         IERC20(ocatAddress).transfer(msg.sender, effectiveOcats);
-        uint256 ocatBalanceOfSender = IERC20(ocatAddress).balanceOf(msg.sender);
-        // if (ocatBalanceOfSender < txFee) {
-
-        // }
         emit SwappedToOcat(effectiveOcats, txFee);
     }
 
@@ -87,7 +83,6 @@ contract PawnExchange is OcxBase {
         effectiveOcats = currentPrice - swapBackFee;
         // safeTransferFrom: send NFT from caller to the address
         TransferHelper.safeTransferFrom(ocatAddress, msg.sender, address(this), currentPrice);
-        PawnNFTs(pnftAddress).changePrice(nftID, effectiveOcats);
         // Distribute fee among the stakeholders
         // Pay OCAT for the NFT
         IERC721(pnftAddress).safeTransferFrom(address(this), msg.sender, nftID);
