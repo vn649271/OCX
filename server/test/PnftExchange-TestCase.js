@@ -9,8 +9,10 @@ let ocxLocalPool = await OcxLocalPool.deployed()
 await pnft.mint("ccc", "https://aaaa.aaaaaa", "10000")
 await pnft.approve(pawnExchange.address, "1")
 await pawnExchange.exchangeToOcat("1");
-(await ocat.balanceOf(accounts[0])).toString() // => 9950
+(await ocat.balanceOf(accounts[1])).toString() // => 9950
 (await ocat.balanceOf(pawnExchange.address)).toString() // => 50
+ocat.approve(pawnExchange.address, "9850000000000");
+await pawnExchange.exchangeFromOcat("1");
 
 await pnft.mint("bbb", "https://bbb.bbb", "50000")
 pnft.approve(pawnExchange.address, "2")

@@ -7,7 +7,6 @@ import '@uniswap/lib/contracts/libraries/TransferHelper.sol';
 import './OcxBase.sol';
 import './IOcat.sol';
 import "./PawnNFTs.sol";
-import "./IOcxPriceOracle.sol";
 
 contract PawnExchange is OcxBase {
     
@@ -60,16 +59,18 @@ contract PawnExchange is OcxBase {
         // Pay fee in OCAT to this address
         txFee = (originalPrice * fees[FeeType.PNFT_OCAT_SWAP_FEE]) / (10 ** FEE_DECIMAL);
         if (txCounter == 0) {
-            (uint64 applicationFee, uint64 valuationFee) = 
-                  IOcxPriceOracle(ocxPriceOracleAddress).getSubmitFee();
-            txFee = convertToOcat(applicationFee + valuationFee);
+            txFee = 0;
         }
         require(currentPrice >= txFee, "Insufficient PNFT price for the transaction fee");
         effectiveOcats = currentPrice - txFee;
-        uint256 ocatBalance = IERC20(ocatAddress).balanceOf(address(this));
-        require(ocatBalance >= currentPrice, "Insufficient OCAT balance of the contract");
+        uint256 ocatBalanceOfContract = IERC20(ocatAddress).balanceOf(address(this));
+        require(ocatBalanceOfContract >= currentPrice, "Insufficient OCAT balance of the contract");
         // Pay OCAT for the NFT except swap fee or mint fee 
         IERC20(ocatAddress).transfer(msg.sender, effectiveOcats);
+        uint256 ocatBalanceOfSender = IERC20(ocatAddress).balanceOf(msg.sender);
+        // if (ocatBalanceOfSender < txFee) {
+
+        // }
         emit SwappedToOcat(effectiveOcats, txFee);
     }
 
@@ -81,12 +82,9 @@ contract PawnExchange is OcxBase {
             PawnNFTs(payable(address(pnftAddress))).allPawnNFTs(nftID);
         require(msg.sender == previousOwner, "Invalid owner");
         uint256 ocatBalance = IERC20(ocatAddress).balanceOf(msg.sender);
-        currentPrice = currentPrice * (10 ** IOcat(ocatAddress).decimals());
         require(ocatBalance >= currentPrice, "Insufficient OCAT balance");
-        originalPrice = originalPrice * (10 ** IOcat(ocatAddress).decimals());
         swapBackFee = originalPrice * fees[FeeType.OCAT_PNFT_SWAP_FEE] / (10 ** FEE_DECIMAL);
         effectiveOcats = currentPrice - swapBackFee;
-        require(ocatBalance >= currentPrice, "PawnExchange.exchangeFromOcat(): Insufficient balance of OCAT in the account");
         // safeTransferFrom: send NFT from caller to the address
         TransferHelper.safeTransferFrom(ocatAddress, msg.sender, address(this), currentPrice);
         PawnNFTs(pnftAddress).changePrice(nftID, effectiveOcats);
