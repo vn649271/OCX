@@ -21,7 +21,6 @@ export default function SpinButton(props) {
         console.log(ev.type);
     }
     const handleClick = ev => {
-        console.log(ev.type);
         _handleClick();
     };
     const _handleClick = () => {
