@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 enum FeeType {
+    PNFT_MINT_FEE,
     PNFT_OCAT_SWAP_FEE,
     OCAT_PNFT_SWAP_FEE,
     FEE_TYPE_SIZE

@@ -18,6 +18,7 @@ contract OcxBase is OcxAdmin {
 
     constructor() {
         ocatPrice = 100;
+        fees[FeeType.PNFT_MINT_FEE] = 8; // 0.8% 
         fees[FeeType.PNFT_OCAT_SWAP_FEE] = 8; // 0.8% 
         fees[FeeType.OCAT_PNFT_SWAP_FEE] = 8; // 0.8%
     }
@@ -55,7 +56,7 @@ contract OcxBase is OcxAdmin {
         fees[feeType] = feeValue;
     }
     function getFee(FeeType feeType) public view returns(uint256) {
-        require(feeType > FeeType.PNFT_OCAT_SWAP_FEE && 
+        require(feeType > FeeType.PNFT_MINT_FEE && 
                 feeType <= FeeType.FEE_TYPE_SIZE, "Invalid fee type"); 
         return fees[feeType];
     }
