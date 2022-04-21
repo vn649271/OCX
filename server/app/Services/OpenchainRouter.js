@@ -24,6 +24,7 @@ const TOKEN_CONTRACT_MAP = {
 const UNLOCK_ACCOUNT_INTERVAL = process.env.UNLOCK_ACCOUNT_INTERVAL || 15000; // 15s
 
 const ocxSwapAbi = OcxExchange_DeployedInfo.abi;
+const pnftSwapAbi = PnftExchange_DeployedInfo.abi;
 const ocxLocalPoolAbi = OcxLocalPool_DeployedInfo.abi;
 const ocatAbi = OcatToken_DeployedInfo.abi;
 const erc20Abi = Erc20_DeployedInfo.abi;
@@ -39,7 +40,6 @@ const {
 
 const DEFAULT_DEADLINE = 300;   // 300s = 5min
 const SLIPPAGE_MAX = 3;         // 3%
-const PAWN_MINIMUM_PRICE = 5000;
 
 var gOpenchainRouter = null;
 
@@ -50,6 +50,18 @@ class OpenchainRouter {
     constructor(web3) {
         self = this;
         this.web3 = web3;
+    }
+
+    defaultErrorHanlder(errorObj) {
+        if (errorObj.message == 'Invalid JSON RPC response: ""') {
+            return 'It seem to be caused an error in access to blockchain';
+        }
+        if (typeof errorObj == 'object') {
+            var errMsg = errorObj.message ? errorObj.message.replace('Returned error: ', '') :
+                "Unknown error in send transaction for swap";
+        } else {
+            return errorObj.toString();
+        }
     }
 
     setAccountInfo(accountInfo) {
@@ -121,11 +133,7 @@ class OpenchainRouter {
             return { error: 0, data: balance };
         }
         catch (error) {
-            var errMsg = error ?
-                error.message ?
-                    error.message.replace('Returned error: ', '') :
-                    "Unknown error in send transaction for swap" :
-                error;
+            var errMsg = this.defaultErrorHanlder(error);
             return { error: -400, data: errMsg };
         }
     }
@@ -189,11 +197,7 @@ class OpenchainRouter {
             return { error: 0, data: amountOutMin };
         }
         catch (error) {
-            var errMsg = error ?
-                error.message ?
-                    error.message.replace('Returned error: ', '') :
-                    "Unknown error in send transaction for swap" :
-                error;
+            var errMsg = this.defaultErrorHanlder(error);
             return { error: -400, data: errMsg };
         }
     }
@@ -238,14 +242,7 @@ class OpenchainRouter {
                 return { error: 0, data: ret };
             }
         } catch (error) {
-            var errMsg = error ?
-                error.message ?
-                    error.message.replace('Returned error: ', '') :
-                    "Unknown error in send transaction for swap" :
-                error;
-            if (error.data !== undefined && error.data)  {
-                console.log(error.data);
-            }
+            var errMsg = this.defaultErrorHanlder(error);
             return { error: -400, data: errMsg };
         }
     }
@@ -321,12 +318,7 @@ class OpenchainRouter {
             }
         }
         catch (error) {
-            var errMsg = error ?
-                error.message ?
-                    error.message.replace('Returned error: ', '') :
-                    "Unknown error in send transaction for swap" :
-                error;
-            console.log("swapTokenForEth(): ", error);
+            var errMsg = this.defaultErrorHanlder(error);
             return { error: -400, data: errMsg };
         }
     }
@@ -403,11 +395,7 @@ class OpenchainRouter {
                 }
             }
         } catch (error) {
-            var errMsg = error ?
-                error.message ?
-                    error.message.replace('Returned error: ', '') :
-                    "Unknown error in send transaction for swap" :
-                error;
+            var errMsg = this.defaultErrorHanlder(error);
             return { error: -400, data: errMsg };
         }
     }
@@ -437,11 +425,7 @@ class OpenchainRouter {
             return { error: 0, data: ret };
         }
         catch (error) {
-            var errMsg = error ?
-                error.message ?
-                    error.message.replace('Returned error: ', '') :
-                    "Unknown error in send transaction for swap" :
-                error;
+            var errMsg = this.defaultErrorHanlder(error);
             return { error: -400, data: errMsg };
         }
     }
@@ -494,11 +478,7 @@ class OpenchainRouter {
             console.log("@@@ OpenchainRouter.mintPNFT(): ", newTokenId);
             return { error: 0, data: newTokenId };
         } catch (error) {
-            var errMsg = error ?
-                error.message ?
-                    error.message.replace('Returned error: ', '') :
-                    "Unknown error in send transaction for swap" :
-                error;
+            var errMsg = this.defaultErrorHanlder(error);
             return { error: -400, data: errMsg };
         }
     }
@@ -518,20 +498,21 @@ class OpenchainRouter {
         }
         try {
             let pnftContractAddress = this.getContractAddress(Pnft_DeployedInfo);
-            let ocxExchangeAddress = this.getContractAddress(OcxExchange_DeployedInfo);
+            let pnftExchangeAddress = this.getContractAddress(PnftExchange_DeployedInfo);
+            
             const pnftContract = new this.web3.eth.Contract(Pnft_DeployedInfo.abi, pnftContractAddress);
             if (assetInfo.nft_id === undefined) {
                 return { error: -250, data: "Could not to find ID for the pawning NFT" };
             }
             let gasPrice = await this.web3.eth.getGasPrice();
             gasPrice = (gasPrice * 1.2).toFixed(0);
-            let ret = await pnftContract.methods.approve(ocxExchangeAddress, assetInfo.nft_id)
+            let ret = await pnftContract.methods.approve(pnftExchangeAddress, assetInfo.nft_id)
                 .send({
                     from: this.myAddress,
                     gas: "280000",
                     gasPrice: gasPrice
                 });
-            let openchainSwap = new this.web3.eth.Contract(ocxSwapAbi, ocxExchangeAddress);
+            let pnftExchange = new this.web3.eth.Contract(pnftSwapAbi, pnftExchangeAddress);
             // Get latest value of gas limit
             gasPrice = (gasPrice * 1.2).toFixed(0);
             let latestBlock = await this.web3.eth.getBlock("latest");
@@ -541,7 +522,7 @@ class OpenchainRouter {
             let gasLimit = latestBlock.gasLimit;
             gasLimit = (gasLimit * 1.5).toFixed(0);
             // Do exchange
-            ret = await openchainSwap.methods.exchangeToOcat(
+            ret = await pnftExchange.methods.exchangeToOcat(
                 assetInfo.nft_id
             ).send({
                 from: this.myAddress,
@@ -556,11 +537,7 @@ class OpenchainRouter {
             return { error: 0, data: ret.transactionHash };
 
         } catch (error) {
-            var errMsg = error ?
-                error.message ?
-                    error.message.replace('Returned error: ', '') :
-                    "Unknown error in send transaction for swap" :
-                error;
+            var errMsg = this.defaultErrorHanlder(error);
             return { error: -400, data: errMsg };
         }
     }
@@ -581,7 +558,7 @@ class OpenchainRouter {
         try {
             let pnftContractAddress = this.getContractAddress(Pnft_DeployedInfo);
             let ocatContractAddress = this.getContractAddress(OcatToken_DeployedInfo);
-            let ocxExchangeAddress = this.getContractAddress(OcxExchange_DeployedInfo);
+            let pnftExchangeAddress = this.getContractAddress(PnftExchange_DeployedInfo);
 
             const pnftContract = new this.web3.eth.Contract(Pnft_DeployedInfo.abi, pnftContractAddress);
             let ret = await pnftContract.methods.allPawnNFTs(assetInfo.nft_id).call(); //().
@@ -592,13 +569,13 @@ class OpenchainRouter {
             const ocatContract = new this.web3.eth.Contract(ocatAbi, ocatContractAddress);
             let gasPrice = await this.web3.eth.getGasPrice();
             gasPrice = (gasPrice * 1.2).toFixed(0);
-            ret = await ocatContract.methods.approve(ocxExchangeAddress, priceInWei).//assetInfo.nft_id
+            ret = await ocatContract.methods.approve(pnftExchangeAddress, priceInWei).//assetInfo.nft_id
                 send({
                     from: this.myAddress,
                     gas: "280000",
                     gasPrice: gasPrice
                 });
-            let openchainSwap = new this.web3.eth.Contract(ocxSwapAbi, ocxExchangeAddress);
+            let pnftExchange = new this.web3.eth.Contract(pnftSwapAbi, pnftExchangeAddress);
             gasPrice = (gasPrice * 1.2).toFixed(0);
 
             // Get latest value of gas limit
@@ -608,9 +585,9 @@ class OpenchainRouter {
             }
             let gasLimit = latestBlock.gasLimit;
             gasLimit = (gasLimit * 1.5).toFixed(0);
-            
+
             // Do swap
-            ret = await openchainSwap.methods.exchangeFromOcat(
+            ret = await pnftExchange.methods.exchangeFromOcat(
                 assetInfo.nft_id
             ).send({
                 from: this.myAddress,
@@ -624,11 +601,7 @@ class OpenchainRouter {
             return { error: 0, data: ret.transactionHash };
 
         } catch (error) {
-            var errMsg = error ?
-                error.message ?
-                    error.message.replace('Returned error: ', '') :
-                    "Unknown error in send transaction for swap" :
-                error;
+            var errMsg = this.defaultErrorHanlder(error);
             return { error: -400, data: errMsg };
         }
     }
@@ -648,7 +621,8 @@ class OpenchainRouter {
                 ocat: ocatPrice, 
             }};
         } catch (error) {
-            return { error: -300, data: error };
+            var errMsg = this.defaultErrorHanlder(error);
+            return { error: -300, data: errMsg };
         }
     }
 
@@ -661,7 +635,8 @@ class OpenchainRouter {
             let feeListRet = await this._getFeeList();
             return feeListRet;
         } catch (error) {
-            return { error: -300, data: error };
+            var errMsg = this.defaultErrorHanlder(error);
+            return { error: -300, data: errMsg };
         }
     }
 
@@ -725,8 +700,8 @@ class OpenchainRouter {
                 data: weeklyFeeData.value / Math.pow(10, weeklyFeeData.feeDecimals)
             }
         } catch(error) {
-            console.log("OpenchainRouter.getWeeklyFee(): ", error);
-            return { error: -300, data: error }
+            var errMsg = this.defaultErrorHanlder(error);
+            return { error: -300, data: errMsg }
         }
     }
 }

@@ -67,6 +67,20 @@ module.exports = async deployer => {
         ocxPriceOracleAddress = ret.address;
     });
 
+    // Setup deployed OCAT address 
+    pawnExchange.setOcatAddress(ocatAddress);
+    // Setup deployed PNFT address 
+    pawnExchange.setPnftAddress(pnftAddress);
+    // Setup administrator
+    pawnExchange.addAdmin(adminAddress);
+    // Set address of OcxPriceOracle to PawnNFTs contract
+    pnft.setOcxPriceOracleAddress(ocxPriceOracleAddress);
+    // Add PawnExchange contract to OcatToken contract as an operator
+    ocatToken.addAdmin(adminAddress);
+    ocatToken.addAdmin(pawnExchangeAddress);
+    // Setting deployed OCAT address 
+    ocxLocalPool.setOcatAddress(ocatAddress);
+
     deployer.deploy(OcxExchange).then(async ocxExchange => {
         console.log("\n\n");
         if (deployer.network == "ganache") {
@@ -96,24 +110,11 @@ module.exports = async deployer => {
         console.log("    OCX_PRICE_ORACLE: \"" + ocxPriceOracleAddress + "\",");
         console.log("    OCX_EXCHANGE: \"" + ocxExchange.address + "\"");
         console.log("\n\n");
-        // Setup deployed OCAT address 
-        pawnExchange.setOcatAddress(ocatAddress);
-        // Setup deployed PNFT address 
-        pawnExchange.setPnftAddress(pnftAddress);
-        // Setup administrator
-        pawnExchange.addAdmin(adminAddress);
-        // Set address of OcxPriceOracle to PawnNFTs contract
-        pnft.setOcxPriceOracleAddress(ocxPriceOracleAddress);
-        // Add PawnExchange contract to OcatToken contract as an operator
-        ocatToken.addAdmin(adminAddress);
-        ocatToken.addAdmin(pawnExchangeAddress);
         // Setting deployed PNFT address 
         ocxExchange.setPnftAddress(pnftAddress);
         // Setting deployed OCAT address 
         ocxExchange.setOcatAddress(ocatAddress);
         // Setting deployed Ocx local pool address 
         ocxExchange.setOcxLocalPoolAddress(ocxLocalPoolAddress);
-        // Setting deployed OCAT address 
-        ocxLocalPool.setOcatAddress(ocatAddress);
     });
 };

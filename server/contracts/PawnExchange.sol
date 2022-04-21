@@ -42,7 +42,7 @@ contract PawnExchange is OcxBase {
     }
 
     function exchangeToOcat(uint256 nftID) public 
-    validNftID(nftID) validCaller 
+    validNftID(nftID) validCaller onlyValidAddress(ocatAddress) onlyValidAddress(pnftAddress)
     returns (uint256 realOcats, uint256 swapFee) {
         // Get price for the NFT
         (,,, address currentOwner,, uint256 quotedOcats, uint256 mintFee, uint256 numberOfTransfers,) = 
@@ -72,7 +72,8 @@ contract PawnExchange is OcxBase {
     }
 
     function exchangeFromOcat(uint256 nftID) public 
-    onlyValidCaller returns(uint256 realOcats, uint256 swapBackFee) {
+    onlyValidCaller onlyValidAddress(ocatAddress) onlyValidAddress(pnftAddress)
+    returns(uint256 realOcats, uint256 swapBackFee) {
         uint256 ocatBalance = IERC20(ocatAddress).balanceOf(msg.sender);
         // Get price for the NFT
         (,,,,,uint256 quotedOcats,,,) = PawnNFTs(payable(address(pnftAddress))).allPawnNFTs(nftID);

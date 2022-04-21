@@ -14,8 +14,8 @@ const OcxDropdownControlList = (props) => {
 
     const onItemClicked = ev => {
         let itemIndex = ev.target.nodeName == "LI" ? ev.target.attributes[0].value - 0: ev.target.parentNode.attributes[0].value - 0;
-// console.log(itemIndex); return;
-        this.setState({selectedItem: children[itemIndex]})
+console.log(itemIndex); return;
+        // this.setState({selectedItem: children[itemIndex]})
         // if (this.onSelectItem) {
         //     this.onSelectItem(itemIndex);
         // }
