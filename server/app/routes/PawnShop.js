@@ -14,6 +14,8 @@ pawnshop.post("/loan", pawnShopController.loan);
 pawnshop.post("/restore", pawnShopController.restore);
 pawnshop.post("/upload", pawnShopController.upload);
 pawnshop.post("/assets", pawnShopController.getAssetsFor);
-pawnshop.post("/fees", pawnShopController.getFees);
+pawnshop.post("/fees/submit", pawnShopController.getSubmitFee);
+pawnshop.post("/fees/weekly", pawnShopController.getWeeklyFee);
+pawnshop.post("/fees/pnft", pawnShopController.getPnftFee);
 
 module.exports = pawnshop;

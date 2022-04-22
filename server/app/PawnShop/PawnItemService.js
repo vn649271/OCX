@@ -19,6 +19,7 @@ var web3 = null;
 initWeb3 = (inited) => {
     web3 = inited;
 }
+var feeList = null;
 
 var pawnItemModel = new PawnItemModel();
 
@@ -40,16 +41,15 @@ class PawnItemService {
             }
             // Load pawn ratio from valuation report
             // Calculate and add the fee information and quoted amount of OCAT
-            let ret = await this.getFeeList(accountInfo);
-            if (ret.error < 0) {
-                return {error: -202, data: "Failed to get initial fee"};
+            let pnftFeeData = await this.getPnftFee(accountInfo);
+            if (pnftFeeData.error < 0) {
+                return {error: -202, data: "Failed to get estimated fee"};
             }
-            let submitFee = ret.data.submit;
-            let estimatedFee = (submitFee.application - 0) + (submitFee.valuation - 0);
             assetData.quoted_price = (assetData.reported_price * assetData.convert_ratio) / 100;
-            assetData.estimated_ocat = assetData.quoted_price - estimatedFee;
-            assetData.estimated_fee = estimatedFee;
-            ret = await pawnItemModel.create(assetData);
+            assetData.estimated_fee = assetData.quoted_price * pnftFeeData.data.mint / 100;
+            assetData.estimated_ocat = assetData.quoted_price - assetData.estimated_fee;
+
+            let ret = await pawnItemModel.create(assetData);
             if (ret.error < 0) {
                 return {error: -203, data: ret.data};
             }
@@ -225,7 +225,7 @@ class PawnItemService {
             return { error: -300, data: errorMessage };
         }
     }
-    getFeeList = async(accountInfo) => {
+    getSubmitFee = async(accountInfo) => {
         if (web3 == null) {
             return {
                 error: -200,
@@ -247,7 +247,61 @@ class PawnItemService {
             };
         }
         try {
-            return await ocRouter.getFeeList();
+            return await ocRouter.getSubmitFee();
+        } catch (error) {
+            return resp.json({ error: -300, data: error });
+        }
+    }
+    getWeeklyFee = async(accountInfo, basePrice) => {
+        if (web3 == null) {
+            return {
+                error: -200,
+                data: "Geth node is not ready yet. Please retry a while later."
+            };
+        }
+        if (accountInfo.addresses == undefined || accountInfo.addresses == {}) {
+            return {
+                error: -201,
+                data: "No account for you"
+            };
+        }
+        let ret = null;
+        const ocRouter = await openchainRouterInstance(web3, accountInfo);
+        if (!ocRouter) {
+            return {
+                error: -202,
+                data: "Invalid account for you"
+            };
+        }
+        try {
+            return await ocRouter.getWeeklyFee(basePrice);
+        } catch (error) {
+            return resp.json({ error: -300, data: error });
+        }
+    }
+    getPnftFee = async(accountInfo) => {
+        if (web3 == null) {
+            return {
+                error: -200,
+                data: "Geth node is not ready yet. Please retry a while later."
+            };
+        }
+        if (accountInfo.addresses == undefined || accountInfo.addresses == {}) {
+            return {
+                error: -201,
+                data: "No account for you"
+            };
+        }
+        let ret = null;
+        const ocRouter = await openchainRouterInstance(web3, accountInfo);
+        if (!ocRouter) {
+            return {
+                error: -202,
+                data: "Invalid account for you"
+            };
+        }
+        try {
+            return await ocRouter.getPnftTxFee();
         } catch (error) {
             return resp.json({ error: -300, data: error });
         }

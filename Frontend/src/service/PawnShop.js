@@ -102,6 +102,24 @@ export default function PawnShopService() {
         _params['url'] = BACKEND_BASE_URL + "/pawnshop/assets";
         return await this._sendRequest(_params);
     }
+    this.getSubmitFee = async params => {
+        let _params = {};
+        _params['data'] = params;
+        _params['url'] = BACKEND_BASE_URL + "/pawnshop/fees/submit";
+        return await this._sendRequest(_params);
+    }
+    this.getWeeklyFee = async params => {
+        let _params = {};
+        _params['data'] = params;
+        _params['url'] = BACKEND_BASE_URL + "/pawnshop/fees/weekly";
+        return await this._sendRequest(_params);
+    }
+    this.getPnftFee = async params => {
+        let _params = {};
+        _params['data'] = params;
+        _params['url'] = BACKEND_BASE_URL + "/pawnshop/fees/pnft";
+        return await this._sendRequest(_params);
+    }
     /**
      * Connect to specified account.
      * @param {string} userToken    user token

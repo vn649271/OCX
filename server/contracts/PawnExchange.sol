@@ -3,10 +3,11 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol"; // openzeppelin 4.5 (for solidity 0.8.x)
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import '@uniswap/lib/contracts/libraries/TransferHelper.sol';
-import './OcxBase.sol';
-import './IOcat.sol';
+import "@uniswap/lib/contracts/libraries/TransferHelper.sol";
+import "./OcxBase.sol";
+import "./IOcat.sol";
 import "./PawnNFTs.sol";
+import "./IOcxPriceOracle.sol";
 
 contract PawnExchange is OcxBase {
     
@@ -57,9 +58,11 @@ contract PawnExchange is OcxBase {
         // safeTransferFrom: send NFT from caller to the address
         IERC721(pnftAddress).safeTransferFrom(msg.sender, address(this), nftID);
         // Pay fee in OCAT to this address
-        txFee = (originalPrice * fees[FeeType.PNFT_OCAT_SWAP_FEE]) / (10 ** FEE_DECIMAL);
-        if (txCounter == 0) {
-            txFee = 0;
+        (uint256 loanFee, uint256 feeDecimals) = 
+            IOcxPriceOracle(ocxPriceOracleAddress).getFeePercentage(FeeType.PNFT_OCAT_SWAP_FEE);
+        txFee = 0;
+        if (txCounter > 0) {
+            txFee = (originalPrice * loanFee) / (10 ** feeDecimals);
         }
         require(currentPrice >= txFee, "Insufficient PNFT price for the transaction fee");
         effectiveOcats = currentPrice - txFee;
@@ -79,7 +82,10 @@ contract PawnExchange is OcxBase {
         require(msg.sender == previousOwner, "Invalid owner");
         uint256 ocatBalance = IERC20(ocatAddress).balanceOf(msg.sender);
         require(ocatBalance >= currentPrice, "Insufficient OCAT balance");
-        swapBackFee = originalPrice * fees[FeeType.OCAT_PNFT_SWAP_FEE] / (10 ** FEE_DECIMAL);
+        // Get restore fee
+        (uint256 restoreFee, uint256 feeDecimals) = 
+            IOcxPriceOracle(ocxPriceOracleAddress).getFeePercentage(FeeType.OCAT_PNFT_SWAP_FEE);
+        swapBackFee = originalPrice * restoreFee / (10 ** feeDecimals);
         effectiveOcats = currentPrice - swapBackFee;
         // safeTransferFrom: send NFT from caller to the address
         TransferHelper.safeTransferFrom(ocatAddress, msg.sender, address(this), currentPrice);

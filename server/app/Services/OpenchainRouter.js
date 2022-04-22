@@ -40,6 +40,7 @@ const {
 
 const DEFAULT_DEADLINE = 300;   // 300s = 5min
 const SLIPPAGE_MAX = 3;         // 3%
+const FEE_CHECKING_INTERVAL = 300000; // every 300s
 
 var gOpenchainRouter = null;
 
@@ -50,6 +51,9 @@ class OpenchainRouter {
     constructor(web3) {
         self = this;
         this.web3 = web3;
+        this.pnftFeeData = null;
+        this.isPnftFeeDataValid = false;
+        setTimeout(this._getPnftTxFee, FEE_CHECKING_INTERVAL);
     }
 
     defaultErrorHanlder(errorObj) {
@@ -618,48 +622,13 @@ class OpenchainRouter {
             let ocatPriceData = await priceOracleContract.methods.getOcatPrice().call();
             return {error: 0, data: {
                 eth: ethPrice, 
-                ocat: ocatPriceData.value / ocatPriceData.decimals, 
+                ocat: ocatPriceData.value / (10 ** (ocatPriceData.decimals - 0)), 
             }};
         } catch (error) {
             var errMsg = this.defaultErrorHanlder(error);
             return { error: -300, data: errMsg };
         }
     }
-
-    getFeeList = async () => {
-        let ret = await this._unlockAccount();
-        if (ret.error) {
-            return ret;
-        }
-        try {
-            let feeListRet = await this._getFeeList();
-            return feeListRet;
-        } catch (error) {
-            var errMsg = this.defaultErrorHanlder(error);
-            return { error: -300, data: errMsg };
-        }
-    }
-
-    _getFeeList = async () => {
-        let ret = await this.getSubmitFee();
-        if (ret.error < 0) {
-            return {error: -1, data: "Failed to get submition fee"};
-        }
-        let submitCommission = ret.data;
-        ret = await this.getWeeklyFee();
-        if (ret.error < 0) {
-            return {error: -2, data: "Failed to get weekly fee"};
-        }
-        let weeklyFee = ret.data;
-        return { 
-            error: 0, 
-            data: {
-                submit: submitCommission,
-                weekly: weeklyFee
-            } 
-        }; // ret;
-    }
-
     getSubmitFee = async () => {
         // Load values of fee for submition
         let opoAddress = this.getContractAddress(OcxPriceOracle_DeployedInfo);
@@ -668,7 +637,7 @@ class OpenchainRouter {
             opoAddress
         );
         let submitFeeData = await priceOracleContract.methods.getSubmitFee().call();
-        console.log("************* SUBMIT FEE ", submitFeeData);
+console.log("************* SUBMIT FEE ", submitFeeData);
         return {
             error: 0,
             data: {
@@ -677,7 +646,6 @@ class OpenchainRouter {
             }
         }
     }
-
     getWeeklyFee = async (basePrice) => {
         if (basePrice == undefined) {
             basePrice = 0;
@@ -695,10 +663,51 @@ class OpenchainRouter {
         );
         try {
             let weeklyFeeData = await priceOracleContract.methods.getWeeklyFee(basePrice.toString()).call();
+console.log("************* WEEKLY FEE ", weeklyFeeData);
             return {
                 error: 0,
                 data: weeklyFeeData.value / Math.pow(10, weeklyFeeData.feeDecimals)
             }
+        } catch(error) {
+            var errMsg = this.defaultErrorHanlder(error);
+            return { error: -300, data: errMsg }
+        }
+    }
+    _getPnftTxFee = async () => {
+        this.isPnftFeeDataValid = false;
+        let opoAddress = this.getContractAddress(OcxPriceOracle_DeployedInfo);
+        const priceOracleContract = new this.web3.eth.Contract(
+            OcxPriceOracle_DeployedInfo.abi, 
+            opoAddress
+        );
+        try {
+            let pnftFeeData = await priceOracleContract.methods.getPnftFee().call();
+            if (pnftFeeData.error) {
+                console.log("OcxRouter._getPnftTxFee(): Failed to get PNFT fee data");
+                return;
+            }
+            this.isPnftFeeDataValid = true;
+            this.pnftFeeData = {
+                mint: pnftFeeData.mintFee / Math.pow(10, pnftFeeData.feeDecimals),
+                loan: pnftFeeData.loanFee / Math.pow(10, pnftFeeData.feeDecimals),
+                restore: pnftFeeData.restoreFee / Math.pow(10, pnftFeeData.feeDecimals),
+            }
+        } catch(error) {
+            var errMsg = this.defaultErrorHanlder(error);
+            console.log("OcxRouter._getPnftTxFee(): Failed to get PNFT fee data", error);
+        }
+    }
+    getPnftTxFee = async () => {
+        if (this.isPnftFeeDataValid) {
+            return {error: 0, data: this.pnftFeeData};
+        }
+        let opoAddress = this.getContractAddress(OcxPriceOracle_DeployedInfo);
+        const priceOracleContract = new this.web3.eth.Contract(
+            OcxPriceOracle_DeployedInfo.abi, 
+            opoAddress
+        );
+        try {
+            return await priceOracleContract.methods.getPnftFee().call();
         } catch(error) {
             var errMsg = this.defaultErrorHanlder(error);
             return { error: -300, data: errMsg }
