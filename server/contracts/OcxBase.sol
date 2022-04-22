@@ -7,20 +7,15 @@ import './IOcat.sol';
 
 contract OcxBase is OcxAdmin {
 
-    mapping(FeeType => uint256) internal fees;
     uint256                     public ocatPrice;
     uint8                       constant OCAT_PRICE_DECIMALS = 2;
     address payable             public ocatAddress;
     address payable             public ocxAddress;
     address payable             public pnftAddress;
     address payable             public ocxPriceOracleAddress;
-    uint8                       constant FEE_DECIMAL = 3;
 
     constructor() {
         ocatPrice = 100;
-        fees[FeeType.PNFT_MINT_FEE] = 8; // 0.8% 
-        fees[FeeType.PNFT_OCAT_SWAP_FEE] = 8; // 0.8% 
-        fees[FeeType.OCAT_PNFT_SWAP_FEE] = 8; // 0.8%
     }
 
     modifier onlyValidCaller virtual {
@@ -50,15 +45,6 @@ contract OcxBase is OcxAdmin {
     function setPnftAddress(address payable _pnftAddress) public 
     onlyCreator onlyValidAddress(_pnftAddress) {
         pnftAddress = _pnftAddress;
-    }
-    function setFee(FeeType feeType, uint256 feeValue) public
-    onlyAdmin {
-        fees[feeType] = feeValue;
-    }
-    function getFee(FeeType feeType) public view returns(uint256) {
-        require(feeType > FeeType.PNFT_MINT_FEE && 
-                feeType <= FeeType.FEE_TYPE_SIZE, "Invalid fee type"); 
-        return fees[feeType];
     }
     function setOcxAddress(address payable _ocxAddress) public 
     onlyCreator onlyValidAddress(_ocxAddress) {

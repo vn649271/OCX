@@ -7,11 +7,12 @@ import "./OcxBase.sol";
 contract OcxPriceOracle is OcxBase {
 
     IWitnetPriceRouter public router;
-    uint64  public applicationFee = 100;
-    uint64  public valuationFee = 50;
-    uint64  private minimumPawnablePrice = 5000;
-    uint64  private weeklyFeePercentage = 624; // 6.24%
-    uint8  public weeklyFeeDecimals = 6;
+    mapping(FeeType => uint256) internal feePercentages;
+    uint256  public _feePercentageDecimals = 6;
+    uint256  public applicationFee = 100;
+    uint256  public valuationFee = 50;
+    uint256  private minimumPawnablePrice = 5000;
+    uint256  private weeklyFeePercentage = 62400; // 6.24%
     /**
      * IMPORTANT: replace the address below with the WitnetPriceRouter address
      * of the network you are using! Please find the address here:
@@ -20,23 +21,51 @@ contract OcxPriceOracle is OcxBase {
     constructor() {
         // router = IWitnetPriceRouter(0x83a757eae821ad7b520d9a74952337138a80b2af); // for MainNet
         router = IWitnetPriceRouter(0x1cF3Aa9DBF4880d797945726B94B9d29164211BE); // for Goerli
+        feePercentages[FeeType.PNFT_MINT_FEE] = 80000; // 0.8% 
+        feePercentages[FeeType.PNFT_OCAT_SWAP_FEE] = 80000; // 0.8% 
+        feePercentages[FeeType.OCAT_PNFT_SWAP_FEE] = 80000; // 0.8%
     }
-    function setSubmitFee(uint64 _applicationFee, uint64 _valuationFee) public 
+    /* 
+     * feeValue = real_percent_value * (10 ** _feePercentageDecimals) = real_percent_value * 10^6
+     */
+
+    function setFeePercentage(FeeType feeType, uint256 percentValue) public
+    onlyAdmin {
+        feePercentages[feeType] = percentValue;
+    }
+    function getFeePercentage(FeeType feeType) public view 
+    returns(uint256 percentage, uint256 feeDecimals) {
+        require(feeType > FeeType.PNFT_MINT_FEE && 
+                feeType <= FeeType.FEE_TYPE_SIZE, "Invalid fee type");
+        percentage = feePercentages[feeType];
+        feeDecimals = _feePercentageDecimals;
+    }
+    function setSubmitFee(uint256 _applicationFee, uint256 _valuationFee) public 
     onlyAdmin {
         applicationFee = _applicationFee;
         valuationFee = _valuationFee;
     }
-    function getSubmitFee() public view returns (uint64 application, uint64 valuation) {
+    /*
+     * Returns value of the application and valuation fee in fiat currency($)
+     */
+    function getSubmitFee() public view returns (uint256 application, uint256 valuation) {
         application = applicationFee;
         valuation = valuationFee;
     }
     function getWeeklyFee(uint256 assetPrice) public view 
-    returns(uint256 value, uint8 feeDecimals) {
-        feeDecimals = weeklyFeeDecimals;
+    returns(uint256 value, uint256 feeDecimals) {
+        feeDecimals = _feePercentageDecimals;
         if (assetPrice <= minimumPawnablePrice) {
             assetPrice = minimumPawnablePrice;
         }
-        value = assetPrice * ((weeklyFeePercentage * 100) / 52);
+        value = assetPrice * (weeklyFeePercentage / 52);
+    }
+    function getPnftFeePercentages() public view 
+    returns(uint256 mintFee, uint256 loanFee, uint256 restoreFee, uint256 feeDecimals) {
+        feeDecimals = _feePercentageDecimals;
+        mintFee = feePercentages[FeeType.PNFT_MINT_FEE];
+        loanFee = feePercentages[FeeType.PNFT_OCAT_SWAP_FEE];
+        restoreFee = feePercentages[FeeType.OCAT_PNFT_SWAP_FEE];
     }
     /// Returns the BTC / USD price (6 decimals), ultimately provided by the Witnet oracle.
     function getBtcUsdPrice() public view returns (int256 _price) {

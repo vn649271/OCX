@@ -26,6 +26,8 @@ const UNKNOWN_USER = 0;
 const NEW_USER = 1;
 const USER_WITH_ACCOUNT = 2;
 
+const PRICE_MONITOR_INTERVAL = 300000; // every 5 minutes
+
 const ASSET_TYPES = [
     {
         iconUrl: null,
@@ -291,7 +293,9 @@ class PawnShopPage extends Component {
         this.setConvertRatio = this.setConvertRatio.bind(this);
         this.setQuotedPrice = this.setQuotedPrice.bind(this);
         this.setEstimatedOcat = this.setEstimatedOcat.bind(this);
-        this.setEstimatedFee = this.setEstimatedFee.bind(this);
+        this.setSubmitFee = this.setSubmitFee.bind(this);
+        this.setWeeklyFee = this.setWeeklyFee.bind(this);
+        this.loadWeeklyFee = this.loadWeeklyFee.bind(this);
 
         // Event Handler
         this.onChangeAssetType = this.onChangeAssetType.bind(this);
@@ -314,7 +318,6 @@ class PawnShopPage extends Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.buildTrackTable = this.buildTrackTable.bind(this);
         this.updateTrackTable = this.updateTrackTable.bind(this);
-        this.getFeeList = this.getFeeList.bind(this);
         this.setPrices = this.setPrices.bind(this);
         this.showNewSubmit = this.showNewSubmit.bind(this);
         this.showConfirm = this.showConfirm.bind(this);
@@ -367,30 +370,42 @@ class PawnShopPage extends Component {
     componentWillUnmount = () => {
         if (this.priceMonitorTimer) {
             clearInterval(this.priceMonitorTimer);
+            this.priceMonitorTimer = null;
         }
     }
 
     startPriceMonitor = () => {
-        this.priceMonitorTimer = setInterval(this.priceMonitor, 10000);
+        this.priceMonitorTimer = setInterval(this.priceMonitor, PRICE_MONITOR_INTERVAL);
 		this.priceMonitor();
     }
-    getFeeList = () => {
-        pawnShopService.getFeeList({
+    priceMonitor = async () => {
+        // Load submition fee
+        pawnShopService.getSubmitFee({
             userToken: this.userToken
         }).then(ret => {
             if (ret.error != undefined && ret.error == 0) {
-                this.fees = ret.data;
-                self.setEstimatedFee(ret.data);
+                self.setSubmitFee(ret.data);
             }
         });
-    }
-    priceMonitor = async () => {
-        this.getFeeList();
+        // Load weekly fee
+        this.loadWeeklyFee();
+        // Load prices of ETH, OCAT and other tokens
         priceOracleService.getPrices({
             userToken: this.userToken
         }).then(ret => {
             if (ret.error != undefined && ret.error == 0) {
                 self.setPrices(ret.data);
+            }
+        });
+    }
+    loadWeeklyFee = async (basePrice) => {
+        pawnShopService.getWeeklyFee({
+            userToken: this.userToken,
+            basePrice: basePrice ? basePrice : 0
+        }).then(ret => {
+            if (ret.error != undefined && ret.error == 0) {
+                this.fees = ret.data;
+                self.setWeeklyFee(ret.data);
             }
         });
     }
@@ -506,38 +521,33 @@ class PawnShopPage extends Component {
         inputs.convert_ratio = convert_ratio;
         this.setState({inputs}) 
     }
-
     setQuotedPrice = quotePrice => {
-        this.setState({quoted_price: quotePrice ? quotePrice: ''}) 
+        this.setState({quoted_price: quotePrice ? quotePrice: ''});
+        if (quotePrice > 0) {
+            this.loadWeeklyFee(quotePrice);
+        }
     }
-
     setEstimatedOcat = estimatedOcat => {
         this.setState({estimated_ocat: estimatedOcat ? estimatedOcat: ''}) 
     }
-
-    setEstimatedFee = (fees) => {
-        let submit = fees.submit, 
-            weekly_fee = fees.weekly;
+    setSubmitFee = submit => {
         this.setState({application_fee: "$" + submit.application});
         this.setState({valuation_fee: "$" + submit.valuation});
-        this.setState({weekly_fee: "$" + weekly_fee + "/W"});
-        // this.setState({estimated_fee: estimatedFee});
     }
-
+    setWeeklyFee = weeklyFee => {
+        this.setState({weekly_fee: "$" + weeklyFee + "/W"});
+    }
     onChangeAssetType = itemIndex => {
         this.setAssetType(ASSET_TYPES[itemIndex].title);
     }
-
     onChangeCountry = itemIndex => {
         this.setCountry(COUNTRIES[itemIndex].title);
     }
-
     onChangeStateName = stateIndex => {
         if (this.state.inputs.asset_address_country === "") 
             return;
         this.setStateName(STATES[this.state.inputs.asset_address_country][stateIndex].title);
     }
-
     clearAllFields = () => {
 		let inputs = this.state.inputs;
         inputs.asset_name = '';
@@ -992,7 +1002,7 @@ class PawnShopPage extends Component {
                                             type="number"
                                             name="quoted_price"
                                             id="quoted_price"
-                                            placeholder="Quote Price"
+                                            placeholder="Quoted Price"
                                             readOnly={true}
                                             value={this.state.quoted_price}
                                         />
