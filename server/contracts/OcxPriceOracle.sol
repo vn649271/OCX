@@ -21,9 +21,9 @@ contract OcxPriceOracle is OcxBase {
     constructor() {
         // router = IWitnetPriceRouter(0x83a757eae821ad7b520d9a74952337138a80b2af); // for MainNet
         router = IWitnetPriceRouter(0x1cF3Aa9DBF4880d797945726B94B9d29164211BE); // for Goerli
-        feePercentages[FeeType.PNFT_MINT_FEE] = 80000; // 0.8% 
-        feePercentages[FeeType.PNFT_OCAT_SWAP_FEE] = 80000; // 0.8% 
-        feePercentages[FeeType.OCAT_PNFT_SWAP_FEE] = 80000; // 0.8%
+        feePercentages[FeeType.PNFT_MINT_FEE] = 8000; // 0.8% 
+        feePercentages[FeeType.PNFT_OCAT_SWAP_FEE] = 8000; // 0.8% 
+        feePercentages[FeeType.OCAT_PNFT_SWAP_FEE] = 8000; // 0.8%
     }
     /* 
      * feeValue = real_percent_value * (10 ** _feePercentageDecimals) = real_percent_value * 10^6

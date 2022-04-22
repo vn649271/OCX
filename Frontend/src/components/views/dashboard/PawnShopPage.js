@@ -275,7 +275,7 @@ class PawnShopPage extends Component {
         this.valuation_report = null;
         this.priceMonitorTimer = null;
         this.confirmContext = null;
-		this.fees = {};
+        this.estimatedFee = 0;
 
         // State Helper
         this.clearAllFields = this.clearAllFields.bind(this);
@@ -389,6 +389,14 @@ class PawnShopPage extends Component {
         });
         // Load weekly fee
         this.loadWeeklyFee();
+        // Get PNFT mint fee        
+        pawnShopService.getPnftFee({
+            userToken: this.userToken
+        }).then(ret => {
+            if (ret.error != undefined && ret.error == 0) {
+                self.estimatedFee = ret.data.mint;
+            }
+        });
         // Load prices of ETH, OCAT and other tokens
         priceOracleService.getPrices({
             userToken: this.userToken
@@ -404,7 +412,6 @@ class PawnShopPage extends Component {
             basePrice: basePrice ? basePrice : 0
         }).then(ret => {
             if (ret.error != undefined && ret.error == 0) {
-                this.fees = ret.data;
                 self.setWeeklyFee(ret.data);
             }
         });
@@ -718,14 +725,7 @@ class PawnShopPage extends Component {
 			let quotedPrice = (reportedPrice * pricePercentage * ocatPrice) / 100; 
             this.setQuotedPrice(quotedPrice?quotedPrice:'');
 
-            if (this.fees.submit == undefined ||
-            this.fees.submit.application == undefined ||
-            this.fees.submit.valuation == undefined) {
-                this.showMessageBox("Failed to get fee information. Please retry a while later", 1);
-                return;
-            } 
-            let submitFee = (this.fees.submit.application - 0) + (this.fees.submit.valuation - 0)
-			let estimatedOcat = quotedPrice - submitFee;
+			let estimatedOcat = quotedPrice - quotedPrice * this.estimatedFee;
 			this.setEstimatedOcat(estimatedOcat? estimatedOcat: '');
         }
     }

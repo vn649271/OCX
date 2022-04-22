@@ -46,7 +46,7 @@ class PawnItemService {
                 return {error: -202, data: "Failed to get estimated fee"};
             }
             assetData.quoted_price = (assetData.reported_price * assetData.convert_ratio) / 100;
-            assetData.estimated_fee = assetData.quoted_price * pnftFeeData.data.mint / 100;
+            assetData.estimated_fee = assetData.quoted_price * pnftFeeData.data.mint;
             assetData.estimated_ocat = assetData.quoted_price - assetData.estimated_fee;
 
             let ret = await pawnItemModel.create(assetData);

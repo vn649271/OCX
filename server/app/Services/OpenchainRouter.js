@@ -102,7 +102,7 @@ class OpenchainRouter {
             }
             return { error: 0, data: null };
         } catch(error) {
-            return { error: -300, data: error.message ? error.message: "Unexpected error for unlocking account"}
+            return { error: -1300, data: error.message ? error.message: "Unexpected error for unlocking account"}
         }
     }
 
@@ -392,7 +392,7 @@ class OpenchainRouter {
                     deadline: params.deadline
                 });
                 if (!ret || ret.error != undefined) {
-                    return {error: -251, data: "Failed to cross-swap(2)"}
+                    return { error: -251, data: "Failed to cross-swap(2)" }
                 }
                 if (ret.error != 0) {
                     return ret;
@@ -626,7 +626,7 @@ class OpenchainRouter {
             }};
         } catch (error) {
             var errMsg = this.defaultErrorHanlder(error);
-            return { error: -300, data: errMsg };
+            return { error: -1300, data: errMsg };
         }
     }
     getSubmitFee = async () => {
@@ -670,7 +670,7 @@ console.log("************* WEEKLY FEE ", weeklyFeeData);
             }
         } catch(error) {
             var errMsg = this.defaultErrorHanlder(error);
-            return { error: -300, data: errMsg }
+            return { error: -1300, data: errMsg }
         }
     }
     _getPnftTxFee = async () => {
@@ -688,9 +688,9 @@ console.log("************* WEEKLY FEE ", weeklyFeeData);
             }
             this.isPnftFeeDataValid = true;
             this.pnftFeeData = {
-                mint: pnftFeeData.mintFee / Math.pow(10, pnftFeeData.feeDecimals),
-                loan: pnftFeeData.loanFee / Math.pow(10, pnftFeeData.feeDecimals),
-                restore: pnftFeeData.restoreFee / Math.pow(10, pnftFeeData.feeDecimals),
+                mint: pnftFeeData.mintFee / (10 ** (pnftFeeData.feeDecimals - 0)),
+                loan: pnftFeeData.loanFee / (10 ** (pnftFeeData.feeDecimals - 0)),
+                restore: pnftFeeData.restoreFee / (10 ** (pnftFeeData.feeDecimals - 0)),
             }
         } catch(error) {
             var errMsg = this.defaultErrorHanlder(error);
@@ -707,10 +707,21 @@ console.log("************* WEEKLY FEE ", weeklyFeeData);
             opoAddress
         );
         try {
-            return await priceOracleContract.methods.getPnftFee().call();
+            let pnftFeeData = await priceOracleContract.methods.getPnftFeePercentages().call();
+            if (!pnftFeeData) {
+                return {error: -1001, data: "Failed to get PNFT related fee data"}
+            }
+            return {
+                error: 0,
+                data: {
+                    mint: pnftFeeData.mintFee / (10 ** (pnftFeeData.feeDecimals - 0)),
+                    loan: pnftFeeData.loanFee / (10 ** (pnftFeeData.feeDecimals - 0)),
+                    restore: pnftFeeData.restoreFee / (10 ** (pnftFeeData.feeDecimals - 0)),
+                }
+            }
         } catch(error) {
             var errMsg = this.defaultErrorHanlder(error);
-            return { error: -300, data: errMsg }
+            return { error: -1300, data: errMsg }
         }
     }
 }
