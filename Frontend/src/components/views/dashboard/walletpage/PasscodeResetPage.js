@@ -1,6 +1,6 @@
 import { useState } from "react";
 import OcxCard from '../../../common/OcxCard';
-import SpinButton from '../../../common/SpinButton';
+import OcxSpinButton from '../../../common/OcxSpinButton';
 
 const PasscodeResetPage = (props) => {
 
@@ -30,7 +30,7 @@ const PasscodeResetPage = (props) => {
               placeholder="Email" autoComplete="off" 
             />
           </div>
-          <SpinButton
+          <OcxSpinButton
             additionalClass="ml-8"
             title="Send"
             onClick={onSendEmail}

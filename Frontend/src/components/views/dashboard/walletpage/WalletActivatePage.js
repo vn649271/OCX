@@ -10,7 +10,7 @@ import PassphraseImportDialog from '../../../common/PassphraseImportDialog';
 import PasscodeConfirmDialog from '../../../common/PasscodeConfirmDialog';
 import AccountService from '../../../../service/Account';
 import OcxButton from '../../../common/OcxButton';
-import SpinButton from '../../../common/SpinButton';
+import OcxSpinButton from '../../../common/OcxSpinButton';
 
 var rsaCrypt = new JSEncrypt();
 const accountService = new AccountService();
@@ -214,7 +214,7 @@ const WalletActivatePage = props => {
               </div>
               <div id="create-account-button-container" className="flex justify-end w-full">
                   {/* Send Button */}
-                  <SpinButton
+                  <OcxSpinButton
                       title="New Account"
                       onClick={onCreateAccont}
                       extraData={null} />
