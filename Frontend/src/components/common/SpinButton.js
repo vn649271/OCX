@@ -5,11 +5,13 @@ var me;
 
 export default function SpinButton(props) {
 
+    // renderMode: 0 - flex mode(caption is next by spinner) , 
+    //             1 - overlapped mode(spinner is overlapped above the caption)
     const { title, additionalClass, extraData, children, renderMode=0 } = props;
 
-    const baseClass = "main-font font-16 items-center border border-grey-light " + 
+    const baseClass = "ocx-spin-button main-font font-16 items-center border border-grey-light " + 
                     "p-3 w-max button-bg focus:outline-none rounded " +
-                    "text-white hover-transition " + 
+                    "text-white hover-transition " + (renderMode == 0? "flex justify-center ": "") +
                     (additionalClass ? additionalClass : "");
     const defaultClass = baseClass + " cursor-pointer";
     const disabledClass = baseClass + " spin-button-disabled";
