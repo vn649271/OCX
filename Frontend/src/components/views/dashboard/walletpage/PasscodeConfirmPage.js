@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { JSEncrypt } from 'jsencrypt'
 import { hashCode } from "../../../../service/Utils";
 import AccountService from '../../../../service/Account';
-import SpinButton from '../../../common/SpinButton';
+import OcxSpinButton from '../../../common/OcxSpinButton';
 import PassphraseImportDialog from '../../../common/PassphraseImportDialog';
 import OcxCard from '../../../common/OcxCard';
 
@@ -105,7 +105,7 @@ const PasscodeConfirmPage = props => {
                 <i className="ShowPasswordIcon font-16" onClick={togglePasscodeVisiblity}>{eye}</i>
             </div>
             {/* Unlock Button */}
-            <SpinButton
+            <OcxSpinButton
               additionalClass="ml-8"
               title="Unlock"
               onClick={onUnlockAccont}

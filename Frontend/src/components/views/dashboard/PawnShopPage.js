@@ -12,7 +12,7 @@ import OcxCard from '../../common/OcxCard';
 import OcxInput from '../../common/OcxInput';
 import OcxModal from '../../common/OcxModal';
 import SimpleTable from '../../common/SimpleTable';
-import SpinButton from '../../common/SpinButton';
+import OcxSpinButton from '../../common/OcxSpinButton';
 import OcxConfirm from '../../common/OcxConfirm';
 import OcxBasicButton from '../../common/OcxBasicButton';
 
@@ -752,7 +752,7 @@ class PawnShopPage extends Component {
             let actionCol = <span></span>;
             switch (record.status) {
             case 2:
-                actionCol = <SpinButton
+                actionCol = <OcxSpinButton
                                 extraData={record[TRACKING_TABLE_SCHEMA.headers[1].field_name]}
                                 title="Resubmit"
                                 onClick={this.onClickResubmit}
@@ -767,13 +767,13 @@ class PawnShopPage extends Component {
                                 onSelectItem={this.onChangeCountry} 
                                 placeholder="Country"
                             >
-                                <SpinButton
+                                <OcxSpinButton
                                     title="Mint"
                                     extraData={record[TRACKING_TABLE_SCHEMA.headers[1].field_name]} // id
                                     onClick={this.onClickMint}
                                     renderMode="1"
                                 />
-                                <SpinButton
+                                <OcxSpinButton
                                     extraData={record[TRACKING_TABLE_SCHEMA.headers[1].field_name]} // id
                                     title="Burn"
                                     onClick={this.onClickBurn}
@@ -781,12 +781,12 @@ class PawnShopPage extends Component {
                                 />
                             </OcxDropdownControlList>
                 // actionCol = <div>
-                //                 <SpinButton
+                //                 <OcxSpinButton
                 //                     title="Mint"
                 //                     extraData={record[TRACKING_TABLE_SCHEMA.headers[1].field_name]}
                 //                     onClick={this.onClickMint}
                 //                 />
-                //                 <SpinButton
+                //                 <OcxSpinButton
                 //                     id={"tracking-item-burn-" + record[TRACKING_TABLE_SCHEMA.headers[1].field_name]} 
                 //                     extraData={record[TRACKING_TABLE_SCHEMA.headers[1].field_name]}
                 //                     title="Burn"
@@ -795,7 +795,7 @@ class PawnShopPage extends Component {
                 //             </div>
                 break;
             case 5:// Once minted, can swap into OCAT
-                actionCol = <SpinButton 
+                actionCol = <OcxSpinButton 
                                 extraData={record[TRACKING_TABLE_SCHEMA.headers[1].field_name]}
                                 title="Loan"
                                 onClick={this.onClickLoan} 
@@ -803,7 +803,7 @@ class PawnShopPage extends Component {
                             />
                 break;
             case 6:
-                actionCol = <SpinButton
+                actionCol = <OcxSpinButton
                                 extraData={record[TRACKING_TABLE_SCHEMA.headers[1].field_name]}
                                 title="Restore"
                                 onClick={this.onClickRestore}
@@ -1097,7 +1097,7 @@ class PawnShopPage extends Component {
                                     className="border border-grey-light button-bg p-5 hover-transition main-font focus:outline-none rounded text-white verify-button"
                                     onClick={this.onClickSubmit}
                                 >Submit</button> */}
-                                <SpinButton
+                                <OcxSpinButton
                                     title="Submit"
                                     onClick={this.onClickSubmit}
                                 />

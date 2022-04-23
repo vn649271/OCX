@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { hashCode } from "../../../../service/Utils";
-import SpinButton from '../../../common/SpinButton';
+import OcxSpinButton from '../../../common/OcxSpinButton';
 import AccountService from '../../../../service/Account';
 import PageTabBar from '../../../common/PageTabBar';
 import QRCode from "react-qr-code";
@@ -149,16 +149,17 @@ const WalletMainPage = props => {
 
   return (
     <div className="flex justify-center items-center w-full">
-      <div className="">
+      <div className="w-full">
           <div className="account-global-info-container">
               <div className="lock-account-button-container mr-20">
                   {/* Lock Button */}
-                  <SpinButton
+                  <OcxSpinButton
                     title="Lock"
                     onClick={onLockAccont}
                   />
               </div>
-              <div id="my-account-info-container" className="account-info-container help-block main-font font-16 mr-16">
+              <div id="my-account-info-container" className="flex justify-start account-info-container help-block main-font font-16 mr-16">
+                <div className="balance-area w-5/12 mr-5">
                   <p className="account-address-box help-block main-font text-green-400 font-16">
                       {accounts ?
                           accounts['ETH'] ?
@@ -184,7 +185,8 @@ const WalletMainPage = props => {
                   <p className="account-balance-box main-font text-black-400 mb-100 font-20">
                       {balance['PNFT']} PNFT
                   </p>
-
+                </div>
+                <div className="current-price-area w-5/12 mr-5">
                   Prices:
                   <p className="account-balance-box main-font text-black-400 mb-100 font-20">
                       ETH: ${price['ETH']}
@@ -195,6 +197,7 @@ const WalletMainPage = props => {
                   <p className="account-balance-box main-font text-black-400 mb-100 font-20">
                       DAI: ${price['DAI']}
                   </p>
+                </div>
               </div>
           </div>
           <div className="pagetabbar-container mb-10">
@@ -233,7 +236,7 @@ const WalletMainPage = props => {
               </div>
               <div id="send-button-container">
                   {/* Send Button */}
-                  <SpinButton
+                  <OcxSpinButton
                     title="Send"
                     onClick={onTransfer}
                     extraData={null} 
