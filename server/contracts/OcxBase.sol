@@ -2,8 +2,8 @@
 pragma solidity ^0.8.0;
 
 import "./OcxAdmin.sol";
-import "./OcxCommon.sol";
-import './IOcat.sol';
+import "./common/OcxCommon.sol";
+import './interface/IOcat.sol';
 
 contract OcxBase is OcxAdmin {
 

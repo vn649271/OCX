@@ -1,6 +1,6 @@
-const WEthToken = artifacts.require("./WEthToken.sol");
-const GDaiToken = artifacts.require("./GDaiToken.sol");
-const GUniToken = artifacts.require("./GUniToken.sol");
+const WEthToken = artifacts.require("./ganache-token/WEthToken.sol");
+const GDaiToken = artifacts.require("./ganache-token/GDaiToken.sol");
+const GUniToken = artifacts.require("./ganache-token/GUniToken.sol");
 const OcatToken = artifacts.require("./OcatToken.sol");
 const OcxToken = artifacts.require("./OcxToken.sol");
 const PawnNFTs = artifacts.require("./PawnNFTs.sol");
@@ -67,31 +67,12 @@ module.exports = async deployer => {
         ocxPriceOracleAddress = ret.address;
     });
 
+    deployer.deploy(OcxOcatEthPool).then(ret => {
+        ocxOcatEthPoolAddress = ret.address;
+    });
 
     deployer.deploy(OcxExchange).then(async ocxExchange => {
 
-        console.log("\n\n");
-
-        if (deployer.network == "ganache") {
-            deployer.deploy(OcxOcatEthPool).then(ret => {
-                ocxOcatEthPoolAddress = ret.address;
-            });
-            deployer.deploy(WEthToken).then(ret => {
-                weth = ret;
-                wethAddress = ret.address;
-            });
-            deployer.deploy(GDaiToken).then(ret => {
-                gdai = ret;
-                gdaiAddress = ret.address;
-            });
-            deployer.deploy(GUniToken).then(ret => {
-                guni = ret;
-                guniAddress = ret.address;
-            });
-            console.log("    WETH: \"" + wethAddress + "\",");
-            console.log("    DAI: \"" + gdaiAddress + "\",");
-            console.log("    UNI: \"" + guniAddress + "\",");
-        }
         console.log("    PNFT: \"" + pnftAddress + "\",");
         console.log("    OCAT: \"" + ocatAddress + "\",");
         console.log("    PAWN_EXCHANGE: \"" + pawnExchangeAddress + "\",");
@@ -99,11 +80,25 @@ module.exports = async deployer => {
         console.log("    OCX_PRICE_ORACLE: \"" + ocxPriceOracleAddress + "\",");
         console.log("    OCX_EXCHANGE: \"" + ocxExchange.address + "\"");
         console.log("\n\n");
-        // Setting deployed PNFT address 
-        ocxExchange.setPnftAddress(pnftAddress);
-        // Setting deployed OCAT address 
-        ocxExchange.setOcatAddress(ocatAddress);
-        // Setting deployed Ocx local pool address 
-        ocxExchange.setOcxLocalPoolAddress(ocxLocalPoolAddress);
     });
+
+    console.log("\n\n");
+
+    if (deployer.network == "ganache") {
+        deployer.deploy(WEthToken).then(ret => {
+            weth = ret;
+            wethAddress = ret.address;
+            console.log("    WETH: \"" + wethAddress + "\",");
+        });
+        deployer.deploy(GDaiToken).then(ret => {
+            gdai = ret;
+            gdaiAddress = ret.address;
+            console.log("    DAI: \"" + gdaiAddress + "\",");
+        });
+        deployer.deploy(GUniToken).then(ret => {
+            guni = ret;
+            guniAddress = ret.address;
+            console.log("    UNI: \"" + guniAddress + "\",");
+        });
+    }
 };

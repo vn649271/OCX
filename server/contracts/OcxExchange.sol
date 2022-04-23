@@ -15,7 +15,7 @@ import "./OcxBase.sol";
 import "./PawnNFTs.sol";
 import "./OcatToken.sol";
 import "./OcxLocalPool.sol";
-import "./OcxCommon.sol";
+import "./common/OcxCommon.sol";
 
 contract OcxExchange is OcxBase {
 
