@@ -13,7 +13,7 @@ const OcxSpinner = props => {
 	});
 
 	return (
-	    <div className={classNames("flex justify-center", `${_margin}`)}>
+	    <div className={classNames("ocx-spinner flex justify-center", `${_margin}`)}>
 	        <div style={{'borderTopColor':'transparent'}}
 	            className={
 	            	classNames(
