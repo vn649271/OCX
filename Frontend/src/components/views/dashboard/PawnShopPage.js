@@ -1098,7 +1098,8 @@ class PawnShopPage extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <div className="mt-10 flex justify-end	">
+                            <hr className="mt-5"/>
+                            <div className="mt-5 flex justify-end	">
                                 {/* <button
                                     className="border border-grey-light button-bg p-5 hover-transition main-font focus:outline-none rounded text-white verify-button"
                                     onClick={this.onClickSubmit}
