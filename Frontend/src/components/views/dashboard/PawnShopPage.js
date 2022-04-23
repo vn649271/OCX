@@ -15,6 +15,7 @@ import SimpleTable from '../../common/SimpleTable';
 import OcxSpinButton from '../../common/OcxSpinButton';
 import OcxConfirm from '../../common/OcxConfirm';
 import OcxBasicButton from '../../common/OcxBasicButton';
+import "abortcontroller-polyfill";
 
 var rsaCrypt = new JSEncrypt();
 var pawnShopService = new PawnShopService();
@@ -272,6 +273,10 @@ class PawnShopPage extends Component {
         super(props);
         self = this;
 
+        const AbortController = window.AbortController;
+        this.controller = new AbortController();
+        this.signal = this.controller.signal;
+
         this.valuation_report = null;
         this.priceMonitorTimer = null;
         this.confirmContext = null;
@@ -327,8 +332,6 @@ class PawnShopPage extends Component {
     }
 
     async componentDidMount() {
-        this.buildTrackTable({status: 2}); // Waiting status for data
-
         this.userToken = localStorage.getItem("userToken");
         this.encryptKey = localStorage.getItem("encryptKey");
         this.setEncryptKey(this.encryptKey);
@@ -368,6 +371,7 @@ class PawnShopPage extends Component {
     }
 
     componentWillUnmount = () => {
+        this.controller.abort();
         if (this.priceMonitorTimer) {
             clearInterval(this.priceMonitorTimer);
             this.priceMonitorTimer = null;
@@ -731,9 +735,9 @@ class PawnShopPage extends Component {
     }
 
     buildTrackTable = (assetData) => {
-		if (assetData.status == 2) { // is waiting to load data?
+		if (assetData.status > 1) { // 2: waiting for load data, 3: no data
 	        this.setState({
-	            track_table_data: {	status: 2 }
+	            track_table_data: {	status: assetData.status }
 	        });
 			return;
 		}
@@ -838,11 +842,13 @@ class PawnShopPage extends Component {
     }
 
     async updateTrackTable() {
+        this.buildTrackTable({status: 2}); // Waiting status for data
         let ret = await pawnShopService.getPawnAssets({userToken: this.userToken});
         if (ret.error - 0 < 0) {
             this.showMessageBox("Failed to update track table: " + ret.data, 1);
             return;
         } else if (ret.error > 0) {
+            this.buildTrackTable({status: 3}); // No data for the table
             this.showMessageBox(ret.data, 2);
             return;
         }
@@ -1116,7 +1122,7 @@ class PawnShopPage extends Component {
                 }
                 </div>
                 <div className="my-pawnshop-page main-font main-color font-16 mt-16">
-                    <OcxCard title='Tracking'>
+                    <OcxCard title='Tracking' header_separator={false} >
                         <SimpleTable 
                             colDef={TRACKING_TABLE_SCHEMA} 
                             tableData={this.state.track_table_data}

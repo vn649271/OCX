@@ -10,7 +10,7 @@ import OcxPageSpinLock from '../../common/OcxPageSpinLock';
 const UNKNOWN_USER = -1;
 const NEW_USER_0 = 0;
 const NEW_USER_1 = 1;
-const USER_WITH_ACCOUNT = 2;
+const USER_ACCOUNT_LOCKED = 2; // It also means the user has own wallet account already
 const USER_ACCOUNT_UNLOCKED = 3;
 const PASSCODE_RESET = 4;
 
@@ -42,7 +42,7 @@ const WalletPage = (props) => {
             if (!err) {
                 setAccounts(resp.data.addresses);
                 if (resp.data.locked) {
-                    setUserLevel(USER_WITH_ACCOUNT);
+                    setUserLevel(USER_ACCOUNT_LOCKED);
                 } else {
                     setUserLevel(USER_ACCOUNT_UNLOCKED);
                 }
@@ -63,7 +63,7 @@ const WalletPage = (props) => {
             return <WalletIntroPage onActivateWallet={onActivateWallet} />;
         case NEW_USER_1:
             return <WalletActivatePage userToken={user_token} onRegisteredAccount={onRegisteredAccount} {...props} />;
-        case USER_WITH_ACCOUNT: 
+        case USER_ACCOUNT_LOCKED: 
             return <PasscodeConfirmPage 
                         userToken={user_token} 
                         onUnlockedAccount={onUnlockedAccount} 
@@ -82,7 +82,7 @@ const WalletPage = (props) => {
         setUserLevel(NEW_USER_1);
     }
     const onRegisteredAccount = () => {
-        setUserLevel(USER_WITH_ACCOUNT); 
+        setUserLevel(USER_ACCOUNT_LOCKED); 
     }
     const onResetPasscode = () => {
         setUserLevel(PASSCODE_RESET);
@@ -91,7 +91,7 @@ const WalletPage = (props) => {
         setUserLevel(USER_ACCOUNT_UNLOCKED);
     }
     const onLockedAccount = () => {
-        setUserLevel(USER_WITH_ACCOUNT);
+        setUserLevel(USER_ACCOUNT_LOCKED);
     }
     return (
         <>

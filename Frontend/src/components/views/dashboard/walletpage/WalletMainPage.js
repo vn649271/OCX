@@ -34,7 +34,7 @@ const WalletMainPage = props => {
   const [balance, setBalance] = useState({});
   const [price, setPrice] = useState({});
   const [current_tab, setCurrentTab] = useState(0);
-  const [to_address, setDestAddress] = useState(null);
+  const [to_address, setDestAddress] = useState("");
   const [transfer_amount, setTransferAmount] = useState(0);
   const [show_passcode_confirm, setShowPasscodeConfirm] = useState(false);
   const [temp_storage, setTempStorage] = useState(null);
@@ -63,6 +63,7 @@ const WalletMainPage = props => {
     if (resp.error === 0) {
         // Display unlocked account page
         setLocked(true);
+        onLockedAccount();
         return;
     } else if (resp.error === -1000) {
         showToast(1, "Invalid response for locking account");

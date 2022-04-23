@@ -2,7 +2,7 @@ import { useState } from "react";
 
 const OcxCard = props => {
 
-    const { title = null, children } = props;
+    const { title = null, children, header_separator = true } = props;
     // const [value, setValue] = React.useState(new Date());
 
     return (
@@ -11,7 +11,7 @@ const OcxCard = props => {
                 title ? 
                     <>
                         <h1 className="main-font font-28 mb-5 main-color">{title}</h1>
-                        <hr/>
+                        {header_separator ? <hr/>: <></>}
                     </>: <></>
             }
             <div className="mt-5 main-color">
