@@ -5,9 +5,9 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol"; // openzeppelin 4.5 (fo
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@uniswap/lib/contracts/libraries/TransferHelper.sol";
 import "./OcxBase.sol";
-import "./IOcat.sol";
 import "./PawnNFTs.sol";
-import "./IOcxPriceOracle.sol";
+import "./interface/IOcat.sol";
+import "./interface/IOcxPriceOracle.sol";
 
 contract PawnExchange is OcxBase {
     
@@ -47,7 +47,7 @@ contract PawnExchange is OcxBase {
     onlyValidAddress(pnftAddress) onlyValidAddress(ocxPriceOracleAddress)
     returns (uint256 effectiveOcats, uint256 txFee) {
         // Get price for the NFT
-        (,,, address currentOwner,,uint256 originalPrice, uint256 currentPrice, uint256 txCounter,) = 
+        (,,, address currentOwner,,uint256 originalPrice, uint256 currentPrice, uint256 txCounter,,) = 
             PawnNFTs(payable(address(pnftAddress))).allPawnNFTs(nftID);
         require(currentOwner == msg.sender, "Not owner");
         require(ocatPrice > 0, "Invalid PNFT/OCAT quote");
@@ -77,7 +77,7 @@ contract PawnExchange is OcxBase {
     onlyValidCaller onlyValidAddress(ocatAddress) onlyValidAddress(pnftAddress)
     returns(uint256 effectiveOcats, uint256 swapBackFee) {
         // Get price for the NFT
-        (,,,, address payable previousOwner, uint256 originalPrice,uint256 currentPrice,,) = 
+        (,,,, address payable previousOwner, uint256 originalPrice,uint256 currentPrice,,,) = 
             PawnNFTs(payable(address(pnftAddress))).allPawnNFTs(nftID);
         require(msg.sender == previousOwner, "Invalid owner");
         uint256 ocatBalance = IERC20(ocatAddress).balanceOf(msg.sender);

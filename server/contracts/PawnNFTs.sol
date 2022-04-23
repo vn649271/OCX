@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 // import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "./OcxBase.sol";
-import "./IOcxPriceOracle.sol";
+import "./interface/IOcxPriceOracle.sol";
 
 /*
  * -2: mint(): Error: caller of zero address
@@ -48,6 +48,7 @@ contract PawnNFTs is ERC721, OcxBase {
     uint256 price;        // In OCAT
     uint256 txCounter;
     bool forSale;
+    uint256 mintedAt;
   }
 
   // map pawnNft's token id to pawning NFT
@@ -113,7 +114,8 @@ contract PawnNFTs is ERC721, OcxBase {
       estimatedOcats - 
         (estimatedOcats * mintFeePercentage) / (10 ** feeDecimals), // Current price
       0,    // number of transfers
-      true // for sale
+      true, // for sale
+      block.timestamp
     );
   }
   // get owner of the token
