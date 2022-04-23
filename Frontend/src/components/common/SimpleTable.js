@@ -47,10 +47,17 @@ const SimpleTable = props => {
                                                     </tr>
                                             }
                                         )
-                                        : _tableData.status == 2 ? // Waiting status
-                                            <tr><td colSpan="8" style={{textAlign:'center'}}>
+                                        : (_tableData.status == 2 ? // Waiting status
+                                            <tr className="bg-gray-100"><td colSpan="8" style={{textAlign:'center'}}>
                                                 <OcxSpinner size='16' />
-                                            </td></tr>                                    
+                                            </td></tr>
+                                            : (_tableData.status == 3 ? // No data
+                                                <tr className="bg-gray-100"><td colSpan="8" className="pt-5 pb-5" style={{textAlign:'center'}}>
+                                                    <span className="main-font font-16 italic">No data</span>
+                                                </td></tr>
+                                                : null
+                                            )
+                                        )
                                     : null)
                                 : null)
                             }
