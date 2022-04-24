@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import classNames from "classnames";
 
-const OcxPageSpinLock = (props) => {
+const OcxGlobalSpinner = (props) => {
 
   const {title = 'Confirm', show = false, onClick, additionalClassName = '', children} = props;
   const [showModal, setShowModal] = useState(show);
@@ -46,4 +46,4 @@ const OcxPageSpinLock = (props) => {
   )
 };
 
-export default OcxPageSpinLock;
+export default OcxGlobalSpinner;
