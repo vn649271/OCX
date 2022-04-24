@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import OcxSpinner from './OcxSpinner';
 
-const SimpleTable = props => {
+const OcxSimpleTable = props => {
 
     const {colDef = null, tableData = null} = props;
 
@@ -70,4 +70,4 @@ const SimpleTable = props => {
     );        
 }
 
-export default SimpleTable;
+export default OcxSimpleTable;

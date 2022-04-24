@@ -11,8 +11,9 @@ import DelayButton from '../../common/DelayButton';
 import OcxCard from '../../common/OcxCard';
 import OcxInput from '../../common/OcxInput';
 import OcxModal from '../../common/OcxModal';
-import SimpleTable from '../../common/SimpleTable';
+import OcxSimpleTable from '../../common/OcxSimpleTable';
 import OcxSpinButton from '../../common/OcxSpinButton';
+import OcxPageSpinner from '../../common/OcxPageSpinner';
 import OcxConfirm from '../../common/OcxConfirm';
 import OcxBasicButton from '../../common/OcxBasicButton';
 import "abortcontroller-polyfill";
@@ -267,6 +268,7 @@ class PawnShopPage extends Component {
         show_burn_confirm: false,
         track_table_data: null,
         prices: null,
+        pageSpin: true,
     }
 
     constructor(props) {
@@ -309,6 +311,7 @@ class PawnShopPage extends Component {
 
         this.onClickBooking = this.onClickBooking.bind(this);
         this.onClickSubmit = this.onClickSubmit.bind(this);
+        this.onClickToAsset = this.onClickToAsset.bind(this);
         this.onClickSubmitConfirm = this.onClickSubmitConfirm.bind(this);
         this.onClickResubmit = this.onClickResubmit.bind(this);
         this.onSelectValuationReport = this.onSelectValuationReport.bind(this);
@@ -332,6 +335,7 @@ class PawnShopPage extends Component {
     }
 
     async componentDidMount() {
+        this.setState({pageSpin: true});
         this.userToken = localStorage.getItem("userToken");
         this.encryptKey = localStorage.getItem("encryptKey");
         this.setEncryptKey(this.encryptKey);
@@ -340,6 +344,7 @@ class PawnShopPage extends Component {
         let resp = await accountService.connectAccount({
             userToken: this.userToken
         });
+        this.setState({pageSpin: false});
         var errorMsg = null;
         if (resp.error !== undefined) {
             switch (resp.error) {
@@ -587,6 +592,12 @@ class PawnShopPage extends Component {
 
     onClickSubmit = params => {
         this.showConfirm({ id: SUBMIT, context: params });
+    }
+
+    onClickToAsset = params => {
+        console.log("onClickToAsset(): ", params);
+        let { stopWait, getExtraData } = params;
+        stopWait();
     }
 
     onClickSubmitConfirm = async retCode => {
@@ -874,262 +885,272 @@ class PawnShopPage extends Component {
 
     render() {
         return (
-            <div>
-                <div className="my-pawnshop-page main-font main-color font-16">
-                    {
-                        this.state.show_submit_success_modal ? 
-                        <OcxModal 
-                            title="Success"
-                            show={this.state.show_submit_success_modal}
-                        >
-                        Minted PNFT for your asset successfully
-                        {this.state.submit_success_info}
-                        </OcxModal>
-                        :<></>
-                    }
-                    <OcxCard title='Pawn your assets into cryptos'>
-                        <div className="mt-10">
-                            <div className="inline-flex w-full">
-                                <div className="w-4/12 mr-5" text-align="right">
-                                    {/* <p className="block">Asset Type:</p> */}
-                                    <DropdownList 
-                                        items={ASSET_TYPES} 
-                                        onSelectItem={this.onChangeAssetType} 
-                                        placeholder="Asset Type"
-                                    />
-                                </div>
-                                <div className="w-4/12">
-									<OcxInput 
-										name="asset_name"
-                                        id="asset_name"
-                                        placeholder="Asset Name"
-                                        value={this.state.asset_name}
-                                        onChange={this.handleInputChange} 
-									/>
-                               </div>
-                            </div>
-                        </div>
-                        <div className="mt-20">
-                            <div className="inline-flex w-full">
-                                <div className="w-4/12 mr-5">
-                                    <OcxInput
-                                        name="asset_description"
-                                        id="asset_description"
-                                        placeholder="Asset Description"
-                                        value={this.state.asset_description}
-                                        onChange={this.handleInputChange}
-                                    />                    
-                                </div>
-                                <div className="w-4/12 mr-5">
-                                    <OcxInput
-                                        name="asset_address_street"
-                                        id="asset_address_street"
-                                        placeholder="Asset Address"
-                                        value={this.state.asset_address_street}
-                                        onChange={this.handleInputChange}
-                                    />
-                                </div>
-                                <div className="w-4/12 mr-5">
-                                    {/* <label>City</label> */}
-                                    <OcxInput
-                                        name="asset_address_city"
-                                        id="asset_address_city"
-                                        placeholder="City"
-                                        value={this.state.asset_address_city}
-                                        onChange={this.handleInputChange}
-                                    />
-                                </div>                    
-                            </div>
-                        </div>
-                        <div>
-                            <div className="mt-20">
-                                <div className="inline-flex w-full">
-                                    <div className="w-3/12">
-                                        {/* <label>Country</label> */}
-                                        <div>
-                                            <DropdownList 
-                                                items={COUNTRIES} 
-                                                onSelectItem={this.onChangeCountry} 
-                                                placeholder="Country"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="w-3/12">
-                                        {/* <label>States</label> */}
-                                        <div>
-                                            <DropdownList 
-                                                items={STATES[this.state.inputs.asset_address_country]}
-                                                onSelectItem={this.onChangeStateName} 
-                                                placeholder="States"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="w-3/12">
-                                        {/* <label>Zip Code</label> */}
-                                        <OcxInput
-                                            type="number"
-                                            name="asset_address_zipcode"
-                                            id="asset_address_zipcode"
-                                            placeholder="Zip Code"
-                                            value={this.state.asset_address_zipcode}
-                                            onChange={this.handleInputChange}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="mt-20">
-                                <div className="inline-flex w-full">
-                                    <div className="mr-5">
-                                        {/* <label>Valuation Price</label> */}
-                                        <OcxInput
-                                            type="number"
-                                            name="reported_price"
-                                            id="reported_price"
-                                            placeholder="Valuation Price"
-                                            value={this.state.inputs.reported_price}
-                                            onChange={this.handleInputChange}
-                                        />
-                                    </div>
-                                    <div className="mr-5">
-                                        {/* <label>Percentage of value</label> */}
-                                        <OcxInput
-                                            type="number"
-                                            name="convert_ratio"
-                                            id="convert_ratio"
-                                            placeholder="Pawn to Token Ratio"
-                                            value={this.state.inputs.convert_ratio}
-                                            onChange={this.handleInputChange}
-                                        />
-                                    </div>
-                                    <div className="mr-5">
-                                        {/* <label>Quote Price</label> */}
-                                        <OcxInput
-                                            type="number"
-                                            name="quoted_price"
-                                            id="quoted_price"
-                                            placeholder="Quoted Price"
-                                            readOnly={true}
-                                            value={this.state.quoted_price}
-                                        />
-                                    </div>
-                                    <div className="mr-5">
-                                        {/* <label>Estimated OCAT</label> */}
-                                        <OcxInput
-                                            type="number"
-                                            name="estimated_ocat"
-                                            id="estimated_ocat"
-                                            placeholder="Estimated OCAT"
-                                            value={this.state.estimated_ocat}
-                                            readOnly={true}
-                                            autoComplete="off"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
+            <div className="my-pawnshop-page main-font main-color font-16">
+                { 
+                    this.state.pageSpin? <OcxPageSpinner />
+                        :
+                        <div className="pawnshop-main-frame">
+                    <div className="pawn-panel">
+                        {
+                            this.state.show_submit_success_modal ? 
+                            <OcxModal 
+                                title="Success"
+                                show={this.state.show_submit_success_modal}
+                            >
+                            Minted PNFT for your asset successfully
+                            {this.state.submit_success_info}
+                            </OcxModal>
+                            :<></>
+                        }
+                        <OcxCard title='Pawn your assets into cryptos'>
                             <div className="mt-10">
                                 <div className="inline-flex w-full">
-                                    <div className="w-3/12 mr-5">
-                                        <label>Application Fee</label>
-										<div className="w-full">
-	                                        <OcxInput
-            	                                name="application_fee"
-                                                additionalClassName="text-right"
-                	                            id="application_fee"
-                    	                        placeholder="Application Fee"
-                        	                    value={this.state.application_fee}
-												readOnly={true}
-                                	            autoComplete="off"
-                                    	    />
-										</div>
-                                    </div>
-                                    <div className="w-3/12 mr-5">
-                                        <label>Valuation Fee</label>
-                                        <div className="w-full">
-                                            <OcxInput
-                                                name="valuation_fee"
-                                                additionalClassName="text-right"
-                                                id="valuation_fee"
-                                                placeholder="Valuation Fee"
-                                                value={this.state.valuation_fee}
-                                                readOnly={true}
-                                                autoComplete="off"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="w-3/12 mr-5">
-                                        <label>Weekly Fee</label>
-                                        <div className="w-full">
-                                            <OcxInput
-                                                name="weekly_fee"
-                                                additionalClassName="text-right"
-                                                id="weekly_fee"
-                                                placeholder="Weekly Fee"
-                                                value={this.state.weekly_fee}
-                                                readOnly={true}
-                                                autoComplete="off"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="mt-20">
-                                <div className="inline-flex w-full">
-                                    <div className="w-3/12 mr-5">
-                                        <PreFileUploadForm
-                                            title="Upload your valuation report"
-                                            onSelectFile={this.onSelectValuationReport}
-                                            uploadURL={UPLOAD_URL}
+                                    <div className="w-4/12 mr-5" text-align="right">
+                                        {/* <p className="block">Asset Type:</p> */}
+                                        <DropdownList 
+                                            items={ASSET_TYPES} 
+                                            onSelectItem={this.onChangeAssetType} 
+                                            placeholder="Asset Type"
                                         />
                                     </div>
+                                    <div className="w-4/12">
+                                        <OcxInput 
+                                            name="asset_name"
+                                            id="asset_name"
+                                            placeholder="Asset Name"
+                                            value={this.state.asset_name}
+                                            onChange={this.handleInputChange} 
+                                        />
+                                   </div>
                                 </div>
                             </div>
                             <div className="mt-20">
                                 <div className="inline-flex w-full">
-                                    <div className="w-3/12 mr-5">
-                                        <label>You don't have a valuation report book a valuation time and date</label>
-                                        <button
-                                            className="block border border-grey-light button-bg p-3 hover-transition main-font focus:outline-none rounded text-white verify-button"
-                                            onClick={this.onClickBooking}
-                                        >Booking me</button>
+                                    <div className="w-4/12 mr-5">
+                                        <OcxInput
+                                            name="asset_description"
+                                            id="asset_description"
+                                            placeholder="Asset Description"
+                                            value={this.state.asset_description}
+                                            onChange={this.handleInputChange}
+                                        />                    
                                     </div>
-                                    <div className="w-3/12 mr-5">
-                                        <a href="#" className="px-4 py-1  text-blue-500 bg-blue-200 rounded-lg">Click here to download legal contract</a>
+                                    <div className="w-4/12 mr-5">
+                                        <OcxInput
+                                            name="asset_address_street"
+                                            id="asset_address_street"
+                                            placeholder="Asset Address"
+                                            value={this.state.asset_address_street}
+                                            onChange={this.handleInputChange}
+                                        />
                                     </div>
+                                    <div className="w-4/12 mr-5">
+                                        {/* <label>City</label> */}
+                                        <OcxInput
+                                            name="asset_address_city"
+                                            id="asset_address_city"
+                                            placeholder="City"
+                                            value={this.state.asset_address_city}
+                                            onChange={this.handleInputChange}
+                                        />
+                                    </div>                    
                                 </div>
                             </div>
-                            <hr className="mt-5"/>
-                            <div className="mt-5 flex justify-end	">
-                                {/* <button
-                                    className="border border-grey-light button-bg p-5 hover-transition main-font focus:outline-none rounded text-white verify-button"
-                                    onClick={this.onClickSubmit}
-                                >Submit</button> */}
-                                <OcxSpinButton
-                                    title="Submit"
-                                    onClick={this.onClickSubmit}
-                                />
+                            <div>
+                                <div className="mt-20">
+                                    <div className="inline-flex w-full">
+                                        <div className="w-3/12">
+                                            {/* <label>Country</label> */}
+                                            <div>
+                                                <DropdownList 
+                                                    items={COUNTRIES} 
+                                                    onSelectItem={this.onChangeCountry} 
+                                                    placeholder="Country"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="w-3/12">
+                                            {/* <label>States</label> */}
+                                            <div>
+                                                <DropdownList 
+                                                    items={STATES[this.state.inputs.asset_address_country]}
+                                                    onSelectItem={this.onChangeStateName} 
+                                                    placeholder="States"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="w-3/12">
+                                            {/* <label>Zip Code</label> */}
+                                            <OcxInput
+                                                type="number"
+                                                name="asset_address_zipcode"
+                                                id="asset_address_zipcode"
+                                                placeholder="Zip Code"
+                                                value={this.state.asset_address_zipcode}
+                                                onChange={this.handleInputChange}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="mt-20">
+                                    <div className="inline-flex w-full">
+                                        <div className="mr-5">
+                                            {/* <label>Valuation Price</label> */}
+                                            <OcxInput
+                                                type="number"
+                                                name="reported_price"
+                                                id="reported_price"
+                                                placeholder="Valuation Price"
+                                                value={this.state.inputs.reported_price}
+                                                onChange={this.handleInputChange}
+                                            />
+                                        </div>
+                                        <div className="mr-5">
+                                            {/* <label>Percentage of value</label> */}
+                                            <OcxInput
+                                                type="number"
+                                                name="convert_ratio"
+                                                id="convert_ratio"
+                                                placeholder="Pawn to Token Ratio"
+                                                value={this.state.inputs.convert_ratio}
+                                                onChange={this.handleInputChange}
+                                            />
+                                        </div>
+                                        <div className="mr-5">
+                                            {/* <label>Quote Price</label> */}
+                                            <OcxInput
+                                                type="number"
+                                                name="quoted_price"
+                                                id="quoted_price"
+                                                placeholder="Quoted Price"
+                                                readOnly={true}
+                                                value={this.state.quoted_price}
+                                            />
+                                        </div>
+                                        <div className="mr-5">
+                                            {/* <label>Estimated OCAT</label> */}
+                                            <OcxInput
+                                                type="number"
+                                                name="estimated_ocat"
+                                                id="estimated_ocat"
+                                                placeholder="Estimated OCAT"
+                                                value={this.state.estimated_ocat}
+                                                readOnly={true}
+                                                autoComplete="off"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="mt-10">
+                                    <div className="inline-flex w-full">
+                                        <div className="w-3/12 mr-5">
+                                            <label>Application Fee</label>
+                                            <div className="w-full">
+                                                <OcxInput
+                                                    name="application_fee"
+                                                    additionalClassName="text-right"
+                                                    id="application_fee"
+                                                    placeholder="Application Fee"
+                                                    value={this.state.application_fee}
+                                                    readOnly={true}
+                                                    autoComplete="off"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="w-3/12 mr-5">
+                                            <label>Valuation Fee</label>
+                                            <div className="w-full">
+                                                <OcxInput
+                                                    name="valuation_fee"
+                                                    additionalClassName="text-right"
+                                                    id="valuation_fee"
+                                                    placeholder="Valuation Fee"
+                                                    value={this.state.valuation_fee}
+                                                    readOnly={true}
+                                                    autoComplete="off"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="w-3/12 mr-5">
+                                            <label>Weekly Fee</label>
+                                            <div className="w-full">
+                                                <OcxInput
+                                                    name="weekly_fee"
+                                                    additionalClassName="text-right"
+                                                    id="weekly_fee"
+                                                    placeholder="Weekly Fee"
+                                                    value={this.state.weekly_fee}
+                                                    readOnly={true}
+                                                    autoComplete="off"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="mt-20">
+                                    <div className="inline-flex w-full">
+                                        <div className="w-3/12 mr-5">
+                                            <PreFileUploadForm
+                                                title="Upload your valuation report"
+                                                onSelectFile={this.onSelectValuationReport}
+                                                uploadURL={UPLOAD_URL}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="mt-20">
+                                    <div className="inline-flex w-full">
+                                        <div className="w-3/12 mr-5">
+                                            <label>You don't have a valuation report book a valuation time and date</label>
+                                            <button
+                                                className="block border border-grey-light button-bg p-3 hover-transition main-font focus:outline-none rounded text-white verify-button"
+                                                onClick={this.onClickBooking}
+                                            >Booking me</button>
+                                        </div>
+                                        <div className="w-3/12 mr-5">
+                                            <a href="#" className="px-4 py-1  text-blue-500 bg-blue-200 rounded-lg">Click here to download legal contract</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr className="mt-5"/>
+                                <div className="mt-5 flex justify-end   ">
+                                    {/* <button
+                                        className="border border-grey-light button-bg p-5 hover-transition main-font focus:outline-none rounded text-white verify-button"
+                                        onClick={this.onClickSubmit}
+                                    >Submit</button> */}
+                                    <OcxSpinButton
+                                        title="Submit"
+                                        onClick={this.onClickSubmit}
+                                    />
+                                    <OcxSpinButton
+                                        title="To Asset page"
+                                        onClick={this.onClickToAsset}
+                                    />
+                                </div>
                             </div>
+                        </OcxCard>
+                    </div>
+                    <div>
+                    {
+                        this.state.show_confirm ?
+                        <OcxConfirm 
+                            show={true}
+                            onClick={ this.state.confirm_handler }
+                        >{ this.state.confirm_text }</OcxConfirm>
+                        :<></>
+                    }
+                    </div>
+                    <div className="tracking-table-panel">
+                        <OcxCard title='Tracking' header_separator={false} >
+                            <OcxSimpleTable 
+                                colDef={TRACKING_TABLE_SCHEMA} 
+                                tableData={this.state.track_table_data}
+                            />
+                        </OcxCard>
+                    </div>
                         </div>
-                    </OcxCard>
-                </div>
-                <div>
-                {
-                    this.state.show_confirm ?
-                    <OcxConfirm 
-                        show={true}
-                        onClick={ this.state.confirm_handler }
-                    >{ this.state.confirm_text }</OcxConfirm>
-                    :<></>
                 }
-                </div>
-                <div className="my-pawnshop-page main-font main-color font-16 mt-16">
-                    <OcxCard title='Tracking' header_separator={false} >
-                        <SimpleTable 
-                            colDef={TRACKING_TABLE_SCHEMA} 
-                            tableData={this.state.track_table_data}
-                        />
-                    </OcxCard>
-                </div>
             </div>
         );
     }

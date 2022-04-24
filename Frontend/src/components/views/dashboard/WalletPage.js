@@ -5,7 +5,7 @@ import WalletMainPage from './walletpage/WalletMainPage';
 import PasscodeConfirmPage from './walletpage/PasscodeConfirmPage';
 import PasscodeResetPage from './walletpage/PasscodeResetPage';
 import AccountService from '../../../service/Account';
-import OcxPageSpinLock from '../../common/OcxPageSpinLock';
+import OcxPageSpinner from '../../common/OcxPageSpinner';
 
 const UNKNOWN_USER = -1;
 const NEW_USER_0 = 0;
@@ -58,7 +58,7 @@ const WalletPage = (props) => {
     const updateCurrentPage = () => {
         switch (user_level) {
         case UNKNOWN_USER:
-            return <OcxPageSpinLock show={true} />;
+            return <OcxPageSpinner show={true} />;
         case NEW_USER_0:
             return <WalletIntroPage onActivateWallet={onActivateWallet} />;
         case NEW_USER_1:
