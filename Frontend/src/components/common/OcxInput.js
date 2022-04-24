@@ -12,7 +12,7 @@ export default function OcxInput(props) {
 		autoComplete = 'off',
 	} = props;
 
-    const _baseClass = "inline-flex block border border-grey-light bg-gray-100 w-200 p-3 font-16 main-font focus:outline-none rounded ";
+    const _baseClass = "inline-flex block border border-grey-light bg-gray-100 w-full p-3 font-16 main-font focus:outline-none rounded ";
 
     const [_class, setClass] = useState(_baseClass);
     const [_value, setValue] = useState(value);

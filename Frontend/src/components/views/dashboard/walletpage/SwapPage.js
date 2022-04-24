@@ -25,7 +25,7 @@ const SwapPage = (props) => {
 	const onChangeDestAddress = (ev) => {
 		setDestinationAddress(ev.target.value);
 	}
-	const onChangeTransferAmount = (ev) => {
+	const onChangeAmount = (ev) => {
 		_setAmount(ev.taret.value);
 	}
 	const onTransfer = (params) => {
@@ -100,21 +100,26 @@ const SwapPage = (props) => {
       	}
         <div className="flex justify-start">
           <div id="account-info-container" className="w-9/12 mr-10">
-            <OcxInput
-                name="to_address"
-                id="to_address"
-                placeholder="To Address"
-                value={to_address}
-                onChange={onChangeDestAddress}
-                autoComplete="off" />
-            <OcxInput
-                type="number"
-                name="amount"
-                id="amount"
-                placeholder="Amount"
-                value={_amount}
-                onChange={onChangeTransferAmount}
-                autoComplete="off" />
+          	<div className="mb-10">
+	            <OcxInput
+	                name="to_address"
+	                id="to_address"
+	                placeholder="To Address"
+	                additionalClassName=" text-right "
+	                value={to_address}
+	                onChange={onChangeDestAddress}
+	            />
+	        </div>
+          	<div className="mb-10">
+	            <OcxInput
+	                type="number"
+	                name="amount"
+	                id="amount"
+	                placeholder="Amount"
+	                value={_amount}
+	                onChange={onChangeAmount}
+	            />
+	        </div>
             <div id="send-button-container" className="flex justify-end">
               {/* Send Button */}
               <OcxSpinButton
@@ -124,7 +129,7 @@ const SwapPage = (props) => {
               />
             </div>
           </div>
-          <div id="qr-container" className="w-3/12 mt-5">
+          <div id="qr-container" className="w-3/12">
             <QRCode value="hey" size={125}/>
           </div>
         </div>
