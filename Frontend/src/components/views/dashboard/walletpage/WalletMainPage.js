@@ -6,6 +6,7 @@ import AccountService from '../../../../service/Account';
 import PageTabBar from '../../../common/PageTabBar';
 import QRCode from "react-qr-code";
 import ExchangeSwap from '../../../common/exchange/ExchangeSwap';
+import SwapPage from './SwapPage';
 
 const accountService = new AccountService();
 
@@ -210,39 +211,42 @@ const WalletMainPage = props => {
               />
           </div>
           <div className={current_tab === 'transfer-tab' ? 'shownBox' : 'hiddenBox'}>
-              <div id="qr-account-container">
-                  <div id="qr-container">
-                      <QRCode value="hey" />
+          <SwapPage {...props} />
+          {/*              
+            <div id="swap-container" className="w-full">
+              <div className="flex justify-start">
+                <div id="account-info-container" className="w-9/12 mr-10">
+                  <input
+                      type="text"
+                      className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
+                      name="to_address"
+                      id="to_address"
+                      placeholder="To Address"
+                      value={to_address}
+                      onChange={onChangeDestAddress}
+                      autoComplete="off" />
+                  <input
+                      type="number"
+                      className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
+                      name="amount"
+                      id="amount"
+                      placeholder="Amount"
+                      value={transfer_amount}
+                      onChange={onChangeTransferAmount}
+                      autoComplete="off" />
+                  <div id="send-button-container" className="flex justify-end">
+                    <OcxSpinButton
+                      title="Send"
+                      onClick={onTransfer}
+                      extraData={null} 
+                    />
                   </div>
-                  <div id="account-info-container">
-                      <input
-                          type="text"
-                          className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
-                          name="to_address"
-                          id="to_address"
-                          placeholder="To Address"
-                          value={to_address}
-                          onChange={onChangeDestAddress}
-                          autoComplete="off" />
-                      <input
-                          type="number"
-                          className="block border border-grey-light bg-gray-100  w-full p-5 my-5 font-16 main-font focus:outline-none rounded mb-10"
-                          name="amount"
-                          id="amount"
-                          placeholder="Amount"
-                          value={transfer_amount}
-                          onChange={onChangeTransferAmount}
-                          autoComplete="off" />
-                  </div>
+                </div>
+                <div id="qr-container" className="w-3/12 mt-5">
+                  <QRCode value="hey" size={125}/>
+                </div>
               </div>
-              <div id="send-button-container">
-                  {/* Send Button */}
-                  <OcxSpinButton
-                    title="Send"
-                    onClick={onTransfer}
-                    extraData={null} 
-                  />
-              </div>
+            </div>*/}
           </div>
           <div className={current_tab === 'swap-tab' ? 'shownBox' : 'hiddenBox'}>
               <div className="flex w-full justify-center">
