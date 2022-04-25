@@ -77,7 +77,7 @@ contract OcxLocalPool is OcxBase {
         // Ensure that OCAT balance is more than 0
         require(amountOutMin >= 0, "-3");
         // Ensure that OCAT balance >= amountOutMin
-        uint256 amountOut = getAmountOut(path, amountIn);
+        uint256 amountOut = getAmountOutWithExactAmountIn(path, amountIn);
         require(amountOut >= amountOutMin, "-4");
 
         // Transfer ETH from the sender
@@ -110,12 +110,22 @@ contract OcxLocalPool is OcxBase {
         decimals = QUOTE_DECIMALS;
     }
 
-    function getAmountOut(address[2] memory path, uint256 amountIn) public view
+    function getAmountOutWithExactAmountIn(address[2] memory path, uint256 amountIn) public view
     returns (uint256 amountOut) {
+        require(amountIn > 0, "amountIn must be larger than 0");
         (bool bExist, uint8 poolIndex, bool isInTurn) = _getPoolIndex(path);
         require(bExist, "Not exist such a token pair");
         amountOut = poolList[poolIndex].amounts[path[1]] - 
                 poolList[poolIndex].k / (poolList[poolIndex].amounts[path[0]] + amountIn);
+    }
+
+    function getExactAmountOut(address[2] memory path, uint256 amountOut) public view
+    returns (uint256 amountIn) {
+        require(amountOut > 0, "amountOut must be larger than 0");
+        (bool bExist, uint8 poolIndex, bool isInTurn) = _getPoolIndex(path);
+        require(bExist, "Not exist such a token pair");
+        amountIn = poolList[poolIndex].k / (poolList[poolIndex].amounts[path[1]] - amountOut)
+                    - poolList[poolIndex].amounts[path[0]];
     }
 
     /*

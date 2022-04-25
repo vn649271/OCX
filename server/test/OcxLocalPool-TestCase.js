@@ -28,8 +28,10 @@ quoteObj.value.toString() / (10**quoteObj.decimals.toString())
 let ocatSwapAmount = await web3.utils.toWei("50", "nano");
 ocat.mint(ocatSwapAmount) // Mint 50 OCAT
 
-let expectedOcxAmountObj = await ocxLocalPool.getAmountOut([ocat.address, ocx.address], ocatSwapAmount);
+let expectedOcxAmountObj = await ocxLocalPool.getAmountOutWithExactAmountIn([ocat.address, ocx.address], ocatSwapAmount);
 await web3.utils.fromWei(expectedOcxAmountObj.toString(), "nano");
+let expectedOcatAmount = await ocxLocalPool.getExactAmountOut([ocat.address, ocx.address], "5000000000000");
+await web3.utils.fromWei(expectedOcatAmount.toString(), "nano");
 
 await ocat.approve(ocxLocalPool.address, ocatSwapAmount);
 ocxLocalPool.swap([ocat.address, ocx.address], ocatSwapAmount, "0", "0");
