@@ -11,15 +11,16 @@ contract OcatToken is ERC20, OcxAdmin {
     receive() external payable {}
 
     constructor() ERC20("OpenchainDex Stable Coin", "OCAT") {
-        _decimals = 9;
+        _decimals = 9; // In nano
     }
 
     /**
         * Custom accessor to create a unique token
     */
     function mint(uint256 amount) external payable
-    onlyAdmin {
+    onlyAdmin returns(bool) {
         super._mint(msg.sender, amount);
+        return true;
     }
     function decimals() public view virtual override returns (uint8) {
         return _decimals;
