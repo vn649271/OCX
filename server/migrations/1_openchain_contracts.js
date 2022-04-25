@@ -7,7 +7,7 @@ const PawnNFTs = artifacts.require("./PawnNFTs.sol");
 const OcxExchange = artifacts.require("./OcxExchange.sol");
 const PawnExchange = artifacts.require("./PawnExchange.sol");
 const OcxPriceOracle = artifacts.require("./OcxPriceOracle.sol");
-const OcxLocalPool = artifacts.require("./stable/OcxLocalPool.sol");
+const OcxLocalPool = artifacts.require("./OcxLocalPool.sol");
 const OcxOcatEthPool = artifacts.require("./stable/OcxOcatEthPool.sol");
 
 module.exports = async deployer => {
