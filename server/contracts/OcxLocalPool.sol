@@ -76,11 +76,8 @@ contract OcxLocalPool is OcxBase {
         // Get ETH balance in the pool
         // Ensure that OCAT balance is more than 0
         require(amountOutMin >= 0, "-3");
-        // Calculate the output amount of OCAT 
-        uint256 token1NewBalance = poolList[poolIndex].k / 
-                                    (poolList[poolIndex].amounts[path[0]] + amountIn);
         // Ensure that OCAT balance >= amountOutMin
-        uint256 amountOut = poolList[poolIndex].amounts[path[1]] - token1NewBalance;
+        uint256 amountOut = getAmountOut(path, amountIn);
         require(amountOut >= amountOutMin, "-4");
 
         // Transfer ETH from the sender
