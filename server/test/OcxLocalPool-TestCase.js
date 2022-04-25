@@ -6,12 +6,13 @@ let ocx = await OcxToken.deployed();
 let ocatAllowedAmount = "1000000000000"; // 1000 OCAT
 ocat.mint(ocatAllowedAmount) // Mint 1000 OCAT
 let ocxAllowedAmount = "100000000000000"; // 100000 OCX
-ocx.mint(ocxAllowedAmount) // Mint 1000 OCAT
+ocx.mint(ocxAllowedAmount) // Mint 100000 OCX
 let ocxLocalPool = await OcxLocalPool.deployed();
 let deployerAddress = accounts[0];
 let lpAddress = accounts[1];
 // Approve 1000 OCAT
 await ocat.approve(ocxLocalPool.address, ocatAllowedAmount);
+// Approve 100000 OCX
 await ocx.approve(ocxLocalPool.address, ocxAllowedAmount);
 // Fund 1000 OCAT + 100000 OCX into OcxLocalPool
 await ocxLocalPool.addLiquidity([ocat.address, ocx.address], [ocatAllowedAmount, ocxAllowedAmount]);
@@ -25,7 +26,11 @@ quoteObj.value.toString() / (10**quoteObj.decimals.toString())
 
 // Mint and swap 50 OCAT
 let ocatSwapAmount = await web3.utils.toWei("50", "nano");
-ocat.mint(ocatSwapAmount) // Mint 1000 OCAT
+ocat.mint(ocatSwapAmount) // Mint 50 OCAT
+
+let expectedOcxAmountObj = await ocxLocalPool.getAmountOut([ocat.address, ocx.address], ocatSwapAmount);
+await web3.utils.fromWei(expectedOcxAmountObj.toString(), "nano");
+
 await ocat.approve(ocxLocalPool.address, ocatSwapAmount);
 ocxLocalPool.swap([ocat.address, ocx.address], ocatSwapAmount, "0", "0");
 quoteObj = await ocxLocalPool.getQuote([ocat.address, ocx.address]);

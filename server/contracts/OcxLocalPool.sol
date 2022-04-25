@@ -113,6 +113,14 @@ contract OcxLocalPool is OcxBase {
         decimals = QUOTE_DECIMALS;
     }
 
+    function getAmountOut(address[2] memory path, uint256 amountIn) public view
+    returns (uint256 amountOut) {
+        (bool bExist, uint8 poolIndex, bool isInTurn) = _getPoolIndex(path);
+        require(bExist, "Not exist such a token pair");
+        amountOut = poolList[poolIndex].amounts[path[1]] - 
+                poolList[poolIndex].k / (poolList[poolIndex].amounts[path[0]] + amountIn);
+    }
+
     /*
      * Error: 
      *      -1: OcxLocalPool.addLiquidity(): Same tokenPair
