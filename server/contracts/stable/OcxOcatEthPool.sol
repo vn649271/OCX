@@ -11,24 +11,24 @@ import './OcxBase.sol';
 
 contract OcxOcatEthPool is OcxBase {
 
-    uint256 private constant QUOTE_DECIMALS = 3; // Must be more than 3 at least
-    uint256 private constant QUOTE_RATE_DECIMALS = 3; // Must be more than 3 at least
-    address constant            ethAddress = address(0);
-    mapping(string => address payable) private tokens;
-
     struct Pool {
         address[2] tokenPair;
         mapping(address => uint256) balance;
         uint256 k;
         uint256 prevK;
         uint256 prevQuote;
-        uint256 quoteOrig;
+        uint256 origQuote;
         uint256 quote;
     }
+    Pool    public              localPool; // token pair: 0: OCAT, 1: ETH
 
-    Pool                public      localPool; // token pair: 0: OCAT, 1: ETH
-    uint256             public      quoteMultiplier;
-    uint256             public      quoteRateMultiplier;
+    uint256 private constant    QUOTE_DECIMALS = 9; // Must be more than 3 at least
+    uint256 private constant    QUOTE_MULTIPLIER = 10 ** QUOTE_DECIMALS;
+    uint256 private constant    QUOTE_RATE_DECIMALS = 3; // Must be more than 3 at least
+    uint256 private constant    QUOTE_RATE_MULTIPLIER = 10 ** QUOTE_RATE_DECIMALS;
+
+    address private constant    ETH_ADDRESS = address(0);
+
 
     event SwappedFromOcat(uint256);
     event SwappedToOcat(uint256);
@@ -36,8 +36,6 @@ contract OcxOcatEthPool is OcxBase {
     receive() external payable {}
 
     constructor() {
-        quoteMultiplier = 10 ** QUOTE_DECIMALS;
-        quoteRateMultiplier = 10 ** QUOTE_RATE_DECIMALS;
     }
 
     // The method must be called after setOcatAddress()
@@ -57,7 +55,7 @@ contract OcxOcatEthPool is OcxBase {
 
         // Find the ETH/OCAT pool
         uint256 ocatPoolBalance = localPool.balance[ocatAddress];
-        uint256 ethPoolBalance = localPool.balance[ethAddress];
+        uint256 ethPoolBalance = localPool.balance[ETH_ADDRESS];
 
         if (ret1 && ret2) {
             // Calculate the output amount of OCAT 
@@ -85,8 +83,8 @@ contract OcxOcatEthPool is OcxBase {
         localPool.balance[address(0)] += amountIn;
         localPool.balance[ocatAddress] -= amountOut;
         localPool.prevQuote = localPool.quote;
-        localPool.quote = (localPool.balance[ocatAddress] * quoteMultiplier) / 
-                            localPool.balance[address(0)];
+        localPool.quote = localPool.balance[ocatAddress] / 
+                            (localPool.balance[address(0)] / QUOTE_MULTIPLIER);
         // require(ret, "new ETH balance in the pool is overflowed");
         emit SwappedToOcat(amountOut);
     }
@@ -109,8 +107,8 @@ contract OcxOcatEthPool is OcxBase {
         localPool.balance[ocatAddress] += amountIn;
         localPool.balance[address(0)] -= amountOut;
         localPool.prevQuote = localPool.quote;
-        localPool.quote = (localPool.balance[ocatAddress] * quoteMultiplier) / 
-                            localPool.balance[address(0)];
+        localPool.quote = localPool.balance[ocatAddress] / 
+                            (localPool.balance[address(0)] / QUOTE_MULTIPLIER);
         // require(ret, "new ETH balance in the pool is overflowed");
         emit SwappedFromOcat(amountOut);
     }
@@ -123,32 +121,32 @@ contract OcxOcatEthPool is OcxBase {
     function addLiquidityWithEth(
         uint256 ocatAmount
     ) public payable 
-    onlyAdmin {
-        require(ocatAddress != address(0), "Invalid OCAT address");
+    onlyAdmin onlyValidAddress(ocatAddress) {
         require(ocatAmount > 0, "Invalid OCAT amount");
         // Get quote
-        // ...uint256((quote / localPool.quoteOrig) * 100)
+        // ...uint256((quote / localPool.origQuote) * 100)
         // Transfer token A and B from msg.sender to this address
 
         // Check quote
-        uint256 newQuote = uint256(
-            (ocatAmount * quoteMultiplier) / msg.value
-        );
-        uint256 quoteRate = uint256(
-            (newQuote * quoteRateMultiplier) / localPool.quoteOrig
-        );
+        uint256 newQuote = uint256(ocatAmount / (msg.value / QUOTE_MULTIPLIER));
+        uint256 quoteRate = QUOTE_RATE_MULTIPLIER; // = 1 * QUOTE_RATE_MULTIPLIER ==> rate = 1.0
+        if (localPool.origQuote == 0) {
+            localPool.origQuote = newQuote;
+        } else {
+            quoteRate = uint256((newQuote * QUOTE_RATE_MULTIPLIER) / localPool.origQuote);
+        }
         // Check if new quote >= 98% and <= 102% against original one
         require(
-            quoteRate > 98 * (10 ** (QUOTE_DECIMALS - 2)) && 
-            quoteRate < 102 * (10 ** (QUOTE_DECIMALS - 2)), 
-            "Invalid quote(out of range: 98%~102%)"
+            quoteRate > 980 && 
+            quoteRate < 1020, 
+            "Invalid quote(out of effective range: 98%~102%)"
         );
         // Update pool
         localPool.balance[ocatAddress] += ocatAmount;
-        localPool.balance[ethAddress] += msg.value;
+        localPool.balance[ETH_ADDRESS] += msg.value;
         localPool.prevK = localPool.k;
         localPool.k = localPool.balance[ocatAddress] * 
-                    localPool.balance[ethAddress];
+                    localPool.balance[ETH_ADDRESS];
         localPool.prevQuote = localPool.quote;
         localPool.quote = newQuote;
 
@@ -161,8 +159,8 @@ contract OcxOcatEthPool is OcxBase {
         // Mint LP token to return
         // ...
         // uint256 newMintAmount = ocatAmount * msg.value;
-        // IERC20(_ethAddress).mint(newMintAmount);
+        // IERC20(_ETH_ADDRESS).mint(newMintAmount);
         // // Send the msg.value with fee substracted
-        // IERC20(_ethAddress).transfer(msg.sender, (newMintAmount * 100 - 2) / 100)
+        // IERC20(_ETH_ADDRESS).transfer(msg.sender, (newMintAmount * 100 - 2) / 100)
     }
 }
