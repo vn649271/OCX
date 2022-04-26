@@ -10,8 +10,4 @@ contract WEthToken is ERC20 {
     constructor() ERC20("Ganache WETH Coin", "WETH") {
         super._mint(msg.sender, (10 ** 8) * (10 ** 18));
     }
-
-    /**
-    * Custom accessor to create a unique token
-    */
 }

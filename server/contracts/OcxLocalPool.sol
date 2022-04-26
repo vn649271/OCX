@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol"; // openzeppelin 4.5 (for solidity 0.8.x)
 import '@uniswap/lib/contracts/libraries/TransferHelper.sol';
 import './OcxBase.sol';
+import './interface/IOcxERC20.sol';
 
 contract OcxLocalPool is OcxBase {
 
@@ -22,8 +23,8 @@ contract OcxLocalPool is OcxBase {
     //     uint256[2] amounts;
     // }
 
-    mapping(uint256 => Pool)    poolList;
-    uint256                     poolCount;
+    mapping(uint256 => Pool) public poolList;
+    uint256                  public poolCount;
     // mapping(address => PoolShare[]) public poolShare;
 
     uint256 private constant QUOTE_DECIMALS = 6; // Must be more than 3 at least
@@ -115,8 +116,9 @@ contract OcxLocalPool is OcxBase {
         require(amountIn > 0, "amountIn must be larger than 0");
         (bool bExist, uint8 poolIndex, bool isInTurn) = _getPoolIndex(path);
         require(bExist, "Not exist such a token pair");
-        amountOut = poolList[poolIndex].amounts[path[1]] - 
-                poolList[poolIndex].k / (poolList[poolIndex].amounts[path[0]] + amountIn);
+        amountOut = poolList[poolIndex].amounts[path[1]] / ( 10**(IOcxERC20(path[0]).decimals() - 3) ) - 
+                    (poolList[poolIndex].k) / ( (poolList[poolIndex].amounts[path[0]] + amountIn) / (10**(IOcxERC20(path[0]).decimals() - 3)) );
+        amountOut = amountOut * (10**(IOcxERC20(path[0]).decimals() - 3));
     }
 
     function getExactAmountOut(address[2] memory path, uint256 amountOut) public view
@@ -124,8 +126,10 @@ contract OcxLocalPool is OcxBase {
         require(amountOut > 0, "amountOut must be larger than 0");
         (bool bExist, uint8 poolIndex, bool isInTurn) = _getPoolIndex(path);
         require(bExist, "Not exist such a token pair");
-        amountIn = poolList[poolIndex].k / (poolList[poolIndex].amounts[path[1]] - amountOut)
+        amountIn = poolList[poolIndex].k / (poolList[poolIndex].amounts[path[1]] 
+                                            - amountOut / (10**(IOcxERC20(path[0]).decimals() - 3)))
                     - poolList[poolIndex].amounts[path[0]];
+        amountIn = amountIn * (10**(IOcxERC20(path[0]).decimals() - 3));
     }
 
     /*
@@ -156,7 +160,8 @@ contract OcxLocalPool is OcxBase {
             poolList[poolCount].tokenPair = tokenPair;
             poolList[poolCount].amounts[tokenPair[0]] = amounts[0];
             poolList[poolCount].amounts[tokenPair[1]] = amounts[1];
-            poolList[poolCount].k = amounts[0] * amounts[1];
+            poolList[poolCount].k = (amounts[0] / (10 ** (IOcxERC20(tokenPair[0]).decimals() - 3))) 
+                                    * (amounts[1] / (10 ** (IOcxERC20(tokenPair[1]).decimals() - 3)));
             poolList[poolCount].prevK = 0;
             poolList[poolCount].quoteOrder = quoteOrder;
             poolList[poolCount].quoteOrig = 
@@ -194,8 +199,8 @@ contract OcxLocalPool is OcxBase {
             poolList[poolIndex].amounts[tokenPair[1]] += amounts[1];
             poolList[poolIndex].prevK = poolList[poolIndex].k;
             poolList[poolIndex].k = 
-                poolList[poolIndex].amounts[tokenPair[0]] * 
-                poolList[poolIndex].amounts[tokenPair[1]];
+                (poolList[poolIndex].amounts[tokenPair[0]] / (10 ** (IOcxERC20(tokenPair[0]).decimals() - 3))) * 
+                (poolList[poolIndex].amounts[tokenPair[1]] / (10 ** (IOcxERC20(tokenPair[0]).decimals() - 3)));
             poolList[poolIndex].prevQuote = poolList[poolIndex].quote;
             poolList[poolIndex].quote = uint256(
                 (poolList[poolIndex].amounts[poolList[poolIndex].quoteOrder[0]] * QUOTE_MULTIPLIER) / 
