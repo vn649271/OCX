@@ -30,6 +30,7 @@ await web3.utils.fromWei(ocatBalance, "nano");
 let ocxBalance = (await ocx.balanceOf(ocxLocalPool.address)).toString();
 await web3.utils.fromWei(ocxBalance, "nano");
 
+// Check the quote for OCAT/OCX
 let quoteObj = await ocxLocalPool.getQuote([ocat.address, ocx.address]);
 quoteObj.value.toString() / (10**quoteObj.decimals.toString())
 
