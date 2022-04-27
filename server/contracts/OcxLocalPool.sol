@@ -27,8 +27,8 @@ contract OcxLocalPool is OcxBase {
     uint256                  public poolCount;
     // mapping(address => PoolShare[]) public poolShare;
 
-    uint256 private constant QUOTE_DECIMALS = 6; // Must be more than 3 at least
-    uint256 private constant QUOTE_MULTIPLIER = 10 ** QUOTE_DECIMALS;
+    uint256 internal constant QUOTE_DECIMALS = 6; // Must be more than 3 at least
+    uint256 internal constant QUOTE_MULTIPLIER = 10 ** QUOTE_DECIMALS;
     
     receive() external payable {}
 
@@ -52,6 +52,12 @@ contract OcxLocalPool is OcxBase {
                 break;
             }
         }
+    }
+
+    function _updateK(uint256 poolIndex) internal {
+        address[2] memory tkAddress = poolList[poolIndex].tokenPair;
+        poolList[poolIndex].k = (poolList[poolIndex].amounts[tkAddress[0]] / (10 ** (IOcxERC20(tkAddress[0]).decimals() - 3))) 
+                                * (poolList[poolIndex].amounts[tkAddress[1]] / (10 ** (IOcxERC20(tkAddress[1]).decimals() - 3)));
     }
 
     /*
@@ -98,6 +104,8 @@ contract OcxLocalPool is OcxBase {
             (poolList[poolIndex].amounts[poolList[poolIndex].quoteOrder[0]] * 
                                                         (10 ** QUOTE_DECIMALS)) / 
             poolList[poolIndex].amounts[poolList[poolIndex].quoteOrder[1]];
+        // Update the K for the pool
+        _updateK(poolIndex);
     }
 
     function getQuote(address[2] memory path) public view
@@ -116,9 +124,12 @@ contract OcxLocalPool is OcxBase {
         require(amountIn > 0, "amountIn must be larger than 0");
         (bool bExist, uint8 poolIndex, bool isInTurn) = _getPoolIndex(path);
         require(bExist, "Not exist such a token pair");
-        amountOut = poolList[poolIndex].amounts[path[1]] / ( 10**(IOcxERC20(path[0]).decimals() - 3) ) - 
-                    (poolList[poolIndex].k) / ( (poolList[poolIndex].amounts[path[0]] + amountIn) / (10**(IOcxERC20(path[0]).decimals() - 3)) );
-        amountOut = amountOut * (10**(IOcxERC20(path[0]).decimals() - 3));
+        uint256 newToken0Balance = poolList[poolIndex].amounts[path[0]] + amountIn;
+        newToken0Balance = newToken0Balance / (10**(IOcxERC20(path[0]).decimals() - 3));
+        uint256 oldToken1Balance = poolList[poolIndex].amounts[path[1]] / 
+                                   ( 10**(IOcxERC20(path[1]).decimals() - 3) );
+        amountOut = oldToken1Balance - poolList[poolIndex].k / newToken0Balance;
+        amountOut = amountOut * (10**(IOcxERC20(path[1]).decimals() - 3));
     }
 
     function getExactAmountOut(address[2] memory path, uint256 amountOut) public view
@@ -160,13 +171,12 @@ contract OcxLocalPool is OcxBase {
             poolList[poolCount].tokenPair = tokenPair;
             poolList[poolCount].amounts[tokenPair[0]] = amounts[0];
             poolList[poolCount].amounts[tokenPair[1]] = amounts[1];
-            poolList[poolCount].k = (amounts[0] / (10 ** (IOcxERC20(tokenPair[0]).decimals() - 3))) 
-                                    * (amounts[1] / (10 ** (IOcxERC20(tokenPair[1]).decimals() - 3)));
+            _updateK(poolCount);
             poolList[poolCount].prevK = 0;
             poolList[poolCount].quoteOrder = quoteOrder;
             poolList[poolCount].quoteOrig = 
                 uint256(
-                    (poolList[poolCount].amounts[quoteOrder[0]] * QUOTE_MULTIPLIER) / 
+                    (poolList[poolCount].amounts[quoteOrder[0]] * QUOTE_MULTIPLIER ) / 
                     poolList[poolCount].amounts[quoteOrder[1]]
                 );
             poolList[poolCount].quote = poolList[poolCount].quoteOrig;
@@ -191,16 +201,14 @@ contract OcxLocalPool is OcxBase {
             // Check if new quote >= 98% and <= 102%
             require(
                 quoteRate > 980 * (10 ** (QUOTE_DECIMALS - 3)) && 
-                    quoteRate < 1020 * (10 ** (QUOTE_DECIMALS - 3)), 
+                quoteRate < 1020 * (10 ** (QUOTE_DECIMALS - 3)), 
                 "-4"
             );
             // Update pool
             poolList[poolIndex].amounts[tokenPair[0]] += amounts[0];
             poolList[poolIndex].amounts[tokenPair[1]] += amounts[1];
             poolList[poolIndex].prevK = poolList[poolIndex].k;
-            poolList[poolIndex].k = 
-                (poolList[poolIndex].amounts[tokenPair[0]] / (10 ** (IOcxERC20(tokenPair[0]).decimals() - 3))) * 
-                (poolList[poolIndex].amounts[tokenPair[1]] / (10 ** (IOcxERC20(tokenPair[0]).decimals() - 3)));
+            _updateK(poolIndex);
             poolList[poolIndex].prevQuote = poolList[poolIndex].quote;
             poolList[poolIndex].quote = uint256(
                 (poolList[poolIndex].amounts[poolList[poolIndex].quoteOrder[0]] * QUOTE_MULTIPLIER) / 
