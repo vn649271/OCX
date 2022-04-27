@@ -2,10 +2,10 @@
 pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol"; // openzeppelin 4.5 (for solidity 0.8.x)
 import '@uniswap/lib/contracts/libraries/TransferHelper.sol';
-import './OcxBase.sol';
+import './OcxAdmin.sol';
 import './interface/IOcxERC20.sol';
 
-contract OcxLocalPool is OcxBase {
+contract OcxLocalPool is OcxAdmin {
 
     struct Pool {
         address[2] tokenPair;
@@ -156,7 +156,7 @@ contract OcxLocalPool is OcxBase {
         address[2] memory tokenPair, 
         uint256[2] memory amounts
     ) public 
-    onlyCreator onlyValidCaller onlyValidAddress(tokenPair[0]) onlyValidAddress(tokenPair[1]) {
+    onlyCreator onlyValidAddress(tokenPair[0]) onlyValidAddress(tokenPair[1]) {
 
         require(tokenPair[0] != tokenPair[1], "-1");
         require(amounts[0] > 0, "-2");
