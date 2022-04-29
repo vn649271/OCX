@@ -10,7 +10,7 @@ contract WEthToken is ERC20 {
 
     constructor() ERC20("Ganache WETH Coin", "WETH") {
         _decimals = 18; // In Wei
-        super._mint(msg.sender, (10 ** 8) * (10 ** 18));
+        super._mint(msg.sender, (10 ** 9) * (10 ** 18));
     }
 
     function decimals() public view virtual override returns (uint8) {

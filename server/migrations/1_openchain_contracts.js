@@ -83,6 +83,11 @@ module.exports = async deployer => {
     });
 
     console.log("\n\n");
+    deployer.deploy(GUniToken).then(ret => {
+        guni = ret;
+        guniAddress = ret.address;
+        console.log("    UNI: \"" + guniAddress + "\",");
+    });
 
     if (deployer.network == "ganache") {
         deployer.deploy(WEthToken).then(ret => {
@@ -94,11 +99,6 @@ module.exports = async deployer => {
             gdai = ret;
             gdaiAddress = ret.address;
             console.log("    DAI: \"" + gdaiAddress + "\",");
-        });
-        deployer.deploy(GUniToken).then(ret => {
-            guni = ret;
-            guniAddress = ret.address;
-            console.log("    UNI: \"" + guniAddress + "\",");
         });
     }
 };
