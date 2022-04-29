@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "./interface/IOcxERC20.sol";
 import "./OcxAdmin.sol";
 
 contract OcatToken is ERC20, OcxAdmin {
@@ -21,6 +22,9 @@ contract OcatToken is ERC20, OcxAdmin {
     onlyAdmin returns(bool) {
         super._mint(msg.sender, amount);
         return true;
+    }
+    function burn(uint256 amount) public onlyAdmin {
+        super._burn(msg.sender, amount);
     }
     function decimals() public view virtual override returns (uint8) {
         return _decimals;

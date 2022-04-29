@@ -2,8 +2,9 @@
 pragma solidity ^0.8.0;
 
 contract OcxAdmin {
-    address[]       internal adminGroup;
-    address payable internal creator;
+    mapping(address => bool) internal adminGroup;
+    uint8                    internal adminCount;
+    address payable          internal creator;
 
     constructor() {
         creator = payable(msg.sender);
@@ -21,32 +22,18 @@ contract OcxAdmin {
     }
     modifier onlyAdmin virtual {
         require(msg.sender != address(0), "Invalid creator address");
-        bool isInAdminGroup = false;
-        for (uint8 i = 0; i < adminGroup.length; i++) {
-            if (msg.sender == adminGroup[i]) {
-                isInAdminGroup = true;
-                break;
-            }
-        }
-        require(isInAdminGroup, "Invalid caller. Must be admin");
+        require(adminGroup[msg.sender], "Must be admin");
         _;
     }
 
     function addAdmin(address _admin) public virtual
     onlyCreator onlyValidAddress(_admin) {
-
-        require(adminGroup.length < 6, "Admin group is full");
-
-        for (uint8 i = 0; i < adminGroup.length; i++) {
-            if (_admin == adminGroup[i]) {
-                return;
-            }
-        }
-        adminGroup.push(_admin);
+        adminGroup[_admin] = true;
+        adminCount = adminCount + 1;
     }
 
-    function getAdmins() public view virtual 
-    returns(address[] memory) {
-        return adminGroup;
+    function isAdmin(address _address) public view virtual 
+    returns(bool yes) {
+        yes = adminGroup[_address];
     }
 }

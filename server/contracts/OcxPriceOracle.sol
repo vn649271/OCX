@@ -13,6 +13,8 @@ contract OcxPriceOracle is OcxBase {
     uint256  public valuationFee = 50;
     uint256  private minimumPawnablePrice = 5000;
     uint256  private weeklyFeePercentage = 62400; // 6.24%
+    uint256  private audPriceToUsd = 1;
+    uint256  public constant AUD_PRICE_DECIMALS = 6;
     /**
      * IMPORTANT: replace the address below with the WitnetPriceRouter address
      * of the network you are using! Please find the address here:
@@ -28,7 +30,6 @@ contract OcxPriceOracle is OcxBase {
     /* 
      * feeValue = real_percent_value * (10 ** _feePercentageDecimals) = real_percent_value * 10^6
      */
-
     function setFeePercentage(FeeType feeType, uint256 percentValue) public
     onlyAdmin {
         feePercentages[feeType] = percentValue;
@@ -68,16 +69,25 @@ contract OcxPriceOracle is OcxBase {
         restoreFee = feePercentages[FeeType.OCAT_PNFT_SWAP_FEE];
     }
     /// Returns the BTC / USD price (6 decimals), ultimately provided by the Witnet oracle.
-    function getBtcUsdPrice() public view returns (int256 _price) {
-        (_price,,) = router.valueFor(0x24beead43216e490aa240ef0d32e18c57beea168f06eabb94f5193868d500946);
+    function getBtcUsdPrice() public view returns (uint256 _price) {
+        (int256 _v,,) = router.valueFor(0x24beead43216e490aa240ef0d32e18c57beea168f06eabb94f5193868d500946);
+        _price = uint256(_v);
     }
     /// Returns the ETH / USD price (6 decimals), ultimately provided by the Witnet oracle.
-    function getEthUsdPrice() public view returns (int256 _price) {
-        (_price,,) = router.valueFor(0x3d15f7018db5cc80838b684361aaa100bfadf8a11e02d5c1c92e9c6af47626c8);
+    function getEthUsdPrice() public view returns (uint256 _price) {
+        (int256 _v,,) = router.valueFor(0x3d15f7018db5cc80838b684361aaa100bfadf8a11e02d5c1c92e9c6af47626c8);
+        _price = uint256(_v);
     }
     /// Returns the BTC / ETH price (6 decimals), derived from the ETH/USD and 
     /// the BTC/USD pairs that were ultimately provided by the Witnet oracle.
-    function getBtcEthPrice() public view returns (int256 _price) {
+    function getBtcEthPrice() public view returns (uint256 _price) {
         return (1000000 * getBtcUsdPrice()) / getEthUsdPrice();
+    }
+    function setAudPriceToUsd(uint256 price) public onlyAdmin {
+        audPriceToUsd = price;
+    }
+    function getAudPriceToUsd() external view returns(uint256 price, uint256 priceDecimals) {
+        price = audPriceToUsd;
+        priceDecimals = AUD_PRICE_DECIMALS;
     }
 }
