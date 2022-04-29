@@ -7,14 +7,16 @@ import '@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol';
 import '@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol';
 import '@uniswap/v3-periphery/contracts/interfaces/INonfungiblePositionManager.sol';
 import '@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol';
-// import '@uniswap/v3-periphery/contracts/base/LiquidityManagement.sol';
+import '@uniswap/v3-periphery/contracts/base/LiquidityManagement.sol';
+import '@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol';
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol"; // openzeppelin 4.5 (for solidity 0.8.x)
-// import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import '../OcxBase.sol';
 import '../interface/IOcxPriceOracle.sol';
 import '../interface/IOcxERC20.sol';
+import "../common/OcxCommon.sol";
 
-contract OcxLocalBalancer is OcxBase, IERC721Receiver {
+contract OcxBalancer is OcxBase, IERC721Receiver {
 
     /*
      * one local pool: OCX/OCAT and three UNISWAP POOLS: OCX/OCAT, OCX/DAI and OCX/UNI
@@ -28,10 +30,11 @@ contract OcxLocalBalancer is OcxBase, IERC721Receiver {
     }
     uint24 public constant poolFee = 3000;
     INonfungiblePositionManager public immutable nonfungiblePositionManager;
-
+    IUniswapV2Router02 public uniswapRouter;
 
     uint256 _ethPriceInAUD = 0;
-
+    address payable constant UNISWAP_V2_ROUTER02_ADDRESS = 
+        payable(address(0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506));
     uint256 private constant MAX_ALLOWED_OCAT_PRICE = 110;
     uint256 private constant MIN_ALLOWED_OCAT_PRICE =  90;
     uint256 amount0ToMint = 1000;
@@ -44,6 +47,7 @@ contract OcxLocalBalancer is OcxBase, IERC721Receiver {
         INonfungiblePositionManager _nonfungiblePositionManager
     ) {
         nonfungiblePositionManager = _nonfungiblePositionManager;
+        uniswapRouter = IUniswapV2Router02(UNISWAP_ROUTER_ADDRESS);
     }
 
     receive() external payable {}
@@ -91,7 +95,8 @@ contract OcxLocalBalancer is OcxBase, IERC721Receiver {
         )
     {
         // For this example, we will provide equal amounts of liquidity in both assets.
-        // Providing liquidity in both assets means liquidity will be earning fees and is considered in-range.
+        // Providing liquidity in both assets means liquidity will be earning fees and 
+        //   is considered in-range.
 
         // Approve the position manager
         TransferHelper.safeApprove(
@@ -249,12 +254,18 @@ contract OcxLocalBalancer is OcxBase, IERC721Receiver {
         //remove information related to tokenId
         delete deposits[tokenId];
     }
+    function mintOcat(uint256 amount) public payable onlyAdmin  {
+        require(IERC20(ocatAddress).balanceOf(address(this)) > amount, 
+                "Insufficient balance to burn");
+        IOcxERC20(ocatAddress).burn(amount);
+    }
     function burnOcat(uint256 amount) internal onlyAdmin {
-        require(IERC20(ocatAddress).balanceOf(address(this)) > amount, "Insufficient balance to burn");
+        require(IERC20(ocatAddress).balanceOf(address(this)) > amount, 
+                "Insufficient balance to burn");
         IOcxERC20(ocatAddress).burn(amount);
     }
     /*
-     * user try to swap OCAT to UNI in our site
+     * A user try to swap OCAT to UNI in our site
      * The system accept and swap OCAT into OCX/OCAT Uniswap pool and get OCX
      * The system swap OCX into OCX/UNI Uniswap pool and get UNI
      * The system return UNI for the user's OCAT
@@ -272,11 +283,51 @@ contract OcxLocalBalancer is OcxBase, IERC721Receiver {
             return;
         }
         uint changePercentage = ethPriceInAud * 100 / _ethPriceInAUD;
-        require(changePercentage < MIN_ALLOWED_OCAT_PRICE || changePercentage > MAX_ALLOWED_OCAT_PRICE);
+        require(changePercentage < MIN_ALLOWED_OCAT_PRICE || 
+                changePercentage > MAX_ALLOWED_OCAT_PRICE);
         // 
-        if (ethPriceInAud < MIN_ALLOWED_OCAT_PRICE) {
-            uint256 decreaseAmount = ((100 - changePercentage) * IERC20(ocatAddress).totalSupply()) / 100;
-                        
+        if (ethPriceInAud < MIN_ALLOWED_OCAT_PRICE) { // If ETH price drop than 10%
+            // ******** Sell OCX and buy OCAT *******
+            uint256 decreaseAmount = 
+                ((100 - changePercentage) * IERC20(ocatAddress).totalSupply()) / 
+                100;
+            // Allow the amount to sell OCX
+            uint256 allowance = IERC20(ocxAddress).allowance(msg.sender, address(this));
+            require(allowance >= decreaseAmount, "Insufficient allowance");
+            // Swap OCX/OCAT: Sell OCX and buy OCAT
+            address[] memory path = new address[](3);
+            path[0] = ocxAddress;
+            path[1] = uniswapRouter.WETH();
+            path[2] = ocatAddress;
+            IUniswapV2Router02(UNISWAP_V2_ROUTER02_ADDRESS).swapTokensForExactTokens(
+                decreaseAmount,
+                type(uint).max,
+                path,
+                address(this),
+                block.timestamp
+            );
+        } else {
+            // Sell OCAT and buy OCX
+            // Get OCX to buy for the specified OCAT
+            // Swap OCAT/OCX: Sell OCAT and buy OCX
+            uint256 increaseAmount = 
+                ((changePercentage - 100) * IERC20(ocatAddress).totalSupply()) / 
+                100;
+            // Allow the amount to sell OCX
+            uint256 allowance = IERC20(ocxAddress).allowance(msg.sender, address(this));
+            require(allowance >= increaseAmount, "Insufficient allowance");
+            // Swap OCX/OCAT: Sell OCX and buy OCAT
+            address[] memory path = new address[](3);
+            path[0] = ocatAddress;
+            path[1] = uniswapRouter.WETH();
+            path[2] = ocxAddress;
+            IUniswapV2Router02(UNISWAP_V2_ROUTER02_ADDRESS).swapTokensForExactTokens(
+                increaseAmount,
+                type(uint).max,
+                path,
+                address(this),
+                block.timestamp
+            );
         }
     }
 }

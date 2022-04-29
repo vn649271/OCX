@@ -12,6 +12,8 @@ const Pnft_DeployedInfo = require('../../build/contracts/PawnNFTs.json');
 const PnftExchange_DeployedInfo = require('../../build/contracts/PawnExchange.json');
 const OcatToken_DeployedInfo = require('../../build/contracts/OcatToken.json');
 const OcxPriceOracle_DeployedInfo = require('../../build/contracts/OcxPriceOracle.json');
+const OcxBalancer_DeployedInfo = require('../../build/contracts/OcxBalancer.json');
+const axios = require("axios");
 
 const TOKEN_CONTRACT_MAP = {
     WETH: Weth_DeployedInfo,
@@ -41,6 +43,7 @@ const {
 const DEFAULT_DEADLINE = 300;   // 300s = 5min
 const SLIPPAGE_MAX = 3;         // 3%
 const FEE_CHECKING_INTERVAL = 300000; // every 300s
+const ETH_PRICE_CHECKING_INTERVAL = 90000; // every 90s
 
 var gOpenchainRouter = null;
 
@@ -53,7 +56,11 @@ class OpenchainRouter {
         this.web3 = web3;
         this.pnftFeeData = null;
         this.isPnftFeeDataValid = false;
+        this.ethAudPrice = 0;
+        this.ethAudBasePrice = 0;
+        this.ethAudBaseTime = null;
         setTimeout(this._getPnftTxFee, FEE_CHECKING_INTERVAL);
+        setTimeout(this._pickEthPrice, ETH_PRICE_CHECKING_INTERVAL);
     }
 
     defaultErrorHanlder(errorObj) {
@@ -105,6 +112,51 @@ class OpenchainRouter {
             return { error: -1300, data: error.message ? error.message: "Unexpected error for unlocking account"}
         }
     }
+
+    async _pickEthPrice() {
+        const options = {
+            method: 'GET',
+            url: 'https://api.coinbase.com/v2/prices/ETH-AUD/historic?period=hour',
+        };
+        axios.request(options).then(response => {
+            let prices = response.data? response.data.prices? response.data.prices: null: null;
+            self.ethAudPrice = prices[0].price;
+            latestPriceTime = new Date(prices[0].time);
+            if (self.ethAudPrice == 0) {
+                self.ethAudBasePrice = latestPrice;
+                self.ethAudBaseTime = latestPriceTime;
+                return;
+            }
+            let delta = self.ethAudBasePrice / self.ethAudBasePrice;
+            if (delta < 0.9 || delta > 1.1) {
+                try {
+                    let priceOracleAddress = self.getContractAddress(
+                        OcxPriceOracle_DeployedInfo
+                    );
+                    let ret = await self._unlockAccount();
+                    if (ret.error) {
+                        return ret;
+                    }
+                    const priceOracleContract = new self.web3.eth.Contract(
+                        OcxPriceOracle_DeployedInfo.abi, 
+                        priceOracleAddress
+                    );
+                    priceOracleContract.methods.setEthAudPrice(
+                        self.ethAudBasePrice * 1000000
+                    ).send({
+                        from: self.myAddress
+                    });
+                    // Run OcxLocalBalancer
+                    let balancerAddress = self.getContractAddress(OcxBalancer_DeployedInfo);
+                } catch (error) {
+                    console.log("********** Failed to set ETH-AUD price: ", error);
+                }
+            }
+        }).catch(error => {
+            console.error(error);
+        });        
+    }
+
 
     getContractAddress(contractDeployedInfo) {
         let ipcType = process.env.IPC_TYPE;
@@ -197,10 +249,9 @@ class OpenchainRouter {
                     .div(this.web3.utils.toBN(100))
                     .toString();
             }
-            console.log("@@@ OpenchainRouter.getBestPrice(): ", amountOutMin);                
+            console.log("@@@ OpenchainRouter.`(): ", amountOutMin);                
             return { error: 0, data: amountOutMin };
-        }
-        catch (error) {
+        } catch (error) {
             var errMsg = this.defaultErrorHanlder(error);
             return { error: -400, data: errMsg };
         }
