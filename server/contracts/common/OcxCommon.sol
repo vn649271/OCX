@@ -7,9 +7,12 @@ enum FeeType {
     OCAT_PNFT_SWAP_FEE,
     FEE_TYPE_SIZE
 }
-
-address constant UNISWAP_ROUTER_ADDRESS = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
-
+// v2
+// address constant UNISWAP_V3_ROUTER_ADDRESS = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
+// v3
+address constant UNISWAP_V3_ROUTER_ADDRESS = 0xE592427A0AEce92De3Edee1F18E0157C05861564;
+address constant UNISWAP_V3_QUOTER_ADDRESS = 0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6;
+uint24  constant POOL_FEE = 3000;
 ////////////////////////////////////////////////////////////////////////////////////////
 function strConcat(
         string memory _a, 

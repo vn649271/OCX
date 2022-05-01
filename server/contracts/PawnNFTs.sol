@@ -101,7 +101,7 @@ contract PawnNFTs is ERC721, OcxBase {
     tokenNameExists[_name] = true;
 
     estimatedOcats = convertToOcat(_price);
-    (uint256 mintFeePercentage,,, uint256 feeDecimals) = IOcxPriceOracle(ocxPriceOracleAddress).getPnftFeePercentages();
+    (uint256 mintFeePercentage,,, uint256 feeDecimals) = IOcxPriceOracle(contractAddress[CommonContracts.PRICE_ORACLE]).getPnftFeePercentages();
     // creat a new pawning NFT (struct) and pass in new values
     allPawnNFTs[newTokenID] = PawnNFT(
       newTokenID,

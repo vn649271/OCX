@@ -9,6 +9,9 @@ contract OcatToken is ERC20, OcxAdmin {
 
     uint8           private _decimals;
 
+    event minted(uint256 amount);
+    event burned(uint256 amount);
+
     receive() external payable {}
 
     constructor() ERC20("OpenchainDex Stable Coin", "OCAT") {
@@ -19,12 +22,14 @@ contract OcatToken is ERC20, OcxAdmin {
         * Custom accessor to create a unique token
     */
     function mint(uint256 amount) external payable
-    onlyAdmin returns(bool) {
+    onlyAdmin {
         super._mint(msg.sender, amount);
-        return true;
+        emit minted(amount);
     }
     function burn(uint256 amount) public onlyAdmin {
+        require(balanceOf(msg.sender) >= amount, "Insufficient OCAT balance to burn");
         super._burn(msg.sender, amount);
+        emit burned(amount);
     }
     function decimals() public view virtual override returns (uint8) {
         return _decimals;

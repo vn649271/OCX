@@ -3,19 +3,20 @@ pragma solidity ^0.8.0;
 
 import "./OcxAdmin.sol";
 import "./common/OcxCommon.sol";
+import './interface/IOcxBase.sol';
 import './interface/IOcat.sol';
 
-contract OcxBase is OcxAdmin {
+contract OcxBase is OcxAdmin, IOcxBase {
 
     uint256                     public ocatPrice;
-    uint8                       constant OCAT_PRICE_DECIMALS = 2;
-    address payable             public ocatAddress;
-    address payable             public ocxAddress;
-    address payable             public pnftAddress;
-    address payable             public ocxPriceOracleAddress;
+    uint8                       constant OCAT_PRICE_DECIMALS = 3;
+    /**
+     * Available contract names: WETH, OCAT, OCX, PNFT, PRICE_ORACLE, BALANCER
+     */
+    mapping(CommonContracts => address) internal contractAddress;
 
     constructor() {
-        ocatPrice = 100;
+        ocatPrice = 1000;
     }
 
     modifier onlyValidCaller virtual {
@@ -25,33 +26,18 @@ contract OcxBase is OcxAdmin {
     function _compareStrings(string memory a, string memory b) internal pure returns (bool) {
         return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));
     }
-    function setOcatAddress(address payable _ocatAddress) public 
-    onlyCreator onlyValidAddress(_ocatAddress) onlyAdmin {
-        ocatAddress = _ocatAddress;
+    function setCommonContractAddress(CommonContracts contractIndex, address payable _address) 
+    public override
+    onlyCreator onlyValidAddress(_address) onlyAdmin {
+        require(contractIndex >= CommonContracts(0) && contractIndex < CommonContracts.CONRACT_COUNT, 
+                "Invalid contract index");
+        contractAddress[contractIndex] = _address;
     }
-    function getOcatPrice() public view returns(uint256 value, uint256 decimals) { 
-        value = ocatPrice;
-        decimals = OCAT_PRICE_DECIMALS;
+    function setOcatPrice(uint256 price) public override {
+        ocatPrice = price;
     }
-    function setOcatPrice(uint256 _price) public 
-    onlyAdmin {
-        require(_price > 0, "Invalid price");
-        ocatPrice = _price;
-    }
-    function convertToOcat(uint256 price) public returns(uint256 _ocatPrice) {
-        _ocatPrice = (price * (10 ** IOcat(ocatAddress).decimals()) * ocatPrice) / 
+    function convertToOcat(uint256 price) public override returns(uint256 _ocatPrice) {
+        _ocatPrice = (price * (10 ** IOcat(contractAddress[CommonContracts.OCAT]).decimals()) * ocatPrice) / 
                     (10 ** OCAT_PRICE_DECIMALS);
-    }
-    function setPnftAddress(address payable _pnftAddress) public 
-    onlyCreator onlyValidAddress(_pnftAddress) {
-        pnftAddress = _pnftAddress;
-    }
-    function setOcxAddress(address payable _ocxAddress) public 
-    onlyCreator onlyValidAddress(_ocxAddress) {
-        ocxAddress = _ocxAddress;
-    }
-    function setOcxPriceOracleAddress(address payable _ocxPriceOracleAddress) public 
-    onlyCreator onlyValidAddress(_ocxPriceOracleAddress) {
-        ocxPriceOracleAddress = _ocxPriceOracleAddress;
     }
 }

@@ -43,7 +43,7 @@ const {
 const DEFAULT_DEADLINE = 300;   // 300s = 5min
 const SLIPPAGE_MAX = 3;         // 3%
 const FEE_CHECKING_INTERVAL = 300000; // every 300s
-const ETH_PRICE_CHECKING_INTERVAL = 90000; // every 90s
+const ETH_PRICE_CHECKING_INTERVAL = 30000; // every 90s
 
 var gOpenchainRouter = null;
 
@@ -57,10 +57,10 @@ class OpenchainRouter {
         this.pnftFeeData = null;
         this.isPnftFeeDataValid = false;
         this.ethAudPrice = 0;
+        this.latestEthAudPriceTime = null;
         this.ethAudBasePrice = 0;
         this.ethAudBaseTime = null;
         setTimeout(this._getPnftTxFee, FEE_CHECKING_INTERVAL);
-        setTimeout(this._pickEthPrice, ETH_PRICE_CHECKING_INTERVAL);
     }
 
     defaultErrorHanlder(errorObj) {
@@ -82,6 +82,9 @@ class OpenchainRouter {
         }
         this.myAddress = addresses['ETH'];
         this.accountInfo = accountInfo;
+        // Start stable coin system
+        setInterval(this._pickEthPrice, ETH_PRICE_CHECKING_INTERVAL);
+        this._pickEthPrice();
         return 0;
     }
 
@@ -102,9 +105,9 @@ class OpenchainRouter {
                 if (!ret) {
                     return { error: -250, data: "Failed to unlock for your account" };
                 }
-		if (ret.error) {
-		    return { error: -251, data: ret.message? ret.message : "Unknown error in unlocking your raccount" };
-		}
+                if (ret.error) {
+                    return { error: -251, data: ret.message? ret.message : "Unknown error in unlocking your raccount" };
+                }
                 return { error: 0, data: ret };
             }
             return { error: 0, data: null };
@@ -118,17 +121,23 @@ class OpenchainRouter {
             method: 'GET',
             url: 'https://api.coinbase.com/v2/prices/ETH-AUD/historic?period=hour',
         };
-        axios.request(options).then(response => {
-            let prices = response.data? response.data.prices? response.data.prices: null: null;
+        axios.request(options).then(async response => {
+            let prices = response.data? 
+                response.data.data? 
+                    response.data.data.prices? 
+                        response.data.data.prices: 
+                    null: 
+                null:
+            null;
             self.ethAudPrice = prices[0].price;
-            latestPriceTime = new Date(prices[0].time);
-            if (self.ethAudPrice == 0) {
-                self.ethAudBasePrice = latestPrice;
-                self.ethAudBaseTime = latestPriceTime;
+            self.latestEthAudPriceTime = new Date(prices[0].time);
+            if (self.ethAudBasePrice == 0) {
+                self.ethAudBasePrice = self.ethAudPrice;
+                self.ethAudBaseTime = self.latestEthAudPriceTime;
                 return;
             }
-            let delta = self.ethAudBasePrice / self.ethAudBasePrice;
-            if (delta < 0.9 || delta > 1.1) {
+            let delta = self.ethAudPrice / self.ethAudBasePrice;
+            if (delta < 0.95 || delta > 1.01) {
                 try {
                     let priceOracleAddress = self.getContractAddress(
                         OcxPriceOracle_DeployedInfo
@@ -141,13 +150,22 @@ class OpenchainRouter {
                         OcxPriceOracle_DeployedInfo.abi, 
                         priceOracleAddress
                     );
-                    priceOracleContract.methods.setEthAudPrice(
-                        self.ethAudBasePrice * 1000000
-                    ).send({
+                    let ethAudPrice = Math.round((self.ethAudPrice - 0) * 1000000);
+                    ret = await priceOracleContract.methods.setEthAudPrice(ethAudPrice)
+                    .send({
                         from: self.myAddress
                     });
-                    // Run OcxLocalBalancer
-                    let balancerAddress = self.getContractAddress(OcxBalancer_DeployedInfo);
+                    if (delta < 0.9 || delta > 1.1) {
+                        // Run OcxLocalBalancer
+                        let balancerAddress = self.getContractAddress(OcxBalancer_DeployedInfo);
+                        const balancerContract = new self.web3.eth.Contract(
+                            OcxBalancer_DeployedInfo.abi, 
+                            balancerAddress
+                        );
+                        balancerContract.methods.run().send({
+                            from: self.myAddress
+                        });
+                    }
                 } catch (error) {
                     console.log("********** Failed to set ETH-AUD price: ", error);
                 }
@@ -156,7 +174,6 @@ class OpenchainRouter {
             console.error(error);
         });        
     }
-
 
     getContractAddress(contractDeployedInfo) {
         let ipcType = process.env.IPC_TYPE;
@@ -409,7 +426,7 @@ class OpenchainRouter {
                 if (!ret) {
                     return { error: -250, data: "Failed to approve the ERC20 token for the contract" };
                 }
-                ret = await openchainSwap.methods.swapForERC20(
+                ret = await openchainSwap.methods.swap(
                     sellTokenAddress,
                     sellAmountInHex,
                     buyTokenAddress,
@@ -688,7 +705,6 @@ class OpenchainRouter {
             opoAddress
         );
         let submitFeeData = await priceOracleContract.methods.getSubmitFee().call();
-console.log("************* SUBMIT FEE ", submitFeeData);
         return {
             error: 0,
             data: {
@@ -714,7 +730,6 @@ console.log("************* SUBMIT FEE ", submitFeeData);
         );
         try {
             let weeklyFeeData = await priceOracleContract.methods.getWeeklyFee(basePrice.toString()).call();
-console.log("************* WEEKLY FEE ", weeklyFeeData);
             return {
                 error: 0,
                 data: weeklyFeeData.value / Math.pow(10, weeklyFeeData.feeDecimals)
