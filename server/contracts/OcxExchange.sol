@@ -6,131 +6,133 @@ pragma solidity ^0.8.0;
 // https://ethereum.org/ru/developers/tutorials/transfers-and-approval-of-erc-20-tokens-from-a-solidity-smart-contract/
 // https://solidity-by-example.org/app/erc20/
 
-import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
-import '@uniswap/lib/contracts/libraries/TransferHelper.sol';
+import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
+import "@uniswap/v3-periphery/contracts/interfaces/IQuoter.sol";
+// import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
+import '@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol';
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol"; // openzeppelin 4.5 (for solidity 0.8.x)
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "./OcxBase.sol";
 import "./PawnNFTs.sol";
 import "./OcatToken.sol";
-import "./OcxLocalPool.sol";
+// import "./OcxLocalPool.sol";
 import "./common/OcxCommon.sol";
+import './interface/IOcxBalancer.sol';
 
 contract OcxExchange is OcxBase {
 
-    IUniswapV2Router02 public uniswapRouter;
-    address payable private ocxLocalPoolAddress;
+    // IUniswapV2Router02  public uniswapRouter;
+    ISwapRouter public constant uniswapRouter = ISwapRouter(UNISWAP_V3_ROUTER_ADDRESS);
+    IQuoter public constant quoter = IQuoter(UNISWAP_V3_QUOTER_ADDRESS);
+    // address payable private ocxLocalPoolAddress;
+
+    event estimatedOcxAmountForBurningOcat(uint256);
 
     receive() external payable {}
 
     constructor() {
-        uniswapRouter = IUniswapV2Router02(UNISWAP_ROUTER_ADDRESS);
+        // uniswapRouter = IUniswapV2Router02(UNISWAP_V3_ROUTER_ADDRESS);
     }
 
-    function setOcxLocalPoolAddress(address payable _ocxLocalPoolAddress) public 
-    onlyCreator onlyValidAddress(_ocxLocalPoolAddress) {
-        ocxLocalPoolAddress = _ocxLocalPoolAddress;
-    }
+    // function setOcxLocalPoolAddress(address payable _ocxLocalPoolAddress) public 
+    // onlyCreator onlyValidAddress(_ocxLocalPoolAddress) {
+    //     ocxLocalPoolAddress = _ocxLocalPoolAddress;
+    // }
 
-    function swapFromETH(
-        address _tokenOut,
-        uint _amountOutMin,
-        uint _deadline
-    ) public payable {
-        // uint deadline = block.timestamp + 15; // using 'now' for convenience, for mainnet pass deadline from frontend!
-        address[] memory path = new address[](2);
-        path[0] = uniswapRouter.WETH();
-        path[1] = address(_tokenOut);
-        // if (_tokenOut != ocatAddress) {
-        uniswapRouter.swapExactETHForTokens(_amountOutMin, path, msg.sender, _deadline);
-        // } else {
-        //     OcxLocalPool(ocxLocalPoolAddress).swapEthToOcat{
-        //         value: msg.value
-        //     }(_amountOutMin, payable(msg.sender), _deadline);
-        // }
-    }
-
-    function swapToETH(
-        address _tokenIn,
-        uint _amountIn,
-        uint _amountOutMin,
-        uint _deadline
-    ) public {
-        // transferFrom
-        IERC20 sellTokenContract = IERC20(_tokenIn);
-        //     Check for allowance
-        uint256 allowance = sellTokenContract.allowance(msg.sender, address(this));
-        string memory errorText = Strings.toString(allowance);
-        errorText = strConcat("OcxExchange.swapToETH(): Not enough allowance for the ERC20 token. allowance: ", errorText);
-        require(allowance >= _amountIn, errorText);
-        //     Do transferFrom
-        TransferHelper.safeTransferFrom(_tokenIn, msg.sender, address(this), _amountIn);
-
-        address[] memory path = new address[](2);
-        path[0] = address(_tokenIn);
-        path[1] = uniswapRouter.WETH();
-        // if (_tokenIn != ocatAddress) {
-            // approve
-        require(
-            sellTokenContract.approve(
-                address(UNISWAP_ROUTER_ADDRESS), 
-                _amountIn
-            ), 
-            'OcxExchange.swapToETH(): approve for the router failed.'
-        );
-        uniswapRouter.swapExactTokensForETH(
-            _amountIn, 
-            _amountOutMin, 
-            path, 
-            msg.sender, 
-            _deadline
-        );
-        // } else {
-        //     // approve
-        //     require(
-        //         sellTokenContract.approve(
-        //             address(ocxLocalPoolAddress), 
-        //             _amountIn
-        //         ), 
-        //         'OcxExchange.swapToETH(): approve for the router failed.'
-        //     );
-        //     OcxLocalPool(ocxLocalPoolAddress).swapOcatToEth(
-        //         _amountIn,
-        //         _amountOutMin, 
-        //         payable(msg.sender), 
-        //         _deadline
-        //     );
-        // }
-    }
-
-    function swapForERC20(
+    function swap(
         address _tokenIn,
         uint _amountIn,
         address _tokenOut,
         uint _amountOutMin,
         uint _deadline
-    ) public {
+    ) public 
+    returns(uint amountOut) {
         // transferFrom
         //    Check for allowance
-        uint256 allowance = IERC20(_tokenIn).allowance(msg.sender, address(this));
-        string memory errorText = Strings.toString(allowance);
-        errorText = strConcat("OcxExchange.swapForERC20(): Not enough allowance for the ERC20 token. allowance: ", errorText);
-        require(allowance >= _amountIn, errorText);
-        //     Do transferFrom
+        if (_tokenIn != contractAddress[CommonContracts.WETH]) {
+            uint256 allowance = IERC20(_tokenIn).allowance(msg.sender, address(this));
+            require(allowance >= _amountIn, "Insufficient allowance");
+            //     Do transferFrom
+            // approve
+            require(
+                IERC20(_tokenIn).approve(address(UNISWAP_V3_ROUTER_ADDRESS), _amountIn), 
+                'OcxExchange.swap(): approve for the router failed.'
+            );
+        }
         TransferHelper.safeTransferFrom(_tokenIn, msg.sender, address(this), _amountIn);
 
-        // approve
-        require(
-            IERC20(_tokenIn).approve(address(UNISWAP_ROUTER_ADDRESS), _amountIn), 
-            'OcxExchange.swapForERC20(): approve for the router failed.'
-        );
+        ISwapRouter.ExactInputSingleParams memory params =
+            ISwapRouter.ExactInputSingleParams({
+                tokenIn: contractAddress[CommonContracts.WETH],
+                tokenOut: _tokenOut,
+                fee: POOL_FEE,
+                recipient: msg.sender,
+                deadline: block.timestamp + 15,
+                amountIn: _amountIn,
+                amountOutMinimum: 0,
+                sqrtPriceLimitX96: 0
+            });
 
-        address[] memory path = new address[](3);
-        path[0] = _tokenIn;
-        path[1] = uniswapRouter.WETH();
-        path[2] = _tokenOut;
-        uniswapRouter.swapExactTokensForTokens(_amountIn, _amountOutMin, path, msg.sender, _deadline);
+        // The call to `exactInputSingle` executes the swap.
+        amountOut = uniswapRouter.exactInputSingle(params);
     }
+    /**
+     *  Mint OCAT by funding ETH
+     */
+    function mintOcat() public payable 
+    onlyAdmin onlyValidAddress(contractAddress[CommonContracts.PRICE_ORACLE]) 
+    onlyValidAddress(contractAddress[CommonContracts.OCAT]) {
+        OcxPrice memory ethAudPriceInfo = IOcxPriceOracle(
+            contractAddress[CommonContracts.PRICE_ORACLE]
+        ).getEthAudPrice();    
+        uint8 ocatDecimals = IOcat(contractAddress[CommonContracts.OCAT]).decimals();
+        mintOcat(
+            (msg.value * ethAudPriceInfo.value * (10**ocatDecimals)) / 
+            ((10**18) * ethAudPriceInfo.decimals)
+        );
+    }
+    /**
+     * Mint OCAT as specified amount
+     */
+    function mintOcat(uint256 amount) internal onlyAdmin {
+        IOcxERC20(contractAddress[CommonContracts.OCAT]).mint(amount);
+        swap(
+            contractAddress[CommonContracts.OCAT], amount, 
+            contractAddress[CommonContracts.OCX], 0, 
+            block.timestamp
+        );
+    }
+    function _getEstimatedOcxforOcat(uint ocatAmount) internal returns (uint256) {
+        address tokenIn = contractAddress[CommonContracts.OCX];
+        address tokenOut = contractAddress[CommonContracts.OCAT];
+        uint24 fee = 3000;
+        uint160 sqrtPriceLimitX96 = 0;
 
+        // getQuoteAtTick()
+        return quoter.quoteExactOutputSingle(
+            tokenIn,
+            tokenOut,
+            fee,
+            ocatAmount,
+            sqrtPriceLimitX96
+        );
+    }
+    function burnOcat(uint256 amount) internal onlyAdmin {
+        uint256 ocxAmount = _getEstimatedOcxforOcat(amount);
+        emit estimatedOcxAmountForBurningOcat(ocxAmount);
+        IERC20(contractAddress[CommonContracts.OCX]).approve(UNISWAP_V3_ROUTER_ADDRESS, ocxAmount);
+        swap(
+            contractAddress[CommonContracts.OCX], ocxAmount, 
+            contractAddress[CommonContracts.OCAT], 0, 
+            block.timestamp
+        );
+        IOcxERC20(contractAddress[CommonContracts.OCAT]).burn(amount);
+    }
+    function mintOcx(uint256 amount) public payable onlyAdmin  {
+        IOcxERC20(contractAddress[CommonContracts.OCX]).mint(amount);
+    }
+    function burnOcx(uint256 amount) internal onlyAdmin {
+        IOcxERC20(contractAddress[CommonContracts.OCX]).burn(amount);
+    }
 }

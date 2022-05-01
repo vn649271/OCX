@@ -40,7 +40,7 @@ contract OcxOcatEthPool is OcxBase {
 
     // The method must be called after setOcatAddress()
     function init() external {
-        localPool.tokenPair = [ocatAddress, address(0)];
+        localPool.tokenPair = [contractAddress[CommonContracts.OCAT], address(0)];
     }
 
     function getAmountsOut(
@@ -54,7 +54,7 @@ contract OcxOcatEthPool is OcxBase {
         require(ret1 && ret2 || ret3 && ret4, "getAmountsOut(): Invalid path");
 
         // Find the ETH/OCAT pool
-        uint256 ocatPoolBalance = localPool.balance[ocatAddress];
+        uint256 ocatPoolBalance = localPool.balance[contractAddress[CommonContracts.OCAT]];
         uint256 ethPoolBalance = localPool.balance[ETH_ADDRESS];
 
         if (ret1 && ret2) {
@@ -77,13 +77,13 @@ contract OcxOcatEthPool is OcxBase {
         require(amountOut >= amountOutMin, "Insufficient OCAT balance for your swap");
 
         // Transfer OCAT to the sender
-        TransferHelper.safeTransfer(ocatAddress, msg.sender, amountOut);
+        TransferHelper.safeTransfer(contractAddress[CommonContracts.OCAT], msg.sender, amountOut);
 
         // Update the quote for the pool
         localPool.balance[address(0)] += amountIn;
-        localPool.balance[ocatAddress] -= amountOut;
+        localPool.balance[contractAddress[CommonContracts.OCAT]] -= amountOut;
         localPool.prevQuote = localPool.quote;
-        localPool.quote = localPool.balance[ocatAddress] / 
+        localPool.quote = localPool.balance[contractAddress[CommonContracts.OCAT]] / 
                             (localPool.balance[address(0)] / QUOTE_MULTIPLIER);
         // require(ret, "new ETH balance in the pool is overflowed");
         emit SwappedToOcat(amountOut);
@@ -96,18 +96,18 @@ contract OcxOcatEthPool is OcxBase {
         require(amountOut >= amountOutMin, "Insufficient ETH balance for your swap");
 
         // Transfer source token from the sender
-        uint256 allowance = IERC20(ocatAddress).allowance(msg.sender, address(this));
+        uint256 allowance = IERC20(contractAddress[CommonContracts.OCAT]).allowance(msg.sender, address(this));
         require(allowance >= amountIn, "OcxOcatEthPool.swapFromOcat(): Insufficient allowance for OCAT");
-        TransferHelper.safeTransferFrom(ocatAddress, msg.sender, address(this), amountIn);
+        TransferHelper.safeTransferFrom(contractAddress[CommonContracts.OCAT], msg.sender, address(this), amountIn);
 
         // Transfer target to the sender
         payable(msg.sender).transfer(amountOut);
 
         // Update the quote for the pool
-        localPool.balance[ocatAddress] += amountIn;
+        localPool.balance[contractAddress[CommonContracts.OCAT]] += amountIn;
         localPool.balance[address(0)] -= amountOut;
         localPool.prevQuote = localPool.quote;
-        localPool.quote = localPool.balance[ocatAddress] / 
+        localPool.quote = localPool.balance[contractAddress[CommonContracts.OCAT]] / 
                             (localPool.balance[address(0)] / QUOTE_MULTIPLIER);
         // require(ret, "new ETH balance in the pool is overflowed");
         emit SwappedFromOcat(amountOut);
@@ -121,7 +121,7 @@ contract OcxOcatEthPool is OcxBase {
     function addLiquidityWithEth(
         uint256 ocatAmount
     ) public payable 
-    onlyAdmin onlyValidAddress(ocatAddress) {
+    onlyAdmin onlyValidAddress(contractAddress[CommonContracts.OCAT]) {
         require(ocatAmount > 0, "Invalid OCAT amount");
         // Get quote
         // ...uint256((quote / localPool.origQuote) * 100)
@@ -142,18 +142,18 @@ contract OcxOcatEthPool is OcxBase {
             "Invalid quote(out of effective range: 98%~102%)"
         );
         // Update pool
-        localPool.balance[ocatAddress] += ocatAmount;
+        localPool.balance[contractAddress[CommonContracts.OCAT]] += ocatAmount;
         localPool.balance[ETH_ADDRESS] += msg.value;
         localPool.prevK = localPool.k;
-        localPool.k = localPool.balance[ocatAddress] * 
+        localPool.k = localPool.balance[contractAddress[CommonContracts.OCAT]] * 
                     localPool.balance[ETH_ADDRESS];
         localPool.prevQuote = localPool.quote;
         localPool.quote = newQuote;
 
         // Deposit OCAT, first token.
-        uint256 allowance = IERC20(ocatAddress).allowance(msg.sender, address(this));
+        uint256 allowance = IERC20(contractAddress[CommonContracts.OCAT]).allowance(msg.sender, address(this));
         require(allowance >= ocatAmount, "OcxOcatEthPool.addLiquidity(): Insufficient allowance for OCAT");
-        TransferHelper.safeTransferFrom(ocatAddress, msg.sender, address(this), ocatAmount);
+        TransferHelper.safeTransferFrom(contractAddress[CommonContracts.OCAT], msg.sender, address(this), ocatAmount);
         // For ETH, second token, No need deposit
 
         // Mint LP token to return

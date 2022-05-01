@@ -12,11 +12,13 @@ import '@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol';
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol"; // openzeppelin 4.5 (for solidity 0.8.x)
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import '../OcxBase.sol';
+import '../interface/IOcxBalancer.sol';
+import '../interface/IOcxExchange.sol';
 import '../interface/IOcxPriceOracle.sol';
 import '../interface/IOcxERC20.sol';
 import "../common/OcxCommon.sol";
 
-contract OcxBalancer is OcxBase, IERC721Receiver {
+contract OcxBalancer is OcxBase, IOcxBalancer, IERC721Receiver {
 
     /*
      * one local pool: OCX/OCAT and three UNISWAP POOLS: OCX/OCAT, OCX/DAI and OCX/UNI
@@ -32,7 +34,11 @@ contract OcxBalancer is OcxBase, IERC721Receiver {
     INonfungiblePositionManager public immutable nonfungiblePositionManager;
     IUniswapV2Router02 public uniswapRouter;
 
-    uint256 _ethPriceInAUD = 0;
+    // price ratio between token pair (ex. UCAT-OCX)
+    mapping(CommonContracts => TokenPrice) private tokenPrice;
+
+    OcxPrice private ethAudPriceInfo;
+
     address payable constant UNISWAP_V2_ROUTER02_ADDRESS = 
         payable(address(0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506));
     uint256 private constant MAX_ALLOWED_OCAT_PRICE = 110;
@@ -47,7 +53,7 @@ contract OcxBalancer is OcxBase, IERC721Receiver {
         INonfungiblePositionManager _nonfungiblePositionManager
     ) {
         nonfungiblePositionManager = _nonfungiblePositionManager;
-        uniswapRouter = IUniswapV2Router02(UNISWAP_ROUTER_ADDRESS);
+        uniswapRouter = IUniswapV2Router02(UNISWAP_V3_ROUTER_ADDRESS);
     }
 
     receive() external payable {}
@@ -55,16 +61,27 @@ contract OcxBalancer is OcxBase, IERC721Receiver {
     function onERC721Received(
         address operator,
         address,
-        uint256 tokenId,
+        uint256 /*tokenId*/,
         bytes calldata
-    ) external override returns (bytes4) {
+    ) external override pure returns (bytes4) {
         // get position information
         require(operator != address(0), "Invalid operator");
         // _createDeposit(operator, tokenId);
 
         return this.onERC721Received.selector;
     }
-
+    /*
+     * dstTkn: address(0) means that is ETH
+     */
+    function setPrice(CommonContracts srcTkn, CommonContracts dstTkn, uint256 price, uint8 decimals) 
+    public override {
+        tokenPrice[srcTkn].to[dstTkn] = OcxPrice(price, decimals);
+    }
+    function getPrice(CommonContracts srcTkn, CommonContracts dstTkn) 
+    public view override
+    returns(OcxPrice memory _price) {
+        _price = tokenPrice[srcTkn].to[dstTkn];
+    }
     function _createDeposit(address owner, uint256 tokenId) internal {
         (, , address token0, address token1, , , , uint128 liquidity, , , , ) =
             nonfungiblePositionManager.positions(tokenId);
@@ -100,20 +117,20 @@ contract OcxBalancer is OcxBase, IERC721Receiver {
 
         // Approve the position manager
         TransferHelper.safeApprove(
-            ocatAddress, 
+            contractAddress[CommonContracts.OCAT], 
             address(nonfungiblePositionManager), 
             amount0ToMint
         );
         TransferHelper.safeApprove(
-            ocxAddress, 
+            contractAddress[CommonContracts.OCX], 
             address(nonfungiblePositionManager), 
             amount1ToMint
         );
 
         INonfungiblePositionManager.MintParams memory params =
             INonfungiblePositionManager.MintParams({
-                token0: ocatAddress,
-                token1: ocxAddress,
+                token0: contractAddress[CommonContracts.OCAT],
+                token1: contractAddress[CommonContracts.OCX],
                 fee: poolFee,
                 tickLower: -887272,
                 tickUpper: 887272,
@@ -125,7 +142,7 @@ contract OcxBalancer is OcxBase, IERC721Receiver {
                 deadline: block.timestamp
             });
 
-        // Note that the pool defined by ocatAddress/ocxAddress and 
+        // Note that the pool defined by contractAddress[CommonContracts.OCAT]/contractAddress[CommonContracts.OCX] and 
         //   fee tier 0.3% must already be created and initialized in order to mint
         (tokenId, liquidity, amount0, amount1) = nonfungiblePositionManager.mint(params);
 
@@ -134,13 +151,13 @@ contract OcxBalancer is OcxBase, IERC721Receiver {
 
         // Remove allowance and refund in both assets.
         if (amount0 < amount0ToMint) {
-            TransferHelper.safeApprove(ocatAddress, address(nonfungiblePositionManager), 0);
-            TransferHelper.safeTransfer(ocatAddress, msg.sender, amount0ToMint - amount0);
+            TransferHelper.safeApprove(contractAddress[CommonContracts.OCAT], address(nonfungiblePositionManager), 0);
+            TransferHelper.safeTransfer(contractAddress[CommonContracts.OCAT], msg.sender, amount0ToMint - amount0);
         }
 
         if (amount1 < amount1ToMint) {
-            TransferHelper.safeApprove(ocxAddress, address(nonfungiblePositionManager), 0);
-            TransferHelper.safeTransfer(ocxAddress, msg.sender, amount1ToMint - amount1);
+            TransferHelper.safeApprove(contractAddress[CommonContracts.OCX], address(nonfungiblePositionManager), 0);
+            TransferHelper.safeTransfer(contractAddress[CommonContracts.OCX], msg.sender, amount1ToMint - amount1);
         }
     }
     /// @notice Increases liquidity in the current range
@@ -254,16 +271,7 @@ contract OcxBalancer is OcxBase, IERC721Receiver {
         //remove information related to tokenId
         delete deposits[tokenId];
     }
-    function mintOcat(uint256 amount) public payable onlyAdmin  {
-        require(IERC20(ocatAddress).balanceOf(address(this)) > amount, 
-                "Insufficient balance to burn");
-        IOcxERC20(ocatAddress).burn(amount);
-    }
-    function burnOcat(uint256 amount) internal onlyAdmin {
-        require(IERC20(ocatAddress).balanceOf(address(this)) > amount, 
-                "Insufficient balance to burn");
-        IOcxERC20(ocatAddress).burn(amount);
-    }
+
     /*
      * A user try to swap OCAT to UNI in our site
      * The system accept and swap OCAT into OCX/OCAT Uniswap pool and get OCX
@@ -272,62 +280,35 @@ contract OcxBalancer is OcxBase, IERC721Receiver {
      * As a result, OCAT price to UNI changes
      * The stable algorithm fill back 
      */
-    function run() internal {
+    function run() internal 
+    onlyValidAddress(contractAddress[CommonContracts.EXCHANGE]) {
         // Get OCAT price to ETH
-        uint256 ethPriceInUsd = IOcxPriceOracle(ocxPriceOracleAddress).getEthUsdPrice();
-        (uint256 audPriceToUsd, uint256 audPriceDecimals) = 
-            IOcxPriceOracle(ocxPriceOracleAddress).getAudPriceToUsd();
-        uint256 ethPriceInAud = audPriceToUsd * ethPriceInUsd;
-        if (_ethPriceInAUD == 0) {
-            _ethPriceInAUD = ethPriceInAud;
+        OcxPrice memory _ethAudPriceObj = IOcxPriceOracle(contractAddress[CommonContracts.PRICE_ORACLE])
+                                            .getEthAudPrice();
+        if (ethAudPriceInfo.value == 0) {
+            ethAudPriceInfo = _ethAudPriceObj;
             return;
         }
-        uint changePercentage = ethPriceInAud * 100 / _ethPriceInAUD;
-        require(changePercentage < MIN_ALLOWED_OCAT_PRICE || 
-                changePercentage > MAX_ALLOWED_OCAT_PRICE);
+        uint changePercentage = (_ethAudPriceObj.value * 100) / ethAudPriceInfo.value;
+        if (changePercentage < MIN_ALLOWED_OCAT_PRICE || 
+        changePercentage > MAX_ALLOWED_OCAT_PRICE) {
+            return;
+        }
         // 
-        if (ethPriceInAud < MIN_ALLOWED_OCAT_PRICE) { // If ETH price drop than 10%
-            // ******** Sell OCX and buy OCAT *******
+        if (changePercentage > MAX_ALLOWED_OCAT_PRICE) { // If ETH price drop than 10%
+            // Force OcxExchange to burn OCAT *******
             uint256 decreaseAmount = 
-                ((100 - changePercentage) * IERC20(ocatAddress).totalSupply()) / 
+                ((100 - changePercentage) * IERC20(contractAddress[CommonContracts.OCAT]).totalSupply()) / 
                 100;
-            // Allow the amount to sell OCX
-            uint256 allowance = IERC20(ocxAddress).allowance(msg.sender, address(this));
-            require(allowance >= decreaseAmount, "Insufficient allowance");
-            // Swap OCX/OCAT: Sell OCX and buy OCAT
-            address[] memory path = new address[](3);
-            path[0] = ocxAddress;
-            path[1] = uniswapRouter.WETH();
-            path[2] = ocatAddress;
-            IUniswapV2Router02(UNISWAP_V2_ROUTER02_ADDRESS).swapTokensForExactTokens(
-                decreaseAmount,
-                type(uint).max,
-                path,
-                address(this),
-                block.timestamp
-            );
+            // Burn bought OCAT
+            IOcxExchange(contractAddress[CommonContracts.EXCHANGE]).burnOcat(decreaseAmount);
         } else {
-            // Sell OCAT and buy OCX
-            // Get OCX to buy for the specified OCAT
-            // Swap OCAT/OCX: Sell OCAT and buy OCX
+            // Force OcxExchange to mint OCAT
             uint256 increaseAmount = 
-                ((changePercentage - 100) * IERC20(ocatAddress).totalSupply()) / 
+                ((changePercentage - 100) * IERC20(contractAddress[CommonContracts.OCAT]).totalSupply()) / 
                 100;
-            // Allow the amount to sell OCX
-            uint256 allowance = IERC20(ocxAddress).allowance(msg.sender, address(this));
-            require(allowance >= increaseAmount, "Insufficient allowance");
-            // Swap OCX/OCAT: Sell OCX and buy OCAT
-            address[] memory path = new address[](3);
-            path[0] = ocatAddress;
-            path[1] = uniswapRouter.WETH();
-            path[2] = ocxAddress;
-            IUniswapV2Router02(UNISWAP_V2_ROUTER02_ADDRESS).swapTokensForExactTokens(
-                increaseAmount,
-                type(uint).max,
-                path,
-                address(this),
-                block.timestamp
-            );
+            // Mint bought OCAT
+            IOcxExchange(contractAddress[CommonContracts.EXCHANGE]).mintOcat(increaseAmount);
         }
     }
 }

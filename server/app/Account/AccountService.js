@@ -127,6 +127,9 @@ class AccountService {
                     return;
                 }
             });
+            // Set account field in the user model with accountInfo.id
+            // ... ....
+
             if (alreadyExists) {
                 return { error: 1, data: accountInfo.addresses };
             }

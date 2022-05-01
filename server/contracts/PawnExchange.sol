@@ -43,57 +43,57 @@ contract PawnExchange is OcxBase {
     }
 
     function exchangeToOcat(uint256 nftID) public 
-    validNftID(nftID) validCaller onlyValidAddress(ocatAddress) 
-    onlyValidAddress(pnftAddress) onlyValidAddress(ocxPriceOracleAddress)
+    validNftID(nftID) validCaller onlyValidAddress(contractAddress[CommonContracts.OCAT]) 
+    onlyValidAddress(contractAddress[CommonContracts.PNFT]) onlyValidAddress(contractAddress[CommonContracts.PRICE_ORACLE])
     returns (uint256 effectiveOcats, uint256 txFee) {
         // Get price for the NFT
         (,,, address currentOwner,,uint256 originalPrice, uint256 currentPrice, uint256 txCounter,,) = 
-            PawnNFTs(payable(address(pnftAddress))).allPawnNFTs(nftID);
+            PawnNFTs(payable(address(contractAddress[CommonContracts.PNFT]))).allPawnNFTs(nftID);
         require(currentOwner == msg.sender, "Not owner");
         require(ocatPrice > 0, "Invalid PNFT/OCAT quote");
 
         if (txCounter == 0) { // If it is first swap operation, then mint OCATs
-            IOcat(ocatAddress).mint(originalPrice);
+            IOcat(contractAddress[CommonContracts.OCAT]).mint(originalPrice);
         }
         // safeTransferFrom: send NFT from caller to the address
-        IERC721(pnftAddress).safeTransferFrom(msg.sender, address(this), nftID);
+        IERC721(contractAddress[CommonContracts.PNFT]).safeTransferFrom(msg.sender, address(this), nftID);
         // Pay fee in OCAT to this address
         (uint256 loanFee, uint256 feeDecimals) = 
-            IOcxPriceOracle(ocxPriceOracleAddress).getFeePercentage(FeeType.PNFT_OCAT_SWAP_FEE);
+            IOcxPriceOracle(contractAddress[CommonContracts.PRICE_ORACLE]).getFeePercentage(FeeType.PNFT_OCAT_SWAP_FEE);
         txFee = 0;
         if (txCounter > 0) {
             txFee = (originalPrice * loanFee) / (10 ** feeDecimals);
         }
         require(currentPrice >= txFee, "Insufficient PNFT price for the transaction fee");
         effectiveOcats = currentPrice - txFee;
-        uint256 ocatBalanceOfContract = IERC20(ocatAddress).balanceOf(address(this));
+        uint256 ocatBalanceOfContract = IERC20(contractAddress[CommonContracts.OCAT]).balanceOf(address(this));
         require(ocatBalanceOfContract >= currentPrice, "Insufficient OCAT balance of the contract");
         // Pay OCAT for the NFT except swap fee or mint fee 
-        IERC20(ocatAddress).transfer(msg.sender, effectiveOcats);
+        IERC20(contractAddress[CommonContracts.OCAT]).transfer(msg.sender, effectiveOcats);
         emit SwappedToOcat(effectiveOcats, txFee);
     }
 
     function exchangeFromOcat(uint256 nftID) public 
-    onlyValidCaller onlyValidAddress(ocatAddress) onlyValidAddress(pnftAddress)
+    onlyValidCaller onlyValidAddress(contractAddress[CommonContracts.OCAT]) onlyValidAddress(contractAddress[CommonContracts.PNFT])
     returns(uint256 effectiveOcats, uint256 swapBackFee) {
         // Get price for the NFT
         (,,,, address payable previousOwner, uint256 originalPrice,uint256 currentPrice,,,) = 
-            PawnNFTs(payable(address(pnftAddress))).allPawnNFTs(nftID);
+            PawnNFTs(payable(address(contractAddress[CommonContracts.PNFT]))).allPawnNFTs(nftID);
         require(msg.sender == previousOwner, "Invalid owner");
-        uint256 ocatBalance = IERC20(ocatAddress).balanceOf(msg.sender);
+        uint256 ocatBalance = IERC20(contractAddress[CommonContracts.OCAT]).balanceOf(msg.sender);
         require(ocatBalance >= currentPrice, "Insufficient OCAT balance");
         // Get restore fee
         (uint256 restoreFee, uint256 feeDecimals) = 
-            IOcxPriceOracle(ocxPriceOracleAddress).getFeePercentage(FeeType.OCAT_PNFT_SWAP_FEE);
+            IOcxPriceOracle(contractAddress[CommonContracts.PRICE_ORACLE]).getFeePercentage(FeeType.OCAT_PNFT_SWAP_FEE);
         swapBackFee = originalPrice * restoreFee / (10 ** feeDecimals);
         effectiveOcats = currentPrice - swapBackFee;
         // safeTransferFrom: send NFT from caller to the address
-        TransferHelper.safeTransferFrom(ocatAddress, msg.sender, address(this), currentPrice);
+        TransferHelper.safeTransferFrom(contractAddress[CommonContracts.OCAT], msg.sender, address(this), currentPrice);
         // Distribute fee among the stakeholders
         // Pay OCAT for the NFT
-        IERC721(pnftAddress).safeTransferFrom(address(this), msg.sender, nftID);
+        IERC721(contractAddress[CommonContracts.PNFT]).safeTransferFrom(address(this), msg.sender, nftID);
         //   Then transfer OCATs from the address to caller
-        // TransferHelper.safeTransferFrom(ocatAddress, address(this), msg.sender, currentPrice);
+        // TransferHelper.safeTransferFrom(contractAddress[CommonContracts.OCAT], address(this), msg.sender, currentPrice);
         emit SwappedFromOcat(effectiveOcats, swapBackFee);
     } 
 }

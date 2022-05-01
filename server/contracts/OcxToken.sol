@@ -8,18 +8,25 @@ contract OcxToken is ERC20, OcxAdmin {
 
     uint8           private _decimals;
 
+    event minted(uint256 amount);
+    event burned(uint256 amount);
+
     receive() external payable {}
 
     constructor() ERC20("Liquidity Provider Coin for OpenchainDex Local Pool", "OCX") {
         _decimals = 9; // In nano
     }
 
-    function mint(uint256 amount) external payable 
-    onlyAdmin returns(bool) {
+    function mint(uint256 amount) external payable
+    onlyAdmin {
         super._mint(msg.sender, amount);
-        return true;
+        emit minted(amount);
     }
-
+    function burn(uint256 amount) public onlyAdmin {
+        require(balanceOf(msg.sender) >= amount, "Insufficient OCX balance to burn");
+        super._burn(msg.sender, amount);
+        emit burned(amount);
+    }
     function decimals() public view virtual override returns (uint8) {
         return _decimals;
     }

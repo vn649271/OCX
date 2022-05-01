@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { JSEncrypt } from 'jsencrypt'
@@ -22,6 +22,8 @@ const PasscodeConfirmPage = props => {
   const [hide_passcode_checklist, setHidePasscodeCheckBox] = useState(false);
   const [show_passphrase_import_dialog, setShowPassPhraseImportDialog] = useState(null);
   const [passcode, setPasscode] = useState('');
+  const encryptKey = localStorage.getItem("encryptKey");
+  rsaCrypt.setPublicKey(encryptKey);
 
   const onChangePasscode = ev => {
     setPasscode(ev.target.value);

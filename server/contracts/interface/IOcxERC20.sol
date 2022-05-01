@@ -7,5 +7,6 @@ pragma solidity ^0.8.0;
  */
 interface IOcxERC20 {
     function decimals() external view returns (uint8);
+    function mint(uint256 amount) external payable;
     function burn(uint256 amount) external;
 }
