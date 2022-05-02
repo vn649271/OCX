@@ -21,8 +21,8 @@ struct OcxPrice {
     uint8       decimals;
 }
 
-struct CurrencyPair {
-    mapping(CurrencyIndex => OcxPrice) to;
+struct CurrencyPriceInfo {
+    mapping(CurrencyIndex => OcxPrice)  vs;
 }
 
 // v2

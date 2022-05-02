@@ -15,9 +15,6 @@ contract OcxPriceOracle is OcxBase, IOcxPriceOracle {
     uint256  private minimumPawnablePrice = 5000;
     uint256  private weeklyFeePercentage = 62400; // 6.24%
     OcxPrice  private ethAudPrice;
-    struct CurrencyPriceInfo {
-        mapping(CurrencyIndex => OcxPrice)     to;
-    }
     mapping(CurrencyIndex => CurrencyPriceInfo) private currencyPrice;
     uint256  public constant FIAT_PRICE_DECIMALS = 6;
     /**
@@ -104,8 +101,8 @@ contract OcxPriceOracle is OcxBase, IOcxPriceOracle {
             (dstCurrencyIndex >= CurrencyIndex(0) && dstCurrencyIndex < CurrencyIndex.CURRENCY_COUNT),
             "Invalid coin index"
         );
-        currencyPrice[srcCurrencyIndex].to[dstCurrencyIndex] = priceObj;
-        currencyPrice[dstCurrencyIndex].to[srcCurrencyIndex] = priceObj;
+        currencyPrice[srcCurrencyIndex].vs[dstCurrencyIndex] = priceObj;
+        currencyPrice[dstCurrencyIndex].vs[srcCurrencyIndex] = priceObj;
     }
     function getCurrencyRatio(CurrencyIndex srcCurrencyIndex, CurrencyIndex dstCurrencyIndex) 
     public view override 
@@ -115,6 +112,6 @@ contract OcxPriceOracle is OcxBase, IOcxPriceOracle {
             (dstCurrencyIndex >= CurrencyIndex(0) && dstCurrencyIndex < CurrencyIndex.CURRENCY_COUNT),
             "Invalid coin index"
         );
-        return currencyPrice[srcCurrencyIndex].to[dstCurrencyIndex];
+        return currencyPrice[srcCurrencyIndex].vs[dstCurrencyIndex];
     }
 }
