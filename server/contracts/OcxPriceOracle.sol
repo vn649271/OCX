@@ -15,6 +15,10 @@ contract OcxPriceOracle is OcxBase, IOcxPriceOracle {
     uint256  private minimumPawnablePrice = 5000;
     uint256  private weeklyFeePercentage = 62400; // 6.24%
     OcxPrice  private ethAudPrice;
+    struct CurrencyPriceInfo {
+        mapping(CurrencyIndex => OcxPrice)     to;
+    }
+    mapping(CurrencyIndex => CurrencyPriceInfo) private currencyPrice;
     uint256  public constant FIAT_PRICE_DECIMALS = 6;
     /**
      * IMPORTANT: replace the address below with the WitnetPriceRouter address
@@ -93,10 +97,24 @@ contract OcxPriceOracle is OcxBase, IOcxPriceOracle {
         return OcxPrice((1000000 * btcUsdPrice.value) / ethUsdPrice.value, 6);
     }
     // price must be value was timed by 10^6
-    function setEthAudPrice(OcxPrice memory priceObj) public override onlyAdmin {
-        ethAudPrice = priceObj;
+    function setCurrencyRatio(CurrencyIndex srcCurrencyIndex, CurrencyIndex dstCurrencyIndex, OcxPrice memory priceObj) 
+    public override onlyAdmin {
+        require (
+            (srcCurrencyIndex >= CurrencyIndex(0) && srcCurrencyIndex < CurrencyIndex.CURRENCY_COUNT) &&
+            (dstCurrencyIndex >= CurrencyIndex(0) && dstCurrencyIndex < CurrencyIndex.CURRENCY_COUNT),
+            "Invalid coin index"
+        );
+        currencyPrice[srcCurrencyIndex].to[dstCurrencyIndex] = priceObj;
+        currencyPrice[dstCurrencyIndex].to[srcCurrencyIndex] = priceObj;
     }
-    function getEthAudPrice() public view override returns(OcxPrice memory ) {
-        return ethAudPrice;
+    function getCurrencyRatio(CurrencyIndex srcCurrencyIndex, CurrencyIndex dstCurrencyIndex) 
+    public view override 
+    returns(OcxPrice memory ) {
+        require (
+            (srcCurrencyIndex >= CurrencyIndex(0) && srcCurrencyIndex < CurrencyIndex.CURRENCY_COUNT) &&
+            (dstCurrencyIndex >= CurrencyIndex(0) && dstCurrencyIndex < CurrencyIndex.CURRENCY_COUNT),
+            "Invalid coin index"
+        );
+        return currencyPrice[srcCurrencyIndex].to[dstCurrencyIndex];
     }
 }
