@@ -16,9 +16,7 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "./OcxBase.sol";
 import "./PawnNFTs.sol";
 import "./OcatToken.sol";
-// import "./OcxLocalPool.sol";
 import "./common/OcxCommon.sol";
-import './interface/IOcxBalancer.sol';
 
 contract OcxExchange is OcxBase {
 
@@ -85,7 +83,7 @@ contract OcxExchange is OcxBase {
     onlyValidAddress(contractAddress[CommonContracts.OCAT]) {
         OcxPrice memory ethAudPriceInfo = IOcxPriceOracle(
             contractAddress[CommonContracts.PRICE_ORACLE]
-        ).getEthAudPrice();    
+        ).getCurrencyRatio(CurrencyIndex.OCAT, CurrencyIndex.OCX);
         uint8 ocatDecimals = IOcat(contractAddress[CommonContracts.OCAT]).decimals();
         mintOcat(
             (msg.value * ethAudPriceInfo.value * (10**ocatDecimals)) / 

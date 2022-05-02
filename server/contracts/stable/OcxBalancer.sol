@@ -23,7 +23,6 @@ contract OcxBalancer is OcxBase, IOcxBalancer, IERC721Receiver {
     /*
      * one local pool: OCX/OCAT and three UNISWAP POOLS: OCX/OCAT, OCX/DAI and OCX/UNI
      */
-    /// @notice Represents the deposit of an NFT
     struct Deposit {
         address owner;
         uint128 liquidity;
@@ -34,11 +33,10 @@ contract OcxBalancer is OcxBase, IOcxBalancer, IERC721Receiver {
     INonfungiblePositionManager public immutable nonfungiblePositionManager;
     IUniswapV2Router02 public uniswapRouter;
 
-    // price ratio between token pair (ex. UCAT-OCX)
-    mapping(CommonContracts => TokenPrice) private tokenPrice;
+    OcxPrice ethAudPriceInfo;
+    OcxPrice uniAudPriceInfo;
 
-    OcxPrice private ethAudPriceInfo;
-
+    // price ratio between token pair (ex. OCAT/OCX)
     address payable constant UNISWAP_V2_ROUTER02_ADDRESS = 
         payable(address(0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506));
     uint256 private constant MAX_ALLOWED_OCAT_PRICE = 110;
@@ -73,15 +71,6 @@ contract OcxBalancer is OcxBase, IOcxBalancer, IERC721Receiver {
     /*
      * dstTkn: address(0) means that is ETH
      */
-    function setPrice(CommonContracts srcTkn, CommonContracts dstTkn, uint256 price, uint8 decimals) 
-    public override {
-        tokenPrice[srcTkn].to[dstTkn] = OcxPrice(price, decimals);
-    }
-    function getPrice(CommonContracts srcTkn, CommonContracts dstTkn) 
-    public view override
-    returns(OcxPrice memory _price) {
-        _price = tokenPrice[srcTkn].to[dstTkn];
-    }
     function _createDeposit(address owner, uint256 tokenId) internal {
         (, , address token0, address token1, , , , uint128 liquidity, , , , ) =
             nonfungiblePositionManager.positions(tokenId);
@@ -260,7 +249,6 @@ contract OcxBalancer is OcxBase, IOcxBalancer, IERC721Receiver {
         TransferHelper.safeTransfer(token0, owner, amount0);
         TransferHelper.safeTransfer(token1, owner, amount1);
     }
-
     /// @notice Transfers the NFT to the owner
     /// @param tokenId The id of the erc721
     function retrieveNFT(uint256 tokenId) external {
@@ -271,7 +259,6 @@ contract OcxBalancer is OcxBase, IOcxBalancer, IERC721Receiver {
         //remove information related to tokenId
         delete deposits[tokenId];
     }
-
     /*
      * A user try to swap OCAT to UNI in our site
      * The system accept and swap OCAT into OCX/OCAT Uniswap pool and get OCX
@@ -280,35 +267,41 @@ contract OcxBalancer is OcxBase, IOcxBalancer, IERC721Receiver {
      * As a result, OCAT price to UNI changes
      * The stable algorithm fill back 
      */
-    function run() internal 
-    onlyValidAddress(contractAddress[CommonContracts.EXCHANGE]) {
-        // Get OCAT price to ETH
+    function run() external
+    onlyValidAddress(contractAddress[CommonContracts.EXCHANGE]) onlyAdmin {
+        // Get ETH:AUD ratio
         OcxPrice memory _ethAudPriceObj = IOcxPriceOracle(contractAddress[CommonContracts.PRICE_ORACLE])
-                                            .getEthAudPrice();
+                                            .getCurrencyRatio(CurrencyIndex.ETH, CurrencyIndex.AUD);
         if (ethAudPriceInfo.value == 0) {
             ethAudPriceInfo = _ethAudPriceObj;
-            return;
         }
-        uint changePercentage = (_ethAudPriceObj.value * 100) / ethAudPriceInfo.value;
-        if (changePercentage < MIN_ALLOWED_OCAT_PRICE || 
-        changePercentage > MAX_ALLOWED_OCAT_PRICE) {
-            return;
+        if (ethAudPriceInfo.value != _ethAudPriceObj.value) {
+            uint changePercentage = (_ethAudPriceObj.value * 100) / ethAudPriceInfo.value;
+            if (changePercentage < MIN_ALLOWED_OCAT_PRICE || changePercentage > MAX_ALLOWED_OCAT_PRICE) {
+                if (changePercentage > MAX_ALLOWED_OCAT_PRICE) { // If ETH price drop than 10%
+                    // Force OcxExchange to burn OCAT *******
+                    uint256 decreaseAmount = 
+                        (
+                            (100 - changePercentage) * 
+                            IERC20(contractAddress[CommonContracts.OCAT]).totalSupply()
+                        ) / 
+                        100;
+                    // Burn bought OCAT
+                    IOcxExchange(contractAddress[CommonContracts.EXCHANGE]).burnOcat(decreaseAmount);
+                } else {
+                    // Force OcxExchange to mint OCAT
+                    uint256 increaseAmount = 
+                        (
+                            (changePercentage - 100) * 
+                            IERC20(contractAddress[CommonContracts.OCAT]).totalSupply()
+                        ) / 
+                        100;
+                    // Mint bought OCAT
+                    IOcxExchange(contractAddress[CommonContracts.EXCHANGE]).mintOcat(increaseAmount);
+                }
+                ethAudPriceInfo.value = _ethAudPriceObj.value;
+            }            
         }
-        // 
-        if (changePercentage > MAX_ALLOWED_OCAT_PRICE) { // If ETH price drop than 10%
-            // Force OcxExchange to burn OCAT *******
-            uint256 decreaseAmount = 
-                ((100 - changePercentage) * IERC20(contractAddress[CommonContracts.OCAT]).totalSupply()) / 
-                100;
-            // Burn bought OCAT
-            IOcxExchange(contractAddress[CommonContracts.EXCHANGE]).burnOcat(decreaseAmount);
-        } else {
-            // Force OcxExchange to mint OCAT
-            uint256 increaseAmount = 
-                ((changePercentage - 100) * IERC20(contractAddress[CommonContracts.OCAT]).totalSupply()) / 
-                100;
-            // Mint bought OCAT
-            IOcxExchange(contractAddress[CommonContracts.EXCHANGE]).mintOcat(increaseAmount);
-        }
+        
     }
 }

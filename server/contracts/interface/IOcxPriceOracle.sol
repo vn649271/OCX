@@ -20,6 +20,13 @@ interface IOcxPriceOracle {
     function getBtcUsdPrice() external view returns (OcxPrice memory _price);
     function getEthUsdPrice() external view returns (OcxPrice memory _price);
     function getBtcEthPrice() external view returns (OcxPrice memory _price);
-    function setEthAudPrice(OcxPrice memory priceObj) external;
-    function getEthAudPrice() external view returns(OcxPrice memory );
+    function setCurrencyRatio(
+        CurrencyIndex srcCurrencyIndex, 
+        CurrencyIndex dstCurrencyIndex, 
+        OcxPrice memory priceObj
+    ) external;
+    function getCurrencyRatio(
+        CurrencyIndex srcCurrencyIndex, 
+        CurrencyIndex dstCurrencyIndex
+    ) external view returns(OcxPrice memory );
 }

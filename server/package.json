@@ -7,7 +7,7 @@
     "@ganache/ethereum-address": "^0.1.1-internal.1327",
     "@openzeppelin/contracts": "^4.5.0",
     "@studydefi/money-legos": "^2.4.2",
-    "@truffle/hdwallet-provider": "^2.0.4",
+    "@truffle/hdwallet-provider": "^2.0.8",
     "@uniswap/v2-periphery": "^1.1.0-beta.0",
     "@uniswap/v3-periphery": "^1.4.0",
     "ado-contracts": "^1.0.0",
