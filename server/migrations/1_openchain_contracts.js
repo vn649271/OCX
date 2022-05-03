@@ -8,8 +8,8 @@ const OcxExchange = artifacts.require("./OcxExchange.sol");
 const PawnExchange = artifacts.require("./PawnExchange.sol");
 const OcxPriceOracle = artifacts.require("./OcxPriceOracle.sol");
 // const OcxLocalPool = artifacts.require("./OcxLocalPool.sol");
-const OcxBalancer = artifacts.require("./stable/OcxBalancer.sol");
-// const OcxOcatEthPool = artifacts.require("./stable/OcxOcatEthPool.sol");
+const OcxBalancer = artifacts.require("./balancer/OcxBalancer.sol");
+// const OcxOcatEthPool = artifacts.require("./balancer/OcxOcatEthPool.sol");
 
 module.exports = async deployer => {
   // console.log("%%%%%%%%%%%%%%% deployer: ", deployer);
