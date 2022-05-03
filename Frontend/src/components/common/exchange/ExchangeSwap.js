@@ -59,6 +59,7 @@ export default class ExchangeSwap extends React.Component {
         this.topClass = (props.extraClass ? props.class : "home-card py-10 px-0 w-full h-full");
         this.inform = props.inform;
         this.warning = props.warning;
+        this.showToast = props.showToast;
 
         this.onClickConfirmSwap = this.onClickConfirmSwap.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -81,7 +82,7 @@ export default class ExchangeSwap extends React.Component {
     }
 
     handleInputChange = ev => {
-        this.warning('');
+        this.showToast('');
         let input = this.state.input;
         input[ev.target.name] = ev.target.value;
         this.setState({
@@ -125,7 +126,7 @@ export default class ExchangeSwap extends React.Component {
             buySymbol: this.state.buy_token,
         });
         if (ret.error !== 0) {
-            this.warning("Failed to get best price: " + ret.data);
+            this.showToast("Failed to get best price: " + ret.data);
             return;
         }
         this.setBuyAmount((ret.data - 0).toFixed(5));

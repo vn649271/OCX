@@ -69,7 +69,6 @@ const PasscodeConfirmPage = props => {
       // this.startBalanceMonitor();
       // Try to unlock
       let hashedPasscode = hashCode(passcode);
-      console.log("onUnlockAccont(): passcode: ", passcode, ", hashed: ", hashedPasscode);
       let resp = await accountService.unlockAccount({
           userToken: userToken,
           password: hashedPasscode,
