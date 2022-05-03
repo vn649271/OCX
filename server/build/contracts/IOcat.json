@@ -42,15 +42,15 @@
     "absolutePath": "project:/contracts/interface/IOcat.sol",
     "exportedSymbols": {
       "IOcat": [
-        6974
+        6988
       ]
     },
-    "id": 6975,
+    "id": 6989,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6962,
+        "id": 6976,
         "literals": [
           "solidity",
           "^",
@@ -66,15 +66,15 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 6963,
+          "id": 6977,
           "nodeType": "StructuredDocumentation",
           "src": "62:72:33",
           "text": " @dev Interface of the ERC20 standard as defined in the EIP."
         },
         "fullyImplemented": false,
-        "id": 6974,
+        "id": 6988,
         "linearizedBaseContracts": [
-          6974
+          6988
         ],
         "name": "IOcat",
         "nameLocation": "146:5:33",
@@ -82,7 +82,7 @@
         "nodes": [
           {
             "functionSelector": "a0712d68",
-            "id": 6968,
+            "id": 6982,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -90,17 +90,17 @@
             "nameLocation": "168:4:33",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6966,
+              "id": 6980,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6965,
+                  "id": 6979,
                   "mutability": "mutable",
                   "name": "amount",
                   "nameLocation": "181:6:33",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6968,
+                  "scope": 6982,
                   "src": "173:14:33",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -109,7 +109,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6964,
+                    "id": 6978,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "173:7:33",
@@ -124,12 +124,12 @@
               "src": "172:16:33"
             },
             "returnParameters": {
-              "id": 6967,
+              "id": 6981,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "197:0:33"
             },
-            "scope": 6974,
+            "scope": 6988,
             "src": "159:39:33",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -137,7 +137,7 @@
           },
           {
             "functionSelector": "313ce567",
-            "id": 6973,
+            "id": 6987,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -145,23 +145,23 @@
             "nameLocation": "213:8:33",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6969,
+              "id": 6983,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "221:2:33"
             },
             "returnParameters": {
-              "id": 6972,
+              "id": 6986,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6971,
+                  "id": 6985,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6973,
+                  "scope": 6987,
                   "src": "242:5:33",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -170,7 +170,7 @@
                     "typeString": "uint8"
                   },
                   "typeName": {
-                    "id": 6970,
+                    "id": 6984,
                     "name": "uint8",
                     "nodeType": "ElementaryTypeName",
                     "src": "242:5:33",
@@ -184,14 +184,14 @@
               ],
               "src": "241:7:33"
             },
-            "scope": 6974,
+            "scope": 6988,
             "src": "204:45:33",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 6975,
+        "scope": 6989,
         "src": "136:116:33",
         "usedErrors": []
       }
@@ -204,7 +204,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.7",
-  "updatedAt": "2022-05-03T09:25:31.745Z",
+  "updatedAt": "2022-05-03T09:48:04.916Z",
   "devdoc": {
     "details": "Interface of the ERC20 standard as defined in the EIP.",
     "kind": "dev",
