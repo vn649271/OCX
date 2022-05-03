@@ -92,6 +92,39 @@ contract OcxExchange is OcxBase {
             IERC20(contractAddress[CommonContracts.OCAT]).transfer(msg.sender, ocatAmount);
         }
     }
+    function getAmountsOut(uint256 amountIn, address[2] memory path) public 
+    onlyValidAddress(path[0]) onlyValidAddress(path[1])
+    returns(uint256 expectedAmountOut) {
+        require(amountIn > 0, "Invalid amountIn");
+        uint256 deadline = block.timestamp + 15; // using 'now' for convenience, for mainnet pass deadline from frontend!
+        address tokenIn = path[0];
+        address tokenOut = path[1];
+        uint24 fee = 3000;
+        address recipient = msg.sender;
+        uint256 amountOutMinimum = 0;
+        uint160 sqrtPriceLimitX96 = 0;
+
+        if (path[0] == contractAddress[CommonContracts.OCAT]) {
+            if (path[1] == contractAddress[CommonContracts.UNI]) {
+                // Get OCAT:OCX quote and calculate OCX amount for "amountIn"
+                amountIn = quotes[CurrencyIndex.OCAT].vs[CurrencyIndex.OCX].value * amountIn;
+                // Get OCX:UNI quote
+                // Multiple it by OCAT:OCX quote
+                tokenIn = contractAddress[CommonContracts.OCX];
+            }
+        }
+        ISwapRouter.ExactInputSingleParams  memory params = ISwapRouter.ExactInputSingleParams  (
+            tokenIn,
+            tokenOut,
+            fee,
+            recipient,
+            deadline,
+            amountIn,
+            amountOutMinimum,
+            sqrtPriceLimitX96
+        );
+        expectedAmountOut = uniswapRouter.exactInputSingle(params);
+    }
     /**
      *  Mint OCAT by funding ETH
      */
