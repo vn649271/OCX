@@ -2,15 +2,16 @@ var util = require('util');
 require('dotenv').config();
 const jwt = require("jsonwebtoken");
 const AccountModel = require("./AccountModel");
-var { getWeb3Obj, MSG__GETH_NOT_READY } = require('../Services/geth/init');
-// const Web3 = require('web3');
-// const net = require('net');
-// var fs = require("fs");
-// const { json } = require('body-parser');
 var keythereum = require("keythereum");
 const axios = require('axios');
 const { openchainRouterInstance, DEFAULT_DEADLINE } = require('../Services/OpenchainRouter');
 const { ethers } = require("ethers")
+var { getWeb3Provider } = require('../Services/geth/init');
+
+var web3 = null;
+setTimeout(() => {
+    web3 = getWeb3Provider();
+}, 20000);
 
 const OUR_TOKENS = ["ETH", "UNI", "DAI", "PNFT", "OCAT"];
 
@@ -43,10 +44,6 @@ var myEthAddress = null;
 var accountModel = new AccountModel();
 
 var self = null;
-var web3 = null;
-initWeb3 = (inited) => {
-    web3 = inited;
-}
 
 /**
  * Controller for user authentication
@@ -56,7 +53,6 @@ class AccountService {
     constructor() {
         self = this;
         this.gethError = null;
-        setTimeout(getWeb3Obj, 12000, initWeb3);
     }
 
     async init() {

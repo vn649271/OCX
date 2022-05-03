@@ -1,12 +1,12 @@
 require('dotenv').config();
 const { openchainRouterInstance, DEFAULT_DEADLINE } = require('../Services/OpenchainRouter');
-var { getWeb3Obj, MSG__GETH_NOT_READY } = require('../Services/geth/init');
+var { getWeb3Provider } = require('../Services/geth/init');
 
 var self = null;
 var web3 = null;
-initWeb3 = (inited) => {
-    web3 = inited;
-}
+setTimeout(() => {
+    web3 = getWeb3Provider();
+}, 20000);
 
 /**
  * Controller for user authentication
@@ -16,7 +16,6 @@ class PriceOracleService {
     constructor() {
         self = this;
         this.gethError = null
-        setTimeout(getWeb3Obj, 12000, initWeb3);
     }
 
     getTokenPrices = async(resp, accountInfo) => {

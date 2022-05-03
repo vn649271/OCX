@@ -10,7 +10,6 @@ const CHAIN_ID = process.env.CHAIN_ID || 5;
 const MSG__GETH_NOT_READY = "Geth node is not ready yet. Please retry a while later.";
 
 var gethIpcTimer = null;
-var web3 = null;
 
 var ipcURL = null;
 
@@ -33,38 +32,34 @@ if (process.env.IPC_TYPE == "geth") {
 async function attachToGethIPC(ipcURL) {
     if (process.env.IPC_TYPE === 'ganache' || process.env.IPC_TYPE === 'infura') {
         let web3Provider = new Web3.providers.HttpProvider(ipcURL, net);
-        web3 = new Web3(web3Provider);
-        if (!web3) {
-            return;
-        }
-        clearTimeout(gethIpcTimer);
-        gethIpcTimer = null;
         console.log("Attached to " + process.env.IPC_TYPE.toUpperCase() + " RPC successfully");
+        return new Web3(web3Provider);
     } else if (process.env.IPC_TYPE === 'geth') {
-        fs.access(ipcURL, (err) => {
-            if (!err) {
-                let web3Provider = new Web3.providers.IpcProvider(ipcURL, net);
-                web3 = new Web3(web3Provider);
-                if (!web3) {
-                    return;
-                }
-                clearTimeout(gethIpcTimer);
-                gethIpcTimer = null;
-                console.log("Attached to Geth IPC successfully");
-            } else {
-                console.log(err);
-            }
-        });
+        try {
+            fs.accessSync(ipcURL, fs.constants.F_OK & fs.constants.R_OK & fs.constants.W_OK);
+            let web3Provider = new Web3.providers.IpcProvider(ipcURL, net);
+            console.log("Attached to Geth IPC successfully");
+            return new Web3(web3Provider);
+        } catch (err) {
+            console.log(err);
+        }
     }
 }
 
-gethIpcTimer = setTimeout(attachToGethIPC, 10000, ipcURL);
+var web3 = null;
 
-getWeb3Obj = (initWeb3) => {
-    initWeb3(web3);
+async function initWeb3Provider() {
+    if (!web3) {
+        web3 = await attachToGethIPC(ipcURL);
+    }
+}
+
+function getWeb3Provider() {
+    return web3;
 }
 
 module.exports = {
-    getWeb3Obj,
+    initWeb3Provider,
+    getWeb3Provider,
     MSG__GETH_NOT_READY
 };
