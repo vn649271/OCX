@@ -16,9 +16,9 @@ const OcxBalancer_DeployedInfo = require('../../build/contracts/OcxBalancer.json
 const axios = require("axios");
 
 const TOKEN_CONTRACT_MAP = {
-    WETH: Weth_DeployedInfo,
-    DAI: Dai_DeployedInfo,
-    UNI: Uni_DeployedInfo,
+    WETH: "WETH", // Weth_DeployedInfo,
+    DAI: "DAI", // Dai_DeployedInfo,
+    UNI: "UNI", // Uni_DeployedInfo,
     OCAT: OcatToken_DeployedInfo,
     PNFT: Pnft_DeployedInfo
 }
@@ -248,12 +248,12 @@ class OpenchainRouter {
         if (ipcType == undefined) {
             ipcType = 'geth';
         }
-        if (contractDeployedInfo == Weth_DeployedInfo ||
-        contractDeployedInfo == Uni_DeployedInfo ||
-        contractDeployedInfo == Dai_DeployedInfo) {
+        if (contractDeployedInfo == "WETH" ||
+        contractDeployedInfo == "UNI" ||
+        contractDeployedInfo == "DAI") {
             if (ipcType == 'geth' || ipcType == 'infura' || ipcType == 'selfnode') {
                 // For WETH, DAI and UNI,  brought built-in address 
-                return ContractAddressMap[process.env.CHAIN_NAME][contractDeployedInfo.contractName];
+                return ContractAddressMap[ipcType][process.env.CHAIN_NAME][contractDeployedInfo];
             }
         }
         return contractDeployedInfo.networks[
@@ -296,10 +296,10 @@ class OpenchainRouter {
                     (params.sellSymbol == 'ETH' && params.buySymbol == 'OCAT')
                 ) {
                     let path = [params.sellSymbol, params.buySymbol];
-                    let ocxLocalPoolAddress = this.getContractAddress(OcxLocalPool_DeployedInfo);
-                    const ocxLocalPool = new this.web3.eth.Contract(ocxLocalPoolAbi, ocxLocalPoolAddress);
+                    let ocxExchangeAddress = this.getContractAddress(OcxExchange_DeployedInfo);
+                    const ocXchange = new this.web3.eth.Contract(ocxSwapAbi, ocxExchangeAddress);
                     const sellAmount = this.web3.utils.toHex(params.sellAmount);
-                    ret = await ocxLocalPool.methods.getAmountsOut(sellAmount, path).call();
+                    ret = await ocXchange.methods.getAmountsOut(sellAmount, path).call();
                     if (!ret) {
                         return { error: -2, data: "Failed to get best price" }
                     }

@@ -40,20 +40,20 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "// SPDX-License-Identifier: MIT\n\npragma solidity >=0.5.0 <0.9.0;\n\n/**\n* @dev EIP2362 Interface for pull oracles\n* https://github.com/adoracles/EIPs/blob/erc-2362/EIPS/eip-2362.md\n*/\ninterface IERC2362\n{\n\t/**\n\t * @dev Exposed function pertaining to EIP standards\n\t * @param _id bytes32 ID of the query\n\t * @return int,uint,uint returns the value, timestamp, and status code of query\n\t */\n\tfunction valueFor(bytes32 _id) external view returns(int256,uint256,uint256);\n}",
-  "sourcePath": "ado-contracts/contracts/interfaces/IERC2362.sol",
+  "sourcePath": "ado-contracts\\contracts\\interfaces\\IERC2362.sol",
   "ast": {
     "absolutePath": "ado-contracts/contracts/interfaces/IERC2362.sol",
     "exportedSymbols": {
       "IERC2362": [
-        2791
+        2789
       ]
     },
-    "id": 2792,
+    "id": 2790,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 2777,
+        "id": 2775,
         "literals": [
           "solidity",
           ">=",
@@ -72,15 +72,15 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 2778,
+          "id": 2776,
           "nodeType": "StructuredDocumentation",
           "src": "66:115:17",
           "text": " @dev EIP2362 Interface for pull oracles\n https://github.com/adoracles/EIPs/blob/erc-2362/EIPS/eip-2362.md"
         },
         "fullyImplemented": false,
-        "id": 2791,
+        "id": 2789,
         "linearizedBaseContracts": [
-          2791
+          2789
         ],
         "name": "IERC2362",
         "nameLocation": "192:8:17",
@@ -88,13 +88,13 @@
         "nodes": [
           {
             "documentation": {
-              "id": 2779,
+              "id": 2777,
               "nodeType": "StructuredDocumentation",
               "src": "204:182:17",
               "text": " @dev Exposed function pertaining to EIP standards\n @param _id bytes32 ID of the query\n @return int,uint,uint returns the value, timestamp, and status code of query"
             },
             "functionSelector": "f78eea83",
-            "id": 2790,
+            "id": 2788,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -102,17 +102,17 @@
             "nameLocation": "397:8:17",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2782,
+              "id": 2780,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2781,
+                  "id": 2779,
                   "mutability": "mutable",
                   "name": "_id",
                   "nameLocation": "414:3:17",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2790,
+                  "scope": 2788,
                   "src": "406:11:17",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -121,7 +121,7 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 2780,
+                    "id": 2778,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
                     "src": "406:7:17",
@@ -136,17 +136,17 @@
               "src": "405:13:17"
             },
             "returnParameters": {
-              "id": 2789,
+              "id": 2787,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2784,
+                  "id": 2782,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2790,
+                  "scope": 2788,
                   "src": "441:6:17",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -155,7 +155,7 @@
                     "typeString": "int256"
                   },
                   "typeName": {
-                    "id": 2783,
+                    "id": 2781,
                     "name": "int256",
                     "nodeType": "ElementaryTypeName",
                     "src": "441:6:17",
@@ -168,12 +168,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2786,
+                  "id": 2784,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2790,
+                  "scope": 2788,
                   "src": "448:7:17",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -182,7 +182,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2785,
+                    "id": 2783,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "448:7:17",
@@ -195,12 +195,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2788,
+                  "id": 2786,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2790,
+                  "scope": 2788,
                   "src": "456:7:17",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -209,7 +209,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2787,
+                    "id": 2785,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "456:7:17",
@@ -223,14 +223,14 @@
               ],
               "src": "440:24:17"
             },
-            "scope": 2791,
+            "scope": 2789,
             "src": "388:77:17",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 2792,
+        "scope": 2790,
         "src": "182:285:17",
         "usedErrors": []
       }
@@ -243,7 +243,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.7",
-  "updatedAt": "2022-05-03T03:24:01.128Z",
+  "updatedAt": "2022-05-03T09:25:31.293Z",
   "devdoc": {
     "details": "EIP2362 Interface for pull oracles https://github.com/adoracles/EIPs/blob/erc-2362/EIPS/eip-2362.md",
     "kind": "dev",
