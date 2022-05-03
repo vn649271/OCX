@@ -5,6 +5,9 @@ var bodyParser = require("body-parser");
 var app = express();
 const { spawn } = require('child_process');
 require('dotenv').config();
+const {
+    initWeb3Provider, web3, MSG__GETH_NOT_READY
+} = require('./app/Services/geth/init');
 
 var port = process.env.BACKEND_PORT;
 
@@ -63,6 +66,11 @@ app.listen(port, () => {
             console.log(`geth:stdout: ${data}`);
         });
         geth.stderr.on('data', (data) => {
+            let msg = `${data}`;
+            let initedIPC = msg.search('IPC endpoint opened');
+            if (initedIPC >= 0) {
+                initWeb3Provider();
+            }
             console.log(`geth:stderr: ${data}`);
         });
         geth.on('close', (code) => {

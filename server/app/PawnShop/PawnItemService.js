@@ -12,16 +12,16 @@ const {
 require('dotenv').config();
 const PawnItemModel = require("./PawnItemModel");
 const { openchainRouterInstance, DEFAULT_DEADLINE } = require('../Services/OpenchainRouter');
-var { getWeb3Obj, MSG__GETH_NOT_READY } = require('../Services/geth/init');
+var { getWeb3Provider, MSG__GETH_NOT_READY } = require('../Services/geth/init');
 
 var self = null;
-var web3 = null;
-initWeb3 = (inited) => {
-    web3 = inited;
-}
 var feeList = null;
-
 var pawnItemModel = new PawnItemModel();
+
+var web3 = null;
+setTimeout(() => {
+    web3 = getWeb3Provider();
+}, 20000);
 
 /**
  * Controller for user authentication
@@ -31,7 +31,6 @@ class PawnItemService {
     constructor() {
         self = this;
         this.gethError = null
-        setTimeout(getWeb3Obj, 12000, initWeb3);
     }
 
     async create(assetData, accountInfo) {
