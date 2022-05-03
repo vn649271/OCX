@@ -4,6 +4,6 @@ let priceOracle = express.Router();
 const PriceOracleController = require("../PriceOracle/PriceOracleController");
 var priceOracleController = new PriceOracleController();
 
-priceOracle.post("/tokens", priceOracleController.getTokenPrices);
+priceOracle.get("/tokens", priceOracleController.getTokenPrices);
 
 module.exports = priceOracle;
