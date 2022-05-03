@@ -20,7 +20,7 @@ class PriceOracleController {
     }
 
     getTokenPrices = async(req, resp, next) => {
-        var userToken = req.body ? req.body.userToken ? req.body.userToken : null : null;
+        var userToken = req.query ? req.query.userToken ? req.query.userToken : null : null;
         if (userToken === null) {
             return resp.json({ error: -1, data: "Invalid request" });
         }
