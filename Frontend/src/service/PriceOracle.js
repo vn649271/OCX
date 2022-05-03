@@ -12,7 +12,7 @@ export default function PriceOracleService() {
             if (reqType === POST_REQ) {
                 response = await axios.post(params.url, params.data); // Default reqType = POST_REQ
             } else if (reqType === GET_REQ) {
-                response = await axios.get(params.url, params.data);
+                response = await axios.get(params.url, { params: params.data });
             }
             let ret = response ? response.data ? response.data : null : null;
             if (ret === null) {
@@ -36,6 +36,6 @@ export default function PriceOracleService() {
         let _params = {};
         _params['data'] = params;
         _params['url'] = BACKEND_BASE_URL + "/price/tokens";
-        return await this._sendRequest(_params);
+        return await this._sendRequest(_params, GET_REQ);
     }
 }
