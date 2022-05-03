@@ -107,7 +107,8 @@ contract OcxExchange is OcxBase {
         if (path[0] == contractAddress[CommonContracts.OCAT]) {
             if (path[1] == contractAddress[CommonContracts.UNI]) {
                 // Get OCAT:OCX quote and calculate OCX amount for "amountIn"
-                amountIn = quotes[CurrencyIndex.OCAT].vs[CurrencyIndex.OCX].value * amountIn;
+                amountIn = (quotes[CurrencyIndex.OCAT].vs[CurrencyIndex.OCX].value * amountIn) / 
+                           (10 ** quotes[CurrencyIndex.OCAT].vs[CurrencyIndex.OCX].decimals);
                 // Get OCX:UNI quote
                 // Multiple it by OCAT:OCX quote
                 tokenIn = contractAddress[CommonContracts.OCX];

@@ -15,15 +15,15 @@
     "absolutePath": "project:/contracts/OcxManager.sol",
     "exportedSymbols": {
       "OcxManager": [
-        5046
+        5060
       ]
     },
-    "id": 5047,
+    "id": 5061,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 5045,
+        "id": 5059,
         "literals": [
           "solidity",
           "^",
@@ -39,15 +39,15 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "fullyImplemented": true,
-        "id": 5046,
+        "id": 5060,
         "linearizedBaseContracts": [
-          5046
+          5060
         ],
         "name": "OcxManager",
         "nameLocation": "69:10:23",
         "nodeType": "ContractDefinition",
         "nodes": [],
-        "scope": 5047,
+        "scope": 5061,
         "src": "60:26:23",
         "usedErrors": []
       }
@@ -60,7 +60,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.7",
-  "updatedAt": "2022-05-03T09:25:31.428Z",
+  "updatedAt": "2022-05-03T09:48:04.740Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},
