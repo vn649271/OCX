@@ -65,6 +65,7 @@ contract OcxExchange is OcxBase {
             _amountIn = ocxAmount;
         } else if (_tokenIn == contractAddress[CommonContracts.UNI] 
                 && _tokenOut == contractAddress[CommonContracts.OCAT]) {
+            // Tophalf for UNI->OCAT swap
             _tokenOut = contractAddress[CommonContracts.OCX];
             recipient = address(this);
         }
@@ -84,6 +85,7 @@ contract OcxExchange is OcxBase {
         // The call to `exactInputSingle` executes the swap.
         amountOut = uniswapRouter.exactInputSingle(params);
 
+        // Bottomhalf for UNI->OCAT swap
         if (_tokenIn == contractAddress[CommonContracts.UNI] 
         && _tokenOut == contractAddress[CommonContracts.OCAT]) {
             uint256 ocatAmount = amountOut / quotes[CurrencyIndex.OCAT].vs[CurrencyIndex.OCX].value;
@@ -98,7 +100,7 @@ contract OcxExchange is OcxBase {
     onlyValidAddress(contractAddress[CommonContracts.OCAT]) {
         OcxPrice memory ethAudPriceInfo = IOcxPriceOracle(
             contractAddress[CommonContracts.PRICE_ORACLE]
-        ).getCurrencyRatio(CurrencyIndex.OCAT, CurrencyIndex.OCX);
+        ).getCurrencyRatio("OCAT", "OCX");
         uint8 ocatDecimals = IOcat(contractAddress[CommonContracts.OCAT]).decimals();
         mintOcat(
             (msg.value * ethAudPriceInfo.value * (10**ocatDecimals)) / 

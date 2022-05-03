@@ -29,11 +29,14 @@ contract OcxBalancer is OcxBase, IOcxBalancer {
      * The stable algorithm fill back 
      */
     function run() external
-    onlyValidAddress(contractAddress[CommonContracts.EXCHANGE]) onlyAdmin {
+    onlyValidAddress(contractAddress[CommonContracts.PRICE_ORACLE])
+    onlyValidAddress(contractAddress[CommonContracts.EXCHANGE]) 
+    onlyValidAddress(contractAddress[CommonContracts.OCAT]) 
+    onlyAdmin {
         IOcxPriceOracle priceOracle = IOcxPriceOracle(contractAddress[CommonContracts.PRICE_ORACLE]);
         IOcxExchange ocXchange = IOcxExchange(contractAddress[CommonContracts.EXCHANGE]);
         // Check ETH:AUD quote
-        OcxPrice memory newEthAudQuote = priceOracle.getCurrencyRatio(CurrencyIndex.ETH, CurrencyIndex.AUD);
+        OcxPrice memory newEthAudQuote = priceOracle.getCurrencyRatio("ETH", "AUD");
         if (ethAudQuote.value == 0) {
             ethAudQuote = newEthAudQuote;
         }
@@ -63,7 +66,7 @@ contract OcxBalancer is OcxBase, IOcxBalancer {
             ethAudQuote = newEthAudQuote;
         }
         // Check UNI:AUD quote
-        OcxPrice memory uniAudQuote = priceOracle.getCurrencyRatio(CurrencyIndex.UNI, CurrencyIndex.AUD);
+        OcxPrice memory uniAudQuote = priceOracle.getCurrencyRatio("UNI", "AUD");
         OcxPrice memory oldUniAudQuote = ocXchange.getQuote(CurrencyIndex.UNI, CurrencyIndex.AUD);
         if (oldUniAudQuote.value == 0) {
             ocXchange.setQuote(CurrencyIndex.UNI, CurrencyIndex.AUD, uniAudQuote);

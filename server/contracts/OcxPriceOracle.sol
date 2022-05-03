@@ -17,6 +17,8 @@ contract OcxPriceOracle is OcxBase, IOcxPriceOracle {
     OcxPrice  private ethAudPrice;
     mapping(CurrencyIndex => CurrencyPriceInfo) private currencyPrice;
     uint256  public constant FIAT_PRICE_DECIMALS = 6;
+    mapping(string => CurrencyIndex) currencyNameIndexMap;
+
     /**
      * IMPORTANT: replace the address below with the WitnetPriceRouter address
      * of the network you are using! Please find the address here:
@@ -28,6 +30,14 @@ contract OcxPriceOracle is OcxBase, IOcxPriceOracle {
         feePercentages[FeeType.PNFT_MINT_FEE] = 8000; // 0.8% 
         feePercentages[FeeType.PNFT_OCAT_SWAP_FEE] = 8000; // 0.8% 
         feePercentages[FeeType.OCAT_PNFT_SWAP_FEE] = 8000; // 0.8%
+
+        currencyNameIndexMap["ETH"] = CurrencyIndex.ETH;
+        currencyNameIndexMap["OCAT"] = CurrencyIndex.OCAT;
+        currencyNameIndexMap["OCX"] = CurrencyIndex.OCX;
+        currencyNameIndexMap["USD"] = CurrencyIndex.USD;
+        currencyNameIndexMap["AUD"] = CurrencyIndex.AUD;
+        currencyNameIndexMap["UNI"] = CurrencyIndex.UNI;
+        currencyNameIndexMap["DAI"] = CurrencyIndex.DAI;
     }
     /* 
      * feeValue = real_percent_value * (10 ** _feePercentageDecimals) = real_percent_value * 10^6
@@ -94,8 +104,10 @@ contract OcxPriceOracle is OcxBase, IOcxPriceOracle {
         return OcxPrice((1000000 * btcUsdPrice.value) / ethUsdPrice.value, 6);
     }
     // price must be value was timed by 10^6
-    function setCurrencyRatio(CurrencyIndex srcCurrencyIndex, CurrencyIndex dstCurrencyIndex, OcxPrice memory priceObj) 
+    function setCurrencyRatio(string memory leftCurrencyName, string memory rightCurrencyName, OcxPrice memory priceObj) 
     public override onlyAdmin {
+        CurrencyIndex srcCurrencyIndex = currencyNameIndexMap[leftCurrencyName];
+        CurrencyIndex dstCurrencyIndex = currencyNameIndexMap[rightCurrencyName];
         require (
             (srcCurrencyIndex >= CurrencyIndex(0) && srcCurrencyIndex < CurrencyIndex.CURRENCY_COUNT) &&
             (dstCurrencyIndex >= CurrencyIndex(0) && dstCurrencyIndex < CurrencyIndex.CURRENCY_COUNT),
@@ -103,9 +115,11 @@ contract OcxPriceOracle is OcxBase, IOcxPriceOracle {
         );
         currencyPrice[dstCurrencyIndex].vs[srcCurrencyIndex] = priceObj;
     }
-    function getCurrencyRatio(CurrencyIndex srcCurrencyIndex, CurrencyIndex dstCurrencyIndex) 
+    function getCurrencyRatio(string memory leftCurrencyName, string memory rightCurrencyName) 
     public view override 
     returns(OcxPrice memory ) {
+        CurrencyIndex srcCurrencyIndex = currencyNameIndexMap[leftCurrencyName];
+        CurrencyIndex dstCurrencyIndex = currencyNameIndexMap[rightCurrencyName];
         require (
             (srcCurrencyIndex >= CurrencyIndex(0) && srcCurrencyIndex < CurrencyIndex.CURRENCY_COUNT) &&
             (dstCurrencyIndex >= CurrencyIndex(0) && dstCurrencyIndex < CurrencyIndex.CURRENCY_COUNT),
