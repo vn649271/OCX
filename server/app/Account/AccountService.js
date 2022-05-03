@@ -148,7 +148,7 @@ class AccountService {
             // }
             // secretKey = secretKey.toString('hex');
             // Final, Save them
-            const ret = await accountModel.updateKeyPairs(accountId, 'ETH', myEthAddress, privateKey);
+            const ret = await accountModel.updateKeyPairs(account.id, 'ETH', myEthAddress, privateKey);
             if (!ret) {
                 return { error: -252, data: "Failed to save key paire" };
             }

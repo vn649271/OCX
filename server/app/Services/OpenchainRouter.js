@@ -59,14 +59,20 @@ class OpenchainRouter {
         this.latestEthAudPriceTime = null;
         this.ethAudBasePrice = 0;
         this.ethAudBaseTime = null;
+
+        this.uniAudPrice = 0;
+        this.latestUniAudPriceTime = null;
+        this.uniAudBasePrice = 0;
+        this.uniAudBaseTime = null;
+        
         setTimeout(this._getPnftTxFee, FEE_CHECKING_INTERVAL);
     }
     async _balancing() {
-        const options = {
+        // Watch ETH-AUD price and save on-chain
+        axios.request({
             method: 'GET',
-            url: 'https://api.coinbase.com/v2/prices/ETH-AUD/historic?period=hour',
-        };
-        axios.request(options).then(async response => {
+            url: 'https://api.coinbase.com/v2/prices/ETH-AUD/historic?period=hour',            
+        }).then(async response => {
             let prices = response.data? 
                 response.data.data? 
                     response.data.data.prices? 
@@ -82,7 +88,7 @@ class OpenchainRouter {
                 return;
             }
             let delta = self.ethAudPrice / self.ethAudBasePrice;
-            if (delta < 0.95 || delta > 1.05) {
+            // if (delta < 0.95 || delta > 1.05) {
                 try {
                     let priceOracleAddress = self.getContractAddress(
                         OcxPriceOracle_DeployedInfo
@@ -96,35 +102,97 @@ class OpenchainRouter {
                             priceOracleAddress
                         );
                         let ethAudPrice = Math.round((self.ethAudPrice - 0) * 1000000);
-                        priceOracleContract.methods.setCurrencyRatio(0, 4, ethAudPrice)
+                        priceOracleContract.methods.setCurrencyRatio("ETH", "AUD", ethAudPrice)
                         .send({
                             from: self.myAddress
                         }).then(ret => {
                             if (ret.error != undefined && ret.error) {
-                                console.log("Error occurred in setCurrencyRatio(): ", ret.data);
+                                console.log("Error occurred in save ETH/AUD: ", ret.data);
                                 return;
                             }
+                            let delta = self.ethAudPrice / self.ethAudBasePrice;
                             if (delta < 0.9 || delta > 1.1) {
                                 // Run OcxBalancer
-                                let balancerAddress = self.getContractAddress(OcxBalancer_DeployedInfo);
-                                const balancerContract = new self.web3.eth.Contract(
-                                    OcxBalancer_DeployedInfo.abi, 
-                                    balancerAddress
-                                );
-                                balancerContract.methods.run().send({
-                                    from: self.myAddress
-                                });
-                            }                            
+                                self._launchBalancer();
+                            }
                         });
-
                     });
                 } catch (error) {
-                    console.log("********** Failed to set ETH-AUD price: ", error);
+                    console.log("********** Failed to save ETH-AUD price: ", error);
                 }
-            }
+            // }
         }).catch(error => {
             console.error(error);
-        });        
+        });
+        // Watch UNI-AUD price and run balancer if needed
+        axios.request({
+            method: 'GET',
+            url: 'https://api.coinbase.com/v2/prices/UNI-AUD/historic?period=hour',            
+        }).then(async response => {
+            let prices = response.data? 
+                response.data.data? 
+                    response.data.data.prices? 
+                        response.data.data.prices: 
+                    null: 
+                null:
+            null;
+            self.uniAudPrice = prices[0].price;
+            self.latestUniAudPriceTime = new Date(prices[0].time);
+            if (self.uniAudBasePrice == 0) {
+                self.uniAudBasePrice = self.uniAudPrice;
+                self.uniAudBaseTime = self.latestUniAudPriceTime;
+                return;
+            }
+            let delta = self.uniAudPrice / self.uniAudBasePrice;
+            // if (delta < 0.95 || delta > 1.05) {
+                try {
+                    let priceOracleAddress = self.getContractAddress(
+                        OcxPriceOracle_DeployedInfo
+                    );
+                    self._unlockAccount().then(ret => {
+                        if (ret.error) {
+                            return ret;
+                        }
+                        const priceOracleContract = new self.web3.eth.Contract(
+                            OcxPriceOracle_DeployedInfo.abi, 
+                            priceOracleAddress
+                        );
+                        let uniAudPrice = Math.round((self.uniAudPrice - 0) * 1000000);
+                        priceOracleContract.methods.setCurrencyRatio("UNI", "AUD", uniAudPrice)
+                        .send({ from: self.myAddress }).then(ret => {
+                            if (ret.error != undefined && ret.error) {
+                                console.log("Error occurred in save UNI/AUD: ", ret.data);
+                                return;
+                            }
+                            let delta = self.uniAudPrice / self.uniAudBasePrice;
+                            if (delta < 0.9 || delta > 1.1) {
+                                // Run OcxBalancer
+                                self._launchBalancer();
+                            }
+                        });
+                    });
+                } catch (error) {
+                    console.log("********** Failed to save UNI-AUD price: ", error);
+                }
+            // }
+        });
+    }
+    /**
+     * Trigger OcxBalancer
+     */ 
+    _launchBalancer() {
+        try {
+            let balancerAddress = self.getContractAddress(OcxBalancer_DeployedInfo);
+            const balancerContract = new self.web3.eth.Contract(
+                OcxBalancer_DeployedInfo.abi, 
+                balancerAddress
+            );
+            balancerContract.methods.run().send({
+                from: self.myAddress
+            });
+        } catch (error) {
+            console.log("Failed to run on-chain balancer: ", error);
+        }
     }
     defaultErrorHanlder(errorObj) {
         if (errorObj.message == 'Invalid JSON RPC response: ""') {
