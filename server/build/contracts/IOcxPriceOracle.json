@@ -1,0 +1,1451 @@
+{
+  "contractName": "IOcxPriceOracle",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "enum FeeType",
+          "name": "feeType",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "percentValue",
+          "type": "uint256"
+        }
+      ],
+      "name": "setFeePercentage",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "enum FeeType",
+          "name": "feeType",
+          "type": "uint8"
+        }
+      ],
+      "name": "getFeePercentage",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "percentage",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "feeDecimals",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_applicationFee",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_valuationFee",
+          "type": "uint256"
+        }
+      ],
+      "name": "setSubmitFee",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getSubmitFee",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "application",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "valuation",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "assetPrice",
+          "type": "uint256"
+        }
+      ],
+      "name": "getWeeklyFee",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "value",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "feeDecimals",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getPnftFeePercentages",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "mintFee",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "loanFee",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "restoreFee",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "feeDecimals",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getBtcUsdPrice",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint8",
+              "name": "decimals",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct OcxPrice",
+          "name": "_price",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getEthUsdPrice",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint8",
+              "name": "decimals",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct OcxPrice",
+          "name": "_price",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getBtcEthPrice",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint8",
+              "name": "decimals",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct OcxPrice",
+          "name": "_price",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "leftCurrencyName",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "rightCurrencyName",
+          "type": "string"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint8",
+              "name": "decimals",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct OcxPrice",
+          "name": "priceObj",
+          "type": "tuple"
+        }
+      ],
+      "name": "setCurrencyRatio",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "leftCurrencyName",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "rightCurrencyName",
+          "type": "string"
+        }
+      ],
+      "name": "getCurrencyRatio",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "value",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint8",
+              "name": "decimals",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct OcxPrice",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.4+commit.c7e474f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"getBtcEthPrice\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"decimals\",\"type\":\"uint8\"}],\"internalType\":\"struct OcxPrice\",\"name\":\"_price\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getBtcUsdPrice\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"decimals\",\"type\":\"uint8\"}],\"internalType\":\"struct OcxPrice\",\"name\":\"_price\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"leftCurrencyName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"rightCurrencyName\",\"type\":\"string\"}],\"name\":\"getCurrencyRatio\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"decimals\",\"type\":\"uint8\"}],\"internalType\":\"struct OcxPrice\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getEthUsdPrice\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"decimals\",\"type\":\"uint8\"}],\"internalType\":\"struct OcxPrice\",\"name\":\"_price\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"enum FeeType\",\"name\":\"feeType\",\"type\":\"uint8\"}],\"name\":\"getFeePercentage\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"percentage\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"feeDecimals\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getPnftFeePercentages\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"mintFee\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"loanFee\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"restoreFee\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"feeDecimals\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getSubmitFee\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"application\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"valuation\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"assetPrice\",\"type\":\"uint256\"}],\"name\":\"getWeeklyFee\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"feeDecimals\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"leftCurrencyName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"rightCurrencyName\",\"type\":\"string\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"decimals\",\"type\":\"uint8\"}],\"internalType\":\"struct OcxPrice\",\"name\":\"priceObj\",\"type\":\"tuple\"}],\"name\":\"setCurrencyRatio\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"enum FeeType\",\"name\":\"feeType\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"percentValue\",\"type\":\"uint256\"}],\"name\":\"setFeePercentage\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_applicationFee\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_valuationFee\",\"type\":\"uint256\"}],\"name\":\"setSubmitFee\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Interface of the ERC20 standard as defined in the EIP.\",\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/interface/IOcxPriceOracle.sol\":\"IOcxPriceOracle\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/common/OcxCommon.sol\":{\"keccak256\":\"0x1499f155ed5c7c874bf6dffba8167d1f1961cff4c181ec0e0c3e5e9ec550428c\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://93cf3dddac95e72a722c178e87d9349b86d73b8f5d9f0ce78ec9e296557d33b4\",\"dweb:/ipfs/QmdwkC7qQ9uATSZpxojk1aL46u9tpZkynRbEQncWGtjWXJ\"]},\"project:/contracts/interface/IOcxBase.sol\":{\"keccak256\":\"0x0981290d564dcfc0a5ea97ebaadc2d052cad45d2d5e85e9294c0c43cfef3e432\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://b2ae101664b2e120284eb53c4f6be0165505f0826f32888fa1427f4f2e590be6\",\"dweb:/ipfs/QmTWjzY5ZGxHDFbpkJb9cgMzPwCn5dBY6Q8XVUTBPzVY6x\"]},\"project:/contracts/interface/IOcxPriceOracle.sol\":{\"keccak256\":\"0xb003c228f5ca9c97a221899d1f3db3c93427546894cae9b99bff0b7576ef5e81\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://0cb7b113105e40712658accea35b29e8d20fe0271bed1d52d27e944425b6872b\",\"dweb:/ipfs/QmX1BbwyvvY6j9NanXYWu7WFHi7GM4mg4BrD6b9qRkJtMu\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\nimport \"./../common/OcxCommon.sol\";\nimport \"./IOcxBase.sol\";\n/**\n * @dev Interface of the ERC20 standard as defined in the EIP.\n */\ninterface IOcxPriceOracle {\n    function setFeePercentage(FeeType feeType, uint256 percentValue) external;\n    function getFeePercentage(FeeType feeType) external view \n        returns(uint256 percentage, uint256 feeDecimals);\n    function setSubmitFee(uint256 _applicationFee, uint256 _valuationFee) external;\n    function getSubmitFee() external view \n        returns (uint256 application, uint256 valuation);\n    function getWeeklyFee(uint256 assetPrice) external view \n        returns(uint256 value, uint256 feeDecimals);\n    function getPnftFeePercentages() external view \n        returns(uint256 mintFee, uint256 loanFee, uint256 restoreFee, uint256 feeDecimals);\n    function getBtcUsdPrice() external view returns (OcxPrice memory _price);\n    function getEthUsdPrice() external view returns (OcxPrice memory _price);\n    function getBtcEthPrice() external view returns (OcxPrice memory _price);\n    function setCurrencyRatio(\n        string memory leftCurrencyName, \n        string memory rightCurrencyName, \n        OcxPrice memory priceObj\n    ) external;\n    function getCurrencyRatio(\n        string memory leftCurrencyName, \n        string memory rightCurrencyName\n    ) external view returns(OcxPrice memory );\n}\n",
+  "sourcePath": "/home/openchainx/OpenchainTestVersion/server/contracts/interface/IOcxPriceOracle.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/interface/IOcxPriceOracle.sol",
+    "exportedSymbols": {
+      "CommonContracts": [
+        6550
+      ],
+      "CurrencyIndex": [
+        6559
+      ],
+      "CurrencyPriceInfo": [
+        6571
+      ],
+      "FeeType": [
+        6539
+      ],
+      "IOcxBase": [
+        6632
+      ],
+      "IOcxPriceOracle": [
+        6815
+      ],
+      "OcxPrice": [
+        6564
+      ],
+      "POOL_FEE": [
+        6580
+      ],
+      "QUOTE_DECIMALS": [
+        6583
+      ],
+      "QUOTE_MULTIPLIER": [
+        6588
+      ],
+      "UNISWAP_V3_QUOTER_ADDRESS": [
+        6577
+      ],
+      "UNISWAP_V3_ROUTER_ADDRESS": [
+        6574
+      ]
+    },
+    "id": 6816,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 6721,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "32:23:33"
+      },
+      {
+        "absolutePath": "project:/contracts/common/OcxCommon.sol",
+        "file": "./../common/OcxCommon.sol",
+        "id": 6722,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 6816,
+        "sourceUnit": 6589,
+        "src": "57:35:33",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "project:/contracts/interface/IOcxBase.sol",
+        "file": "./IOcxBase.sol",
+        "id": 6723,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 6816,
+        "sourceUnit": 6633,
+        "src": "93:24:33",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 6724,
+          "nodeType": "StructuredDocumentation",
+          "src": "118:70:33",
+          "text": " @dev Interface of the ERC20 standard as defined in the EIP."
+        },
+        "fullyImplemented": false,
+        "id": 6815,
+        "linearizedBaseContracts": [
+          6815
+        ],
+        "name": "IOcxPriceOracle",
+        "nameLocation": "199:15:33",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "functionSelector": "d5b76705",
+            "id": 6732,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setFeePercentage",
+            "nameLocation": "230:16:33",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 6730,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6727,
+                  "mutability": "mutable",
+                  "name": "feeType",
+                  "nameLocation": "255:7:33",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6732,
+                  "src": "247:15:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_FeeType_$6539",
+                    "typeString": "enum FeeType"
+                  },
+                  "typeName": {
+                    "id": 6726,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 6725,
+                      "name": "FeeType",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 6539,
+                      "src": "247:7:33"
+                    },
+                    "referencedDeclaration": 6539,
+                    "src": "247:7:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_FeeType_$6539",
+                      "typeString": "enum FeeType"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6729,
+                  "mutability": "mutable",
+                  "name": "percentValue",
+                  "nameLocation": "272:12:33",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6732,
+                  "src": "264:20:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6728,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "264:7:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "246:39:33"
+            },
+            "returnParameters": {
+              "id": 6731,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "294:0:33"
+            },
+            "scope": 6815,
+            "src": "221:74:33",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "functionSelector": "61d9285a",
+            "id": 6742,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getFeePercentage",
+            "nameLocation": "309:16:33",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 6736,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6735,
+                  "mutability": "mutable",
+                  "name": "feeType",
+                  "nameLocation": "334:7:33",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6742,
+                  "src": "326:15:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_FeeType_$6539",
+                    "typeString": "enum FeeType"
+                  },
+                  "typeName": {
+                    "id": 6734,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 6733,
+                      "name": "FeeType",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 6539,
+                      "src": "326:7:33"
+                    },
+                    "referencedDeclaration": 6539,
+                    "src": "326:7:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_FeeType_$6539",
+                      "typeString": "enum FeeType"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "325:17:33"
+            },
+            "returnParameters": {
+              "id": 6741,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6738,
+                  "mutability": "mutable",
+                  "name": "percentage",
+                  "nameLocation": "382:10:33",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6742,
+                  "src": "374:18:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6737,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "374:7:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6740,
+                  "mutability": "mutable",
+                  "name": "feeDecimals",
+                  "nameLocation": "402:11:33",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6742,
+                  "src": "394:19:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6739,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "394:7:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "373:41:33"
+            },
+            "scope": 6815,
+            "src": "300:115:33",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "functionSelector": "c89be5a5",
+            "id": 6749,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setSubmitFee",
+            "nameLocation": "429:12:33",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 6747,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6744,
+                  "mutability": "mutable",
+                  "name": "_applicationFee",
+                  "nameLocation": "450:15:33",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6749,
+                  "src": "442:23:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6743,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "442:7:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6746,
+                  "mutability": "mutable",
+                  "name": "_valuationFee",
+                  "nameLocation": "475:13:33",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6749,
+                  "src": "467:21:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6745,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "467:7:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "441:48:33"
+            },
+            "returnParameters": {
+              "id": 6748,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "498:0:33"
+            },
+            "scope": 6815,
+            "src": "420:79:33",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "functionSelector": "7ea2b8e0",
+            "id": 6756,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getSubmitFee",
+            "nameLocation": "513:12:33",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 6750,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "525:2:33"
+            },
+            "returnParameters": {
+              "id": 6755,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6752,
+                  "mutability": "mutable",
+                  "name": "application",
+                  "nameLocation": "568:11:33",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6756,
+                  "src": "560:19:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6751,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "560:7:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6754,
+                  "mutability": "mutable",
+                  "name": "valuation",
+                  "nameLocation": "589:9:33",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6756,
+                  "src": "581:17:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6753,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "581:7:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "559:40:33"
+            },
+            "scope": 6815,
+            "src": "504:96:33",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "functionSelector": "4ad4f0f5",
+            "id": 6765,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getWeeklyFee",
+            "nameLocation": "614:12:33",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 6759,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6758,
+                  "mutability": "mutable",
+                  "name": "assetPrice",
+                  "nameLocation": "635:10:33",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6765,
+                  "src": "627:18:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6757,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "627:7:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "626:20:33"
+            },
+            "returnParameters": {
+              "id": 6764,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6761,
+                  "mutability": "mutable",
+                  "name": "value",
+                  "nameLocation": "686:5:33",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6765,
+                  "src": "678:13:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6760,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "678:7:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6763,
+                  "mutability": "mutable",
+                  "name": "feeDecimals",
+                  "nameLocation": "701:11:33",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6765,
+                  "src": "693:19:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6762,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "693:7:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "677:36:33"
+            },
+            "scope": 6815,
+            "src": "605:109:33",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "functionSelector": "cdc0eec4",
+            "id": 6776,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getPnftFeePercentages",
+            "nameLocation": "728:21:33",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 6766,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "749:2:33"
+            },
+            "returnParameters": {
+              "id": 6775,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6768,
+                  "mutability": "mutable",
+                  "name": "mintFee",
+                  "nameLocation": "791:7:33",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6776,
+                  "src": "783:15:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6767,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "783:7:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6770,
+                  "mutability": "mutable",
+                  "name": "loanFee",
+                  "nameLocation": "808:7:33",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6776,
+                  "src": "800:15:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6769,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "800:7:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6772,
+                  "mutability": "mutable",
+                  "name": "restoreFee",
+                  "nameLocation": "825:10:33",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6776,
+                  "src": "817:18:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6771,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "817:7:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6774,
+                  "mutability": "mutable",
+                  "name": "feeDecimals",
+                  "nameLocation": "845:11:33",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6776,
+                  "src": "837:19:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6773,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "837:7:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "782:75:33"
+            },
+            "scope": 6815,
+            "src": "719:139:33",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "functionSelector": "64b60700",
+            "id": 6782,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getBtcUsdPrice",
+            "nameLocation": "872:14:33",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 6777,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "886:2:33"
+            },
+            "returnParameters": {
+              "id": 6781,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6780,
+                  "mutability": "mutable",
+                  "name": "_price",
+                  "nameLocation": "928:6:33",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6782,
+                  "src": "912:22:33",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_OcxPrice_$6564_memory_ptr",
+                    "typeString": "struct OcxPrice"
+                  },
+                  "typeName": {
+                    "id": 6779,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 6778,
+                      "name": "OcxPrice",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 6564,
+                      "src": "912:8:33"
+                    },
+                    "referencedDeclaration": 6564,
+                    "src": "912:8:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_OcxPrice_$6564_storage_ptr",
+                      "typeString": "struct OcxPrice"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "911:24:33"
+            },
+            "scope": 6815,
+            "src": "863:73:33",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "functionSelector": "a0a8045e",
+            "id": 6788,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getEthUsdPrice",
+            "nameLocation": "950:14:33",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 6783,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "964:2:33"
+            },
+            "returnParameters": {
+              "id": 6787,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6786,
+                  "mutability": "mutable",
+                  "name": "_price",
+                  "nameLocation": "1006:6:33",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6788,
+                  "src": "990:22:33",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_OcxPrice_$6564_memory_ptr",
+                    "typeString": "struct OcxPrice"
+                  },
+                  "typeName": {
+                    "id": 6785,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 6784,
+                      "name": "OcxPrice",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 6564,
+                      "src": "990:8:33"
+                    },
+                    "referencedDeclaration": 6564,
+                    "src": "990:8:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_OcxPrice_$6564_storage_ptr",
+                      "typeString": "struct OcxPrice"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "989:24:33"
+            },
+            "scope": 6815,
+            "src": "941:73:33",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "functionSelector": "00e80f32",
+            "id": 6794,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getBtcEthPrice",
+            "nameLocation": "1028:14:33",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 6789,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1042:2:33"
+            },
+            "returnParameters": {
+              "id": 6793,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6792,
+                  "mutability": "mutable",
+                  "name": "_price",
+                  "nameLocation": "1084:6:33",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6794,
+                  "src": "1068:22:33",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_OcxPrice_$6564_memory_ptr",
+                    "typeString": "struct OcxPrice"
+                  },
+                  "typeName": {
+                    "id": 6791,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 6790,
+                      "name": "OcxPrice",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 6564,
+                      "src": "1068:8:33"
+                    },
+                    "referencedDeclaration": 6564,
+                    "src": "1068:8:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_OcxPrice_$6564_storage_ptr",
+                      "typeString": "struct OcxPrice"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1067:24:33"
+            },
+            "scope": 6815,
+            "src": "1019:73:33",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "functionSelector": "0e3e0a20",
+            "id": 6804,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setCurrencyRatio",
+            "nameLocation": "1106:16:33",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 6802,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6796,
+                  "mutability": "mutable",
+                  "name": "leftCurrencyName",
+                  "nameLocation": "1146:16:33",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6804,
+                  "src": "1132:30:33",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 6795,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1132:6:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6798,
+                  "mutability": "mutable",
+                  "name": "rightCurrencyName",
+                  "nameLocation": "1187:17:33",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6804,
+                  "src": "1173:31:33",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 6797,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1173:6:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6801,
+                  "mutability": "mutable",
+                  "name": "priceObj",
+                  "nameLocation": "1231:8:33",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6804,
+                  "src": "1215:24:33",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_OcxPrice_$6564_memory_ptr",
+                    "typeString": "struct OcxPrice"
+                  },
+                  "typeName": {
+                    "id": 6800,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 6799,
+                      "name": "OcxPrice",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 6564,
+                      "src": "1215:8:33"
+                    },
+                    "referencedDeclaration": 6564,
+                    "src": "1215:8:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_OcxPrice_$6564_storage_ptr",
+                      "typeString": "struct OcxPrice"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1122:123:33"
+            },
+            "returnParameters": {
+              "id": 6803,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1254:0:33"
+            },
+            "scope": 6815,
+            "src": "1097:158:33",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "functionSelector": "045a2ab7",
+            "id": 6814,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getCurrencyRatio",
+            "nameLocation": "1269:16:33",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 6809,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6806,
+                  "mutability": "mutable",
+                  "name": "leftCurrencyName",
+                  "nameLocation": "1309:16:33",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6814,
+                  "src": "1295:30:33",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 6805,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1295:6:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6808,
+                  "mutability": "mutable",
+                  "name": "rightCurrencyName",
+                  "nameLocation": "1350:17:33",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6814,
+                  "src": "1336:31:33",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 6807,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1336:6:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1285:88:33"
+            },
+            "returnParameters": {
+              "id": 6813,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6812,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6814,
+                  "src": "1396:15:33",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_OcxPrice_$6564_memory_ptr",
+                    "typeString": "struct OcxPrice"
+                  },
+                  "typeName": {
+                    "id": 6811,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 6810,
+                      "name": "OcxPrice",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 6564,
+                      "src": "1396:8:33"
+                    },
+                    "referencedDeclaration": 6564,
+                    "src": "1396:8:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_OcxPrice_$6564_storage_ptr",
+                      "typeString": "struct OcxPrice"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1395:18:33"
+            },
+            "scope": 6815,
+            "src": "1260:154:33",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 6816,
+        "src": "189:1227:33",
+        "usedErrors": []
+      }
+    ],
+    "src": "32:1385:33"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.4+commit.c7e474f2.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.7",
+  "updatedAt": "2022-05-03T03:24:21.585Z",
+  "devdoc": {
+    "details": "Interface of the ERC20 standard as defined in the EIP.",
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}
