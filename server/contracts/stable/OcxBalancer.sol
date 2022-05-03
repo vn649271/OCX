@@ -15,8 +15,7 @@ contract OcxBalancer is OcxBase, IOcxBalancer {
     uint256 private constant MAX_ALLOWED_OCAT_PRICE = 110;
     uint256 private constant MIN_ALLOWED_OCAT_PRICE =  90;
 
-    OcxPrice ethAudPriceInfo;
-    OcxPrice uniAudPriceInfo;
+    OcxPrice ethAudQuote;
 
     constructor(
     ) {
@@ -31,14 +30,15 @@ contract OcxBalancer is OcxBase, IOcxBalancer {
      */
     function run() external
     onlyValidAddress(contractAddress[CommonContracts.EXCHANGE]) onlyAdmin {
-        // Get ETH:AUD ratio
-        OcxPrice memory _ethAudPriceObj = IOcxPriceOracle(contractAddress[CommonContracts.PRICE_ORACLE])
-                                            .getCurrencyRatio(CurrencyIndex.ETH, CurrencyIndex.AUD);
-        if (ethAudPriceInfo.value == 0) {
-            ethAudPriceInfo = _ethAudPriceObj;
+        IOcxPriceOracle priceOracle = IOcxPriceOracle(contractAddress[CommonContracts.PRICE_ORACLE]);
+        IOcxExchange ocXchange = IOcxExchange(contractAddress[CommonContracts.EXCHANGE]);
+        // Check ETH:AUD quote
+        OcxPrice memory newEthAudQuote = priceOracle.getCurrencyRatio(CurrencyIndex.ETH, CurrencyIndex.AUD);
+        if (ethAudQuote.value == 0) {
+            ethAudQuote = newEthAudQuote;
         }
-        if (ethAudPriceInfo.value != _ethAudPriceObj.value) {
-            uint changePercentage = (_ethAudPriceObj.value * 100) / ethAudPriceInfo.value;
+        if (ethAudQuote.value != newEthAudQuote.value) {
+            uint changePercentage = (newEthAudQuote.value * 100) / ethAudQuote.value;
             if (changePercentage < MIN_ALLOWED_OCAT_PRICE || changePercentage > MAX_ALLOWED_OCAT_PRICE) {
                 if (changePercentage > MAX_ALLOWED_OCAT_PRICE) { // If ETH price drop than 10%
                     // Force OcxExchange to burn OCAT *******
@@ -46,24 +46,38 @@ contract OcxBalancer is OcxBase, IOcxBalancer {
                         (
                             (100 - changePercentage) * 
                             IERC20(contractAddress[CommonContracts.OCAT]).totalSupply()
-                        ) / 
-                        100;
+                        ) / 100;
                     // Burn bought OCAT
-                    IOcxExchange(contractAddress[CommonContracts.EXCHANGE]).burnOcat(decreaseAmount);
+                    ocXchange.burnOcat(decreaseAmount);
                 } else {
                     // Force OcxExchange to mint OCAT
                     uint256 increaseAmount = 
                         (
                             (changePercentage - 100) * 
                             IERC20(contractAddress[CommonContracts.OCAT]).totalSupply()
-                        ) / 
-                        100;
+                        ) / 100;
                     // Mint bought OCAT
-                    IOcxExchange(contractAddress[CommonContracts.EXCHANGE]).mintOcat(increaseAmount);
+                    ocXchange.mintOcat(increaseAmount);
                 }
-                ethAudPriceInfo.value = _ethAudPriceObj.value;
             }            
+            ethAudQuote = newEthAudQuote;
         }
-        
+        // Check UNI:AUD quote
+        OcxPrice memory uniAudQuote = priceOracle.getCurrencyRatio(CurrencyIndex.UNI, CurrencyIndex.AUD);
+        OcxPrice memory oldUniAudQuote = ocXchange.getQuote(CurrencyIndex.UNI, CurrencyIndex.AUD);
+        if (oldUniAudQuote.value == 0) {
+            ocXchange.setQuote(CurrencyIndex.UNI, CurrencyIndex.AUD, uniAudQuote);
+            oldUniAudQuote = uniAudQuote;
+        }
+        if (oldUniAudQuote.value != uniAudQuote.value) {
+            // Update OCAT:OCX quote by change rate of OCAT:UNI
+            uint changePercentage = (uniAudQuote.value * 100) / oldUniAudQuote.value;
+            OcxPrice memory oldOcatOcxQuote = ocXchange.getQuote(CurrencyIndex.OCAT, CurrencyIndex.OCX);
+            ocXchange.setQuote(
+                CurrencyIndex.OCAT, 
+                CurrencyIndex.OCX,
+                OcxPrice(oldOcatOcxQuote.value * changePercentage / 100, QUOTE_DECIMALS)
+            );
+        }
     }
 }

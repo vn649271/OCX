@@ -24,6 +24,8 @@ contract OcxExchange is OcxBase {
     ISwapRouter public constant uniswapRouter = ISwapRouter(UNISWAP_V3_ROUTER_ADDRESS);
     IQuoter public constant quoter = IQuoter(UNISWAP_V3_QUOTER_ADDRESS);
     // address payable private ocxLocalPoolAddress;
+    mapping(CurrencyIndex => CurrencyPriceInfo) private quotes;
+
 
     event estimatedOcxAmountForBurningOcat(uint256);
 
@@ -32,11 +34,6 @@ contract OcxExchange is OcxBase {
     constructor() {
         // uniswapRouter = IUniswapV2Router02(UNISWAP_V3_ROUTER_ADDRESS);
     }
-
-    // function setOcxLocalPoolAddress(address payable _ocxLocalPoolAddress) public 
-    // onlyCreator onlyValidAddress(_ocxLocalPoolAddress) {
-    //     ocxLocalPoolAddress = _ocxLocalPoolAddress;
-    // }
 
     function swap(
         address _tokenIn,
@@ -59,13 +56,25 @@ contract OcxExchange is OcxBase {
             );
         }
         TransferHelper.safeTransferFrom(_tokenIn, msg.sender, address(this), _amountIn);
+        address recipient = msg.sender;
+        if (_tokenIn == contractAddress[CommonContracts.OCAT] 
+         && _tokenOut == contractAddress[CommonContracts.UNI]) {
+            uint256 ocxAmount = _amountIn * quotes[CurrencyIndex.OCAT].vs[CurrencyIndex.OCX].value;
+            IERC20(contractAddress[CommonContracts.OCX]).approve(UNISWAP_V3_ROUTER_ADDRESS, ocxAmount);
+            _tokenIn = contractAddress[CommonContracts.OCX];
+            _amountIn = ocxAmount;
+        } else if (_tokenIn == contractAddress[CommonContracts.UNI] 
+                && _tokenOut == contractAddress[CommonContracts.OCAT]) {
+            _tokenOut = contractAddress[CommonContracts.OCX];
+            recipient = address(this);
+        }
 
         ISwapRouter.ExactInputSingleParams memory params =
             ISwapRouter.ExactInputSingleParams({
-                tokenIn: contractAddress[CommonContracts.WETH],
+                tokenIn: _tokenIn,
                 tokenOut: _tokenOut,
                 fee: POOL_FEE,
-                recipient: msg.sender,
+                recipient: recipient,
                 deadline: block.timestamp + 15,
                 amountIn: _amountIn,
                 amountOutMinimum: 0,
@@ -74,6 +83,12 @@ contract OcxExchange is OcxBase {
 
         // The call to `exactInputSingle` executes the swap.
         amountOut = uniswapRouter.exactInputSingle(params);
+
+        if (_tokenIn == contractAddress[CommonContracts.UNI] 
+        && _tokenOut == contractAddress[CommonContracts.OCAT]) {
+            uint256 ocatAmount = amountOut / quotes[CurrencyIndex.OCAT].vs[CurrencyIndex.OCX].value;
+            IERC20(contractAddress[CommonContracts.OCAT]).transfer(msg.sender, ocatAmount);
+        }
     }
     /**
      *  Mint OCAT by funding ETH
@@ -117,14 +132,23 @@ contract OcxExchange is OcxBase {
         );
     }
     function burnOcat(uint256 amount) internal onlyAdmin {
-        uint256 ocxAmount = _getEstimatedOcxforOcat(amount);
-        emit estimatedOcxAmountForBurningOcat(ocxAmount);
-        IERC20(contractAddress[CommonContracts.OCX]).approve(UNISWAP_V3_ROUTER_ADDRESS, ocxAmount);
-        swap(
-            contractAddress[CommonContracts.OCX], ocxAmount, 
-            contractAddress[CommonContracts.OCAT], 0, 
-            block.timestamp
-        );
+        IERC20 ocat = IERC20(contractAddress[CommonContracts.OCAT]);
+        if (ocat.balanceOf(address(this)) < amount) {
+            uint256 ocxAmount = _getEstimatedOcxforOcat(amount);
+            IERC20 ocx = IERC20(contractAddress[CommonContracts.OCX]);
+            /*********************************************************
+             * Warn to admin to deposit additional ETHs
+             *********************************************************/
+            require(ocx.balanceOf(address(this)) < ocxAmount, "1");
+            //////////////////////////////////////////////////////////
+            emit estimatedOcxAmountForBurningOcat(ocxAmount);
+            IERC20(contractAddress[CommonContracts.OCX]).approve(UNISWAP_V3_ROUTER_ADDRESS, ocxAmount);
+            swap(
+                contractAddress[CommonContracts.OCX], ocxAmount, 
+                contractAddress[CommonContracts.OCAT], 0, 
+                block.timestamp
+            );
+        }
         IOcxERC20(contractAddress[CommonContracts.OCAT]).burn(amount);
     }
     function mintOcx(uint256 amount) public payable onlyAdmin  {
@@ -132,5 +156,11 @@ contract OcxExchange is OcxBase {
     }
     function burnOcx(uint256 amount) internal onlyAdmin {
         IOcxERC20(contractAddress[CommonContracts.OCX]).burn(amount);
+    }
+    function setQuote(CurrencyIndex left, CurrencyIndex right, OcxPrice memory newQuote) public {
+        quotes[left].vs[right] = newQuote;
+    }
+    function getQuote(CurrencyIndex left, CurrencyIndex right) public view returns(OcxPrice memory) {
+        return quotes[left].vs[right];
     }
 }
