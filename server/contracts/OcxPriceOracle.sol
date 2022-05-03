@@ -101,7 +101,6 @@ contract OcxPriceOracle is OcxBase, IOcxPriceOracle {
             (dstCurrencyIndex >= CurrencyIndex(0) && dstCurrencyIndex < CurrencyIndex.CURRENCY_COUNT),
             "Invalid coin index"
         );
-        currencyPrice[srcCurrencyIndex].vs[dstCurrencyIndex] = priceObj;
         currencyPrice[dstCurrencyIndex].vs[srcCurrencyIndex] = priceObj;
     }
     function getCurrencyRatio(CurrencyIndex srcCurrencyIndex, CurrencyIndex dstCurrencyIndex) 

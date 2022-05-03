@@ -50,7 +50,6 @@ var gOpenchainRouter = null;
 var self;
 
 class OpenchainRouter {
-
     constructor(web3) {
         self = this;
         this.web3 = web3;
@@ -62,7 +61,71 @@ class OpenchainRouter {
         this.ethAudBaseTime = null;
         setTimeout(this._getPnftTxFee, FEE_CHECKING_INTERVAL);
     }
+    async _balancing() {
+        const options = {
+            method: 'GET',
+            url: 'https://api.coinbase.com/v2/prices/ETH-AUD/historic?period=hour',
+        };
+        axios.request(options).then(async response => {
+            let prices = response.data? 
+                response.data.data? 
+                    response.data.data.prices? 
+                        response.data.data.prices: 
+                    null: 
+                null:
+            null;
+            self.ethAudPrice = prices[0].price;
+            self.latestEthAudPriceTime = new Date(prices[0].time);
+            if (self.ethAudBasePrice == 0) {
+                self.ethAudBasePrice = self.ethAudPrice;
+                self.ethAudBaseTime = self.latestEthAudPriceTime;
+                return;
+            }
+            let delta = self.ethAudPrice / self.ethAudBasePrice;
+            if (delta < 0.95 || delta > 1.05) {
+                try {
+                    let priceOracleAddress = self.getContractAddress(
+                        OcxPriceOracle_DeployedInfo
+                    );
+                    self._unlockAccount().then(ret => {
+                        if (ret.error) {
+                            return ret;
+                        }
+                        const priceOracleContract = new self.web3.eth.Contract(
+                            OcxPriceOracle_DeployedInfo.abi, 
+                            priceOracleAddress
+                        );
+                        let ethAudPrice = Math.round((self.ethAudPrice - 0) * 1000000);
+                        priceOracleContract.methods.setCurrencyRatio(0, 4, ethAudPrice)
+                        .send({
+                            from: self.myAddress
+                        }).then(ret => {
+                            if (ret.error != undefined && ret.error) {
+                                console.log("Error occurred in setCurrencyRatio(): ", ret.data);
+                                return;
+                            }
+                            if (delta < 0.9 || delta > 1.1) {
+                                // Run OcxBalancer
+                                let balancerAddress = self.getContractAddress(OcxBalancer_DeployedInfo);
+                                const balancerContract = new self.web3.eth.Contract(
+                                    OcxBalancer_DeployedInfo.abi, 
+                                    balancerAddress
+                                );
+                                balancerContract.methods.run().send({
+                                    from: self.myAddress
+                                });
+                            }                            
+                        });
 
+                    });
+                } catch (error) {
+                    console.log("********** Failed to set ETH-AUD price: ", error);
+                }
+            }
+        }).catch(error => {
+            console.error(error);
+        });        
+    }
     defaultErrorHanlder(errorObj) {
         if (errorObj.message == 'Invalid JSON RPC response: ""') {
             return 'It seem to be caused an error in access to blockchain';
@@ -74,7 +137,6 @@ class OpenchainRouter {
             return errorObj.toString();
         }
     }
-
     setAccountInfo(accountInfo) {
         var addresses = accountInfo.addresses;
         if (addresses['ETH'] === undefined || addresses['ETH'] === null) {
@@ -83,17 +145,15 @@ class OpenchainRouter {
         this.myAddress = addresses['ETH'];
         this.accountInfo = accountInfo;
         // Start stable coin system
-        setInterval(this._pickEthPrice, ETH_PRICE_CHECKING_INTERVAL);
-        this._pickEthPrice();
+        setInterval(this._balancing, ETH_PRICE_CHECKING_INTERVAL);
+        this._balancing();
         return 0;
     }
-
     async setDeveloperAccount() {
         let accounts = await this.web3.eth.personal.getAccounts();
         this.myAddress = accounts[1];
         console.log("*************** My Address: ", self.myAddress);
     }
-
     async _unlockAccount() {
         try {
             if (process.env.IPC_TYPE != "ganache" && process.env.IPC_TYPE != 'infura') {
@@ -115,66 +175,6 @@ class OpenchainRouter {
             return { error: -1300, data: error.message ? error.message: "Unexpected error for unlocking account"}
         }
     }
-
-    async _pickEthPrice() {
-        const options = {
-            method: 'GET',
-            url: 'https://api.coinbase.com/v2/prices/ETH-AUD/historic?period=hour',
-        };
-        axios.request(options).then(async response => {
-            let prices = response.data? 
-                response.data.data? 
-                    response.data.data.prices? 
-                        response.data.data.prices: 
-                    null: 
-                null:
-            null;
-            self.ethAudPrice = prices[0].price;
-            self.latestEthAudPriceTime = new Date(prices[0].time);
-            if (self.ethAudBasePrice == 0) {
-                self.ethAudBasePrice = self.ethAudPrice;
-                self.ethAudBaseTime = self.latestEthAudPriceTime;
-                return;
-            }
-            let delta = self.ethAudPrice / self.ethAudBasePrice;
-            if (delta < 0.95 || delta > 1.01) {
-                try {
-                    let priceOracleAddress = self.getContractAddress(
-                        OcxPriceOracle_DeployedInfo
-                    );
-                    let ret = await self._unlockAccount();
-                    if (ret.error) {
-                        return ret;
-                    }
-                    const priceOracleContract = new self.web3.eth.Contract(
-                        OcxPriceOracle_DeployedInfo.abi, 
-                        priceOracleAddress
-                    );
-                    let ethAudPrice = Math.round((self.ethAudPrice - 0) * 1000000);
-                    ret = await priceOracleContract.methods.setEthAudPrice(ethAudPrice)
-                    .send({
-                        from: self.myAddress
-                    });
-                    if (delta < 0.9 || delta > 1.1) {
-                        // Run OcxLocalBalancer
-                        let balancerAddress = self.getContractAddress(OcxBalancer_DeployedInfo);
-                        const balancerContract = new self.web3.eth.Contract(
-                            OcxBalancer_DeployedInfo.abi, 
-                            balancerAddress
-                        );
-                        balancerContract.methods.run().send({
-                            from: self.myAddress
-                        });
-                    }
-                } catch (error) {
-                    console.log("********** Failed to set ETH-AUD price: ", error);
-                }
-            }
-        }).catch(error => {
-            console.error(error);
-        });        
-    }
-
     getContractAddress(contractDeployedInfo) {
         let ipcType = process.env.IPC_TYPE;
         if (ipcType == undefined) {
@@ -194,7 +194,6 @@ class OpenchainRouter {
             ChainIDMap[process.env.IPC_TYPE][process.env.CHAIN_NAME]
         ].address: null;
     }
-
     async getBalance(symbol) {
         try {
             let tokenContractAddress = this.getContractAddress(TOKEN_CONTRACT_MAP[symbol]);
@@ -210,7 +209,6 @@ class OpenchainRouter {
             return { error: -400, data: errMsg };
         }
     }
-
     async getBestPrice(params) {
         if (params.sellSymbol === params.buySymbol) {
             return { error: -1, data: "Illegal operation. Selling token must be different than token to buy" };
@@ -273,136 +271,134 @@ class OpenchainRouter {
             return { error: -400, data: errMsg };
         }
     }
+    // async swapEthForToken(params) {
+    //     let ret = await this._unlockAccount();
+    //     if (ret.error) {
+    //         return ret;
+    //     }
+    //     try {
+    //         let erc20TokenAddress = this.getContractAddress(TOKEN_CONTRACT_MAP[params.buySymbol]);
+    //         let ocxExchangeAddress = this.getContractAddress(OcxExchange_DeployedInfo);
 
-    async swapEthForToken(params) {
-        let ret = await this._unlockAccount();
-        if (ret.error) {
-            return ret;
-        }
-        try {
-            let erc20TokenAddress = this.getContractAddress(TOKEN_CONTRACT_MAP[params.buySymbol]);
-            let ocxExchangeAddress = this.getContractAddress(OcxExchange_DeployedInfo);
-
-            const sellAmountInHex = this.web3.utils.toHex(params.sellAmount);
-            const buyAmountInHex = this.web3.utils.toHex(params.buyAmountMin);
-            let gasPrice = await this.web3.eth.getGasPrice();
-            gasPrice = (gasPrice * 1.2).toFixed(0);
-            if (params.buySymbol != "OCAT") {
-                const openchainSwap = new this.web3.eth.Contract(ocxSwapAbi, ocxExchangeAddress);
+    //         const sellAmountInHex = this.web3.utils.toHex(params.sellAmount);
+    //         const buyAmountInHex = this.web3.utils.toHex(params.buyAmountMin);
+    //         let gasPrice = await this.web3.eth.getGasPrice();
+    //         gasPrice = (gasPrice * 1.2).toFixed(0);
+    //         if (params.buySymbol != "OCAT") {
+    //             const ocXchange = new this.web3.eth.Contract(ocxSwapAbi, ocxExchangeAddress);
     
-                let ret = await openchainSwap.methods.swapFromETH(
-                    erc20TokenAddress,
-                    buyAmountInHex,
-                    params.deadline
-                ).send({
-                    from: this.myAddress,
-                    value: sellAmountInHex
-                })
-                console.log("@@@ OpenchainRouter.swapEthForToken(): ", ret);
-                return { error: 0, data: ret };
-            } else {
-                let ocxLocalPoolAddress = this.getContractAddress(OcxLocalPool_DeployedInfo);
-                const ocxLocalPool = new this.web3.eth.Contract(ocxLocalPoolAbi, ocxLocalPoolAddress);
-                let ret = await ocxLocalPool.methods.swapEthToOcat(buyAmountInHex, this.myAddress, params.deadline)
-                .send({
-                    from: this.myAddress,
-                    value: sellAmountInHex,
-                    gas: "100000",
-                    gasPrice: gasPrice
-                });
+    //             let ret = await ocXchange.methods.swapFromETH(
+    //                 erc20TokenAddress,
+    //                 buyAmountInHex,
+    //                 params.deadline
+    //             ).send({
+    //                 from: this.myAddress,
+    //                 value: sellAmountInHex
+    //             })
+    //             console.log("@@@ OpenchainRouter.swapEthForToken(): ", ret);
+    //             return { error: 0, data: ret };
+    //         } else {
+    //             let ocxLocalPoolAddress = this.getContractAddress(OcxLocalPool_DeployedInfo);
+    //             const ocxLocalPool = new this.web3.eth.Contract(ocxLocalPoolAbi, ocxLocalPoolAddress);
+    //             let ret = await ocxLocalPool.methods.swapEthToOcat(buyAmountInHex, this.myAddress, params.deadline)
+    //             .send({
+    //                 from: this.myAddress,
+    //                 value: sellAmountInHex,
+    //                 gas: "100000",
+    //                 gasPrice: gasPrice
+    //             });
         
-                return { error: 0, data: ret };
-            }
-        } catch (error) {
-            var errMsg = this.defaultErrorHanlder(error);
-            return { error: -400, data: errMsg };
-        }
-    }
+    //             return { error: 0, data: ret };
+    //         }
+    //     } catch (error) {
+    //         var errMsg = this.defaultErrorHanlder(error);
+    //         return { error: -400, data: errMsg };
+    //     }
+    // }
 
-    async swapTokenForEth(params) {
+    // async swapTokenForEth(params) {
+    //     let ret = await this._unlockAccount();
+    //     if (ret.error) {
+    //         return ret;
+    //     }
+    //     try {
+    //         let erc20TokenAddress = this.getContractAddress(TOKEN_CONTRACT_MAP[params.sellSymbol]);
+    //         let ocxExchangeAddress = this.getContractAddress(OcxExchange_DeployedInfo);
+
+    //         const sellAmountInHex = this.web3.utils.toHex(params.sellAmount);
+    //         const buyAmountInHex = this.web3.utils.toHex(params.buyAmountMin);
+    //         let ret = null;
+
+    //         const tokenContract = new this.web3.eth.Contract(erc20Abi, erc20TokenAddress);
+    //         if (params.sellSymbol != "OCAT") {
+    //             ret = await tokenContract.methods.approve(ocxExchangeAddress, sellAmountInHex)
+    //             .send({
+    //                 from: this.myAddress,
+    //             });
+    //             if (!ret) {
+    //                 return { error: -250, data: "Failed to approve the ERC20 token for the contract" };
+    //             }
+    //             const ocXchange = new this.web3.eth.Contract(ocxSwapAbi, ocxExchangeAddress);
+    //             ret = await ocXchange.methods.swapToETH(
+    //                 erc20TokenAddress,
+    //                 sellAmountInHex,
+    //                 buyAmountInHex,
+    //                 params.deadline
+    //             ).send({
+    //                 from: this.myAddress
+    //             })
+    //             if (!ret) {
+    //                 return { error: -251, data: "Failed to swap from ERC20 token to ETH" };
+    //             }
+    //             console.log("@@@ OpenchainRouter.swapTokenForEth(): ", ret);
+    //             return { error: 0, data: ret };                
+    //         } else {
+    //             let ocxLocalPoolAddress = this.getContractAddress(OcxLocalPool_DeployedInfo);
+    //             let ocatContractAddress = this.getContractAddress(OcatToken_DeployedInfo);
+
+    //             const ocatContract = new this.web3.eth.Contract(ocatAbi, ocatContractAddress);
+    //             let gasPrice = await this.web3.eth.getGasPrice();
+    //             gasPrice = (gasPrice * 1.2).toFixed(0);
+    //             ret = await ocatContract.methods.approve(
+    //                 ocxLocalPoolAddress, 
+    //                 sellAmountInHex
+    //             ).send({
+    //                 from: this.myAddress,
+    //                 gas: "280000",
+    //                 gasPrice: gasPrice
+    //             });
+    //             if (!ret) {
+    //                 return { error: -250, data: "Failed to approve the ERC20 token for the contract" };
+    //             }
+    //             const ocxLocalPool = new this.web3.eth.Contract(ocxLocalPoolAbi, ocxLocalPoolAddress);
+
+    //             ret = await ocxLocalPool.methods.swapOcatToEth(
+    //                 sellAmountInHex, 
+    //                 buyAmountInHex, 
+    //                 this.myAddress, 
+    //                 params.deadline
+    //             ).send({
+    //                 from: this.myAddress,
+    //                 gas: "280000",
+    //                 gasPrice: gasPrice
+    //             });
+        
+    //             return { error: 0, data: ret };
+    //         }
+    //     }
+    //     catch (error) {
+    //         var errMsg = this.defaultErrorHanlder(error);
+    //         return { error: -400, data: errMsg };
+    //     }
+    // }
+    async swap(params) {
         let ret = await this._unlockAccount();
         if (ret.error) {
             return ret;
         }
         try {
-            let erc20TokenAddress = this.getContractAddress(TOKEN_CONTRACT_MAP[params.sellSymbol]);
             let ocxExchangeAddress = this.getContractAddress(OcxExchange_DeployedInfo);
-
-            const sellAmountInHex = this.web3.utils.toHex(params.sellAmount);
-            const buyAmountInHex = this.web3.utils.toHex(params.buyAmountMin);
-            let ret = null;
-
-            const tokenContract = new this.web3.eth.Contract(erc20Abi, erc20TokenAddress);
-            if (params.sellSymbol != "OCAT") {
-                ret = await tokenContract.methods.approve(ocxExchangeAddress, sellAmountInHex)
-                .send({
-                    from: this.myAddress,
-                });
-                if (!ret) {
-                    return { error: -250, data: "Failed to approve the ERC20 token for the contract" };
-                }
-                const openchainSwap = new this.web3.eth.Contract(ocxSwapAbi, ocxExchangeAddress);
-                ret = await openchainSwap.methods.swapToETH(
-                    erc20TokenAddress,
-                    sellAmountInHex,
-                    buyAmountInHex,
-                    params.deadline
-                ).send({
-                    from: this.myAddress
-                })
-                if (!ret) {
-                    return { error: -251, data: "Failed to swap from ERC20 token to ETH" };
-                }
-                console.log("@@@ OpenchainRouter.swapTokenForEth(): ", ret);
-                return { error: 0, data: ret };                
-            } else {
-                let ocxLocalPoolAddress = this.getContractAddress(OcxLocalPool_DeployedInfo);
-                let ocatContractAddress = this.getContractAddress(OcatToken_DeployedInfo);
-
-                const ocatContract = new this.web3.eth.Contract(ocatAbi, ocatContractAddress);
-                let gasPrice = await this.web3.eth.getGasPrice();
-                gasPrice = (gasPrice * 1.2).toFixed(0);
-                ret = await ocatContract.methods.approve(
-                    ocxLocalPoolAddress, 
-                    sellAmountInHex
-                ).send({
-                    from: this.myAddress,
-                    gas: "280000",
-                    gasPrice: gasPrice
-                });
-                if (!ret) {
-                    return { error: -250, data: "Failed to approve the ERC20 token for the contract" };
-                }
-                const ocxLocalPool = new this.web3.eth.Contract(ocxLocalPoolAbi, ocxLocalPoolAddress);
-
-                ret = await ocxLocalPool.methods.swapOcatToEth(
-                    sellAmountInHex, 
-                    buyAmountInHex, 
-                    this.myAddress, 
-                    params.deadline
-                ).send({
-                    from: this.myAddress,
-                    gas: "280000",
-                    gasPrice: gasPrice
-                });
-        
-                return { error: 0, data: ret };
-            }
-        }
-        catch (error) {
-            var errMsg = this.defaultErrorHanlder(error);
-            return { error: -400, data: errMsg };
-        }
-    }
-
-    async swapTokenForToken(params) {
-        let ret = await this._unlockAccount();
-        if (ret.error) {
-            return ret;
-        }
-        try {
-            let ocxExchangeAddress = this.getContractAddress(OcxExchange_DeployedInfo);
-            const openchainSwap = new this.web3.eth.Contract(
+            const ocXchange = new this.web3.eth.Contract(
                 OcxExchange_DeployedInfo.abi, 
                 ocxExchangeAddress
             );
@@ -417,61 +413,32 @@ class OpenchainRouter {
             const buyAmountMinInHex = this.web3.utils.toHex("0");
             const sellTokenContract = new this.web3.eth.Contract(erc20Abi, sellTokenAddress);
 
-            let ret = null;
-            if (params.sellSymbol != "OCAT" && params.buySymbol != "OCAT") {
-                ret = await sellTokenContract.methods.approve(ocxExchangeAddress, sellAmountInHex)
-                .send({
-                    from: this.myAddress,
-                });
-                if (!ret) {
-                    return { error: -250, data: "Failed to approve the ERC20 token for the contract" };
-                }
-                ret = await openchainSwap.methods.swap(
-                    sellTokenAddress,
-                    sellAmountInHex,
-                    buyTokenAddress,
-                    buyAmountMinInHex,
-                    params.deadline
-                ).send({
-                    from: this.myAddress
-                })
-                if (!ret) {
-                    return { error: -251, data: "Failed to swap from ERC20 token to ETH" };
-                }
-                console.log("@@@ OpenchainRouter.swapTokenForToken(): ", ret);
-                return { error: 0, data: ret };
-            } else {
-                ret = await this.swapTokenForEth({
-                    sellSymbol: params.sellSymbol,
-                    buySymbol: "ETH",
-                    buyAmountMin: 0,
-                    deadline: params.deadline
-                });
-                if (!ret || ret.error != undefined) {
-                    return {error: -250, data: "Failed to cross-swap(1)"}
-                }
-                if (ret.error != 0) {
-                    return ret;
-                }
-                ret = await this.swapEthForToken({
-                    sellSymbol: "ETH",
-                    buySymbol: params.buySymbol,
-                    buyAmountMin: params.buyAmountMin,
-                    deadline: params.deadline
-                });
-                if (!ret || ret.error != undefined) {
-                    return { error: -251, data: "Failed to cross-swap(2)" }
-                }
-                if (ret.error != 0) {
-                    return ret;
-                }
+            let ret = await sellTokenContract.methods.approve(ocxExchangeAddress, sellAmountInHex)
+            .send({
+                from: this.myAddress,
+            });
+            if (!ret) {
+                return { error: -250, data: "Failed to approve the ERC20 token for the contract" };
             }
+            ret = await ocXchange.methods.swap(
+                sellTokenAddress,
+                sellAmountInHex,
+                buyTokenAddress,
+                buyAmountMinInHex,
+                params.deadline
+            ).send({
+                from: this.myAddress
+            })
+            if (!ret) {
+                return { error: -251, data: "Failed to swap from ERC20 token to ETH" };
+            }
+            console.log("@@@ OpenchainRouter.swapTokenForToken(): ", ret);
+            return { error: 0, data: ret };
         } catch (error) {
             var errMsg = this.defaultErrorHanlder(error);
             return { error: -400, data: errMsg };
         }
     }
-
     async buildOpenchainLiquidity(params) {
         let ret = await this._unlockAccount();
         if (ret.error) {
@@ -501,7 +468,6 @@ class OpenchainRouter {
             return { error: -400, data: errMsg };
         }
     }
-
     mintPNFT = async params => {
         let owner = this.myAddress;
         let assetId = params ? params.assetId ? params.assetId : null : null;
@@ -554,7 +520,6 @@ class OpenchainRouter {
             return { error: -400, data: errMsg };
         }
     }
-
     exchangeToOcat = async params => {
         let owner = params ? params.owner ? params.owner : null : null;
         if (!owner) {
@@ -613,7 +578,6 @@ class OpenchainRouter {
             return { error: -400, data: errMsg };
         }
     }
-
     exchangeFromOcat = async params => {
         let owner = params ? params.owner ? params.owner : null : null;
         if (!owner) {
@@ -677,7 +641,6 @@ class OpenchainRouter {
             return { error: -400, data: errMsg };
         }
     }
-
     getTokenPrices = async() => {
         try {
             let opoAddress = this.getContractAddress(OcxPriceOracle_DeployedInfo);

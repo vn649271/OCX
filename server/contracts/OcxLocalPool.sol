@@ -4,6 +4,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol"; // openzeppelin 4.5 (fo
 import '@uniswap/lib/contracts/libraries/TransferHelper.sol';
 import './OcxAdmin.sol';
 import './interface/IOcxERC20.sol';
+import './common/OcxCommon.sol';
 
 contract OcxLocalPool is OcxAdmin {
 
@@ -27,9 +28,6 @@ contract OcxLocalPool is OcxAdmin {
     uint256                  public poolCount;
     // mapping(address => PoolShare[]) public poolShare;
 
-    uint256 internal constant QUOTE_DECIMALS = 6; // Must be more than 3 at least
-    uint256 internal constant QUOTE_MULTIPLIER = 10 ** QUOTE_DECIMALS;
-    
     receive() external payable {}
 
     constructor() {
