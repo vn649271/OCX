@@ -1,7 +1,7 @@
 {
   "contractName": "IOcxBalancer",
   "abi": [],
-  "metadata": "{\"compiler\":{\"version\":\"0.8.4+commit.c7e474f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"details\":\"Interface of the ERC20 standard as defined in the EIP.\",\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/interface/IOcxBalancer.sol\":\"IOcxBalancer\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/common/OcxCommon.sol\":{\"keccak256\":\"0x1499f155ed5c7c874bf6dffba8167d1f1961cff4c181ec0e0c3e5e9ec550428c\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://93cf3dddac95e72a722c178e87d9349b86d73b8f5d9f0ce78ec9e296557d33b4\",\"dweb:/ipfs/QmdwkC7qQ9uATSZpxojk1aL46u9tpZkynRbEQncWGtjWXJ\"]},\"project:/contracts/interface/IOcxBalancer.sol\":{\"keccak256\":\"0x40beadc105fff855f970afb88a78228f693b5f5ccfc8a97b93dc7602fbb2b2bc\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://a33481f6c2c71b902b3c1e6511f5a108f8041f90e1d3b5aea5b44be4e5ef71df\",\"dweb:/ipfs/QmPQDha7TSgRDcgd2nJFP22fYv6hGqpr1Zpx3ViNHCj3AX\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.4+commit.c7e474f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"details\":\"Interface of the ERC20 standard as defined in the EIP.\",\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/interface/IOcxBalancer.sol\":\"IOcxBalancer\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/common/OcxCommon.sol\":{\"keccak256\":\"0xe93795dd025314800affd42ecdf29e6df130be0f03970832722497db01b29bf6\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://a7eeb74ade151c6a799eb7dfb1214dda8ac803e3723b9363be54c3ec925ba6f2\",\"dweb:/ipfs/Qmbw7sS5MreiXK7HJsqfNQWWTjzSSpuJ81yw35icYKxbG2\"]},\"project:/contracts/interface/IOcxBalancer.sol\":{\"keccak256\":\"0x40beadc105fff855f970afb88a78228f693b5f5ccfc8a97b93dc7602fbb2b2bc\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://a33481f6c2c71b902b3c1e6511f5a108f8041f90e1d3b5aea5b44be4e5ef71df\",\"dweb:/ipfs/QmPQDha7TSgRDcgd2nJFP22fYv6hGqpr1Zpx3ViNHCj3AX\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
@@ -15,45 +15,45 @@
     "absolutePath": "project:/contracts/interface/IOcxBalancer.sol",
     "exportedSymbols": {
       "CommonContracts": [
-        6791
+        6694
       ],
       "CurrencyIndex": [
-        6800
+        6703
       ],
       "CurrencyPriceInfo": [
-        6812
+        6715
       ],
       "FeeType": [
-        6780
+        6683
       ],
       "IOcxBalancer": [
-        6995
+        6751
       ],
       "OcxPrice": [
-        6805
+        6708
       ],
       "POOL_FEE": [
-        6821
+        6724
       ],
       "QUOTE_DECIMALS": [
-        6824
+        6727
       ],
       "QUOTE_MULTIPLIER": [
-        6829
+        6732
       ],
       "UNISWAP_V3_QUOTER_ADDRESS": [
-        6818
+        6721
       ],
       "UNISWAP_V3_ROUTER_ADDRESS": [
-        6815
+        6718
       ]
     },
-    "id": 6996,
+    "id": 6752,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6992,
+        "id": 6748,
         "literals": [
           "solidity",
           "^",
@@ -61,17 +61,17 @@
           ".0"
         ],
         "nodeType": "PragmaDirective",
-        "src": "33:23:34"
+        "src": "33:23:29"
       },
       {
         "absolutePath": "project:/contracts/common/OcxCommon.sol",
         "file": "../common/OcxCommon.sol",
-        "id": 6993,
+        "id": 6749,
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
-        "scope": 6996,
-        "sourceUnit": 6830,
-        "src": "57:33:34",
+        "scope": 6752,
+        "sourceUnit": 6733,
+        "src": "57:33:29",
         "symbolAliases": [],
         "unitAlias": ""
       },
@@ -81,26 +81,26 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 6994,
+          "id": 6750,
           "nodeType": "StructuredDocumentation",
-          "src": "92:70:34",
+          "src": "92:70:29",
           "text": " @dev Interface of the ERC20 standard as defined in the EIP."
         },
         "fullyImplemented": true,
-        "id": 6995,
+        "id": 6751,
         "linearizedBaseContracts": [
-          6995
+          6751
         ],
         "name": "IOcxBalancer",
-        "nameLocation": "173:12:34",
+        "nameLocation": "173:12:29",
         "nodeType": "ContractDefinition",
         "nodes": [],
-        "scope": 6996,
-        "src": "163:26:34",
+        "scope": 6752,
+        "src": "163:26:29",
         "usedErrors": []
       }
     ],
-    "src": "33:157:34"
+    "src": "33:157:29"
   },
   "compiler": {
     "name": "solc",
@@ -108,7 +108,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.7",
-  "updatedAt": "2022-05-03T09:56:55.969Z",
+  "updatedAt": "2022-05-04T01:15:13.901Z",
   "devdoc": {
     "details": "Interface of the ERC20 standard as defined in the EIP.",
     "kind": "dev",
