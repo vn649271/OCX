@@ -78,8 +78,7 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function",
-      "constant": true
+      "type": "function"
     },
     {
       "inputs": [
@@ -122,8 +121,7 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function",
-      "constant": true
+      "type": "function"
     },
     {
       "inputs": [
@@ -184,8 +182,7 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function",
-      "constant": true
+      "type": "function"
     },
     {
       "inputs": [],
@@ -198,8 +195,7 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function",
-      "constant": true
+      "type": "function"
     },
     {
       "inputs": [],
@@ -212,8 +208,7 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function",
-      "constant": true
+      "type": "function"
     },
     {
       "inputs": [
@@ -270,8 +265,7 @@
     },
     {
       "stateMutability": "payable",
-      "type": "receive",
-      "payable": true
+      "type": "receive"
     },
     {
       "inputs": [],
@@ -284,8 +278,7 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function",
-      "constant": true
+      "type": "function"
     }
   ],
   "metadata": "{\"compiler\":{\"version\":\"0.8.4+commit.c7e474f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"}],\"name\":\"allowance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"decimals\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"subtractedValue\",\"type\":\"uint256\"}],\"name\":\"decreaseAllowance\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"addedValue\",\"type\":\"uint256\"}],\"name\":\"increaseAllowance\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalSupply\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"transfer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"stateMutability\":\"payable\",\"type\":\"receive\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"allowance(address,address)\":{\"details\":\"See {IERC20-allowance}.\"},\"approve(address,uint256)\":{\"details\":\"See {IERC20-approve}. NOTE: If `amount` is the maximum `uint256`, the allowance is not updated on `transferFrom`. This is semantically equivalent to an infinite approval. Requirements: - `spender` cannot be the zero address.\"},\"balanceOf(address)\":{\"details\":\"See {IERC20-balanceOf}.\"},\"decimals()\":{\"details\":\"Returns the number of decimals used to get its user representation. For example, if `decimals` equals `2`, a balance of `505` tokens should be displayed to a user as `5.05` (`505 / 10 ** 2`). Tokens usually opt for a value of 18, imitating the relationship between Ether and Wei. This is the value {ERC20} uses, unless this function is overridden; NOTE: This information is only used for _display_ purposes: it in no way affects any of the arithmetic of the contract, including {IERC20-balanceOf} and {IERC20-transfer}.\"},\"decreaseAllowance(address,uint256)\":{\"details\":\"Atomically decreases the allowance granted to `spender` by the caller. This is an alternative to {approve} that can be used as a mitigation for problems described in {IERC20-approve}. Emits an {Approval} event indicating the updated allowance. Requirements: - `spender` cannot be the zero address. - `spender` must have allowance for the caller of at least `subtractedValue`.\"},\"increaseAllowance(address,uint256)\":{\"details\":\"Atomically increases the allowance granted to `spender` by the caller. This is an alternative to {approve} that can be used as a mitigation for problems described in {IERC20-approve}. Emits an {Approval} event indicating the updated allowance. Requirements: - `spender` cannot be the zero address.\"},\"name()\":{\"details\":\"Returns the name of the token.\"},\"symbol()\":{\"details\":\"Returns the symbol of the token, usually a shorter version of the name.\"},\"totalSupply()\":{\"details\":\"See {IERC20-totalSupply}.\"},\"transfer(address,uint256)\":{\"details\":\"See {IERC20-transfer}. Requirements: - `to` cannot be the zero address. - the caller must have a balance of at least `amount`.\"},\"transferFrom(address,address,uint256)\":{\"details\":\"See {IERC20-transferFrom}. Emits an {Approval} event indicating the updated allowance. This is not required by the EIP. See the note at the beginning of {ERC20}. NOTE: Does not update the allowance if the current allowance is the maximum `uint256`. Requirements: - `from` and `to` cannot be the zero address. - `from` must have a balance of at least `amount`. - the caller must have allowance for ``from``'s tokens of at least `amount`.\"}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/ganache-token/WEthToken.sol\":\"WEthToken\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"@openzeppelin/contracts/token/ERC20/ERC20.sol\":{\"keccak256\":\"0xe0c8b625a79bac0fe80f17cfb521e072805cc9cef1c96a5caf45b264e74812fa\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://12fd1efc9ad061ef675bd50fb0c8e3c6f2952a09f8df0e3c688b8d81b8918838\",\"dweb:/ipfs/QmawN6PjTwy91pU7ANjCSgbsLc8TDA6hwu9GsFFaNSuhb5\"]},\"@openzeppelin/contracts/token/ERC20/IERC20.sol\":{\"keccak256\":\"0x9750c6b834f7b43000631af5cc30001c5f547b3ceb3635488f140f60e897ea6b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5a7d5b1ef5d8d5889ad2ed89d8619c09383b80b72ab226e0fe7bde1636481e34\",\"dweb:/ipfs/QmebXWgtEfumQGBdVeM6c71McLixYXQP5Bk6kKXuoY4Bmr\"]},\"@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol\":{\"keccak256\":\"0x8de418a5503946cabe331f35fe242d3201a73f67f77aaeb7110acb1f30423aca\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5a376d3dda2cb70536c0a45c208b29b34ac560c4cb4f513a42079f96ba47d2dd\",\"dweb:/ipfs/QmZQg6gn1sUpM8wHzwNvSnihumUCAhxD119MpXeKp8B9s8\"]},\"@openzeppelin/contracts/utils/Context.sol\":{\"keccak256\":\"0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6df0ddf21ce9f58271bdfaa85cde98b200ef242a05a3f85c2bc10a8294800a92\",\"dweb:/ipfs/QmRK2Y5Yc6BK7tGKkgsgn3aJEQGi5aakeSPZvS65PV8Xp3\"]},\"project:/contracts/ganache-token/WEthToken.sol\":{\"keccak256\":\"0x9288835cf9710e9a3d3f5af8e939907cdee61cc011a6a410c795748d74bd1803\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://10b9583e4462606ebf4704eb8294c208ef4ed093be03fdfc0dca291506a2b856\",\"dweb:/ipfs/QmP2fyJJsuGfjR4Kom9eDrubbpg5vjCoFbqLhc4f5ai2ty\"]}},\"version\":1}",
@@ -8084,7 +8077,7 @@
   "sourceMap": "119:367:32:-:0;;;225:150;;;;;;;;;;1978:113:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2052:5;2044;:13;;;;;;;;;;;;:::i;:::-;;2077:7;2067;:17;;;;;;;;;;;;:::i;:::-;;1978:113;;297:2:32::1;285:9;;:14;;;;;;;;;;;;;;;;;;320:47;332:10;344:22;320:11;;;;;:47;;:::i;:::-;119:367:::0;;8411:389:0;8513:1;8494:21;;:7;:21;;;;8486:65;;;;;;;;;;;;:::i;:::-;;;;;;;;;8562:49;8591:1;8595:7;8604:6;8562:20;;;:49;;:::i;:::-;8638:6;8622:12;;:22;;;;;;;:::i;:::-;;;;;;;;8676:6;8654:9;:18;8664:7;8654:18;;;;;;;;;;;;;;;;:28;;;;;;;:::i;:::-;;;;;;;;8718:7;8697:37;;8714:1;8697:37;;;8727:6;8697:37;;;;;;:::i;:::-;;;;;;;;8745:48;8773:1;8777:7;8786:6;8745:19;;;:48;;:::i;:::-;8411:389;;:::o;11795:121::-;;;;:::o;12504:120::-;;;;:::o;119:367:32:-;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;:::o;7:366:42:-;149:3;170:67;234:2;229:3;170:67;:::i;:::-;163:74;;246:93;335:3;246:93;:::i;:::-;364:2;359:3;355:12;348:19;;153:220;;;:::o;379:118::-;466:24;484:5;466:24;:::i;:::-;461:3;454:37;444:53;;:::o;503:419::-;669:4;707:2;696:9;692:18;684:26;;756:9;750:4;746:20;742:1;731:9;727:17;720:47;784:131;910:4;784:131;:::i;:::-;776:139;;674:248;;;:::o;928:222::-;1021:4;1059:2;1048:9;1044:18;1036:26;;1072:71;1140:1;1129:9;1125:17;1116:6;1072:71;:::i;:::-;1026:124;;;;:::o;1156:169::-;1240:11;1274:6;1269:3;1262:19;1314:4;1309:3;1305:14;1290:29;;1252:73;;;;:::o;1331:305::-;1371:3;1390:20;1408:1;1390:20;:::i;:::-;1385:25;;1424:20;1442:1;1424:20;:::i;:::-;1419:25;;1578:1;1510:66;1506:74;1503:1;1500:81;1497:2;;;1584:18;;:::i;:::-;1497:2;1628:1;1625;1621:9;1614:16;;1375:261;;;;:::o;1642:77::-;1679:7;1708:5;1697:16;;1687:32;;;:::o;1725:320::-;1769:6;1806:1;1800:4;1796:12;1786:22;;1853:1;1847:4;1843:12;1874:18;1864:2;;1930:4;1922:6;1918:17;1908:27;;1864:2;1992;1984:6;1981:14;1961:18;1958:38;1955:2;;;2011:18;;:::i;:::-;1955:2;1776:269;;;;:::o;2051:180::-;2099:77;2096:1;2089:88;2196:4;2193:1;2186:15;2220:4;2217:1;2210:15;2237:180;2285:77;2282:1;2275:88;2382:4;2379:1;2372:15;2406:4;2403:1;2396:15;2423:181;2563:33;2559:1;2551:6;2547:14;2540:57;2529:75;:::o;119:367:32:-;;;;;;;",
   "deployedSourceMap": "119:367:32:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2156:98:0;;;;;;;;;;;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;4433:197;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;3244:106;;;;;;;;;;;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;5192:286;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;383:100:32;;;;;;;;;;;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;5873:234:0;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;3408:125;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;2367:102;;;;;;;;;;;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;6594:427;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;3729:189;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;3976:149;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;2156:98;2210:13;2242:5;2235:12;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2156:98;:::o;4433:197::-;4516:4;4532:13;4548:12;:10;:12::i;:::-;4532:28;;4570:32;4579:5;4586:7;4595:6;4570:8;:32::i;:::-;4619:4;4612:11;;;4433:197;;;;:::o;3244:106::-;3305:7;3331:12;;3324:19;;3244:106;:::o;5192:286::-;5319:4;5335:15;5353:12;:10;:12::i;:::-;5335:30;;5375:38;5391:4;5397:7;5406:6;5375:15;:38::i;:::-;5423:27;5433:4;5439:2;5443:6;5423:9;:27::i;:::-;5467:4;5460:11;;;5192:286;;;;;:::o;383:100:32:-;441:5;466:9;;;;;;;;;;;459:16;;383:100;:::o;5873:234:0:-;5961:4;5977:13;5993:12;:10;:12::i;:::-;5977:28;;6015:64;6024:5;6031:7;6068:10;6040:25;6050:5;6057:7;6040:9;:25::i;:::-;:38;;;;:::i;:::-;6015:8;:64::i;:::-;6096:4;6089:11;;;5873:234;;;;:::o;3408:125::-;3482:7;3508:9;:18;3518:7;3508:18;;;;;;;;;;;;;;;;3501:25;;3408:125;;;:::o;2367:102::-;2423:13;2455:7;2448:14;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2367:102;:::o;6594:427::-;6687:4;6703:13;6719:12;:10;:12::i;:::-;6703:28;;6741:24;6768:25;6778:5;6785:7;6768:9;:25::i;:::-;6741:52;;6831:15;6811:16;:35;;6803:85;;;;;;;;;;;;:::i;:::-;;;;;;;;;6922:60;6931:5;6938:7;6966:15;6947:16;:34;6922:8;:60::i;:::-;7010:4;7003:11;;;;6594:427;;;;:::o;3729:189::-;3808:4;3824:13;3840:12;:10;:12::i;:::-;3824:28;;3862;3872:5;3879:2;3883:6;3862:9;:28::i;:::-;3907:4;3900:11;;;3729:189;;;;:::o;3976:149::-;4065:7;4091:11;:18;4103:5;4091:18;;;;;;;;;;;;;;;:27;4110:7;4091:27;;;;;;;;;;;;;;;;4084:34;;3976:149;;;;:::o;8411:389::-;8513:1;8494:21;;:7;:21;;;;8486:65;;;;;;;;;;;;:::i;:::-;;;;;;;;;8562:49;8591:1;8595:7;8604:6;8562:20;:49::i;:::-;8638:6;8622:12;;:22;;;;;;;:::i;:::-;;;;;;;;8676:6;8654:9;:18;8664:7;8654:18;;;;;;;;;;;;;;;;:28;;;;;;;:::i;:::-;;;;;;;;8718:7;8697:37;;8714:1;8697:37;;;8727:6;8697:37;;;;;;:::i;:::-;;;;;;;;8745:48;8773:1;8777:7;8786:6;8745:19;:48::i;:::-;8411:389;;:::o;640:96:8:-;693:7;719:10;712:17;;640:96;:::o;10119:370:0:-;10267:1;10250:19;;:5;:19;;;;10242:68;;;;;;;;;;;;:::i;:::-;;;;;;;;;10347:1;10328:21;;:7;:21;;;;10320:68;;;;;;;;;;;;:::i;:::-;;;;;;;;;10429:6;10399:11;:18;10411:5;10399:18;;;;;;;;;;;;;;;:27;10418:7;10399:27;;;;;;;;;;;;;;;:36;;;;10466:7;10450:32;;10459:5;10450:32;;;10475:6;10450:32;;;;;;:::i;:::-;;;;;;;;10119:370;;;:::o;10770:441::-;10900:24;10927:25;10937:5;10944:7;10927:9;:25::i;:::-;10900:52;;10986:17;10966:16;:37;10962:243;;11047:6;11027:16;:26;;11019:68;;;;;;;;;;;;:::i;:::-;;;;;;;;;11129:51;11138:5;11145:7;11173:6;11154:16;:25;11129:8;:51::i;:::-;10962:243;10770:441;;;;:::o;7484:651::-;7626:1;7610:18;;:4;:18;;;;7602:68;;;;;;;;;;;;:::i;:::-;;;;;;;;;7702:1;7688:16;;:2;:16;;;;7680:64;;;;;;;;;;;;:::i;:::-;;;;;;;;;7755:38;7776:4;7782:2;7786:6;7755:20;:38::i;:::-;7804:19;7826:9;:15;7836:4;7826:15;;;;;;;;;;;;;;;;7804:37;;7874:6;7859:11;:21;;7851:72;;;;;;;;;;;;:::i;:::-;;;;;;;;;7989:6;7975:11;:20;7957:9;:15;7967:4;7957:15;;;;;;;;;;;;;;;:38;;;;8032:6;8015:9;:13;8025:2;8015:13;;;;;;;;;;;;;;;;:23;;;;;;;:::i;:::-;;;;;;;;8069:2;8054:26;;8063:4;8054:26;;;8073:6;8054:26;;;;;;:::i;:::-;;;;;;;;8091:37;8111:4;8117:2;8121:6;8091:19;:37::i;:::-;7484:651;;;;:::o;11795:121::-;;;;:::o;12504:120::-;;;;:::o;7:139:42:-;53:5;91:6;78:20;69:29;;107:33;134:5;107:33;:::i;:::-;59:87;;;;:::o;152:139::-;198:5;236:6;223:20;214:29;;252:33;279:5;252:33;:::i;:::-;204:87;;;;:::o;297:262::-;356:6;405:2;393:9;384:7;380:23;376:32;373:2;;;421:1;418;411:12;373:2;464:1;489:53;534:7;525:6;514:9;510:22;489:53;:::i;:::-;479:63;;435:117;363:196;;;;:::o;565:407::-;633:6;641;690:2;678:9;669:7;665:23;661:32;658:2;;;706:1;703;696:12;658:2;749:1;774:53;819:7;810:6;799:9;795:22;774:53;:::i;:::-;764:63;;720:117;876:2;902:53;947:7;938:6;927:9;923:22;902:53;:::i;:::-;892:63;;847:118;648:324;;;;;:::o;978:552::-;1055:6;1063;1071;1120:2;1108:9;1099:7;1095:23;1091:32;1088:2;;;1136:1;1133;1126:12;1088:2;1179:1;1204:53;1249:7;1240:6;1229:9;1225:22;1204:53;:::i;:::-;1194:63;;1150:117;1306:2;1332:53;1377:7;1368:6;1357:9;1353:22;1332:53;:::i;:::-;1322:63;;1277:118;1434:2;1460:53;1505:7;1496:6;1485:9;1481:22;1460:53;:::i;:::-;1450:63;;1405:118;1078:452;;;;;:::o;1536:407::-;1604:6;1612;1661:2;1649:9;1640:7;1636:23;1632:32;1629:2;;;1677:1;1674;1667:12;1629:2;1720:1;1745:53;1790:7;1781:6;1770:9;1766:22;1745:53;:::i;:::-;1735:63;;1691:117;1847:2;1873:53;1918:7;1909:6;1898:9;1894:22;1873:53;:::i;:::-;1863:63;;1818:118;1619:324;;;;;:::o;1949:109::-;2030:21;2045:5;2030:21;:::i;:::-;2025:3;2018:34;2008:50;;:::o;2064:364::-;2152:3;2180:39;2213:5;2180:39;:::i;:::-;2235:71;2299:6;2294:3;2235:71;:::i;:::-;2228:78;;2315:52;2360:6;2355:3;2348:4;2341:5;2337:16;2315:52;:::i;:::-;2392:29;2414:6;2392:29;:::i;:::-;2387:3;2383:39;2376:46;;2156:272;;;;;:::o;2434:366::-;2576:3;2597:67;2661:2;2656:3;2597:67;:::i;:::-;2590:74;;2673:93;2762:3;2673:93;:::i;:::-;2791:2;2786:3;2782:12;2775:19;;2580:220;;;:::o;2806:366::-;2948:3;2969:67;3033:2;3028:3;2969:67;:::i;:::-;2962:74;;3045:93;3134:3;3045:93;:::i;:::-;3163:2;3158:3;3154:12;3147:19;;2952:220;;;:::o;3178:366::-;3320:3;3341:67;3405:2;3400:3;3341:67;:::i;:::-;3334:74;;3417:93;3506:3;3417:93;:::i;:::-;3535:2;3530:3;3526:12;3519:19;;3324:220;;;:::o;3550:366::-;3692:3;3713:67;3777:2;3772:3;3713:67;:::i;:::-;3706:74;;3789:93;3878:3;3789:93;:::i;:::-;3907:2;3902:3;3898:12;3891:19;;3696:220;;;:::o;3922:366::-;4064:3;4085:67;4149:2;4144:3;4085:67;:::i;:::-;4078:74;;4161:93;4250:3;4161:93;:::i;:::-;4279:2;4274:3;4270:12;4263:19;;4068:220;;;:::o;4294:366::-;4436:3;4457:67;4521:2;4516:3;4457:67;:::i;:::-;4450:74;;4533:93;4622:3;4533:93;:::i;:::-;4651:2;4646:3;4642:12;4635:19;;4440:220;;;:::o;4666:366::-;4808:3;4829:67;4893:2;4888:3;4829:67;:::i;:::-;4822:74;;4905:93;4994:3;4905:93;:::i;:::-;5023:2;5018:3;5014:12;5007:19;;4812:220;;;:::o;5038:366::-;5180:3;5201:67;5265:2;5260:3;5201:67;:::i;:::-;5194:74;;5277:93;5366:3;5277:93;:::i;:::-;5395:2;5390:3;5386:12;5379:19;;5184:220;;;:::o;5410:118::-;5497:24;5515:5;5497:24;:::i;:::-;5492:3;5485:37;5475:53;;:::o;5534:112::-;5617:22;5633:5;5617:22;:::i;:::-;5612:3;5605:35;5595:51;;:::o;5652:210::-;5739:4;5777:2;5766:9;5762:18;5754:26;;5790:65;5852:1;5841:9;5837:17;5828:6;5790:65;:::i;:::-;5744:118;;;;:::o;5868:313::-;5981:4;6019:2;6008:9;6004:18;5996:26;;6068:9;6062:4;6058:20;6054:1;6043:9;6039:17;6032:47;6096:78;6169:4;6160:6;6096:78;:::i;:::-;6088:86;;5986:195;;;;:::o;6187:419::-;6353:4;6391:2;6380:9;6376:18;6368:26;;6440:9;6434:4;6430:20;6426:1;6415:9;6411:17;6404:47;6468:131;6594:4;6468:131;:::i;:::-;6460:139;;6358:248;;;:::o;6612:419::-;6778:4;6816:2;6805:9;6801:18;6793:26;;6865:9;6859:4;6855:20;6851:1;6840:9;6836:17;6829:47;6893:131;7019:4;6893:131;:::i;:::-;6885:139;;6783:248;;;:::o;7037:419::-;7203:4;7241:2;7230:9;7226:18;7218:26;;7290:9;7284:4;7280:20;7276:1;7265:9;7261:17;7254:47;7318:131;7444:4;7318:131;:::i;:::-;7310:139;;7208:248;;;:::o;7462:419::-;7628:4;7666:2;7655:9;7651:18;7643:26;;7715:9;7709:4;7705:20;7701:1;7690:9;7686:17;7679:47;7743:131;7869:4;7743:131;:::i;:::-;7735:139;;7633:248;;;:::o;7887:419::-;8053:4;8091:2;8080:9;8076:18;8068:26;;8140:9;8134:4;8130:20;8126:1;8115:9;8111:17;8104:47;8168:131;8294:4;8168:131;:::i;:::-;8160:139;;8058:248;;;:::o;8312:419::-;8478:4;8516:2;8505:9;8501:18;8493:26;;8565:9;8559:4;8555:20;8551:1;8540:9;8536:17;8529:47;8593:131;8719:4;8593:131;:::i;:::-;8585:139;;8483:248;;;:::o;8737:419::-;8903:4;8941:2;8930:9;8926:18;8918:26;;8990:9;8984:4;8980:20;8976:1;8965:9;8961:17;8954:47;9018:131;9144:4;9018:131;:::i;:::-;9010:139;;8908:248;;;:::o;9162:419::-;9328:4;9366:2;9355:9;9351:18;9343:26;;9415:9;9409:4;9405:20;9401:1;9390:9;9386:17;9379:47;9443:131;9569:4;9443:131;:::i;:::-;9435:139;;9333:248;;;:::o;9587:222::-;9680:4;9718:2;9707:9;9703:18;9695:26;;9731:71;9799:1;9788:9;9784:17;9775:6;9731:71;:::i;:::-;9685:124;;;;:::o;9815:214::-;9904:4;9942:2;9931:9;9927:18;9919:26;;9955:67;10019:1;10008:9;10004:17;9995:6;9955:67;:::i;:::-;9909:120;;;;:::o;10035:99::-;10087:6;10121:5;10115:12;10105:22;;10094:40;;;:::o;10140:169::-;10224:11;10258:6;10253:3;10246:19;10298:4;10293:3;10289:14;10274:29;;10236:73;;;;:::o;10315:305::-;10355:3;10374:20;10392:1;10374:20;:::i;:::-;10369:25;;10408:20;10426:1;10408:20;:::i;:::-;10403:25;;10562:1;10494:66;10490:74;10487:1;10484:81;10481:2;;;10568:18;;:::i;:::-;10481:2;10612:1;10609;10605:9;10598:16;;10359:261;;;;:::o;10626:96::-;10663:7;10692:24;10710:5;10692:24;:::i;:::-;10681:35;;10671:51;;;:::o;10728:90::-;10762:7;10805:5;10798:13;10791:21;10780:32;;10770:48;;;:::o;10824:126::-;10861:7;10901:42;10894:5;10890:54;10879:65;;10869:81;;;:::o;10956:77::-;10993:7;11022:5;11011:16;;11001:32;;;:::o;11039:86::-;11074:7;11114:4;11107:5;11103:16;11092:27;;11082:43;;;:::o;11131:307::-;11199:1;11209:113;11223:6;11220:1;11217:13;11209:113;;;11308:1;11303:3;11299:11;11293:18;11289:1;11284:3;11280:11;11273:39;11245:2;11242:1;11238:10;11233:15;;11209:113;;;11340:6;11337:1;11334:13;11331:2;;;11420:1;11411:6;11406:3;11402:16;11395:27;11331:2;11180:258;;;;:::o;11444:320::-;11488:6;11525:1;11519:4;11515:12;11505:22;;11572:1;11566:4;11562:12;11593:18;11583:2;;11649:4;11641:6;11637:17;11627:27;;11583:2;11711;11703:6;11700:14;11680:18;11677:38;11674:2;;;11730:18;;:::i;:::-;11674:2;11495:269;;;;:::o;11770:180::-;11818:77;11815:1;11808:88;11915:4;11912:1;11905:15;11939:4;11936:1;11929:15;11956:180;12004:77;12001:1;11994:88;12101:4;12098:1;12091:15;12125:4;12122:1;12115:15;12142:102;12183:6;12234:2;12230:7;12225:2;12218:5;12214:14;12210:28;12200:38;;12190:54;;;:::o;12250:222::-;12390:34;12386:1;12378:6;12374:14;12367:58;12459:5;12454:2;12446:6;12442:15;12435:30;12356:116;:::o;12478:221::-;12618:34;12614:1;12606:6;12602:14;12595:58;12687:4;12682:2;12674:6;12670:15;12663:29;12584:115;:::o;12705:179::-;12845:31;12841:1;12833:6;12829:14;12822:55;12811:73;:::o;12890:225::-;13030:34;13026:1;13018:6;13014:14;13007:58;13099:8;13094:2;13086:6;13082:15;13075:33;12996:119;:::o;13121:224::-;13261:34;13257:1;13249:6;13245:14;13238:58;13330:7;13325:2;13317:6;13313:15;13306:32;13227:118;:::o;13351:223::-;13491:34;13487:1;13479:6;13475:14;13468:58;13560:6;13555:2;13547:6;13543:15;13536:31;13457:117;:::o;13580:224::-;13720:34;13716:1;13708:6;13704:14;13697:58;13789:7;13784:2;13776:6;13772:15;13765:32;13686:118;:::o;13810:181::-;13950:33;13946:1;13938:6;13934:14;13927:57;13916:75;:::o;13997:122::-;14070:24;14088:5;14070:24;:::i;:::-;14063:5;14060:35;14050:2;;14109:1;14106;14099:12;14050:2;14040:79;:::o;14125:122::-;14198:24;14216:5;14198:24;:::i;:::-;14191:5;14188:35;14178:2;;14237:1;14234;14227:12;14178:2;14168:79;:::o",
   "source": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.0;\r\n\r\nimport \"@openzeppelin/contracts/token/ERC20/ERC20.sol\";\r\n\r\ncontract WEthToken is ERC20 {\r\n\r\n    uint8   private _decimals;\r\n    receive() external payable {}\r\n\r\n    constructor() ERC20(\"Ganache WETH Coin\", \"WETH\") {\r\n        _decimals = 18; // In Wei\r\n        super._mint(msg.sender, (10 ** 9) * (10 ** 18));\r\n    }\r\n\r\n    function decimals() public view virtual override returns (uint8) {\r\n        return _decimals;\r\n    }\r\n}\r\n",
-  "sourcePath": "F:\\Workspace\\OpenChainDex\\OpenchainTestVersion\\server\\contracts\\ganache-token\\WEthToken.sol",
+  "sourcePath": "E:\\Work\\OpenchainTestVersion\\server\\contracts\\ganache-token\\WEthToken.sol",
   "ast": {
     "absolutePath": "project:/contracts/ganache-token/WEthToken.sol",
     "exportedSymbols": {
@@ -8101,15 +8094,15 @@
         688
       ],
       "WEthToken": [
-        6824
+        6866
       ]
     },
-    "id": 6825,
+    "id": 6867,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6777,
+        "id": 6819,
         "literals": [
           "solidity",
           "^",
@@ -8122,10 +8115,10 @@
       {
         "absolutePath": "@openzeppelin/contracts/token/ERC20/ERC20.sol",
         "file": "@openzeppelin/contracts/token/ERC20/ERC20.sol",
-        "id": 6778,
+        "id": 6820,
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
-        "scope": 6825,
+        "scope": 6867,
         "sourceUnit": 586,
         "src": "60:55:32",
         "symbolAliases": [],
@@ -8136,13 +8129,13 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 6779,
+              "id": 6821,
               "name": "ERC20",
               "nodeType": "IdentifierPath",
               "referencedDeclaration": 585,
               "src": "141:5:32"
             },
-            "id": 6780,
+            "id": 6822,
             "nodeType": "InheritanceSpecifier",
             "src": "141:5:32"
           }
@@ -8150,9 +8143,9 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "fullyImplemented": true,
-        "id": 6824,
+        "id": 6866,
         "linearizedBaseContracts": [
-          6824,
+          6866,
           585,
           688,
           663,
@@ -8164,12 +8157,12 @@
         "nodes": [
           {
             "constant": false,
-            "id": 6782,
+            "id": 6824,
             "mutability": "mutable",
             "name": "_decimals",
             "nameLocation": "172:9:32",
             "nodeType": "VariableDeclaration",
-            "scope": 6824,
+            "scope": 6866,
             "src": "156:25:32",
             "stateVariable": true,
             "storageLocation": "default",
@@ -8178,7 +8171,7 @@
               "typeString": "uint8"
             },
             "typeName": {
-              "id": 6781,
+              "id": 6823,
               "name": "uint8",
               "nodeType": "ElementaryTypeName",
               "src": "156:5:32",
@@ -8191,12 +8184,12 @@
           },
           {
             "body": {
-              "id": 6785,
+              "id": 6827,
               "nodeType": "Block",
               "src": "215:2:32",
               "statements": []
             },
-            "id": 6786,
+            "id": 6828,
             "implemented": true,
             "kind": "receive",
             "modifiers": [],
@@ -8204,18 +8197,18 @@
             "nameLocation": "-1:-1:-1",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6783,
+              "id": 6825,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "195:2:32"
             },
             "returnParameters": {
-              "id": 6784,
+              "id": 6826,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "215:0:32"
             },
-            "scope": 6824,
+            "scope": 6866,
             "src": "188:29:32",
             "stateMutability": "payable",
             "virtual": false,
@@ -8223,23 +8216,23 @@
           },
           {
             "body": {
-              "id": 6813,
+              "id": 6855,
               "nodeType": "Block",
               "src": "274:101:32",
               "statements": [
                 {
                   "expression": {
-                    "id": 6795,
+                    "id": 6837,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
-                      "id": 6793,
+                      "id": 6835,
                       "name": "_decimals",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 6782,
+                      "referencedDeclaration": 6824,
                       "src": "285:9:32",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint8",
@@ -8250,7 +8243,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "3138",
-                      "id": 6794,
+                      "id": 6836,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -8270,7 +8263,7 @@
                       "typeString": "uint8"
                     }
                   },
-                  "id": 6796,
+                  "id": 6838,
                   "nodeType": "ExpressionStatement",
                   "src": "285:14:32"
                 },
@@ -8279,7 +8272,7 @@
                     "arguments": [
                       {
                         "expression": {
-                          "id": 6800,
+                          "id": 6842,
                           "name": "msg",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
@@ -8290,7 +8283,7 @@
                             "typeString": "msg"
                           }
                         },
-                        "id": 6801,
+                        "id": 6843,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -8308,7 +8301,7 @@
                           "typeIdentifier": "t_rational_1000000000000000000000000000_by_1",
                           "typeString": "int_const 1000000000000000000000000000"
                         },
-                        "id": 6810,
+                        "id": 6852,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -8320,14 +8313,14 @@
                                 "typeIdentifier": "t_rational_1000000000_by_1",
                                 "typeString": "int_const 1000000000"
                               },
-                              "id": 6804,
+                              "id": 6846,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": true,
                               "lValueRequested": false,
                               "leftExpression": {
                                 "hexValue": "3130",
-                                "id": 6802,
+                                "id": 6844,
                                 "isConstant": false,
                                 "isLValue": false,
                                 "isPure": true,
@@ -8345,7 +8338,7 @@
                               "operator": "**",
                               "rightExpression": {
                                 "hexValue": "39",
-                                "id": 6803,
+                                "id": 6845,
                                 "isConstant": false,
                                 "isLValue": false,
                                 "isPure": true,
@@ -8366,7 +8359,7 @@
                               }
                             }
                           ],
-                          "id": 6805,
+                          "id": 6847,
                           "isConstant": false,
                           "isInlineArray": false,
                           "isLValue": false,
@@ -8388,14 +8381,14 @@
                                 "typeIdentifier": "t_rational_1000000000000000000_by_1",
                                 "typeString": "int_const 1000000000000000000"
                               },
-                              "id": 6808,
+                              "id": 6850,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": true,
                               "lValueRequested": false,
                               "leftExpression": {
                                 "hexValue": "3130",
-                                "id": 6806,
+                                "id": 6848,
                                 "isConstant": false,
                                 "isLValue": false,
                                 "isPure": true,
@@ -8413,7 +8406,7 @@
                               "operator": "**",
                               "rightExpression": {
                                 "hexValue": "3138",
-                                "id": 6807,
+                                "id": 6849,
                                 "isConstant": false,
                                 "isLValue": false,
                                 "isPure": true,
@@ -8434,7 +8427,7 @@
                               }
                             }
                           ],
-                          "id": 6809,
+                          "id": 6851,
                           "isConstant": false,
                           "isInlineArray": false,
                           "isLValue": false,
@@ -8466,18 +8459,18 @@
                         }
                       ],
                       "expression": {
-                        "id": 6797,
+                        "id": 6839,
                         "name": "super",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
                         "referencedDeclaration": 4294967271,
                         "src": "320:5:32",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_type$_t_super$_WEthToken_$6824_$",
+                          "typeIdentifier": "t_type$_t_super$_WEthToken_$6866_$",
                           "typeString": "type(contract super WEthToken)"
                         }
                       },
-                      "id": 6799,
+                      "id": 6841,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -8491,7 +8484,7 @@
                         "typeString": "function (address,uint256)"
                       }
                     },
-                    "id": 6811,
+                    "id": 6853,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -8506,13 +8499,13 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 6812,
+                  "id": 6854,
                   "nodeType": "ExpressionStatement",
                   "src": "320:47:32"
                 }
               ]
             },
-            "id": 6814,
+            "id": 6856,
             "implemented": true,
             "kind": "constructor",
             "modifiers": [
@@ -8520,7 +8513,7 @@
                 "arguments": [
                   {
                     "hexValue": "47616e61636865205745544820436f696e",
-                    "id": 6789,
+                    "id": 6831,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": true,
@@ -8536,7 +8529,7 @@
                   },
                   {
                     "hexValue": "57455448",
-                    "id": 6790,
+                    "id": 6832,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": true,
@@ -8551,10 +8544,10 @@
                     "value": "WETH"
                   }
                 ],
-                "id": 6791,
+                "id": 6833,
                 "kind": "baseConstructorSpecifier",
                 "modifierName": {
-                  "id": 6788,
+                  "id": 6830,
                   "name": "ERC20",
                   "nodeType": "IdentifierPath",
                   "referencedDeclaration": 585,
@@ -8568,18 +8561,18 @@
             "nameLocation": "-1:-1:-1",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6787,
+              "id": 6829,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "236:2:32"
             },
             "returnParameters": {
-              "id": 6792,
+              "id": 6834,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "274:0:32"
             },
-            "scope": 6824,
+            "scope": 6866,
             "src": "225:150:32",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -8590,32 +8583,32 @@
               74
             ],
             "body": {
-              "id": 6822,
+              "id": 6864,
               "nodeType": "Block",
               "src": "448:35:32",
               "statements": [
                 {
                   "expression": {
-                    "id": 6820,
+                    "id": 6862,
                     "name": "_decimals",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 6782,
+                    "referencedDeclaration": 6824,
                     "src": "466:9:32",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint8",
                       "typeString": "uint8"
                     }
                   },
-                  "functionReturnParameters": 6819,
-                  "id": 6821,
+                  "functionReturnParameters": 6861,
+                  "id": 6863,
                   "nodeType": "Return",
                   "src": "459:16:32"
                 }
               ]
             },
             "functionSelector": "313ce567",
-            "id": 6823,
+            "id": 6865,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
@@ -8623,29 +8616,29 @@
             "nameLocation": "392:8:32",
             "nodeType": "FunctionDefinition",
             "overrides": {
-              "id": 6816,
+              "id": 6858,
               "nodeType": "OverrideSpecifier",
               "overrides": [],
               "src": "423:8:32"
             },
             "parameters": {
-              "id": 6815,
+              "id": 6857,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "400:2:32"
             },
             "returnParameters": {
-              "id": 6819,
+              "id": 6861,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6818,
+                  "id": 6860,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6823,
+                  "scope": 6865,
                   "src": "441:5:32",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -8654,7 +8647,7 @@
                     "typeString": "uint8"
                   },
                   "typeName": {
-                    "id": 6817,
+                    "id": 6859,
                     "name": "uint8",
                     "nodeType": "ElementaryTypeName",
                     "src": "441:5:32",
@@ -8668,14 +8661,14 @@
               ],
               "src": "440:7:32"
             },
-            "scope": 6824,
+            "scope": 6866,
             "src": "383:100:32",
             "stateMutability": "view",
             "virtual": true,
             "visibility": "public"
           }
         ],
-        "scope": 6825,
+        "scope": 6867,
         "src": "119:367:32",
         "usedErrors": []
       }
@@ -8746,8 +8739,7 @@
     }
   },
   "schemaVersion": "3.4.7",
-  "updatedAt": "2022-05-04T09:52:03.007Z",
-  "networkType": "ethereum",
+  "updatedAt": "2022-05-04T11:04:02.217Z",
   "devdoc": {
     "kind": "dev",
     "methods": {

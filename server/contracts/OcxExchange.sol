@@ -43,6 +43,7 @@ contract OcxExchange is OcxBase {
         uint _deadline
     ) public 
     returns(uint amountOut) {
+        require(quotes["OCAT"].vs["OCX"].decimals > 0, "Invalid OCAT/OCX quote");
         // transferFrom
         //    Check for allowance
         if (_tokenIn != contractAddress[CommonContracts.WETH]) {
@@ -56,10 +57,14 @@ contract OcxExchange is OcxBase {
             );
         }
         TransferHelper.safeTransferFrom(_tokenIn, msg.sender, address(this), _amountIn);
+        // 
         address recipient = msg.sender;
         if (_tokenIn == contractAddress[CommonContracts.OCAT] 
          && _tokenOut == contractAddress[CommonContracts.UNI]) {
-            uint256 ocxAmount = _amountIn * quotes["OCAT"].vs["OCX"].value;
+            uint256 ocxBalance = IERC20(contractAddress[CommonContracts.OCX]).balanceOf(address(this));
+            uint256 ocxAmount = (_amountIn * quotes["OCAT"].vs["OCX"].value) / 
+                                (10 ** quotes["OCAT"].vs["OCX"].decimals);
+            require(ocxBalance >= ocxAmount, "Insufficient OCX balance in the contract");
             IERC20(contractAddress[CommonContracts.OCX]).approve(UNISWAP_V3_ROUTER_ADDRESS, ocxAmount);
             _tokenIn = contractAddress[CommonContracts.OCX];
             _amountIn = ocxAmount;
@@ -88,7 +93,8 @@ contract OcxExchange is OcxBase {
         // Bottomhalf for UNI->OCAT swap
         if (_tokenIn == contractAddress[CommonContracts.UNI] 
         && _tokenOut == contractAddress[CommonContracts.OCAT]) {
-            uint256 ocatAmount = amountOut / quotes["OCAT"].vs["OCX"].value;
+            uint256 ocatAmount = (amountOut / quotes["OCAT"].vs["OCX"].value) / 
+                                 (10 ** quotes["OCAT"].vs["OCX"].decimals);
             IERC20(contractAddress[CommonContracts.OCAT]).transfer(msg.sender, ocatAmount);
         }
     }
