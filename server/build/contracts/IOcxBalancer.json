@@ -1,7 +1,7 @@
 {
   "contractName": "IOcxBalancer",
   "abi": [],
-  "metadata": "{\"compiler\":{\"version\":\"0.8.4+commit.c7e474f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"details\":\"Interface of the ERC20 standard as defined in the EIP.\",\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/interface/IOcxBalancer.sol\":\"IOcxBalancer\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/common/OcxCommon.sol\":{\"keccak256\":\"0xdfe3e74be20d4ae3b7f3e04b84d87d17c719a9ba4a4a95845a0b87914269e2ea\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://8c7037d82723bb4eb61fa54c461a213f3f1ee667366465699623171f25538fae\",\"dweb:/ipfs/QmcRZzX9ApPWDWigkCmjmoGRp9z7pFLfoq9KP5r6GK35h3\"]},\"project:/contracts/interface/IOcxBalancer.sol\":{\"keccak256\":\"0xace4bb60c83748b681c341faf5f165478becd94b433a470bd0ee785978e12d0e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://0ca3a3cbd6831d65f109a052210f5dea438f06321f769c94e4f2e207b1256ba8\",\"dweb:/ipfs/QmUBa9Ne3PBWkxYgJHDM1mbdwcBxmAJJGdSRq1yYFsGy2S\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.4+commit.c7e474f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"details\":\"Interface of the ERC20 standard as defined in the EIP.\",\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/interface/IOcxBalancer.sol\":\"IOcxBalancer\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/common/OcxCommon.sol\":{\"keccak256\":\"0x33834f1cb73efbc08f6a08180a83c9c9d9ff4e5cb69d6693388a3d915d0a338e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5daba313ab9a2f3d9f744df90fb696ac63a3b7fe13993ed6f39260382980eda6\",\"dweb:/ipfs/QmPrvnoEKrqBZCSW7qte6m88ewY3tAXWqv43qZUrQF5RGw\"]},\"project:/contracts/interface/IOcxBalancer.sol\":{\"keccak256\":\"0x40beadc105fff855f970afb88a78228f693b5f5ccfc8a97b93dc7602fbb2b2bc\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://a33481f6c2c71b902b3c1e6511f5a108f8041f90e1d3b5aea5b44be4e5ef71df\",\"dweb:/ipfs/QmPQDha7TSgRDcgd2nJFP22fYv6hGqpr1Zpx3ViNHCj3AX\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
@@ -9,51 +9,51 @@
   "deployedGeneratedSources": [],
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "// SPDX-License-Identifier: MIT\r\n\r\npragma solidity ^0.8.0;\r\nimport '../common/OcxCommon.sol';\r\n\r\n/**\r\n * @dev Interface of the ERC20 standard as defined in the EIP.\r\n */\r\ninterface IOcxBalancer {\r\n}\r\n",
-  "sourcePath": "E:\\Work\\OpenchainTestVersion\\server\\contracts\\interface\\IOcxBalancer.sol",
+  "source": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.8.0;\nimport '../common/OcxCommon.sol';\n\n/**\n * @dev Interface of the ERC20 standard as defined in the EIP.\n */\ninterface IOcxBalancer {\n}\n",
+  "sourcePath": "/home/openchainx/OpenchainTestVersion/server/contracts/interface/IOcxBalancer.sol",
   "ast": {
     "absolutePath": "project:/contracts/interface/IOcxBalancer.sol",
     "exportedSymbols": {
       "CommonContracts": [
-        6682
+        6684
       ],
       "CurrencyIndex": [
-        6691
+        6693
       ],
       "CurrencyPriceInfo": [
-        6702
+        6704
       ],
       "FeeType": [
-        6671
+        6673
       ],
       "IOcxBalancer": [
-        6885
+        6887
       ],
       "OcxPrice": [
-        6696
+        6698
       ],
       "POOL_FEE": [
-        6711
+        6713
       ],
       "QUOTE_DECIMALS": [
-        6714
+        6716
       ],
       "QUOTE_MULTIPLIER": [
-        6719
+        6721
       ],
       "UNISWAP_V3_QUOTER_ADDRESS": [
-        6708
+        6710
       ],
       "UNISWAP_V3_ROUTER_ADDRESS": [
-        6705
+        6707
       ]
     },
-    "id": 6886,
+    "id": 6888,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6882,
+        "id": 6884,
         "literals": [
           "solidity",
           "^",
@@ -61,17 +61,17 @@
           ".0"
         ],
         "nodeType": "PragmaDirective",
-        "src": "35:23:34"
+        "src": "33:23:34"
       },
       {
         "absolutePath": "project:/contracts/common/OcxCommon.sol",
         "file": "../common/OcxCommon.sol",
-        "id": 6883,
+        "id": 6885,
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
-        "scope": 6886,
-        "sourceUnit": 6720,
-        "src": "60:33:34",
+        "scope": 6888,
+        "sourceUnit": 6722,
+        "src": "57:33:34",
         "symbolAliases": [],
         "unitAlias": ""
       },
@@ -81,26 +81,26 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 6884,
+          "id": 6886,
           "nodeType": "StructuredDocumentation",
-          "src": "97:72:34",
+          "src": "92:70:34",
           "text": " @dev Interface of the ERC20 standard as defined in the EIP."
         },
         "fullyImplemented": true,
-        "id": 6885,
+        "id": 6887,
         "linearizedBaseContracts": [
-          6885
+          6887
         ],
         "name": "IOcxBalancer",
-        "nameLocation": "181:12:34",
+        "nameLocation": "173:12:34",
         "nodeType": "ContractDefinition",
         "nodes": [],
-        "scope": 6886,
-        "src": "171:27:34",
+        "scope": 6888,
+        "src": "163:26:34",
         "usedErrors": []
       }
     ],
-    "src": "35:165:34"
+    "src": "33:157:34"
   },
   "compiler": {
     "name": "solc",
@@ -108,7 +108,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.7",
-  "updatedAt": "2022-05-04T11:04:02.243Z",
+  "updatedAt": "2022-05-04T14:29:42.294Z",
   "devdoc": {
     "details": "Interface of the ERC20 standard as defined in the EIP.",
     "kind": "dev",
