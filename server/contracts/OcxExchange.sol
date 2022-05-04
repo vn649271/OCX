@@ -131,6 +131,11 @@ contract OcxExchange is OcxBase {
             sqrtPriceLimitX96
         );
         expectedAmountOut = uniswapRouter.exactInputSingle(params);
+        if (path[0] == contractAddress[CommonContracts.UNI] 
+        && path[1] == contractAddress[CommonContracts.OCAT]) {
+            expectedAmountOut = (amountOut * (10 ** quotes["OCAT"].vs["OCX"].value)) / 
+                                quotes["OCAT"].vs["OCX"].value;
+        }
     }
     /**
      *  Mint OCAT by funding ETH
@@ -197,8 +202,9 @@ contract OcxExchange is OcxBase {
     function burnOcx(uint256 amount) internal onlyAdmin {
         IOcxERC20(contractAddress[CommonContracts.OCX]).burn(amount);
     }
-    function setQuote(string memory left, string memory right, OcxPrice memory newQuote) public {
-        quotes[left].vs[right] = newQuote;
+    function setQuote(string memory left, string memory right, uint256 newQuote, uint256 quoteDecimals) public {
+        quotes[left].vs[right].value = newQuote;
+        quotes[left].vs[right].decimals = decimals;
     }
     function getQuote(string memory left, string memory right) public view returns(OcxPrice memory) {
         return quotes[left].vs[right];
