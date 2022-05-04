@@ -120,22 +120,22 @@ contract OcxExchange is OcxBase {
                 tokenIn = contractAddress[CommonContracts.OCX];
             }
         }
-        ISwapRouter.ExactInputSingleParams  memory params = ISwapRouter.ExactInputSingleParams  (
-            tokenIn,
-            tokenOut,
-            fee,
-            recipient,
-            deadline,
-            amountIn,
-            amountOutMinimum,
-            sqrtPriceLimitX96
-        );
-        expectedAmountOut = uniswapRouter.exactInputSingle(params);
-        if (path[0] == contractAddress[CommonContracts.UNI] 
-        && path[1] == contractAddress[CommonContracts.OCAT]) {
-            expectedAmountOut = (expectedAmountOut * (10 ** quotes["OCAT"].vs["OCX"].value)) / 
-                                quotes["OCAT"].vs["OCX"].value;
-        }
+        // ISwapRouter.ExactInputSingleParams  memory params = ISwapRouter.ExactInputSingleParams  (
+        //     tokenIn,
+        //     tokenOut,
+        //     fee,
+        //     recipient,
+        //     deadline,
+        //     amountIn,
+        //     amountOutMinimum,
+        //     sqrtPriceLimitX96
+        // );
+        // expectedAmountOut = uniswapRouter.exactInputSingle(params);
+        // if (path[0] == contractAddress[CommonContracts.UNI] 
+        // && path[1] == contractAddress[CommonContracts.OCAT]) {
+        //     expectedAmountOut = (expectedAmountOut * (10 ** quotes["OCAT"].vs["OCX"].value)) / 
+        //                         quotes["OCAT"].vs["OCX"].value;
+        // }
     }
     /**
      *  Mint OCAT by funding ETH
