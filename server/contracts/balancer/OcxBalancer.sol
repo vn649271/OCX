@@ -36,7 +36,7 @@ contract OcxBalancer is OcxBase, IOcxBalancer {
         IOcxPriceOracle priceOracle = IOcxPriceOracle(contractAddress[CommonContracts.PRICE_ORACLE]);
         IOcxExchange ocXchange = IOcxExchange(contractAddress[CommonContracts.EXCHANGE]);
         // Check ETH:AUD quote
-        OcxPrice memory newEthAudQuote = priceOracle.getCurrencyRatio("ETH", "AUD");
+        OcxPrice memory newEthAudQuote = ocXchange.getQuote("ETH", "AUD");
         if (ethAudQuote.value == 0) {
             ethAudQuote = newEthAudQuote;
         }
@@ -66,20 +66,18 @@ contract OcxBalancer is OcxBase, IOcxBalancer {
             ethAudQuote = newEthAudQuote;
         }
         // Check UNI:AUD quote
-        OcxPrice memory uniAudQuote = priceOracle.getCurrencyRatio("UNI", "AUD");
-        OcxPrice memory oldUniAudQuote = ocXchange.getQuote(CurrencyIndex.UNI, CurrencyIndex.AUD);
+        OcxPrice memory uniAudQuote = ocXchange.getQuote("UNI", "AUD");
+        OcxPrice memory oldUniAudQuote = ocXchange.getQuote("UNI", "AUD");
         if (oldUniAudQuote.value == 0) {
-            ocXchange.setQuote(CurrencyIndex.UNI, CurrencyIndex.AUD, uniAudQuote);
+            ocXchange.setQuote("UNI", "AUD", uniAudQuote);
             oldUniAudQuote = uniAudQuote;
         }
         if (oldUniAudQuote.value != uniAudQuote.value) {
             // Update OCAT:OCX quote by change rate of OCAT:UNI
             uint changePercentage = (uniAudQuote.value * 100) / oldUniAudQuote.value;
-            OcxPrice memory oldOcatOcxQuote = ocXchange.getQuote(CurrencyIndex.OCAT, CurrencyIndex.OCX);
+            OcxPrice memory oldOcatOcxQuote = ocXchange.getQuote("OCAT", "OCX");
             ocXchange.setQuote(
-                CurrencyIndex.OCAT, 
-                CurrencyIndex.OCX,
-                OcxPrice(oldOcatOcxQuote.value * changePercentage / 100, QUOTE_DECIMALS)
+                "OCAT", "OCX", OcxPrice(oldOcatOcxQuote.value * changePercentage / 100, QUOTE_DECIMALS)
             );
         }
     }

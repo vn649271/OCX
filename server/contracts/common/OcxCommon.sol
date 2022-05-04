@@ -38,7 +38,7 @@ struct OcxPrice {
 }
 
 struct CurrencyPriceInfo {
-    mapping(CurrencyIndex => OcxPrice)  vs;
+    mapping(string => OcxPrice)  vs;
 }
 
 // v2

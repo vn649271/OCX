@@ -146,14 +146,14 @@
     {
       "inputs": [
         {
-          "internalType": "enum CurrencyIndex",
+          "internalType": "string",
           "name": "left",
-          "type": "uint8"
+          "type": "string"
         },
         {
-          "internalType": "enum CurrencyIndex",
+          "internalType": "string",
           "name": "right",
-          "type": "uint8"
+          "type": "string"
         },
         {
           "components": [
@@ -181,14 +181,14 @@
     {
       "inputs": [
         {
-          "internalType": "enum CurrencyIndex",
+          "internalType": "string",
           "name": "left",
-          "type": "uint8"
+          "type": "string"
         },
         {
-          "internalType": "enum CurrencyIndex",
+          "internalType": "string",
           "name": "right",
-          "type": "uint8"
+          "type": "string"
         }
       ],
       "name": "getQuote",
@@ -215,7 +215,7 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.8.4+commit.c7e474f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"burnOcat\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"burnOcx\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"}],\"name\":\"convertToOcat\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_ocatPrice\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"enum CurrencyIndex\",\"name\":\"left\",\"type\":\"uint8\"},{\"internalType\":\"enum CurrencyIndex\",\"name\":\"right\",\"type\":\"uint8\"}],\"name\":\"getQuote\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"decimals\",\"type\":\"uint8\"}],\"internalType\":\"struct OcxPrice\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"mintOcat\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"mintOcat\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"mintOcx\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"enum CommonContracts\",\"name\":\"contractIndex\",\"type\":\"uint8\"},{\"internalType\":\"address payable\",\"name\":\"_address\",\"type\":\"address\"}],\"name\":\"setAddress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"}],\"name\":\"setOcatPrice\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"enum CurrencyIndex\",\"name\":\"left\",\"type\":\"uint8\"},{\"internalType\":\"enum CurrencyIndex\",\"name\":\"right\",\"type\":\"uint8\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"decimals\",\"type\":\"uint8\"}],\"internalType\":\"struct OcxPrice\",\"name\":\"newQuote\",\"type\":\"tuple\"}],\"name\":\"setQuote\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_tokenIn\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amountIn\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_tokenOut\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amountOutMin\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_deadline\",\"type\":\"uint256\"}],\"name\":\"swap\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"mintOcat()\":{\"notice\":\"Mint OCAT by funding ETH\"},\"mintOcat(uint256)\":{\"notice\":\"Mint OCAT as specified amount\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/interface/IOcxExchange.sol\":\"IOcxExchange\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/common/OcxCommon.sol\":{\"keccak256\":\"0xe93795dd025314800affd42ecdf29e6df130be0f03970832722497db01b29bf6\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://a7eeb74ade151c6a799eb7dfb1214dda8ac803e3723b9363be54c3ec925ba6f2\",\"dweb:/ipfs/Qmbw7sS5MreiXK7HJsqfNQWWTjzSSpuJ81yw35icYKxbG2\"]},\"project:/contracts/interface/IOcxBase.sol\":{\"keccak256\":\"0x9c99956e622290ee82e8cd358c5cbc844782c666c8538c44ad0caee8135fe82c\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://626a89e4ed0a806182ccfcf18fdeed93c5edbbed51ea94a74b0c779da7579f1f\",\"dweb:/ipfs/QmcFXu3exf2fzGMCgBuiWKakzn3PKmvQf44ajDrttonmsF\"]},\"project:/contracts/interface/IOcxExchange.sol\":{\"keccak256\":\"0xf5239166edd2b2ae959d1fa4f824eaa7361f50b3261eb0e29b5a7ef2e4e6eb89\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://407e58072c01e54f3cc51a92b736c90004756932a1627c817b21b3e84d85e2f3\",\"dweb:/ipfs/QmcHFk8NYNrKQUazGo1yh9HHxnM4a3vPdjB7AVEREDhx7M\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.4+commit.c7e474f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"burnOcat\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"burnOcx\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"}],\"name\":\"convertToOcat\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_ocatPrice\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"left\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"right\",\"type\":\"string\"}],\"name\":\"getQuote\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"decimals\",\"type\":\"uint8\"}],\"internalType\":\"struct OcxPrice\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"mintOcat\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"mintOcat\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"mintOcx\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"enum CommonContracts\",\"name\":\"contractIndex\",\"type\":\"uint8\"},{\"internalType\":\"address payable\",\"name\":\"_address\",\"type\":\"address\"}],\"name\":\"setAddress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"}],\"name\":\"setOcatPrice\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"left\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"right\",\"type\":\"string\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"decimals\",\"type\":\"uint8\"}],\"internalType\":\"struct OcxPrice\",\"name\":\"newQuote\",\"type\":\"tuple\"}],\"name\":\"setQuote\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_tokenIn\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amountIn\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_tokenOut\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amountOutMin\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_deadline\",\"type\":\"uint256\"}],\"name\":\"swap\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"mintOcat()\":{\"notice\":\"Mint OCAT by funding ETH\"},\"mintOcat(uint256)\":{\"notice\":\"Mint OCAT as specified amount\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/interface/IOcxExchange.sol\":\"IOcxExchange\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/common/OcxCommon.sol\":{\"keccak256\":\"0xdfe3e74be20d4ae3b7f3e04b84d87d17c719a9ba4a4a95845a0b87914269e2ea\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://8c7037d82723bb4eb61fa54c461a213f3f1ee667366465699623171f25538fae\",\"dweb:/ipfs/QmcRZzX9ApPWDWigkCmjmoGRp9z7pFLfoq9KP5r6GK35h3\"]},\"project:/contracts/interface/IOcxBase.sol\":{\"keccak256\":\"0x3ff9ea2c644cf7a6d832fe8a862f5016ba59c6ac66de5edd7c5b90b355001603\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6d01651a0e0ed3d5eaea10a5b7af5129ad010d629c59044f152ac87a83dea573\",\"dweb:/ipfs/Qmbq6UaWvoqQ44iX6SeqwqvDCmyGq74uhZnFKVZY52xHRw\"]},\"project:/contracts/interface/IOcxExchange.sol\":{\"keccak256\":\"0x9431b46dc368b08baba6e7b25a9bc6813f2e75b03b782a197a3dbb2c34c1933e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7f09eeaefceb718f8694522b3e174d29c80e36d102e823b74843bd2e9c62a30e\",\"dweb:/ipfs/QmNd1cMHskFP4dcEx6JGhbcRZwc38V31UGZzSqamyoRZsN\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
@@ -223,54 +223,54 @@
   "deployedGeneratedSources": [],
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\n// https://soliditydeveloper.com/uniswap2\n// https://docs.uniswap.org/protocol/V2/guides/smart-contract-integration/trading-from-a-smart-contract\n// https://ethereum.org/ru/developers/tutorials/transfers-and-approval-of-erc-20-tokens-from-a-solidity-smart-contract/\n// https://solidity-by-example.org/app/erc20/\n\nimport \"./IOcxBase.sol\";\n\ninterface IOcxExchange is IOcxBase {\n\n    function swap(\n        address _tokenIn,\n        uint _amountIn,\n        address _tokenOut,\n        uint _amountOutMin,\n        uint _deadline\n    ) external;\n    /**\n     *  Mint OCAT by funding ETH\n     */\n    function mintOcat() external payable;\n    /**\n     * Mint OCAT as specified amount\n     */\n    function mintOcat(uint256 amount) external;\n    function burnOcat(uint256 amount) external;\n    function mintOcx(uint256 amount) external payable;\n    function burnOcx(uint256 amount) external;\n    function setQuote(CurrencyIndex left, CurrencyIndex right, OcxPrice memory newQuote) external;\n    function getQuote(CurrencyIndex left, CurrencyIndex right) external view returns(OcxPrice memory);\n}\n",
-  "sourcePath": "/home/openchainx/OpenchainTestVersion/server/contracts/interface/IOcxExchange.sol",
+  "source": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.0;\r\n\r\n// https://soliditydeveloper.com/uniswap2\r\n// https://docs.uniswap.org/protocol/V2/guides/smart-contract-integration/trading-from-a-smart-contract\r\n// https://ethereum.org/ru/developers/tutorials/transfers-and-approval-of-erc-20-tokens-from-a-solidity-smart-contract/\r\n// https://solidity-by-example.org/app/erc20/\r\n\r\nimport \"./IOcxBase.sol\";\r\n\r\ninterface IOcxExchange is IOcxBase {\r\n\r\n    function swap(\r\n        address _tokenIn,\r\n        uint _amountIn,\r\n        address _tokenOut,\r\n        uint _amountOutMin,\r\n        uint _deadline\r\n    ) external;\r\n    /**\r\n     *  Mint OCAT by funding ETH\r\n     */\r\n    function mintOcat() external payable;\r\n    /**\r\n     * Mint OCAT as specified amount\r\n     */\r\n    function mintOcat(uint256 amount) external;\r\n    function burnOcat(uint256 amount) external;\r\n    function mintOcx(uint256 amount) external payable;\r\n    function burnOcx(uint256 amount) external;\r\n    function setQuote(string memory left, string memory right, OcxPrice memory newQuote) external;\r\n    function getQuote(string memory left, string memory right) external view returns(OcxPrice memory);\r\n}\r\n",
+  "sourcePath": "F:\\Workspace\\OpenChainDex\\OpenchainTestVersion\\server\\contracts\\interface\\IOcxExchange.sol",
   "ast": {
     "absolutePath": "project:/contracts/interface/IOcxExchange.sol",
     "exportedSymbols": {
       "CommonContracts": [
-        6694
+        6640
       ],
       "CurrencyIndex": [
-        6703
+        6649
       ],
       "CurrencyPriceInfo": [
-        6715
+        6660
       ],
       "FeeType": [
-        6683
+        6629
       ],
       "IOcxBase": [
-        6776
+        6868
       ],
       "IOcxExchange": [
-        6863
+        6951
       ],
       "OcxPrice": [
-        6708
+        6654
       ],
       "POOL_FEE": [
-        6724
+        6669
       ],
       "QUOTE_DECIMALS": [
-        6727
+        6672
       ],
       "QUOTE_MULTIPLIER": [
-        6732
+        6677
       ],
       "UNISWAP_V3_QUOTER_ADDRESS": [
-        6721
+        6666
       ],
       "UNISWAP_V3_ROUTER_ADDRESS": [
-        6718
+        6663
       ]
     },
-    "id": 6864,
+    "id": 6952,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6797,
+        "id": 6889,
         "literals": [
           "solidity",
           "^",
@@ -278,17 +278,17 @@
           ".0"
         ],
         "nodeType": "PragmaDirective",
-        "src": "32:23:32"
+        "src": "33:23:37"
       },
       {
         "absolutePath": "project:/contracts/interface/IOcxBase.sol",
         "file": "./IOcxBase.sol",
-        "id": 6798,
+        "id": 6890,
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
-        "scope": 6864,
-        "sourceUnit": 6777,
-        "src": "370:24:32",
+        "scope": 6952,
+        "sourceUnit": 6869,
+        "src": "378:24:37",
         "symbolAliases": [],
         "unitAlias": ""
       },
@@ -297,51 +297,51 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 6799,
+              "id": 6891,
               "name": "IOcxBase",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 6776,
-              "src": "422:8:32"
+              "referencedDeclaration": 6868,
+              "src": "432:8:37"
             },
-            "id": 6800,
+            "id": 6892,
             "nodeType": "InheritanceSpecifier",
-            "src": "422:8:32"
+            "src": "432:8:37"
           }
         ],
         "contractDependencies": [],
         "contractKind": "interface",
         "fullyImplemented": false,
-        "id": 6863,
+        "id": 6951,
         "linearizedBaseContracts": [
-          6863,
-          6776
+          6951,
+          6868
         ],
         "name": "IOcxExchange",
-        "nameLocation": "406:12:32",
+        "nameLocation": "416:12:37",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "functionSelector": "5e75228f",
-            "id": 6813,
+            "id": 6905,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "swap",
-            "nameLocation": "447:4:32",
+            "nameLocation": "459:4:37",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6811,
+              "id": 6903,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6802,
+                  "id": 6894,
                   "mutability": "mutable",
                   "name": "_tokenIn",
-                  "nameLocation": "469:8:32",
+                  "nameLocation": "482:8:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6813,
-                  "src": "461:16:32",
+                  "scope": 6905,
+                  "src": "474:16:37",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -349,10 +349,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6801,
+                    "id": 6893,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "461:7:32",
+                    "src": "474:7:37",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -363,13 +363,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 6804,
+                  "id": 6896,
                   "mutability": "mutable",
                   "name": "_amountIn",
-                  "nameLocation": "492:9:32",
+                  "nameLocation": "506:9:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6813,
-                  "src": "487:14:32",
+                  "scope": 6905,
+                  "src": "501:14:37",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -377,10 +377,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6803,
+                    "id": 6895,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "487:4:32",
+                    "src": "501:4:37",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -390,13 +390,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 6806,
+                  "id": 6898,
                   "mutability": "mutable",
                   "name": "_tokenOut",
-                  "nameLocation": "519:9:32",
+                  "nameLocation": "534:9:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6813,
-                  "src": "511:17:32",
+                  "scope": 6905,
+                  "src": "526:17:37",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -404,10 +404,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6805,
+                    "id": 6897,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "511:7:32",
+                    "src": "526:7:37",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -418,13 +418,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 6808,
+                  "id": 6900,
                   "mutability": "mutable",
                   "name": "_amountOutMin",
-                  "nameLocation": "543:13:32",
+                  "nameLocation": "559:13:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6813,
-                  "src": "538:18:32",
+                  "scope": 6905,
+                  "src": "554:18:37",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -432,10 +432,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6807,
+                    "id": 6899,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "538:4:32",
+                    "src": "554:4:37",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -445,13 +445,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 6810,
+                  "id": 6902,
                   "mutability": "mutable",
                   "name": "_deadline",
-                  "nameLocation": "571:9:32",
+                  "nameLocation": "588:9:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6813,
-                  "src": "566:14:32",
+                  "scope": 6905,
+                  "src": "583:14:37",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -459,10 +459,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6809,
+                    "id": 6901,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "566:4:32",
+                    "src": "583:4:37",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -471,81 +471,81 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "451:135:32"
+              "src": "463:141:37"
             },
             "returnParameters": {
-              "id": 6812,
+              "id": 6904,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "595:0:32"
+              "src": "613:0:37"
             },
-            "scope": 6863,
-            "src": "438:158:32",
+            "scope": 6951,
+            "src": "450:164:37",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
             "documentation": {
-              "id": 6814,
+              "id": 6906,
               "nodeType": "StructuredDocumentation",
-              "src": "601:44:32",
+              "src": "620:46:37",
               "text": "  Mint OCAT by funding ETH"
             },
             "functionSelector": "2b7387a4",
-            "id": 6817,
+            "id": 6909,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "mintOcat",
-            "nameLocation": "659:8:32",
+            "nameLocation": "681:8:37",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6815,
+              "id": 6907,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "667:2:32"
+              "src": "689:2:37"
             },
             "returnParameters": {
-              "id": 6816,
+              "id": 6908,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "686:0:32"
+              "src": "708:0:37"
             },
-            "scope": 6863,
-            "src": "650:37:32",
+            "scope": 6951,
+            "src": "672:37:37",
             "stateMutability": "payable",
             "virtual": false,
             "visibility": "external"
           },
           {
             "documentation": {
-              "id": 6818,
+              "id": 6910,
               "nodeType": "StructuredDocumentation",
-              "src": "692:48:32",
+              "src": "715:50:37",
               "text": " Mint OCAT as specified amount"
             },
             "functionSelector": "722b239e",
-            "id": 6823,
+            "id": 6915,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "mintOcat",
-            "nameLocation": "754:8:32",
+            "nameLocation": "780:8:37",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6821,
+              "id": 6913,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6820,
+                  "id": 6912,
                   "mutability": "mutable",
                   "name": "amount",
-                  "nameLocation": "771:6:32",
+                  "nameLocation": "797:6:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6823,
-                  "src": "763:14:32",
+                  "scope": 6915,
+                  "src": "789:14:37",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -553,10 +553,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6819,
+                    "id": 6911,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "763:7:32",
+                    "src": "789:7:37",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -565,42 +565,42 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "762:16:32"
+              "src": "788:16:37"
             },
             "returnParameters": {
-              "id": 6822,
+              "id": 6914,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "787:0:32"
+              "src": "813:0:37"
             },
-            "scope": 6863,
-            "src": "745:43:32",
+            "scope": 6951,
+            "src": "771:43:37",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
             "functionSelector": "480d5d3d",
-            "id": 6828,
+            "id": 6920,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "burnOcat",
-            "nameLocation": "802:8:32",
+            "nameLocation": "829:8:37",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6826,
+              "id": 6918,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6825,
+                  "id": 6917,
                   "mutability": "mutable",
                   "name": "amount",
-                  "nameLocation": "819:6:32",
+                  "nameLocation": "846:6:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6828,
-                  "src": "811:14:32",
+                  "scope": 6920,
+                  "src": "838:14:37",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -608,10 +608,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6824,
+                    "id": 6916,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "811:7:32",
+                    "src": "838:7:37",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -620,42 +620,42 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "810:16:32"
+              "src": "837:16:37"
             },
             "returnParameters": {
-              "id": 6827,
+              "id": 6919,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "835:0:32"
+              "src": "862:0:37"
             },
-            "scope": 6863,
-            "src": "793:43:32",
+            "scope": 6951,
+            "src": "820:43:37",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
             "functionSelector": "1b73cae1",
-            "id": 6833,
+            "id": 6925,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "mintOcx",
-            "nameLocation": "850:7:32",
+            "nameLocation": "878:7:37",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6831,
+              "id": 6923,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6830,
+                  "id": 6922,
                   "mutability": "mutable",
                   "name": "amount",
-                  "nameLocation": "866:6:32",
+                  "nameLocation": "894:6:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6833,
-                  "src": "858:14:32",
+                  "scope": 6925,
+                  "src": "886:14:37",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -663,10 +663,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6829,
+                    "id": 6921,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "858:7:32",
+                    "src": "886:7:37",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -675,42 +675,42 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "857:16:32"
+              "src": "885:16:37"
             },
             "returnParameters": {
-              "id": 6832,
+              "id": 6924,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "890:0:32"
+              "src": "918:0:37"
             },
-            "scope": 6863,
-            "src": "841:50:32",
+            "scope": 6951,
+            "src": "869:50:37",
             "stateMutability": "payable",
             "virtual": false,
             "visibility": "external"
           },
           {
             "functionSelector": "77cd12a2",
-            "id": 6838,
+            "id": 6930,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "burnOcx",
-            "nameLocation": "905:7:32",
+            "nameLocation": "934:7:37",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6836,
+              "id": 6928,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6835,
+                  "id": 6927,
                   "mutability": "mutable",
                   "name": "amount",
-                  "nameLocation": "921:6:32",
+                  "nameLocation": "950:6:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6838,
-                  "src": "913:14:32",
+                  "scope": 6930,
+                  "src": "942:14:37",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -718,10 +718,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6834,
+                    "id": 6926,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "913:7:32",
+                    "src": "942:7:37",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -730,288 +730,260 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "912:16:32"
+              "src": "941:16:37"
             },
             "returnParameters": {
-              "id": 6837,
+              "id": 6929,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "937:0:32"
+              "src": "966:0:37"
             },
-            "scope": 6863,
-            "src": "896:42:32",
+            "scope": 6951,
+            "src": "925:42:37",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "functionSelector": "db087308",
-            "id": 6850,
+            "functionSelector": "6ad7b16a",
+            "id": 6940,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "setQuote",
-            "nameLocation": "952:8:32",
+            "nameLocation": "982:8:37",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6848,
+              "id": 6938,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6841,
+                  "id": 6932,
                   "mutability": "mutable",
                   "name": "left",
-                  "nameLocation": "975:4:32",
+                  "nameLocation": "1005:4:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6850,
-                  "src": "961:18:32",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_enum$_CurrencyIndex_$6703",
-                    "typeString": "enum CurrencyIndex"
-                  },
-                  "typeName": {
-                    "id": 6840,
-                    "nodeType": "UserDefinedTypeName",
-                    "pathNode": {
-                      "id": 6839,
-                      "name": "CurrencyIndex",
-                      "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 6703,
-                      "src": "961:13:32"
-                    },
-                    "referencedDeclaration": 6703,
-                    "src": "961:13:32",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_enum$_CurrencyIndex_$6703",
-                      "typeString": "enum CurrencyIndex"
-                    }
-                  },
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 6844,
-                  "mutability": "mutable",
-                  "name": "right",
-                  "nameLocation": "995:5:32",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 6850,
-                  "src": "981:19:32",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_enum$_CurrencyIndex_$6703",
-                    "typeString": "enum CurrencyIndex"
-                  },
-                  "typeName": {
-                    "id": 6843,
-                    "nodeType": "UserDefinedTypeName",
-                    "pathNode": {
-                      "id": 6842,
-                      "name": "CurrencyIndex",
-                      "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 6703,
-                      "src": "981:13:32"
-                    },
-                    "referencedDeclaration": 6703,
-                    "src": "981:13:32",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_enum$_CurrencyIndex_$6703",
-                      "typeString": "enum CurrencyIndex"
-                    }
-                  },
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 6847,
-                  "mutability": "mutable",
-                  "name": "newQuote",
-                  "nameLocation": "1018:8:32",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 6850,
-                  "src": "1002:24:32",
+                  "scope": 6940,
+                  "src": "991:18:37",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_OcxPrice_$6708_memory_ptr",
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 6931,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "991:6:37",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6934,
+                  "mutability": "mutable",
+                  "name": "right",
+                  "nameLocation": "1025:5:37",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6940,
+                  "src": "1011:19:37",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 6933,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1011:6:37",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6937,
+                  "mutability": "mutable",
+                  "name": "newQuote",
+                  "nameLocation": "1048:8:37",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6940,
+                  "src": "1032:24:37",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_OcxPrice_$6654_memory_ptr",
                     "typeString": "struct OcxPrice"
                   },
                   "typeName": {
-                    "id": 6846,
+                    "id": 6936,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 6845,
+                      "id": 6935,
                       "name": "OcxPrice",
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 6708,
-                      "src": "1002:8:32"
+                      "referencedDeclaration": 6654,
+                      "src": "1032:8:37"
                     },
-                    "referencedDeclaration": 6708,
-                    "src": "1002:8:32",
+                    "referencedDeclaration": 6654,
+                    "src": "1032:8:37",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_OcxPrice_$6708_storage_ptr",
+                      "typeIdentifier": "t_struct$_OcxPrice_$6654_storage_ptr",
                       "typeString": "struct OcxPrice"
                     }
                   },
                   "visibility": "internal"
                 }
               ],
-              "src": "960:67:32"
+              "src": "990:67:37"
             },
             "returnParameters": {
-              "id": 6849,
+              "id": 6939,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1036:0:32"
+              "src": "1066:0:37"
             },
-            "scope": 6863,
-            "src": "943:94:32",
+            "scope": 6951,
+            "src": "973:94:37",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "functionSelector": "2b712315",
-            "id": 6862,
+            "functionSelector": "ed66a380",
+            "id": 6950,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getQuote",
-            "nameLocation": "1051:8:32",
+            "nameLocation": "1082:8:37",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6857,
+              "id": 6945,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6853,
+                  "id": 6942,
                   "mutability": "mutable",
                   "name": "left",
-                  "nameLocation": "1074:4:32",
+                  "nameLocation": "1105:4:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6862,
-                  "src": "1060:18:32",
+                  "scope": 6950,
+                  "src": "1091:18:37",
                   "stateVariable": false,
-                  "storageLocation": "default",
+                  "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_enum$_CurrencyIndex_$6703",
-                    "typeString": "enum CurrencyIndex"
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
                   },
                   "typeName": {
-                    "id": 6852,
-                    "nodeType": "UserDefinedTypeName",
-                    "pathNode": {
-                      "id": 6851,
-                      "name": "CurrencyIndex",
-                      "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 6703,
-                      "src": "1060:13:32"
-                    },
-                    "referencedDeclaration": 6703,
-                    "src": "1060:13:32",
+                    "id": 6941,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1091:6:37",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_enum$_CurrencyIndex_$6703",
-                      "typeString": "enum CurrencyIndex"
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
                     }
                   },
                   "visibility": "internal"
                 },
                 {
                   "constant": false,
-                  "id": 6856,
+                  "id": 6944,
                   "mutability": "mutable",
                   "name": "right",
-                  "nameLocation": "1094:5:32",
+                  "nameLocation": "1125:5:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6862,
-                  "src": "1080:19:32",
+                  "scope": 6950,
+                  "src": "1111:19:37",
                   "stateVariable": false,
-                  "storageLocation": "default",
+                  "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_enum$_CurrencyIndex_$6703",
-                    "typeString": "enum CurrencyIndex"
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
                   },
                   "typeName": {
-                    "id": 6855,
-                    "nodeType": "UserDefinedTypeName",
-                    "pathNode": {
-                      "id": 6854,
-                      "name": "CurrencyIndex",
-                      "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 6703,
-                      "src": "1080:13:32"
-                    },
-                    "referencedDeclaration": 6703,
-                    "src": "1080:13:32",
+                    "id": 6943,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1111:6:37",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_enum$_CurrencyIndex_$6703",
-                      "typeString": "enum CurrencyIndex"
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
                     }
                   },
                   "visibility": "internal"
                 }
               ],
-              "src": "1059:41:32"
+              "src": "1090:41:37"
             },
             "returnParameters": {
-              "id": 6861,
+              "id": 6949,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6860,
+                  "id": 6948,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6862,
-                  "src": "1123:15:32",
+                  "scope": 6950,
+                  "src": "1154:15:37",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_OcxPrice_$6708_memory_ptr",
+                    "typeIdentifier": "t_struct$_OcxPrice_$6654_memory_ptr",
                     "typeString": "struct OcxPrice"
                   },
                   "typeName": {
-                    "id": 6859,
+                    "id": 6947,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 6858,
+                      "id": 6946,
                       "name": "OcxPrice",
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 6708,
-                      "src": "1123:8:32"
+                      "referencedDeclaration": 6654,
+                      "src": "1154:8:37"
                     },
-                    "referencedDeclaration": 6708,
-                    "src": "1123:8:32",
+                    "referencedDeclaration": 6654,
+                    "src": "1154:8:37",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_OcxPrice_$6708_storage_ptr",
+                      "typeIdentifier": "t_struct$_OcxPrice_$6654_storage_ptr",
                       "typeString": "struct OcxPrice"
                     }
                   },
                   "visibility": "internal"
                 }
               ],
-              "src": "1122:17:32"
+              "src": "1153:17:37"
             },
-            "scope": 6863,
-            "src": "1042:98:32",
+            "scope": 6951,
+            "src": "1073:98:37",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 6864,
-        "src": "396:746:32",
+        "scope": 6952,
+        "src": "406:768:37",
         "usedErrors": []
       }
     ],
-    "src": "32:1111:32"
+    "src": "33:1143:37"
   },
   "compiler": {
     "name": "solc",
@@ -1019,7 +991,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.7",
-  "updatedAt": "2022-05-04T01:15:13.903Z",
+  "updatedAt": "2022-05-04T09:51:01.506Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},

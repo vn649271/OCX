@@ -24,7 +24,7 @@ contract OcxExchange is OcxBase {
     ISwapRouter public constant uniswapRouter = ISwapRouter(UNISWAP_V3_ROUTER_ADDRESS);
     IQuoter public constant quoter = IQuoter(UNISWAP_V3_QUOTER_ADDRESS);
     // address payable private ocxLocalPoolAddress;
-    mapping(CurrencyIndex => CurrencyPriceInfo) private quotes;
+    mapping(string => CurrencyPriceInfo) private quotes;
 
 
     event estimatedOcxAmountForBurningOcat(uint256);
@@ -59,7 +59,7 @@ contract OcxExchange is OcxBase {
         address recipient = msg.sender;
         if (_tokenIn == contractAddress[CommonContracts.OCAT] 
          && _tokenOut == contractAddress[CommonContracts.UNI]) {
-            uint256 ocxAmount = _amountIn * quotes[CurrencyIndex.OCAT].vs[CurrencyIndex.OCX].value;
+            uint256 ocxAmount = _amountIn * quotes["OCAT"].vs["OCX"].value;
             IERC20(contractAddress[CommonContracts.OCX]).approve(UNISWAP_V3_ROUTER_ADDRESS, ocxAmount);
             _tokenIn = contractAddress[CommonContracts.OCX];
             _amountIn = ocxAmount;
@@ -76,9 +76,9 @@ contract OcxExchange is OcxBase {
                 tokenOut: _tokenOut,
                 fee: POOL_FEE,
                 recipient: recipient,
-                deadline: block.timestamp + 15,
+                deadline: block.timestamp + _deadline,
                 amountIn: _amountIn,
-                amountOutMinimum: 0,
+                amountOutMinimum: _amountOutMin,
                 sqrtPriceLimitX96: 0
             });
 
@@ -88,7 +88,7 @@ contract OcxExchange is OcxBase {
         // Bottomhalf for UNI->OCAT swap
         if (_tokenIn == contractAddress[CommonContracts.UNI] 
         && _tokenOut == contractAddress[CommonContracts.OCAT]) {
-            uint256 ocatAmount = amountOut / quotes[CurrencyIndex.OCAT].vs[CurrencyIndex.OCX].value;
+            uint256 ocatAmount = amountOut / quotes["OCAT"].vs["OCX"].value;
             IERC20(contractAddress[CommonContracts.OCAT]).transfer(msg.sender, ocatAmount);
         }
     }
@@ -107,8 +107,8 @@ contract OcxExchange is OcxBase {
         if (path[0] == contractAddress[CommonContracts.OCAT]) {
             if (path[1] == contractAddress[CommonContracts.UNI]) {
                 // Get OCAT:OCX quote and calculate OCX amount for "amountIn"
-                amountIn = (quotes[CurrencyIndex.OCAT].vs[CurrencyIndex.OCX].value * amountIn) / 
-                           (10 ** quotes[CurrencyIndex.OCAT].vs[CurrencyIndex.OCX].decimals);
+                amountIn = (quotes["OCAT"].vs["OCX"].value * amountIn) / 
+                           (10 ** quotes["OCAT"].vs["OCX"].decimals);
                 // Get OCX:UNI quote
                 // Multiple it by OCAT:OCX quote
                 tokenIn = contractAddress[CommonContracts.OCX];
@@ -132,9 +132,7 @@ contract OcxExchange is OcxBase {
     function mintOcat() public payable 
     onlyAdmin onlyValidAddress(contractAddress[CommonContracts.PRICE_ORACLE]) 
     onlyValidAddress(contractAddress[CommonContracts.OCAT]) {
-        OcxPrice memory ethAudPriceInfo = IOcxPriceOracle(
-            contractAddress[CommonContracts.PRICE_ORACLE]
-        ).getCurrencyRatio("OCAT", "OCX");
+        OcxPrice memory ethAudPriceInfo = quotes["OCAT"].vs["OCX"];
         uint8 ocatDecimals = IOcat(contractAddress[CommonContracts.OCAT]).decimals();
         mintOcat(
             (msg.value * ethAudPriceInfo.value * (10**ocatDecimals)) / 
@@ -193,10 +191,10 @@ contract OcxExchange is OcxBase {
     function burnOcx(uint256 amount) internal onlyAdmin {
         IOcxERC20(contractAddress[CommonContracts.OCX]).burn(amount);
     }
-    function setQuote(CurrencyIndex left, CurrencyIndex right, OcxPrice memory newQuote) public {
+    function setQuote(string memory left, string memory right, OcxPrice memory newQuote) public {
         quotes[left].vs[right] = newQuote;
     }
-    function getQuote(CurrencyIndex left, CurrencyIndex right) public view returns(OcxPrice memory) {
+    function getQuote(string memory left, string memory right) public view returns(OcxPrice memory) {
         return quotes[left].vs[right];
     }
 }

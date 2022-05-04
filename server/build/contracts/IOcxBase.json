@@ -52,7 +52,7 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.8.4+commit.c7e474f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"}],\"name\":\"convertToOcat\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_ocatPrice\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"enum CommonContracts\",\"name\":\"contractIndex\",\"type\":\"uint8\"},{\"internalType\":\"address payable\",\"name\":\"_address\",\"type\":\"address\"}],\"name\":\"setAddress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"}],\"name\":\"setOcatPrice\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Interface of the ERC20 standard as defined in the EIP.\",\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/interface/IOcxBase.sol\":\"IOcxBase\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/common/OcxCommon.sol\":{\"keccak256\":\"0xe93795dd025314800affd42ecdf29e6df130be0f03970832722497db01b29bf6\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://a7eeb74ade151c6a799eb7dfb1214dda8ac803e3723b9363be54c3ec925ba6f2\",\"dweb:/ipfs/Qmbw7sS5MreiXK7HJsqfNQWWTjzSSpuJ81yw35icYKxbG2\"]},\"project:/contracts/interface/IOcxBase.sol\":{\"keccak256\":\"0x9c99956e622290ee82e8cd358c5cbc844782c666c8538c44ad0caee8135fe82c\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://626a89e4ed0a806182ccfcf18fdeed93c5edbbed51ea94a74b0c779da7579f1f\",\"dweb:/ipfs/QmcFXu3exf2fzGMCgBuiWKakzn3PKmvQf44ajDrttonmsF\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.4+commit.c7e474f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"}],\"name\":\"convertToOcat\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_ocatPrice\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"enum CommonContracts\",\"name\":\"contractIndex\",\"type\":\"uint8\"},{\"internalType\":\"address payable\",\"name\":\"_address\",\"type\":\"address\"}],\"name\":\"setAddress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"}],\"name\":\"setOcatPrice\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Interface of the ERC20 standard as defined in the EIP.\",\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/interface/IOcxBase.sol\":\"IOcxBase\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/common/OcxCommon.sol\":{\"keccak256\":\"0xdfe3e74be20d4ae3b7f3e04b84d87d17c719a9ba4a4a95845a0b87914269e2ea\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://8c7037d82723bb4eb61fa54c461a213f3f1ee667366465699623171f25538fae\",\"dweb:/ipfs/QmcRZzX9ApPWDWigkCmjmoGRp9z7pFLfoq9KP5r6GK35h3\"]},\"project:/contracts/interface/IOcxBase.sol\":{\"keccak256\":\"0x3ff9ea2c644cf7a6d832fe8a862f5016ba59c6ac66de5edd7c5b90b355001603\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6d01651a0e0ed3d5eaea10a5b7af5129ad010d629c59044f152ac87a83dea573\",\"dweb:/ipfs/Qmbq6UaWvoqQ44iX6SeqwqvDCmyGq74uhZnFKVZY52xHRw\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
@@ -60,51 +60,51 @@
   "deployedGeneratedSources": [],
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\nimport '../common/OcxCommon.sol';\n\n/**\n * @dev Interface of the ERC20 standard as defined in the EIP.\n */\ninterface IOcxBase {\n    function setAddress(CommonContracts contractIndex, address payable _address) external;\n    function setOcatPrice(uint256 price) external;\n    function convertToOcat(uint256 price) external returns(uint256 _ocatPrice);\n}\n",
-  "sourcePath": "/home/openchainx/OpenchainTestVersion/server/contracts/interface/IOcxBase.sol",
+  "source": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.0;\r\n\r\nimport '../common/OcxCommon.sol';\r\n\r\n/**\r\n * @dev Interface of the ERC20 standard as defined in the EIP.\r\n */\r\ninterface IOcxBase {\r\n    function setAddress(CommonContracts contractIndex, address payable _address) external;\r\n    function setOcatPrice(uint256 price) external;\r\n    function convertToOcat(uint256 price) external returns(uint256 _ocatPrice);\r\n}\r\n",
+  "sourcePath": "F:\\Workspace\\OpenChainDex\\OpenchainTestVersion\\server\\contracts\\interface\\IOcxBase.sol",
   "ast": {
     "absolutePath": "project:/contracts/interface/IOcxBase.sol",
     "exportedSymbols": {
       "CommonContracts": [
-        6694
+        6640
       ],
       "CurrencyIndex": [
-        6703
+        6649
       ],
       "CurrencyPriceInfo": [
-        6715
+        6660
       ],
       "FeeType": [
-        6683
+        6629
       ],
       "IOcxBase": [
-        6776
+        6868
       ],
       "OcxPrice": [
-        6708
+        6654
       ],
       "POOL_FEE": [
-        6724
+        6669
       ],
       "QUOTE_DECIMALS": [
-        6727
+        6672
       ],
       "QUOTE_MULTIPLIER": [
-        6732
+        6677
       ],
       "UNISWAP_V3_QUOTER_ADDRESS": [
-        6721
+        6666
       ],
       "UNISWAP_V3_ROUTER_ADDRESS": [
-        6718
+        6663
       ]
     },
-    "id": 6777,
+    "id": 6869,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6753,
+        "id": 6845,
         "literals": [
           "solidity",
           "^",
@@ -112,17 +112,17 @@
           ".0"
         ],
         "nodeType": "PragmaDirective",
-        "src": "32:23:30"
+        "src": "33:23:35"
       },
       {
         "absolutePath": "project:/contracts/common/OcxCommon.sol",
         "file": "../common/OcxCommon.sol",
-        "id": 6754,
+        "id": 6846,
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
-        "scope": 6777,
-        "sourceUnit": 6733,
-        "src": "57:33:30",
+        "scope": 6869,
+        "sourceUnit": 6678,
+        "src": "60:33:35",
         "symbolAliases": [],
         "unitAlias": ""
       },
@@ -132,62 +132,62 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 6755,
+          "id": 6847,
           "nodeType": "StructuredDocumentation",
-          "src": "92:70:30",
+          "src": "97:72:35",
           "text": " @dev Interface of the ERC20 standard as defined in the EIP."
         },
         "fullyImplemented": false,
-        "id": 6776,
+        "id": 6868,
         "linearizedBaseContracts": [
-          6776
+          6868
         ],
         "name": "IOcxBase",
-        "nameLocation": "173:8:30",
+        "nameLocation": "181:8:35",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "functionSelector": "0589c4e5",
-            "id": 6763,
+            "id": 6855,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "setAddress",
-            "nameLocation": "197:10:30",
+            "nameLocation": "206:10:35",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6761,
+              "id": 6853,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6758,
+                  "id": 6850,
                   "mutability": "mutable",
                   "name": "contractIndex",
-                  "nameLocation": "224:13:30",
+                  "nameLocation": "233:13:35",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6763,
-                  "src": "208:29:30",
+                  "scope": 6855,
+                  "src": "217:29:35",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_enum$_CommonContracts_$6694",
+                    "typeIdentifier": "t_enum$_CommonContracts_$6640",
                     "typeString": "enum CommonContracts"
                   },
                   "typeName": {
-                    "id": 6757,
+                    "id": 6849,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 6756,
+                      "id": 6848,
                       "name": "CommonContracts",
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 6694,
-                      "src": "208:15:30"
+                      "referencedDeclaration": 6640,
+                      "src": "217:15:35"
                     },
-                    "referencedDeclaration": 6694,
-                    "src": "208:15:30",
+                    "referencedDeclaration": 6640,
+                    "src": "217:15:35",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_enum$_CommonContracts_$6694",
+                      "typeIdentifier": "t_enum$_CommonContracts_$6640",
                       "typeString": "enum CommonContracts"
                     }
                   },
@@ -195,13 +195,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 6760,
+                  "id": 6852,
                   "mutability": "mutable",
                   "name": "_address",
-                  "nameLocation": "255:8:30",
+                  "nameLocation": "264:8:35",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6763,
-                  "src": "239:24:30",
+                  "scope": 6855,
+                  "src": "248:24:35",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -209,10 +209,10 @@
                     "typeString": "address payable"
                   },
                   "typeName": {
-                    "id": 6759,
+                    "id": 6851,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "239:15:30",
+                    "src": "248:15:35",
                     "stateMutability": "payable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address_payable",
@@ -222,42 +222,42 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "207:57:30"
+              "src": "216:57:35"
             },
             "returnParameters": {
-              "id": 6762,
+              "id": 6854,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "273:0:30"
+              "src": "282:0:35"
             },
-            "scope": 6776,
-            "src": "188:86:30",
+            "scope": 6868,
+            "src": "197:86:35",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
             "functionSelector": "bb3f6c6a",
-            "id": 6768,
+            "id": 6860,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "setOcatPrice",
-            "nameLocation": "288:12:30",
+            "nameLocation": "298:12:35",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6766,
+              "id": 6858,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6765,
+                  "id": 6857,
                   "mutability": "mutable",
                   "name": "price",
-                  "nameLocation": "309:5:30",
+                  "nameLocation": "319:5:35",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6768,
-                  "src": "301:13:30",
+                  "scope": 6860,
+                  "src": "311:13:35",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -265,10 +265,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6764,
+                    "id": 6856,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "301:7:30",
+                    "src": "311:7:35",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -277,42 +277,42 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "300:15:30"
+              "src": "310:15:35"
             },
             "returnParameters": {
-              "id": 6767,
+              "id": 6859,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "324:0:30"
+              "src": "334:0:35"
             },
-            "scope": 6776,
-            "src": "279:46:30",
+            "scope": 6868,
+            "src": "289:46:35",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
             "functionSelector": "dbcd9580",
-            "id": 6775,
+            "id": 6867,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "convertToOcat",
-            "nameLocation": "339:13:30",
+            "nameLocation": "350:13:35",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6771,
+              "id": 6863,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6770,
+                  "id": 6862,
                   "mutability": "mutable",
                   "name": "price",
-                  "nameLocation": "361:5:30",
+                  "nameLocation": "372:5:35",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6775,
-                  "src": "353:13:30",
+                  "scope": 6867,
+                  "src": "364:13:35",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -320,10 +320,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6769,
+                    "id": 6861,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "353:7:30",
+                    "src": "364:7:35",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -332,21 +332,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "352:15:30"
+              "src": "363:15:35"
             },
             "returnParameters": {
-              "id": 6774,
+              "id": 6866,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6773,
+                  "id": 6865,
                   "mutability": "mutable",
                   "name": "_ocatPrice",
-                  "nameLocation": "393:10:30",
+                  "nameLocation": "404:10:35",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6775,
-                  "src": "385:18:30",
+                  "scope": 6867,
+                  "src": "396:18:35",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -354,10 +354,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6772,
+                    "id": 6864,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "385:7:30",
+                    "src": "396:7:35",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -366,21 +366,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "384:20:30"
+              "src": "395:20:35"
             },
-            "scope": 6776,
-            "src": "330:75:30",
+            "scope": 6868,
+            "src": "341:75:35",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 6777,
-        "src": "163:244:30",
+        "scope": 6869,
+        "src": "171:248:35",
         "usedErrors": []
       }
     ],
-    "src": "32:376:30"
+    "src": "33:388:35"
   },
   "compiler": {
     "name": "solc",
@@ -388,7 +388,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.7",
-  "updatedAt": "2022-05-04T01:15:13.902Z",
+  "updatedAt": "2022-05-04T09:51:01.469Z",
   "devdoc": {
     "details": "Interface of the ERC20 standard as defined in the EIP.",
     "kind": "dev",
