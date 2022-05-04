@@ -9,11 +9,27 @@ enum FeeType {
 }
 
 enum CommonContracts {
-    WETH, OCAT, OCX, PNFT, UNI, DAI, PRICE_ORACLE, EXCHANGE, BALANCER, CONRACT_COUNT
+    WETH,               // 0
+    OCAT,               // 1
+    OCX,                // 2
+    PNFT,               // 3
+    UNI,                // 4
+    DAI,                // 5
+    PRICE_ORACLE,       // 6
+    EXCHANGE,           // 7
+    BALANCER,           // 8
+    CONRACT_COUNT       // 9
 }
 
 enum CurrencyIndex {
-    ETH, OCAT, OCX, USD, AUD, UNI, DAI, CURRENCY_COUNT
+    ETH,                // 0
+    OCAT,               // 1
+    OCX,                // 2
+    USD,                // 3
+    AUD,                // 4
+    UNI,                // 5
+    DAI,                // 6
+    CURRENCY_COUNT      // 7
 }
 
 struct OcxPrice {
