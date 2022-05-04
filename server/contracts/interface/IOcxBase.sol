@@ -7,7 +7,7 @@ import '../common/OcxCommon.sol';
  * @dev Interface of the ERC20 standard as defined in the EIP.
  */
 interface IOcxBase {
-    function setCommonContractAddress(CommonContracts contractIndex, address payable _address) external;
+    function setAddress(CommonContracts contractIndex, address payable _address) external;
     function setOcatPrice(uint256 price) external;
     function convertToOcat(uint256 price) external returns(uint256 _ocatPrice);
 }

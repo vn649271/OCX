@@ -26,7 +26,7 @@ contract OcxBase is OcxAdmin, IOcxBase {
     function _compareStrings(string memory a, string memory b) internal pure returns (bool) {
         return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));
     }
-    function setCommonContractAddress(CommonContracts contractIndex, address payable _address) 
+    function setAddress(CommonContracts contractIndex, address payable _address) 
     public override
     onlyCreator onlyValidAddress(_address) onlyAdmin {
         require(contractIndex >= CommonContracts(0) && contractIndex < CommonContracts.CONRACT_COUNT, 

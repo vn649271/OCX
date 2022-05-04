@@ -17,7 +17,8 @@ const ContractAddressMap = {
         "goerli": {
             // https://docs.uniswap.org/protocol/reference/deployments
             WETH: "0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6",
-            UNI: "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+            UNI: "0x5DBCF1aBC4a28940bcBE601f762CB6F2281e53FA", // GUNI for experiment
+            // UNI: "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
             DAI: "0xdc31ee1784292379fbb2964b3b9c4124d8f89c60"
         },
     },
