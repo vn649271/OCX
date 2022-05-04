@@ -102,6 +102,7 @@ contract OcxExchange is OcxBase {
     onlyValidAddress(path[0]) onlyValidAddress(path[1])
     returns(uint256 expectedAmountOut) {
         require(amountIn > 0, "Invalid amountIn");
+        require(quotes["OCAT"].vs["OCX"].decimals > 0, "Invalid OCAT/OCX quote");
         uint256 deadline = block.timestamp + 15; // using 'now' for convenience, for mainnet pass deadline from frontend!
         address tokenIn = path[0];
         address tokenOut = path[1];
