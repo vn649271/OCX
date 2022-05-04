@@ -103,28 +103,4 @@ contract OcxPriceOracle is OcxBase, IOcxPriceOracle {
         OcxPrice memory ethUsdPrice = getEthUsdPrice();
         return OcxPrice((1000000 * btcUsdPrice.value) / ethUsdPrice.value, 6);
     }
-    // price must be value was timed by 10^6
-    function setCurrencyRatio(string memory leftCurrencyName, string memory rightCurrencyName, OcxPrice memory priceObj) 
-    public override onlyAdmin {
-        CurrencyIndex srcCurrencyIndex = currencyNameIndexMap[leftCurrencyName];
-        CurrencyIndex dstCurrencyIndex = currencyNameIndexMap[rightCurrencyName];
-        require (
-            (srcCurrencyIndex >= CurrencyIndex(0) && srcCurrencyIndex < CurrencyIndex.CURRENCY_COUNT) &&
-            (dstCurrencyIndex >= CurrencyIndex(0) && dstCurrencyIndex < CurrencyIndex.CURRENCY_COUNT),
-            "Invalid coin index"
-        );
-        currencyPrice[dstCurrencyIndex].vs[srcCurrencyIndex] = priceObj;
-    }
-    function getCurrencyRatio(string memory leftCurrencyName, string memory rightCurrencyName) 
-    public view override 
-    returns(OcxPrice memory ) {
-        CurrencyIndex srcCurrencyIndex = currencyNameIndexMap[leftCurrencyName];
-        CurrencyIndex dstCurrencyIndex = currencyNameIndexMap[rightCurrencyName];
-        require (
-            (srcCurrencyIndex >= CurrencyIndex(0) && srcCurrencyIndex < CurrencyIndex.CURRENCY_COUNT) &&
-            (dstCurrencyIndex >= CurrencyIndex(0) && dstCurrencyIndex < CurrencyIndex.CURRENCY_COUNT),
-            "Invalid coin index"
-        );
-        return currencyPrice[srcCurrencyIndex].vs[dstCurrencyIndex];
-    }
 }
