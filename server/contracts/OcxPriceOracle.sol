@@ -14,10 +14,8 @@ contract OcxPriceOracle is OcxBase, IOcxPriceOracle {
     uint256  public valuationFee = 50;
     uint256  private minimumPawnablePrice = 5000;
     uint256  private weeklyFeePercentage = 62400; // 6.24%
-    OcxPrice  private ethAudPrice;
-    mapping(CurrencyIndex => CurrencyPriceInfo) private currencyPrice;
+    mapping(string => CurrencyPriceInfo) private cryptoPrice;
     uint256  public constant FIAT_PRICE_DECIMALS = 6;
-    mapping(string => CurrencyIndex) currencyNameIndexMap;
 
     /**
      * IMPORTANT: replace the address below with the WitnetPriceRouter address
@@ -30,14 +28,6 @@ contract OcxPriceOracle is OcxBase, IOcxPriceOracle {
         feePercentages[FeeType.PNFT_MINT_FEE] = 8000; // 0.8% 
         feePercentages[FeeType.PNFT_OCAT_SWAP_FEE] = 8000; // 0.8% 
         feePercentages[FeeType.OCAT_PNFT_SWAP_FEE] = 8000; // 0.8%
-
-        currencyNameIndexMap["ETH"] = CurrencyIndex.ETH;
-        currencyNameIndexMap["OCAT"] = CurrencyIndex.OCAT;
-        currencyNameIndexMap["OCX"] = CurrencyIndex.OCX;
-        currencyNameIndexMap["USD"] = CurrencyIndex.USD;
-        currencyNameIndexMap["AUD"] = CurrencyIndex.AUD;
-        currencyNameIndexMap["UNI"] = CurrencyIndex.UNI;
-        currencyNameIndexMap["DAI"] = CurrencyIndex.DAI;
     }
     /* 
      * feeValue = real_percent_value * (10 ** _feePercentageDecimals) = real_percent_value * 10^6
@@ -81,26 +71,26 @@ contract OcxPriceOracle is OcxBase, IOcxPriceOracle {
         loanFee = feePercentages[FeeType.PNFT_OCAT_SWAP_FEE];
         restoreFee = feePercentages[FeeType.OCAT_PNFT_SWAP_FEE];
     }
-    /// Returns the BTC / USD price (6 decimals), ultimately provided by the Witnet oracle.
-    function getBtcUsdPrice() public view override
-    returns (OcxPrice memory priceObj) {
-        (int256 _v,,) = router.valueFor(0x24beead43216e490aa240ef0d32e18c57beea168f06eabb94f5193868d500946);
-        priceObj.value = uint256(_v);
-        priceObj.decimals = 6;
+    function setCryptoPrice(
+            string memory cryptoName, 
+            string memory fiatName, 
+            uint256 price, 
+            uint8 priceDecimals
+    ) public override {
+        cryptoPrice[cryptoName].vs[fiatName].value = price;
+        cryptoPrice[cryptoName].vs[fiatName].decimals = priceDecimals;
     }
-    /// Returns the ETH / USD price (6 decimals), ultimately provided by the Witnet oracle.
-    function getEthUsdPrice() public view override
-    returns (OcxPrice memory priceObj) {
-        (int256 _v,,) = router.valueFor(0x3d15f7018db5cc80838b684361aaa100bfadf8a11e02d5c1c92e9c6af47626c8);
-        priceObj.value = uint256(_v);
-        priceObj.decimals = 6;
-    }
-    /// Returns the BTC / ETH price (6 decimals), derived from the ETH/USD and 
-    /// the BTC/USD pairs that were ultimately provided by the Witnet oracle.
-    function getBtcEthPrice() public view override
-    returns (OcxPrice memory) {
-        OcxPrice memory btcUsdPrice = getBtcUsdPrice();
-        OcxPrice memory ethUsdPrice = getEthUsdPrice();
-        return OcxPrice((1000000 * btcUsdPrice.value) / ethUsdPrice.value, 6);
+    function getCryptoPrice(
+            string memory cryptoName, 
+            string memory fiatName
+    ) public override returns(OcxPrice memory priceInfo) {
+        (int256 btcUsdPrice,,) = router.valueFor(0x24beead43216e490aa240ef0d32e18c57beea168f06eabb94f5193868d500946);
+        cryptoPrice["BTC"].vs["USD"].value = uint256(btcUsdPrice);
+        cryptoPrice["BTC"].vs["USD"].decimals = 6;
+        (int256 ethUsdPrice,,) = router.valueFor(0x3d15f7018db5cc80838b684361aaa100bfadf8a11e02d5c1c92e9c6af47626c8);
+        cryptoPrice["ETH"].vs["USD"].value = uint256(ethUsdPrice);
+        cryptoPrice["ETH"].vs["USD"].decimals = 6;
+
+        priceInfo = cryptoPrice[cryptoName].vs[fiatName];
     }
 }

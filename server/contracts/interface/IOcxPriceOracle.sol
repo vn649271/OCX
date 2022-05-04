@@ -17,7 +17,14 @@ interface IOcxPriceOracle {
         returns(uint256 value, uint256 feeDecimals);
     function getPnftFeePercentages() external view 
         returns(uint256 mintFee, uint256 loanFee, uint256 restoreFee, uint256 feeDecimals);
-    function getBtcUsdPrice() external view returns (OcxPrice memory _price);
-    function getEthUsdPrice() external view returns (OcxPrice memory _price);
-    function getBtcEthPrice() external view returns (OcxPrice memory _price);
+    function setCryptoPrice(
+        string memory cryptoName, 
+        string memory fiatName, 
+        uint256 price, 
+        uint8 priceDecimals
+    ) external;
+    function getCryptoPrice(
+        string memory cryptoName, 
+        string memory fiatName
+    ) external returns(OcxPrice memory priceInfo);
 }

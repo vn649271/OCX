@@ -133,7 +133,7 @@ contract OcxExchange is OcxBase {
         expectedAmountOut = uniswapRouter.exactInputSingle(params);
         if (path[0] == contractAddress[CommonContracts.UNI] 
         && path[1] == contractAddress[CommonContracts.OCAT]) {
-            expectedAmountOut = (amountOut * (10 ** quotes["OCAT"].vs["OCX"].value)) / 
+            expectedAmountOut = (expectedAmountOut * (10 ** quotes["OCAT"].vs["OCX"].value)) / 
                                 quotes["OCAT"].vs["OCX"].value;
         }
     }
@@ -202,9 +202,9 @@ contract OcxExchange is OcxBase {
     function burnOcx(uint256 amount) internal onlyAdmin {
         IOcxERC20(contractAddress[CommonContracts.OCX]).burn(amount);
     }
-    function setQuote(string memory left, string memory right, uint256 newQuote, uint256 quoteDecimals) public {
+    function setQuote(string memory left, string memory right, uint256 newQuote, uint8 quoteDecimals) public {
         quotes[left].vs[right].value = newQuote;
-        quotes[left].vs[right].decimals = decimals;
+        quotes[left].vs[right].decimals = quoteDecimals;
     }
     function getQuote(string memory left, string memory right) public view returns(OcxPrice memory) {
         return quotes[left].vs[right];
