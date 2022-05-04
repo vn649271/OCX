@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol"; // openzeppelin 4.5 (fo
 // import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import '../OcxBase.sol';
 import '../interface/IOcxBalancer.sol';
+import '../interface/IOcxPriceOracle.sol';
 import '../interface/IOcxExchange.sol';
 import '../interface/IOcxERC20.sol';
 import "../common/OcxCommon.sol";
@@ -29,11 +30,13 @@ contract OcxBalancer is OcxBase, IOcxBalancer {
      */
     function run() external
     onlyValidAddress(contractAddress[CommonContracts.EXCHANGE]) 
+    onlyValidAddress(contractAddress[CommonContracts.PRICE_ORACLE]) 
     onlyValidAddress(contractAddress[CommonContracts.OCAT]) 
     onlyAdmin {
+        IOcxPriceOracle ocxPriceOracle = IOcxPriceOracle(contractAddress[CommonContracts.PRICE_ORACLE]);
         IOcxExchange ocXchange = IOcxExchange(contractAddress[CommonContracts.EXCHANGE]);
         // Check ETH:AUD quote
-        OcxPrice memory newEthAudQuote = ocXchange.getQuote("ETH", "AUD");
+        OcxPrice memory newEthAudQuote = ocxPriceOracle.getCryptoPrice("ETH", "AUD");
         if (ethAudQuote.value == 0) {
             ethAudQuote = newEthAudQuote;
         }
@@ -63,18 +66,21 @@ contract OcxBalancer is OcxBase, IOcxBalancer {
             ethAudQuote = newEthAudQuote;
         }
         // Check UNI:AUD quote
-        OcxPrice memory uniAudQuote = ocXchange.getQuote("UNI", "AUD");
+        OcxPrice memory uniAudQuote = ocxPriceOracle.getCryptoPrice("UNI", "AUD");
         OcxPrice memory oldUniAudQuote = ocXchange.getQuote("UNI", "AUD");
         if (oldUniAudQuote.value == 0) {
-            ocXchange.setQuote("UNI", "AUD", uniAudQuote);
+            ocXchange.setQuote("UNI", "AUD", uniAudQuote.value, uniAudQuote.decimals);
             oldUniAudQuote = uniAudQuote;
         }
         if (oldUniAudQuote.value != uniAudQuote.value) {
-            // Update OCAT:OCX quote by change rate of OCAT:UNI
+            // Update OCAT:OCX quote by change rate of UNI:AUD
             uint changePercentage = (uniAudQuote.value * 100) / oldUniAudQuote.value;
             OcxPrice memory oldOcatOcxQuote = ocXchange.getQuote("OCAT", "OCX");
             ocXchange.setQuote(
-                "OCAT", "OCX", OcxPrice(oldOcatOcxQuote.value * changePercentage / 100, QUOTE_DECIMALS)
+                "OCAT", 
+                "OCX", 
+                oldOcatOcxQuote.value * changePercentage / 100, 
+                QUOTE_DECIMALS
             );
         }
     }

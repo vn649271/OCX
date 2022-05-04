@@ -28,6 +28,6 @@ interface IOcxExchange is IOcxBase {
     function burnOcat(uint256 amount) external;
     function mintOcx(uint256 amount) external payable;
     function burnOcx(uint256 amount) external;
-    function setQuote(string memory left, string memory right, OcxPrice memory newQuote) external;
+    function setQuote(string memory left, string memory right, uint256 newQuote, uint8 quoteDecimals) external;
     function getQuote(string memory left, string memory right) external view returns(OcxPrice memory);
 }

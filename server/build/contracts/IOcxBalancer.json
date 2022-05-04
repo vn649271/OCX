@@ -15,45 +15,45 @@
     "absolutePath": "project:/contracts/interface/IOcxBalancer.sol",
     "exportedSymbols": {
       "CommonContracts": [
-        6684
+        6621
       ],
       "CurrencyIndex": [
-        6693
+        6630
       ],
       "CurrencyPriceInfo": [
-        6704
+        6641
       ],
       "FeeType": [
-        6673
+        6610
       ],
       "IOcxBalancer": [
-        6887
+        6677
       ],
       "OcxPrice": [
-        6698
+        6635
       ],
       "POOL_FEE": [
-        6713
+        6650
       ],
       "QUOTE_DECIMALS": [
-        6716
+        6653
       ],
       "QUOTE_MULTIPLIER": [
-        6721
+        6658
       ],
       "UNISWAP_V3_QUOTER_ADDRESS": [
-        6710
+        6647
       ],
       "UNISWAP_V3_ROUTER_ADDRESS": [
-        6707
+        6644
       ]
     },
-    "id": 6888,
+    "id": 6678,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6884,
+        "id": 6674,
         "literals": [
           "solidity",
           "^",
@@ -61,17 +61,17 @@
           ".0"
         ],
         "nodeType": "PragmaDirective",
-        "src": "33:23:34"
+        "src": "33:23:29"
       },
       {
         "absolutePath": "project:/contracts/common/OcxCommon.sol",
         "file": "../common/OcxCommon.sol",
-        "id": 6885,
+        "id": 6675,
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
-        "scope": 6888,
-        "sourceUnit": 6722,
-        "src": "57:33:34",
+        "scope": 6678,
+        "sourceUnit": 6659,
+        "src": "57:33:29",
         "symbolAliases": [],
         "unitAlias": ""
       },
@@ -81,26 +81,26 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 6886,
+          "id": 6676,
           "nodeType": "StructuredDocumentation",
-          "src": "92:70:34",
+          "src": "92:70:29",
           "text": " @dev Interface of the ERC20 standard as defined in the EIP."
         },
         "fullyImplemented": true,
-        "id": 6887,
+        "id": 6677,
         "linearizedBaseContracts": [
-          6887
+          6677
         ],
         "name": "IOcxBalancer",
-        "nameLocation": "173:12:34",
+        "nameLocation": "173:12:29",
         "nodeType": "ContractDefinition",
         "nodes": [],
-        "scope": 6888,
-        "src": "163:26:34",
+        "scope": 6678,
+        "src": "163:26:29",
         "usedErrors": []
       }
     ],
-    "src": "33:157:34"
+    "src": "33:157:29"
   },
   "compiler": {
     "name": "solc",
@@ -108,7 +108,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.7",
-  "updatedAt": "2022-05-04T14:29:42.294Z",
+  "updatedAt": "2022-05-04T20:40:20.612Z",
   "devdoc": {
     "details": "Interface of the ERC20 standard as defined in the EIP.",
     "kind": "dev",
