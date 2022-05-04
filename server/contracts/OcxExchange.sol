@@ -9,7 +9,8 @@ pragma solidity ^0.8.0;
 import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 import "@uniswap/v3-periphery/contracts/interfaces/IQuoter.sol";
 // import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
-import '@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol';
+//import '@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol';
+import "@uniswap/lib/contracts/libraries/TransferHelper.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol"; // openzeppelin 4.5 (for solidity 0.8.x)
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
@@ -100,7 +101,7 @@ contract OcxExchange is OcxBase {
     }
     function getAmountsOut(uint256 amountIn, address[2] memory path) public 
     onlyValidAddress(path[0]) onlyValidAddress(path[1])
-    returns(uint256 expectedAmountOut) {
+    view returns(uint256 expectedAmountOut) {
         require(amountIn > 0, "Invalid amountIn");
         require(quotes["OCAT"].vs["OCX"].decimals > 0, "Invalid OCAT/OCX quote");
         uint256 deadline = block.timestamp + 15; // using 'now' for convenience, for mainnet pass deadline from frontend!
