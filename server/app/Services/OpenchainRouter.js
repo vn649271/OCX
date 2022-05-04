@@ -25,7 +25,7 @@ const TOKEN_CONTRACT_MAP = {
 
 const UNLOCK_ACCOUNT_INTERVAL = process.env.UNLOCK_ACCOUNT_INTERVAL || 15000; // 15s
 
-const ocxSwapAbi = OcxExchange_DeployedInfo.abi;
+const ocXchangeAbi = OcxExchange_DeployedInfo.abi;
 const pnftSwapAbi = PnftExchange_DeployedInfo.abi;
 const ocxLocalPoolAbi = OcxLocalPool_DeployedInfo.abi;
 const ocatAbi = OcatToken_DeployedInfo.abi;
@@ -67,7 +67,7 @@ class OpenchainRouter {
         
         setTimeout(this._getPnftTxFee, FEE_CHECKING_INTERVAL);
     }
-    async _balancing() {
+    async _checkForBalancing() {
         // Watch ETH-AUD price and save on-chain
         axios.request({
             method: 'GET',
@@ -213,8 +213,8 @@ class OpenchainRouter {
         this.myAddress = addresses['ETH'];
         this.accountInfo = accountInfo;
         // Start stable coin system
-        setInterval(this._balancing, ETH_PRICE_CHECKING_INTERVAL);
-        this._balancing();
+        setInterval(this._checkForBalancing, ETH_PRICE_CHECKING_INTERVAL);
+        this._checkForBalancing();
         return 0;
     }
     async setDeveloperAccount() {
@@ -297,7 +297,7 @@ class OpenchainRouter {
                 ) {
                     let path = [params.sellSymbol, params.buySymbol];
                     let ocxExchangeAddress = this.getContractAddress(OcxExchange_DeployedInfo);
-                    const ocXchange = new this.web3.eth.Contract(ocxSwapAbi, ocxExchangeAddress);
+                    const ocXchange = new this.web3.eth.Contract(ocXchangeAbi, ocxExchangeAddress);
                     const sellAmount = this.web3.utils.toHex(params.sellAmount);
                     ret = await ocXchange.methods.getAmountsOut(sellAmount, path).call();
                     if (!ret) {
@@ -353,7 +353,7 @@ class OpenchainRouter {
     //         let gasPrice = await this.web3.eth.getGasPrice();
     //         gasPrice = (gasPrice * 1.2).toFixed(0);
     //         if (params.buySymbol != "OCAT") {
-    //             const ocXchange = new this.web3.eth.Contract(ocxSwapAbi, ocxExchangeAddress);
+    //             const ocXchange = new this.web3.eth.Contract(ocXchangeAbi, ocxExchangeAddress);
     
     //             let ret = await ocXchange.methods.swapFromETH(
     //                 erc20TokenAddress,
@@ -406,7 +406,7 @@ class OpenchainRouter {
     //             if (!ret) {
     //                 return { error: -250, data: "Failed to approve the ERC20 token for the contract" };
     //             }
-    //             const ocXchange = new this.web3.eth.Contract(ocxSwapAbi, ocxExchangeAddress);
+    //             const ocXchange = new this.web3.eth.Contract(ocXchangeAbi, ocxExchangeAddress);
     //             ret = await ocXchange.methods.swapToETH(
     //                 erc20TokenAddress,
     //                 sellAmountInHex,

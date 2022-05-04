@@ -6,7 +6,6 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol"; // openzeppelin 4.5 (fo
 import '../OcxBase.sol';
 import '../interface/IOcxBalancer.sol';
 import '../interface/IOcxExchange.sol';
-import '../interface/IOcxPriceOracle.sol';
 import '../interface/IOcxERC20.sol';
 import "../common/OcxCommon.sol";
 
@@ -29,11 +28,9 @@ contract OcxBalancer is OcxBase, IOcxBalancer {
      * The stable algorithm fill back 
      */
     function run() external
-    onlyValidAddress(contractAddress[CommonContracts.PRICE_ORACLE])
     onlyValidAddress(contractAddress[CommonContracts.EXCHANGE]) 
     onlyValidAddress(contractAddress[CommonContracts.OCAT]) 
     onlyAdmin {
-        IOcxPriceOracle priceOracle = IOcxPriceOracle(contractAddress[CommonContracts.PRICE_ORACLE]);
         IOcxExchange ocXchange = IOcxExchange(contractAddress[CommonContracts.EXCHANGE]);
         // Check ETH:AUD quote
         OcxPrice memory newEthAudQuote = ocXchange.getQuote("ETH", "AUD");
