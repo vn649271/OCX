@@ -93,8 +93,8 @@ contract OcxExchange is OcxBase {
         // Bottomhalf for UNI->OCAT swap
         if (_tokenIn == contractAddress[CommonContracts.UNI] 
         && _tokenOut == contractAddress[CommonContracts.OCAT]) {
-            uint256 ocatAmount = (amountOut / quotes["OCAT"].vs["OCX"].value) / 
-                                 (10 ** quotes["OCAT"].vs["OCX"].decimals);
+            uint256 ocatAmount = (amountOut * (10 ** quotes["OCAT"].vs["OCX"].value)) / 
+                                quotes["OCAT"].vs["OCX"].value;
             IERC20(contractAddress[CommonContracts.OCAT]).transfer(msg.sender, ocatAmount);
         }
     }
