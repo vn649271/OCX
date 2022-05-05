@@ -29,6 +29,7 @@ contract OcxExchange is OcxBase {
 
 
     event estimatedOcxAmountForBurningOcat(uint256);
+    event expectedAmountOut(uint256);
 
     receive() external payable {}
 
@@ -101,43 +102,42 @@ contract OcxExchange is OcxBase {
     }
     function getAmountsOut(uint256 amountIn, address[2] memory path) public 
     onlyValidAddress(path[0]) onlyValidAddress(path[1])
-    returns(uint256 expectedAmountOut) {
+    returns(uint256) {
         require(amountIn > 0, "Invalid amountIn");
         require(quotes["OCAT"].vs["OCX"].decimals > 0, "Invalid OCAT/OCX quote");
-        uint256 deadline = block.timestamp + 15; // using 'now' for convenience, for mainnet pass deadline from frontend!
         address tokenIn = path[0];
         address tokenOut = path[1];
         uint24 fee = 3000;
-        address recipient = msg.sender;
-        uint256 amountOutMinimum = 0;
         uint160 sqrtPriceLimitX96 = 0;
 
-        if (path[0] == contractAddress[CommonContracts.OCAT]) {
-            if (path[1] == contractAddress[CommonContracts.UNI]) {
-                // Get OCAT:OCX quote and calculate OCX amount for "amountIn"
-                amountIn = (quotes["OCAT"].vs["OCX"].value * amountIn) / 
-                           (10 ** quotes["OCAT"].vs["OCX"].decimals);
-                // Get OCX:UNI quote
-                // Multiple it by OCAT:OCX quote
-                tokenIn = contractAddress[CommonContracts.OCX];
-            }
+        if (path[0] == contractAddress[CommonContracts.OCAT]
+        && path[1] == contractAddress[CommonContracts.UNI]) {
+            // Get OCAT:OCX quote and calculate OCX amount for "amountIn"
+            amountIn = (quotes["OCAT"].vs["OCX"].value * amountIn) / 
+                        (10 ** quotes["OCAT"].vs["OCX"].decimals);
+            // Get OCX:UNI quote
+            // Multiple it by OCAT:OCX quote
+            tokenIn = contractAddress[CommonContracts.OCX];
+        } else if (path[0] == contractAddress[CommonContracts.UNI]
+        && path[1] == contractAddress[CommonContracts.OCAT]) {
+            tokenOut = contractAddress[CommonContracts.OCX];
         }
-        ISwapRouter.ExactInputSingleParams  memory params = ISwapRouter.ExactInputSingleParams  (
+        uint256 amountOut = quoter.quoteExactInputSingle(
             tokenIn,
             tokenOut,
             fee,
-            recipient,
-            deadline,
             amountIn,
-            amountOutMinimum,
             sqrtPriceLimitX96
         );
-        // expectedAmountOut = uniswapRouter.exactInputSingle(params);
-        // if (path[0] == contractAddress[CommonContracts.UNI] 
-        // && path[1] == contractAddress[CommonContracts.OCAT]) {
-        //     expectedAmountOut = (expectedAmountOut * (10 ** quotes["OCAT"].vs["OCX"].value)) / 
-        //                         quotes["OCAT"].vs["OCX"].value;
-        // }
+        // If UNI -> OCAT swap, we got OCX amount here.
+        // Now is the time to calculate OCAT amount from the OCX one
+        if (path[0] == contractAddress[CommonContracts.UNI] 
+        && path[1] == contractAddress[CommonContracts.OCAT]) {
+            amountOut = (amountOut * (10**quotes["OCAT"].vs["OCX"].decimals)) / 
+                        quotes["OCAT"].vs["OCX"].value;
+        }
+        emit expectedAmountOut(amountOut);
+        return amountOut;
     }
     /**
      *  Mint OCAT by funding ETH
