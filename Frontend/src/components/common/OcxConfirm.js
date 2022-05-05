@@ -23,7 +23,7 @@ const OcxConfirm = (props) => {
   }
 
   return (
-    <div className="fixed justify-center items-center w-full">
+    <div className="confirm-frame z-50 fixed justify-center items-center w-full">
       <OcxModalComponents.Frame
         additionalClass="mt-60"
         open={_show}

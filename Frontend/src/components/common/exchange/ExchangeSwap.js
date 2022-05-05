@@ -5,6 +5,8 @@ import DelayButton from '../../common/DelayButton';
 import Button from "@material-tailwind/react/Button";
 import SwapConfirmScene from '../../common/exchange/SwapConfirmScene';
 import DropdownList from "../DropdownList";
+import OcxSpinButton from '../../common/OcxSpinButton';
+import OcxConfirm from '../../common/OcxConfirm';
 
 const SCENE_IDLE = 0,
     SCENE_CONFIRM_SWAP = 1;
@@ -53,15 +55,20 @@ export default class ExchangeSwap extends React.Component {
                 buy_amount: '',
                 slippage: 3,
             },
+            confirm_handler: null,
+            confirm_text: null,
+            show_confirm: false
         }
 
         this.userToken = props.userToken;
         this.topClass = (props.extraClass ? props.class : "home-card py-10 px-0 w-full h-full");
-        this.inform = props.inform;
         this.warning = props.warning;
         this.showToast = props.showToast;
 
+        this.onClickSwap = this.onClickSwap.bind(this);
         this.onClickConfirmSwap = this.onClickConfirmSwap.bind(this);
+        this.showConfirm = this.showConfirm.bind(this);
+        this.closeConfirm = this.closeConfirm.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.fetchBestBuyAmount = this.fetchBestBuyAmount.bind(this);
         this.onClickCancelReviewSwap = this.onClickCancelReviewSwap.bind(this);
@@ -71,18 +78,17 @@ export default class ExchangeSwap extends React.Component {
         this.onSelectBuyToken = this.onSelectBuyToken.bind(this);
     }
 
-    componentDidMount() {
+    componentDidMount = () => {
 
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate = prevProps => {
         if (prevProps.userToken !== this.props.userToken) {
             this.userToken = this.props.userToken;
         }
     }
 
     handleInputChange = ev => {
-        this.showToast('');
         let input = this.state.input;
         input[ev.target.name] = ev.target.value;
         this.setState({
@@ -94,19 +100,19 @@ export default class ExchangeSwap extends React.Component {
         }
     }
 
-    setSellAmount(amount) {
+    setSellAmount = amount => {
         let input = this.state.input;
         input.sell_amount = amount;
         this.setState({ input: input });
     }
 
-    setBuyAmount(amount) {
+    setBuyAmount = amount => {
         let input = this.state.input;
         input.buy_amount = amount;
         this.setState({ input: input });
     }
 
-    onClickCancelReviewSwap() {
+    onClickCancelReviewSwap = () => {
         this.setState({ current_scene: SCENE_IDLE });
     }
 
@@ -117,8 +123,7 @@ export default class ExchangeSwap extends React.Component {
     onSelectBuyToken = index => {
         this.setState({buy_token: TOKENS[index].title});
     }
-
-    async fetchBestBuyAmount() {
+    fetchBestBuyAmount = async () => {
         let ret = await accountService.getBestPrice({
             userToken: this.userToken,
             sellSymbol: this.state.sell_token,
@@ -131,11 +136,32 @@ export default class ExchangeSwap extends React.Component {
         }
         this.setBuyAmount((ret.data - 0).toFixed(5));
     }
-
-    async onClickConfirmSwap(params, ev, btnCmpnt) {
-        this.inform("");
-        this.setState({ current_scene: SCENE_CONFIRM_SWAP });
-
+    onClickSwap = async params => {
+        this.showConfirm({context: params });
+    }
+    showConfirm = params => {
+        this.setState({confirm_handler: this.onClickConfirmSwap});
+        this.setState({confirm_text: 'Are you sure to proceed?'});
+        this.confirmContext = params.context ? params.context : null;
+        this.setState({show_confirm: true});
+    }
+    closeConfirm = () => {
+        this.setState({show_confirm: false});
+        return this.confirmContext;
+    }
+    onClickConfirmSwap = async retCode => {
+        let { stopWait, getExtraData } = this.closeConfirm();
+        stopWait();
+        if (retCode == 1) { // No
+            return;
+        }
+        if (this.state.sell_token == "" 
+        || this.state.input.sell_amount == "" || this.state.input.sell_amount - 0 == 0
+        || this.state.buy_token == ""
+        || this.state.input.buy_amount == "" || this.state.input.buy_amount - 0 == 0) {
+            this.showToast("Invalid parameters for swap");
+            return;
+        }
         let resp = await accountService.swap({
             userToken: this.userToken,
             sellSymbol: this.state.sell_token,
@@ -145,7 +171,7 @@ export default class ExchangeSwap extends React.Component {
             slippage: 3, // this.state.input.slippage
             deadline: 600 // this.state.input.deadline
         });
-        btnCmpnt.stopTimer();
+
         self.setSellAmount('');
         self.setBuyAmount('');
         var errorMsg = null;
@@ -161,10 +187,20 @@ export default class ExchangeSwap extends React.Component {
         self.warning(errorMsg);
     }
 
-    render() {
+    render = () => {
         return (
             <div className={this.topClass}>
-                <div className="swap-card_header pb-5 border-b-2 border-gray-200">
+                 <div>
+                {
+                    this.state.show_confirm ?
+                    <OcxConfirm 
+                        show={true}
+                        onClick={ this.state.confirm_handler }
+                    >{ this.state.confirm_text }</OcxConfirm>
+                    :<></>
+                }
+                </div>
+               <div className="swap-card_header pb-5 border-b-2 border-gray-200">
                     <p className="main-font font-30 main-color text-center ">Swap</p>
                     <p className="main-font font-16 main-color text-center">Trade tokens in an instant</p>
                 </div>
@@ -202,12 +238,10 @@ export default class ExchangeSwap extends React.Component {
                     </div>
                 </div>
                 <div className="review-swap-button-container px-5 pt-10 xl:pt-20">
-                    <DelayButton
-                        captionInDelay="Swapping"
-                        caption="Confirm Swap"
-                        maxDelayInterval={60}
-                        onClickButton={this.onClickConfirmSwap}
-                        onClickButtonParam={null} />
+                    <OcxSpinButton
+                        title="Swap"
+                        onClick={this.onClickSwap}
+                    />
                 </div>
             </div >
         );
