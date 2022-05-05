@@ -295,22 +295,35 @@ class OpenchainRouter {
                 if ((params.sellSymbol == 'OCAT' && params.buySymbol == 'ETH') ||
                     (params.sellSymbol == 'ETH' && params.buySymbol == 'OCAT')
                 ) {
-                    let path = [params.sellSymbol, params.buySymbol];
+                } else if (params.sellSymbol == 'OCAT' && params.buySymbol == 'UNI'
+                || params.sellSymbol == 'UNI' && params.buySymbol == 'OCAT') {
+                    let path = [sellTokenAddress, buyTokenAddress];
                     let ocxExchangeAddress = this.getContractAddress(OcxExchange_DeployedInfo);
                     const ocXchange = new this.web3.eth.Contract(ocXchangeAbi, ocxExchangeAddress);
-                    const sellAmount = this.web3.utils.toHex(params.sellAmount);
-                    ret = await ocXchange.methods.getAmountsOut(sellAmount, path).call();
-                    if (!ret) {
-                        return { error: -2, data: "Failed to get best price" }
+                    // Get decimals for sell token
+                    let sellTokenContract = new this.web3.eth.Contract(Erc20_DeployedInfo.abi, sellTokenAddress);
+                    let sellTokenDecimals = await sellTokenContract.methods.decimals().call();
+                    if (sellTokenDecimals == null || sellTokenDecimals == "" || sellTokenDecimals - 0 == 0) {
+                        return { error: -2, data: "Failed to get decimal for sell token" }
                     }
+                    const sellAmount = (params.sellAmount - 0) * (10**sellTokenDecimals);
+                    ret = await ocXchange.methods.getAmountsOut(sellAmount.toString(), path).call();
+                    if (!ret) {
+                        return { error: -3, data: "Failed to get best price" }
+                    }
+                    // Get decimals for sell token
+                    let buyTokenContract = new this.web3.eth.Contract(Erc20_DeployedInfo.abi, buyTokenAddress);
+                    let buyTokenDecimals = await buyTokenContract.methods.decimals().call();
+                    if (buyTokenDecimals == null || buyTokenDecimals == "" || buyTokenDecimals - 0 == 0) {
+                        return { error: -4, data: "Failed to get decimal for buy token" }
+                    }
+                    let amountOut = ret / (10**buyTokenDecimals);
                     // let amountsOut = ret.amountOut;
                     // amountOutMin = await this.web3.utils.fromWei(amountsOut, "ether");
-                    amountOutMin = ret.amountOut * (100 - SLIPPAGE_MAX) / 100;
+                    amountOutMin = amountOut * (100 - SLIPPAGE_MAX) / 100;
                         // .mul(this.web3.utils.toBN)
                         // .div(this.web3.utils.toBN(100))
                         // .toString();
-                } else {
-
                 }
             } else {
                 let path = [];

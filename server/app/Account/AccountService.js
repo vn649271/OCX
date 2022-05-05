@@ -110,7 +110,7 @@ class AccountService {
      */
      async recovery(accountInfo) {
         if (web3 == null) {
-            console.log("AccountService.createAccount(): Geth node is not ready yet. Please retry a while later.");
+            console.log("AccountService.recovery(): Geth node is not ready yet. Please retry a while later.");
             return { error: -200, data: MSG__GETH_NOT_READY };
         }
         try {
@@ -352,7 +352,7 @@ class AccountService {
         if (sellSymbol === null) {
             return { error: -202, data: "Invalid token to sell" };
         }
-        if (sellAmount === 0) {
+        if (sellAmount === "" || sellAmount === 0) {
             return { error: -203, data: "Invalid amount to sell" };
         }
         if (buySymbol === null) {
@@ -364,7 +364,6 @@ class AccountService {
         }
         var myAddress = addresses['ETH'];
 
-        sellAmount = web3.utils.toWei(sellAmount.toString(), "ether");
         try {
             let ret = null;
             const ocRouter = await openchainRouterInstance(web3, accountInfo);
@@ -380,7 +379,6 @@ class AccountService {
                 ret.error = -251;
                 return ret;
             }
-            ret.data = sellAmount = web3.utils.fromWei(ret.data.toString(), "ether");
             return ret;
         } catch (error) {
             let errorMessage = error.message.replace("Returned error: ", "");
