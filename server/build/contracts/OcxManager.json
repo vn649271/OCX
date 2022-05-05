@@ -1,29 +1,29 @@
 {
   "contractName": "OcxManager",
   "abi": [],
-  "metadata": "{\"compiler\":{\"version\":\"0.8.4+commit.c7e474f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/OcxManager.sol\":\"OcxManager\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/OcxManager.sol\":{\"keccak256\":\"0x1c2d171bd8d7bde4d7948635d0f5d06b833d80dd2ba97a343f92a046742c7ca0\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://ae41555223568c0f4c721ee14f54a7d93d97f5f824ff7f4a050d0a0977b579c7\",\"dweb:/ipfs/QmVjQtPQKPdABgwgjNTe2t6Z6DbcFnhVPqNt5bsYRpJcgE\"]}},\"version\":1}",
-  "bytecode": "0x6080604052348015600f57600080fd5b50603f80601d6000396000f3fe6080604052600080fdfea26469706673582212200a9d9a0dd5a3959e27dbbd4e4daea11171a175e2a2520830273c6d54e70d6c7764736f6c63430008040033",
-  "deployedBytecode": "0x6080604052600080fdfea26469706673582212200a9d9a0dd5a3959e27dbbd4e4daea11171a175e2a2520830273c6d54e70d6c7764736f6c63430008040033",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.4+commit.c7e474f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/OcxManager.sol\":\"OcxManager\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/OcxManager.sol\":{\"keccak256\":\"0x9faee5436004831ac5c45fbd28f17bfbd6b27fb1908294f4361b98bbb08f2e8c\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://68314d549a6d521bdf6a4b1f68b60c1f5c1796bc7bd270eca1f632a16ff1fca1\",\"dweb:/ipfs/Qmc4DdrCmHW8zoqPFMCBCizBWMgogQLXcLsvhbCxJxH4WC\"]}},\"version\":1}",
+  "bytecode": "0x6080604052348015600f57600080fd5b50603f80601d6000396000f3fe6080604052600080fdfea26469706673582212200d4623eaa867f0f27ddbf1b19379591d6efe06adaebb67562d13855b28aaff9c64736f6c63430008040033",
+  "deployedBytecode": "0x6080604052600080fdfea26469706673582212200d4623eaa867f0f27ddbf1b19379591d6efe06adaebb67562d13855b28aaff9c64736f6c63430008040033",
   "immutableReferences": {},
   "generatedSources": [],
   "deployedGeneratedSources": [],
-  "sourceMap": "57:24:22:-:0;;;;;;;;;;;;;;;;;;;",
-  "deployedSourceMap": "57:24:22:-:0;;;;;",
-  "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ncontract OcxManager {\n\n}\n\n",
-  "sourcePath": "/home/openchainx/OpenchainTestVersion/server/contracts/OcxManager.sol",
+  "sourceMap": "60:26:22:-:0;;;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "60:26:22:-:0;;;;;",
+  "source": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.0;\r\n\r\ncontract OcxManager {\r\n\r\n}\r\n\r\n",
+  "sourcePath": "E:\\Work\\OpenchainTestVersion\\server\\contracts\\OcxManager.sol",
   "ast": {
     "absolutePath": "project:/contracts/OcxManager.sol",
     "exportedSymbols": {
       "OcxManager": [
-        4934
+        4932
       ]
     },
-    "id": 4935,
+    "id": 4933,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 4933,
+        "id": 4931,
         "literals": [
           "solidity",
           "^",
@@ -31,7 +31,7 @@
           ".0"
         ],
         "nodeType": "PragmaDirective",
-        "src": "32:23:22"
+        "src": "33:23:22"
       },
       {
         "abstract": false,
@@ -39,71 +39,28 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "fullyImplemented": true,
-        "id": 4934,
+        "id": 4932,
         "linearizedBaseContracts": [
-          4934
+          4932
         ],
         "name": "OcxManager",
-        "nameLocation": "66:10:22",
+        "nameLocation": "69:10:22",
         "nodeType": "ContractDefinition",
         "nodes": [],
-        "scope": 4935,
-        "src": "57:24:22",
+        "scope": 4933,
+        "src": "60:26:22",
         "usedErrors": []
       }
     ],
-    "src": "32:51:22"
-  },
-  "legacyAST": {
-    "absolutePath": "project:/contracts/OcxManager.sol",
-    "exportedSymbols": {
-      "OcxManager": [
-        4934
-      ]
-    },
-    "id": 4935,
-    "license": "MIT",
-    "nodeType": "SourceUnit",
-    "nodes": [
-      {
-        "id": 4933,
-        "literals": [
-          "solidity",
-          "^",
-          "0.8",
-          ".0"
-        ],
-        "nodeType": "PragmaDirective",
-        "src": "32:23:22"
-      },
-      {
-        "abstract": false,
-        "baseContracts": [],
-        "contractDependencies": [],
-        "contractKind": "contract",
-        "fullyImplemented": true,
-        "id": 4934,
-        "linearizedBaseContracts": [
-          4934
-        ],
-        "name": "OcxManager",
-        "nameLocation": "66:10:22",
-        "nodeType": "ContractDefinition",
-        "nodes": [],
-        "scope": 4935,
-        "src": "57:24:22",
-        "usedErrors": []
-      }
-    ],
-    "src": "32:51:22"
+    "src": "33:57:22"
   },
   "compiler": {
     "name": "solc",
     "version": "0.8.4+commit.c7e474f2.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.4.6",
-  "updatedAt": "2022-05-04T23:41:37.646Z",
+  "schemaVersion": "3.4.7",
+  "updatedAt": "2022-05-05T00:02:32.933Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},

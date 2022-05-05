@@ -42,40 +42,40 @@ module.exports = async deployer => {
     var ocxOcatEthPool = null;
     var adminAddress = "0xADB366C070DFB857DC63ebF797EFE615B0567C1B";
 
-    // deployer.deploy(PawnNFTs).then(ret => {
-    //     pnftAddress = ret.address;
-    //     pnft = ret;
-    // });
+    deployer.deploy(PawnNFTs).then(ret => {
+        pnftAddress = ret.address;
+        pnft = ret;
+    });
 
-    // deployer.deploy(OcatToken).then(ret => {
-    //     ocatToken = ret;
-    //     ocatAddress = ret.address;
-    // });
-    // deployer.deploy(OcxToken).then(ret => {
-    //   ocxAddress = ret.address;
-    //   // // Setting deployed OCAT address 
-    //   // await ret.setOcxPoolAddress(ocxLocalPoolAddress);
-    // });
-    // deployer.deploy(PawnExchange).then(ret => {
-    //     pawnExchange = ret;
-    //     pawnExchangeAddress = pawnExchange.address;
-    // });
+    deployer.deploy(OcatToken).then(ret => {
+        ocatToken = ret;
+        ocatAddress = ret.address;
+    });
+    deployer.deploy(OcxToken).then(ret => {
+      ocxAddress = ret.address;
+      // // Setting deployed OCAT address 
+      // await ret.setOcxPoolAddress(ocxLocalPoolAddress);
+    });
+    deployer.deploy(PawnExchange).then(ret => {
+        pawnExchange = ret;
+        pawnExchangeAddress = pawnExchange.address;
+    });
 
-    // // deployer.deploy(OcxLocalPool).then(ret => {
-    // //     ocxLocalPool = ret;
-    // //     ocxLocalPoolAddress = ret.address;
-    // // });
+    deployer.deploy(OcxPriceOracle).then(ret => {
+        ocxPriceOracleAddress = ret.address;
+    });
 
-    // deployer.deploy(OcxPriceOracle).then(ret => {
-    //     ocxPriceOracleAddress = ret.address;
-    // });
-
-    // // https://github.com/rafaelmrdyn/uniswap-v3-periphery/blob/main/testnet-deploys.md
-    // //   NonfungibleTokenPositionManagerAddress: 0x865F20efC14A5186bF985aD42c64f5e71C055376 on Goerli
-    // //   
+    // https://github.com/rafaelmrdyn/uniswap-v3-periphery/blob/main/testnet-deploys.md
+    //   NonfungibleTokenPositionManagerAddress: 0x865F20efC14A5186bF985aD42c64f5e71C055376 on Goerli
+    //   
     
-    // deployer.deploy(OcxBalancer).then(ret => {
-    //     ocxBalancer = ret;
+    deployer.deploy(OcxBalancer).then(ret => {
+        ocxBalancer = ret;
+    });
+
+    // deployer.deploy(OcxLocalPool).then(ret => {
+    //     ocxLocalPool = ret;
+    //     ocxLocalPoolAddress = ret.address;
     // });
 
     // // deployer.deploy(OcxOcatEthPool).then(ret => {
