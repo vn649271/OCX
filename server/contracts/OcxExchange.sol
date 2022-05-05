@@ -64,8 +64,8 @@ contract OcxExchange is OcxBase {
         if (_tokenIn == contractAddress[CommonContracts.OCAT] 
          && _tokenOut == contractAddress[CommonContracts.UNI]) {
             uint256 ocxBalance = IERC20(contractAddress[CommonContracts.OCX]).balanceOf(address(this));
-            uint256 ocxAmount = (_amountIn * quotes["OCAT"].vs["OCX"].value) / 
-                                (10 ** quotes["OCAT"].vs["OCX"].decimals);
+            uint256 ocxAmount = (quotes["OCAT"].vs["OCX"].value * amountIn) / 
+                        (10 ** quotes["OCAT"].vs["OCX"].decimals);
             require(ocxBalance >= ocxAmount, "Insufficient OCX balance in the contract");
             IERC20(contractAddress[CommonContracts.OCX]).approve(UNISWAP_V3_ROUTER_ADDRESS, ocxAmount);
             _tokenIn = contractAddress[CommonContracts.OCX];
