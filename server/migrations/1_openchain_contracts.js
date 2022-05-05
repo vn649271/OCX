@@ -1,14 +1,14 @@
-const WEthToken = artifacts.require("./ganache-token/WEthToken.sol");
-const GDaiToken = artifacts.require("./ganache-token/GDaiToken.sol");
-const GUniToken = artifacts.require("./ganache-token/GUniToken.sol");
-const OcatToken = artifacts.require("./OcatToken.sol");
-const OcxToken = artifacts.require("./OcxToken.sol");
-const PawnNFTs = artifacts.require("./PawnNFTs.sol");
+// const WEthToken = artifacts.require("./ganache-token/WEthToken.sol");
+// const GDaiToken = artifacts.require("./ganache-token/GDaiToken.sol");
+// const GUniToken = artifacts.require("./ganache-token/GUniToken.sol");
+// const OcatToken = artifacts.require("./OcatToken.sol");
+// const OcxToken = artifacts.require("./OcxToken.sol");
+// const PawnNFTs = artifacts.require("./PawnNFTs.sol");
+// const PawnExchange = artifacts.require("./PawnExchange.sol");
+// const OcxPriceOracle = artifacts.require("./OcxPriceOracle.sol");
+// const OcxBalancer = artifacts.require("./balancer/OcxBalancer.sol");
 const OcxExchange = artifacts.require("./OcxExchange.sol");
-const PawnExchange = artifacts.require("./PawnExchange.sol");
-const OcxPriceOracle = artifacts.require("./OcxPriceOracle.sol");
 // // const OcxLocalPool = artifacts.require("./OcxLocalPool.sol");
-const OcxBalancer = artifacts.require("./balancer/OcxBalancer.sol");
 // const OcxOcatEthPool = artifacts.require("./balancer/OcxOcatEthPool.sol");
 
 module.exports = async deployer => {
@@ -42,41 +42,41 @@ module.exports = async deployer => {
     var ocxOcatEthPool = null;
     var adminAddress = "0xADB366C070DFB857DC63ebF797EFE615B0567C1B";
 
-    deployer.deploy(PawnNFTs).then(ret => {
-        pnftAddress = ret.address;
-        pnft = ret;
-    });
-
-    deployer.deploy(OcatToken).then(ret => {
-        ocatToken = ret;
-        ocatAddress = ret.address;
-    });
-    deployer.deploy(OcxToken).then(ret => {
-      ocxAddress = ret.address;
-      // // Setting deployed OCAT address 
-      // await ret.setOcxPoolAddress(ocxLocalPoolAddress);
-    });
-    deployer.deploy(PawnExchange).then(ret => {
-        pawnExchange = ret;
-        pawnExchangeAddress = pawnExchange.address;
-    });
-
-    deployer.deploy(OcxPriceOracle).then(ret => {
-        ocxPriceOracleAddress = ret.address;
-    });
-
-    // https://github.com/rafaelmrdyn/uniswap-v3-periphery/blob/main/testnet-deploys.md
-    //   NonfungibleTokenPositionManagerAddress: 0x865F20efC14A5186bF985aD42c64f5e71C055376 on Goerli
-    //   
-    
-    deployer.deploy(OcxBalancer).then(ret => {
-        ocxBalancer = ret;
-    });
-
-    // deployer.deploy(OcxLocalPool).then(ret => {
-    //     ocxLocalPool = ret;
-    //     ocxLocalPoolAddress = ret.address;
+    // deployer.deploy(PawnNFTs).then(ret => {
+    //     pnftAddress = ret.address;
+    //     pnft = ret;
     // });
+
+    // deployer.deploy(OcatToken).then(ret => {
+    //     ocatToken = ret;
+    //     ocatAddress = ret.address;
+    // });
+    // deployer.deploy(OcxToken).then(ret => {
+    //   ocxAddress = ret.address;
+    //   // // Setting deployed OCAT address 
+    //   // await ret.setOcxPoolAddress(ocxLocalPoolAddress);
+    // });
+    // deployer.deploy(PawnExchange).then(ret => {
+    //     pawnExchange = ret;
+    //     pawnExchangeAddress = pawnExchange.address;
+    // });
+
+    // deployer.deploy(OcxPriceOracle).then(ret => {
+    //     ocxPriceOracleAddress = ret.address;
+    // });
+
+    // // https://github.com/rafaelmrdyn/uniswap-v3-periphery/blob/main/testnet-deploys.md
+    // //   NonfungibleTokenPositionManagerAddress: 0x865F20efC14A5186bF985aD42c64f5e71C055376 on Goerli
+    // //   
+    
+    // deployer.deploy(OcxBalancer).then(ret => {
+    //     ocxBalancer = ret;
+    // });
+
+    // // deployer.deploy(OcxLocalPool).then(ret => {
+    // //     ocxLocalPool = ret;
+    // //     ocxLocalPoolAddress = ret.address;
+    // // });
 
     // // deployer.deploy(OcxOcatEthPool).then(ret => {
     // //     ocxOcatEthPoolAddress = ret.address;

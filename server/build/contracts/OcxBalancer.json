@@ -55,8 +55,7 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function",
-      "constant": true
+      "type": "function"
     },
     {
       "inputs": [],
@@ -69,8 +68,7 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function",
-      "constant": true
+      "type": "function"
     },
     {
       "inputs": [
@@ -1748,7 +1746,7 @@
                       }
                     ],
                     "functionName": {
-                      "name": "validator_revert_t_enum$_CommonContracts_$6491",
+                      "name": "validator_revert_t_enum$_CommonContracts_$6508",
                       "nodeType": "YulIdentifier",
                       "src": "433:46:41"
                     },
@@ -1760,7 +1758,7 @@
                 }
               ]
             },
-            "name": "abi_decode_t_enum$_CommonContracts_$6491",
+            "name": "abi_decode_t_enum$_CommonContracts_$6508",
             "nodeType": "YulFunctionDefinition",
             "parameters": [
               {
@@ -2100,7 +2098,7 @@
                 }
               ]
             },
-            "name": "abi_decode_t_struct$_OcxPrice_$6505_memory_ptr_fromMemory",
+            "name": "abi_decode_t_struct$_OcxPrice_$6522_memory_ptr_fromMemory",
             "nodeType": "YulFunctionDefinition",
             "parameters": [
               {
@@ -2689,7 +2687,7 @@
                           }
                         ],
                         "functionName": {
-                          "name": "abi_decode_t_enum$_CommonContracts_$6491",
+                          "name": "abi_decode_t_enum$_CommonContracts_$6508",
                           "nodeType": "YulIdentifier",
                           "src": "2015:40:41"
                         },
@@ -2781,7 +2779,7 @@
                 }
               ]
             },
-            "name": "abi_decode_tuple_t_enum$_CommonContracts_$6491t_address_payable",
+            "name": "abi_decode_tuple_t_enum$_CommonContracts_$6508t_address_payable",
             "nodeType": "YulFunctionDefinition",
             "parameters": [
               {
@@ -2952,7 +2950,7 @@
                           }
                         ],
                         "functionName": {
-                          "name": "abi_decode_t_struct$_OcxPrice_$6505_memory_ptr_fromMemory",
+                          "name": "abi_decode_t_struct$_OcxPrice_$6522_memory_ptr_fromMemory",
                           "nodeType": "YulIdentifier",
                           "src": "2476:57:41"
                         },
@@ -2971,7 +2969,7 @@
                 }
               ]
             },
-            "name": "abi_decode_tuple_t_struct$_OcxPrice_$6505_memory_ptr_fromMemory",
+            "name": "abi_decode_tuple_t_struct$_OcxPrice_$6522_memory_ptr_fromMemory",
             "nodeType": "YulFunctionDefinition",
             "parameters": [
               {
@@ -11143,7 +11141,7 @@
                 }
               ]
             },
-            "name": "validator_revert_t_enum$_CommonContracts_$6491",
+            "name": "validator_revert_t_enum$_CommonContracts_$6508",
             "nodeType": "YulFunctionDefinition",
             "parameters": [
               {
@@ -11359,7 +11357,7 @@
           }
         ]
       },
-      "contents": "{\n\n    function abi_decode_t_address(offset, end) -> value {\n        value := calldataload(offset)\n        validator_revert_t_address(value)\n    }\n\n    function abi_decode_t_address_payable(offset, end) -> value {\n        value := calldataload(offset)\n        validator_revert_t_address_payable(value)\n    }\n\n    function abi_decode_t_enum$_CommonContracts_$6491(offset, end) -> value {\n        value := calldataload(offset)\n        validator_revert_t_enum$_CommonContracts_$6491(value)\n    }\n\n    // struct OcxPrice\n    function abi_decode_t_struct$_OcxPrice_$6505_memory_ptr_fromMemory(headStart, end) -> value {\n        if slt(sub(end, headStart), 0x40) { revert(0, 0) }\n        value := allocate_memory(0x40)\n\n        {\n            // value\n\n            let offset := 0\n\n            mstore(add(value, 0x00), abi_decode_t_uint256_fromMemory(add(headStart, offset), end))\n\n        }\n\n        {\n            // decimals\n\n            let offset := 32\n\n            mstore(add(value, 0x20), abi_decode_t_uint8_fromMemory(add(headStart, offset), end))\n\n        }\n\n    }\n\n    function abi_decode_t_uint256(offset, end) -> value {\n        value := calldataload(offset)\n        validator_revert_t_uint256(value)\n    }\n\n    function abi_decode_t_uint256_fromMemory(offset, end) -> value {\n        value := mload(offset)\n        validator_revert_t_uint256(value)\n    }\n\n    function abi_decode_t_uint8_fromMemory(offset, end) -> value {\n        value := mload(offset)\n        validator_revert_t_uint8(value)\n    }\n\n    function abi_decode_tuple_t_address(headStart, dataEnd) -> value0 {\n        if slt(sub(dataEnd, headStart), 32) { revert(0, 0) }\n\n        {\n\n            let offset := 0\n\n            value0 := abi_decode_t_address(add(headStart, offset), dataEnd)\n        }\n\n    }\n\n    function abi_decode_tuple_t_enum$_CommonContracts_$6491t_address_payable(headStart, dataEnd) -> value0, value1 {\n        if slt(sub(dataEnd, headStart), 64) { revert(0, 0) }\n\n        {\n\n            let offset := 0\n\n            value0 := abi_decode_t_enum$_CommonContracts_$6491(add(headStart, offset), dataEnd)\n        }\n\n        {\n\n            let offset := 32\n\n            value1 := abi_decode_t_address_payable(add(headStart, offset), dataEnd)\n        }\n\n    }\n\n    function abi_decode_tuple_t_struct$_OcxPrice_$6505_memory_ptr_fromMemory(headStart, dataEnd) -> value0 {\n        if slt(sub(dataEnd, headStart), 64) { revert(0, 0) }\n\n        {\n\n            let offset := 0\n\n            value0 := abi_decode_t_struct$_OcxPrice_$6505_memory_ptr_fromMemory(add(headStart, offset), dataEnd)\n        }\n\n    }\n\n    function abi_decode_tuple_t_uint256(headStart, dataEnd) -> value0 {\n        if slt(sub(dataEnd, headStart), 32) { revert(0, 0) }\n\n        {\n\n            let offset := 0\n\n            value0 := abi_decode_t_uint256(add(headStart, offset), dataEnd)\n        }\n\n    }\n\n    function abi_decode_tuple_t_uint256_fromMemory(headStart, dataEnd) -> value0 {\n        if slt(sub(dataEnd, headStart), 32) { revert(0, 0) }\n\n        {\n\n            let offset := 0\n\n            value0 := abi_decode_t_uint256_fromMemory(add(headStart, offset), dataEnd)\n        }\n\n    }\n\n    function abi_decode_tuple_t_uint8_fromMemory(headStart, dataEnd) -> value0 {\n        if slt(sub(dataEnd, headStart), 32) { revert(0, 0) }\n\n        {\n\n            let offset := 0\n\n            value0 := abi_decode_t_uint8_fromMemory(add(headStart, offset), dataEnd)\n        }\n\n    }\n\n    function abi_encode_t_bool_to_t_bool_fromStack(value, pos) {\n        mstore(pos, cleanup_t_bool(value))\n    }\n\n    function abi_encode_t_stringliteral_06fac5dfb78ffa8a072771062056706a5d96f40c8f69cbb2f4454c0b76a107cb_to_t_string_memory_ptr_fromStack(pos) -> end {\n        pos := array_storeLengthForEncoding_t_string_memory_ptr_fromStack(pos, 3)\n        store_literal_in_memory_06fac5dfb78ffa8a072771062056706a5d96f40c8f69cbb2f4454c0b76a107cb(pos)\n        end := add(pos, 32)\n    }\n\n    function abi_encode_t_stringliteral_0b4e5230cbb23d43884bd7a6c51d197b231469c6c725a7c84afbf650fd705896_to_t_string_memory_ptr_fromStack(pos) -> end {\n        pos := array_storeLengthForEncoding_t_string_memory_ptr_fromStack(pos, 22)\n        store_literal_in_memory_0b4e5230cbb23d43884bd7a6c51d197b231469c6c725a7c84afbf650fd705896(pos)\n        end := add(pos, 32)\n    }\n\n    function abi_encode_t_stringliteral_3f4bfb57514d38112a8a68a083861d6548bd4411782df4469765dcc10181a0cd_to_t_string_memory_ptr_fromStack(pos) -> end {\n        pos := array_storeLengthForEncoding_t_string_memory_ptr_fromStack(pos, 30)\n        store_literal_in_memory_3f4bfb57514d38112a8a68a083861d6548bd4411782df4469765dcc10181a0cd(pos)\n        end := add(pos, 32)\n    }\n\n    function abi_encode_t_stringliteral_4259564b459b7f2329d6dfde1735bd513320c28bd67c2fe25b44aa76ee2a6087_to_t_string_memory_ptr_fromStack(pos) -> end {\n        pos := array_storeLengthForEncoding_t_string_memory_ptr_fromStack(pos, 23)\n        store_literal_in_memory_4259564b459b7f2329d6dfde1735bd513320c28bd67c2fe25b44aa76ee2a6087(pos)\n        end := add(pos, 32)\n    }\n\n    function abi_encode_t_stringliteral_88a61f625ba63fdffc8acec0fe31cf9547b2a4578d9a44edb0600c80b94d3c0d_to_t_string_memory_ptr_fromStack(pos) -> end {\n        pos := array_storeLengthForEncoding_t_string_memory_ptr_fromStack(pos, 4)\n        store_literal_in_memory_88a61f625ba63fdffc8acec0fe31cf9547b2a4578d9a44edb0600c80b94d3c0d(pos)\n        end := add(pos, 32)\n    }\n\n    function abi_encode_t_stringliteral_a9c7e107bf007afa6ee7c131151939080ddc9fee203fabd78c205945bc6ea98e_to_t_string_memory_ptr_fromStack(pos) -> end {\n        pos := array_storeLengthForEncoding_t_string_memory_ptr_fromStack(pos, 25)\n        store_literal_in_memory_a9c7e107bf007afa6ee7c131151939080ddc9fee203fabd78c205945bc6ea98e(pos)\n        end := add(pos, 32)\n    }\n\n    function abi_encode_t_stringliteral_aaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4_to_t_string_memory_ptr_fromStack(pos) -> end {\n        pos := array_storeLengthForEncoding_t_string_memory_ptr_fromStack(pos, 3)\n        store_literal_in_memory_aaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4(pos)\n        end := add(pos, 32)\n    }\n\n    function abi_encode_t_stringliteral_bd96b1ed5c7b326773a6be52f6fd399ff9263aeb45597abb2af8de7934df67c1_to_t_string_memory_ptr_fromStack(pos) -> end {\n        pos := array_storeLengthForEncoding_t_string_memory_ptr_fromStack(pos, 13)\n        store_literal_in_memory_bd96b1ed5c7b326773a6be52f6fd399ff9263aeb45597abb2af8de7934df67c1(pos)\n        end := add(pos, 32)\n    }\n\n    function abi_encode_t_stringliteral_cb83cbb58eaa5007af6cad99939e4581c1e1b50d65609c30f303983301524ef3_to_t_string_memory_ptr_fromStack(pos) -> end {\n        pos := array_storeLengthForEncoding_t_string_memory_ptr_fromStack(pos, 3)\n        store_literal_in_memory_cb83cbb58eaa5007af6cad99939e4581c1e1b50d65609c30f303983301524ef3(pos)\n        end := add(pos, 32)\n    }\n\n    function abi_encode_t_stringliteral_fba01d52a7cd84480d0573725899486a0b5e55c20ff45d6628874349375d1650_to_t_string_memory_ptr_fromStack(pos) -> end {\n        pos := array_storeLengthForEncoding_t_string_memory_ptr_fromStack(pos, 3)\n        store_literal_in_memory_fba01d52a7cd84480d0573725899486a0b5e55c20ff45d6628874349375d1650(pos)\n        end := add(pos, 32)\n    }\n\n    function abi_encode_t_uint256_to_t_uint256_fromStack(value, pos) {\n        mstore(pos, cleanup_t_uint256(value))\n    }\n\n    function abi_encode_t_uint8_to_t_uint8_fromStack(value, pos) {\n        mstore(pos, cleanup_t_uint8(value))\n    }\n\n    function abi_encode_tuple_t_bool__to_t_bool__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_bool_to_t_bool_fromStack(value0,  add(headStart, 0))\n\n    }\n\n    function abi_encode_tuple_t_stringliteral_0b4e5230cbb23d43884bd7a6c51d197b231469c6c725a7c84afbf650fd705896__to_t_string_memory_ptr__fromStack_reversed(headStart ) -> tail {\n        tail := add(headStart, 32)\n\n        mstore(add(headStart, 0), sub(tail, headStart))\n        tail := abi_encode_t_stringliteral_0b4e5230cbb23d43884bd7a6c51d197b231469c6c725a7c84afbf650fd705896_to_t_string_memory_ptr_fromStack( tail)\n\n    }\n\n    function abi_encode_tuple_t_stringliteral_3f4bfb57514d38112a8a68a083861d6548bd4411782df4469765dcc10181a0cd__to_t_string_memory_ptr__fromStack_reversed(headStart ) -> tail {\n        tail := add(headStart, 32)\n\n        mstore(add(headStart, 0), sub(tail, headStart))\n        tail := abi_encode_t_stringliteral_3f4bfb57514d38112a8a68a083861d6548bd4411782df4469765dcc10181a0cd_to_t_string_memory_ptr_fromStack( tail)\n\n    }\n\n    function abi_encode_tuple_t_stringliteral_4259564b459b7f2329d6dfde1735bd513320c28bd67c2fe25b44aa76ee2a6087__to_t_string_memory_ptr__fromStack_reversed(headStart ) -> tail {\n        tail := add(headStart, 32)\n\n        mstore(add(headStart, 0), sub(tail, headStart))\n        tail := abi_encode_t_stringliteral_4259564b459b7f2329d6dfde1735bd513320c28bd67c2fe25b44aa76ee2a6087_to_t_string_memory_ptr_fromStack( tail)\n\n    }\n\n    function abi_encode_tuple_t_stringliteral_88a61f625ba63fdffc8acec0fe31cf9547b2a4578d9a44edb0600c80b94d3c0d_t_stringliteral_06fac5dfb78ffa8a072771062056706a5d96f40c8f69cbb2f4454c0b76a107cb__to_t_string_memory_ptr_t_string_memory_ptr__fromStack_reversed(headStart ) -> tail {\n        tail := add(headStart, 64)\n\n        mstore(add(headStart, 0), sub(tail, headStart))\n        tail := abi_encode_t_stringliteral_88a61f625ba63fdffc8acec0fe31cf9547b2a4578d9a44edb0600c80b94d3c0d_to_t_string_memory_ptr_fromStack( tail)\n\n        mstore(add(headStart, 32), sub(tail, headStart))\n        tail := abi_encode_t_stringliteral_06fac5dfb78ffa8a072771062056706a5d96f40c8f69cbb2f4454c0b76a107cb_to_t_string_memory_ptr_fromStack( tail)\n\n    }\n\n    function abi_encode_tuple_t_stringliteral_88a61f625ba63fdffc8acec0fe31cf9547b2a4578d9a44edb0600c80b94d3c0d_t_stringliteral_06fac5dfb78ffa8a072771062056706a5d96f40c8f69cbb2f4454c0b76a107cb_t_uint256_t_uint8__to_t_string_memory_ptr_t_string_memory_ptr_t_uint256_t_uint8__fromStack_reversed(headStart , value1, value0) -> tail {\n        tail := add(headStart, 128)\n\n        mstore(add(headStart, 0), sub(tail, headStart))\n        tail := abi_encode_t_stringliteral_88a61f625ba63fdffc8acec0fe31cf9547b2a4578d9a44edb0600c80b94d3c0d_to_t_string_memory_ptr_fromStack( tail)\n\n        mstore(add(headStart, 32), sub(tail, headStart))\n        tail := abi_encode_t_stringliteral_06fac5dfb78ffa8a072771062056706a5d96f40c8f69cbb2f4454c0b76a107cb_to_t_string_memory_ptr_fromStack( tail)\n\n        abi_encode_t_uint256_to_t_uint256_fromStack(value0,  add(headStart, 64))\n\n        abi_encode_t_uint8_to_t_uint8_fromStack(value1,  add(headStart, 96))\n\n    }\n\n    function abi_encode_tuple_t_stringliteral_a9c7e107bf007afa6ee7c131151939080ddc9fee203fabd78c205945bc6ea98e__to_t_string_memory_ptr__fromStack_reversed(headStart ) -> tail {\n        tail := add(headStart, 32)\n\n        mstore(add(headStart, 0), sub(tail, headStart))\n        tail := abi_encode_t_stringliteral_a9c7e107bf007afa6ee7c131151939080ddc9fee203fabd78c205945bc6ea98e_to_t_string_memory_ptr_fromStack( tail)\n\n    }\n\n    function abi_encode_tuple_t_stringliteral_aaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4_t_stringliteral_cb83cbb58eaa5007af6cad99939e4581c1e1b50d65609c30f303983301524ef3__to_t_string_memory_ptr_t_string_memory_ptr__fromStack_reversed(headStart ) -> tail {\n        tail := add(headStart, 64)\n\n        mstore(add(headStart, 0), sub(tail, headStart))\n        tail := abi_encode_t_stringliteral_aaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4_to_t_string_memory_ptr_fromStack( tail)\n\n        mstore(add(headStart, 32), sub(tail, headStart))\n        tail := abi_encode_t_stringliteral_cb83cbb58eaa5007af6cad99939e4581c1e1b50d65609c30f303983301524ef3_to_t_string_memory_ptr_fromStack( tail)\n\n    }\n\n    function abi_encode_tuple_t_stringliteral_bd96b1ed5c7b326773a6be52f6fd399ff9263aeb45597abb2af8de7934df67c1__to_t_string_memory_ptr__fromStack_reversed(headStart ) -> tail {\n        tail := add(headStart, 32)\n\n        mstore(add(headStart, 0), sub(tail, headStart))\n        tail := abi_encode_t_stringliteral_bd96b1ed5c7b326773a6be52f6fd399ff9263aeb45597abb2af8de7934df67c1_to_t_string_memory_ptr_fromStack( tail)\n\n    }\n\n    function abi_encode_tuple_t_stringliteral_fba01d52a7cd84480d0573725899486a0b5e55c20ff45d6628874349375d1650_t_stringliteral_cb83cbb58eaa5007af6cad99939e4581c1e1b50d65609c30f303983301524ef3__to_t_string_memory_ptr_t_string_memory_ptr__fromStack_reversed(headStart ) -> tail {\n        tail := add(headStart, 64)\n\n        mstore(add(headStart, 0), sub(tail, headStart))\n        tail := abi_encode_t_stringliteral_fba01d52a7cd84480d0573725899486a0b5e55c20ff45d6628874349375d1650_to_t_string_memory_ptr_fromStack( tail)\n\n        mstore(add(headStart, 32), sub(tail, headStart))\n        tail := abi_encode_t_stringliteral_cb83cbb58eaa5007af6cad99939e4581c1e1b50d65609c30f303983301524ef3_to_t_string_memory_ptr_fromStack( tail)\n\n    }\n\n    function abi_encode_tuple_t_stringliteral_fba01d52a7cd84480d0573725899486a0b5e55c20ff45d6628874349375d1650_t_stringliteral_cb83cbb58eaa5007af6cad99939e4581c1e1b50d65609c30f303983301524ef3_t_uint256_t_uint8__to_t_string_memory_ptr_t_string_memory_ptr_t_uint256_t_uint8__fromStack_reversed(headStart , value1, value0) -> tail {\n        tail := add(headStart, 128)\n\n        mstore(add(headStart, 0), sub(tail, headStart))\n        tail := abi_encode_t_stringliteral_fba01d52a7cd84480d0573725899486a0b5e55c20ff45d6628874349375d1650_to_t_string_memory_ptr_fromStack( tail)\n\n        mstore(add(headStart, 32), sub(tail, headStart))\n        tail := abi_encode_t_stringliteral_cb83cbb58eaa5007af6cad99939e4581c1e1b50d65609c30f303983301524ef3_to_t_string_memory_ptr_fromStack( tail)\n\n        abi_encode_t_uint256_to_t_uint256_fromStack(value0,  add(headStart, 64))\n\n        abi_encode_t_uint8_to_t_uint8_fromStack(value1,  add(headStart, 96))\n\n    }\n\n    function abi_encode_tuple_t_uint256__to_t_uint256__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_uint256_to_t_uint256_fromStack(value0,  add(headStart, 0))\n\n    }\n\n    function allocate_memory(size) -> memPtr {\n        memPtr := allocate_unbounded()\n        finalize_allocation(memPtr, size)\n    }\n\n    function allocate_unbounded() -> memPtr {\n        memPtr := mload(64)\n    }\n\n    function array_storeLengthForEncoding_t_string_memory_ptr_fromStack(pos, length) -> updated_pos {\n        mstore(pos, length)\n        updated_pos := add(pos, 0x20)\n    }\n\n    function checked_add_t_uint8(x, y) -> sum {\n        x := cleanup_t_uint8(x)\n        y := cleanup_t_uint8(y)\n\n        // overflow, if x > (maxValue - y)\n        if gt(x, sub(0xff, y)) { panic_error_0x11() }\n\n        sum := add(x, y)\n    }\n\n    function checked_div_t_uint256(x, y) -> r {\n        x := cleanup_t_uint256(x)\n        y := cleanup_t_uint256(y)\n        if iszero(y) { panic_error_0x12() }\n\n        r := div(x, y)\n    }\n\n    function checked_exp_helper(_power, _base, exponent, max) -> power, base {\n        power := _power\n        base  := _base\n        for { } gt(exponent, 1) {}\n        {\n            // overflow check for base * base\n            if gt(base, div(max, base)) { panic_error_0x11() }\n            if and(exponent, 1)\n            {\n                // No checks for power := mul(power, base) needed, because the check\n                // for base * base above is sufficient, since:\n                // |power| <= base (proof by induction) and thus:\n                // |power * base| <= base * base <= max <= |min| (for signed)\n                // (this is equally true for signed and unsigned exp)\n                power := mul(power, base)\n            }\n            base := mul(base, base)\n            exponent := shift_right_1_unsigned(exponent)\n        }\n    }\n\n    function checked_exp_t_uint256_t_uint8(base, exponent) -> power {\n        base := cleanup_t_uint256(base)\n        exponent := cleanup_t_uint8(exponent)\n\n        power := checked_exp_unsigned(base, exponent, 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff)\n\n    }\n\n    function checked_exp_unsigned(base, exponent, max) -> power {\n        // This function currently cannot be inlined because of the\n        // \"leave\" statements. We have to improve the optimizer.\n\n        // Note that 0**0 == 1\n        if iszero(exponent) { power := 1 leave }\n        if iszero(base) { power := 0 leave }\n\n        // Specializations for small bases\n        switch base\n        // 0 is handled above\n        case 1 { power := 1 leave }\n        case 2\n        {\n            if gt(exponent, 255) { panic_error_0x11() }\n            power := exp(2, exponent)\n            if gt(power, max) { panic_error_0x11() }\n            leave\n        }\n        if or(\n            and(lt(base, 11), lt(exponent, 78)),\n            and(lt(base, 307), lt(exponent, 32))\n        )\n        {\n            power := exp(base, exponent)\n            if gt(power, max) { panic_error_0x11() }\n            leave\n        }\n\n        power, base := checked_exp_helper(1, base, exponent, max)\n\n        if gt(power, div(max, base)) { panic_error_0x11() }\n        power := mul(power, base)\n    }\n\n    function checked_mul_t_uint256(x, y) -> product {\n        x := cleanup_t_uint256(x)\n        y := cleanup_t_uint256(y)\n\n        // overflow, if x != 0 and y > (maxValue / x)\n        if and(iszero(iszero(x)), gt(y, div(0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff, x))) { panic_error_0x11() }\n\n        product := mul(x, y)\n    }\n\n    function checked_sub_t_uint256(x, y) -> diff {\n        x := cleanup_t_uint256(x)\n        y := cleanup_t_uint256(y)\n\n        if lt(x, y) { panic_error_0x11() }\n\n        diff := sub(x, y)\n    }\n\n    function cleanup_t_address(value) -> cleaned {\n        cleaned := cleanup_t_uint160(value)\n    }\n\n    function cleanup_t_address_payable(value) -> cleaned {\n        cleaned := cleanup_t_uint160(value)\n    }\n\n    function cleanup_t_bool(value) -> cleaned {\n        cleaned := iszero(iszero(value))\n    }\n\n    function cleanup_t_uint160(value) -> cleaned {\n        cleaned := and(value, 0xffffffffffffffffffffffffffffffffffffffff)\n    }\n\n    function cleanup_t_uint256(value) -> cleaned {\n        cleaned := value\n    }\n\n    function cleanup_t_uint8(value) -> cleaned {\n        cleaned := and(value, 0xff)\n    }\n\n    function finalize_allocation(memPtr, size) {\n        let newFreePtr := add(memPtr, round_up_to_mul_of_32(size))\n        // protect against overflow\n        if or(gt(newFreePtr, 0xffffffffffffffff), lt(newFreePtr, memPtr)) { panic_error_0x41() }\n        mstore(64, newFreePtr)\n    }\n\n    function panic_error_0x11() {\n        mstore(0, 35408467139433450592217433187231851964531694900788300625387963629091585785856)\n        mstore(4, 0x11)\n        revert(0, 0x24)\n    }\n\n    function panic_error_0x12() {\n        mstore(0, 35408467139433450592217433187231851964531694900788300625387963629091585785856)\n        mstore(4, 0x12)\n        revert(0, 0x24)\n    }\n\n    function panic_error_0x41() {\n        mstore(0, 35408467139433450592217433187231851964531694900788300625387963629091585785856)\n        mstore(4, 0x41)\n        revert(0, 0x24)\n    }\n\n    function round_up_to_mul_of_32(value) -> result {\n        result := and(add(value, 31), not(31))\n    }\n\n    function shift_right_1_unsigned(value) -> newValue {\n        newValue :=\n\n        shr(1, value)\n\n    }\n\n    function store_literal_in_memory_06fac5dfb78ffa8a072771062056706a5d96f40c8f69cbb2f4454c0b76a107cb(memPtr) {\n\n        mstore(add(memPtr, 0), \"OCX\")\n\n    }\n\n    function store_literal_in_memory_0b4e5230cbb23d43884bd7a6c51d197b231469c6c725a7c84afbf650fd705896(memPtr) {\n\n        mstore(add(memPtr, 0), \"Invalid contract index\")\n\n    }\n\n    function store_literal_in_memory_3f4bfb57514d38112a8a68a083861d6548bd4411782df4469765dcc10181a0cd(memPtr) {\n\n        mstore(add(memPtr, 0), \"For caller expected be creator\")\n\n    }\n\n    function store_literal_in_memory_4259564b459b7f2329d6dfde1735bd513320c28bd67c2fe25b44aa76ee2a6087(memPtr) {\n\n        mstore(add(memPtr, 0), \"Invalid creator address\")\n\n    }\n\n    function store_literal_in_memory_88a61f625ba63fdffc8acec0fe31cf9547b2a4578d9a44edb0600c80b94d3c0d(memPtr) {\n\n        mstore(add(memPtr, 0), \"OCAT\")\n\n    }\n\n    function store_literal_in_memory_a9c7e107bf007afa6ee7c131151939080ddc9fee203fabd78c205945bc6ea98e(memPtr) {\n\n        mstore(add(memPtr, 0), \"Expected non-zero address\")\n\n    }\n\n    function store_literal_in_memory_aaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4(memPtr) {\n\n        mstore(add(memPtr, 0), \"ETH\")\n\n    }\n\n    function store_literal_in_memory_bd96b1ed5c7b326773a6be52f6fd399ff9263aeb45597abb2af8de7934df67c1(memPtr) {\n\n        mstore(add(memPtr, 0), \"Must be admin\")\n\n    }\n\n    function store_literal_in_memory_cb83cbb58eaa5007af6cad99939e4581c1e1b50d65609c30f303983301524ef3(memPtr) {\n\n        mstore(add(memPtr, 0), \"AUD\")\n\n    }\n\n    function store_literal_in_memory_fba01d52a7cd84480d0573725899486a0b5e55c20ff45d6628874349375d1650(memPtr) {\n\n        mstore(add(memPtr, 0), \"UNI\")\n\n    }\n\n    function validator_revert_t_address(value) {\n        if iszero(eq(value, cleanup_t_address(value))) { revert(0, 0) }\n    }\n\n    function validator_revert_t_address_payable(value) {\n        if iszero(eq(value, cleanup_t_address_payable(value))) { revert(0, 0) }\n    }\n\n    function validator_revert_t_enum$_CommonContracts_$6491(value) {\n        if iszero(lt(value, 10)) { revert(0, 0) }\n    }\n\n    function validator_revert_t_uint256(value) {\n        if iszero(eq(value, cleanup_t_uint256(value))) { revert(0, 0) }\n    }\n\n    function validator_revert_t_uint8(value) {\n        if iszero(eq(value, cleanup_t_uint8(value))) { revert(0, 0) }\n    }\n\n}\n",
+      "contents": "{\n\n    function abi_decode_t_address(offset, end) -> value {\n        value := calldataload(offset)\n        validator_revert_t_address(value)\n    }\n\n    function abi_decode_t_address_payable(offset, end) -> value {\n        value := calldataload(offset)\n        validator_revert_t_address_payable(value)\n    }\n\n    function abi_decode_t_enum$_CommonContracts_$6508(offset, end) -> value {\n        value := calldataload(offset)\n        validator_revert_t_enum$_CommonContracts_$6508(value)\n    }\n\n    // struct OcxPrice\n    function abi_decode_t_struct$_OcxPrice_$6522_memory_ptr_fromMemory(headStart, end) -> value {\n        if slt(sub(end, headStart), 0x40) { revert(0, 0) }\n        value := allocate_memory(0x40)\n\n        {\n            // value\n\n            let offset := 0\n\n            mstore(add(value, 0x00), abi_decode_t_uint256_fromMemory(add(headStart, offset), end))\n\n        }\n\n        {\n            // decimals\n\n            let offset := 32\n\n            mstore(add(value, 0x20), abi_decode_t_uint8_fromMemory(add(headStart, offset), end))\n\n        }\n\n    }\n\n    function abi_decode_t_uint256(offset, end) -> value {\n        value := calldataload(offset)\n        validator_revert_t_uint256(value)\n    }\n\n    function abi_decode_t_uint256_fromMemory(offset, end) -> value {\n        value := mload(offset)\n        validator_revert_t_uint256(value)\n    }\n\n    function abi_decode_t_uint8_fromMemory(offset, end) -> value {\n        value := mload(offset)\n        validator_revert_t_uint8(value)\n    }\n\n    function abi_decode_tuple_t_address(headStart, dataEnd) -> value0 {\n        if slt(sub(dataEnd, headStart), 32) { revert(0, 0) }\n\n        {\n\n            let offset := 0\n\n            value0 := abi_decode_t_address(add(headStart, offset), dataEnd)\n        }\n\n    }\n\n    function abi_decode_tuple_t_enum$_CommonContracts_$6508t_address_payable(headStart, dataEnd) -> value0, value1 {\n        if slt(sub(dataEnd, headStart), 64) { revert(0, 0) }\n\n        {\n\n            let offset := 0\n\n            value0 := abi_decode_t_enum$_CommonContracts_$6508(add(headStart, offset), dataEnd)\n        }\n\n        {\n\n            let offset := 32\n\n            value1 := abi_decode_t_address_payable(add(headStart, offset), dataEnd)\n        }\n\n    }\n\n    function abi_decode_tuple_t_struct$_OcxPrice_$6522_memory_ptr_fromMemory(headStart, dataEnd) -> value0 {\n        if slt(sub(dataEnd, headStart), 64) { revert(0, 0) }\n\n        {\n\n            let offset := 0\n\n            value0 := abi_decode_t_struct$_OcxPrice_$6522_memory_ptr_fromMemory(add(headStart, offset), dataEnd)\n        }\n\n    }\n\n    function abi_decode_tuple_t_uint256(headStart, dataEnd) -> value0 {\n        if slt(sub(dataEnd, headStart), 32) { revert(0, 0) }\n\n        {\n\n            let offset := 0\n\n            value0 := abi_decode_t_uint256(add(headStart, offset), dataEnd)\n        }\n\n    }\n\n    function abi_decode_tuple_t_uint256_fromMemory(headStart, dataEnd) -> value0 {\n        if slt(sub(dataEnd, headStart), 32) { revert(0, 0) }\n\n        {\n\n            let offset := 0\n\n            value0 := abi_decode_t_uint256_fromMemory(add(headStart, offset), dataEnd)\n        }\n\n    }\n\n    function abi_decode_tuple_t_uint8_fromMemory(headStart, dataEnd) -> value0 {\n        if slt(sub(dataEnd, headStart), 32) { revert(0, 0) }\n\n        {\n\n            let offset := 0\n\n            value0 := abi_decode_t_uint8_fromMemory(add(headStart, offset), dataEnd)\n        }\n\n    }\n\n    function abi_encode_t_bool_to_t_bool_fromStack(value, pos) {\n        mstore(pos, cleanup_t_bool(value))\n    }\n\n    function abi_encode_t_stringliteral_06fac5dfb78ffa8a072771062056706a5d96f40c8f69cbb2f4454c0b76a107cb_to_t_string_memory_ptr_fromStack(pos) -> end {\n        pos := array_storeLengthForEncoding_t_string_memory_ptr_fromStack(pos, 3)\n        store_literal_in_memory_06fac5dfb78ffa8a072771062056706a5d96f40c8f69cbb2f4454c0b76a107cb(pos)\n        end := add(pos, 32)\n    }\n\n    function abi_encode_t_stringliteral_0b4e5230cbb23d43884bd7a6c51d197b231469c6c725a7c84afbf650fd705896_to_t_string_memory_ptr_fromStack(pos) -> end {\n        pos := array_storeLengthForEncoding_t_string_memory_ptr_fromStack(pos, 22)\n        store_literal_in_memory_0b4e5230cbb23d43884bd7a6c51d197b231469c6c725a7c84afbf650fd705896(pos)\n        end := add(pos, 32)\n    }\n\n    function abi_encode_t_stringliteral_3f4bfb57514d38112a8a68a083861d6548bd4411782df4469765dcc10181a0cd_to_t_string_memory_ptr_fromStack(pos) -> end {\n        pos := array_storeLengthForEncoding_t_string_memory_ptr_fromStack(pos, 30)\n        store_literal_in_memory_3f4bfb57514d38112a8a68a083861d6548bd4411782df4469765dcc10181a0cd(pos)\n        end := add(pos, 32)\n    }\n\n    function abi_encode_t_stringliteral_4259564b459b7f2329d6dfde1735bd513320c28bd67c2fe25b44aa76ee2a6087_to_t_string_memory_ptr_fromStack(pos) -> end {\n        pos := array_storeLengthForEncoding_t_string_memory_ptr_fromStack(pos, 23)\n        store_literal_in_memory_4259564b459b7f2329d6dfde1735bd513320c28bd67c2fe25b44aa76ee2a6087(pos)\n        end := add(pos, 32)\n    }\n\n    function abi_encode_t_stringliteral_88a61f625ba63fdffc8acec0fe31cf9547b2a4578d9a44edb0600c80b94d3c0d_to_t_string_memory_ptr_fromStack(pos) -> end {\n        pos := array_storeLengthForEncoding_t_string_memory_ptr_fromStack(pos, 4)\n        store_literal_in_memory_88a61f625ba63fdffc8acec0fe31cf9547b2a4578d9a44edb0600c80b94d3c0d(pos)\n        end := add(pos, 32)\n    }\n\n    function abi_encode_t_stringliteral_a9c7e107bf007afa6ee7c131151939080ddc9fee203fabd78c205945bc6ea98e_to_t_string_memory_ptr_fromStack(pos) -> end {\n        pos := array_storeLengthForEncoding_t_string_memory_ptr_fromStack(pos, 25)\n        store_literal_in_memory_a9c7e107bf007afa6ee7c131151939080ddc9fee203fabd78c205945bc6ea98e(pos)\n        end := add(pos, 32)\n    }\n\n    function abi_encode_t_stringliteral_aaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4_to_t_string_memory_ptr_fromStack(pos) -> end {\n        pos := array_storeLengthForEncoding_t_string_memory_ptr_fromStack(pos, 3)\n        store_literal_in_memory_aaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4(pos)\n        end := add(pos, 32)\n    }\n\n    function abi_encode_t_stringliteral_bd96b1ed5c7b326773a6be52f6fd399ff9263aeb45597abb2af8de7934df67c1_to_t_string_memory_ptr_fromStack(pos) -> end {\n        pos := array_storeLengthForEncoding_t_string_memory_ptr_fromStack(pos, 13)\n        store_literal_in_memory_bd96b1ed5c7b326773a6be52f6fd399ff9263aeb45597abb2af8de7934df67c1(pos)\n        end := add(pos, 32)\n    }\n\n    function abi_encode_t_stringliteral_cb83cbb58eaa5007af6cad99939e4581c1e1b50d65609c30f303983301524ef3_to_t_string_memory_ptr_fromStack(pos) -> end {\n        pos := array_storeLengthForEncoding_t_string_memory_ptr_fromStack(pos, 3)\n        store_literal_in_memory_cb83cbb58eaa5007af6cad99939e4581c1e1b50d65609c30f303983301524ef3(pos)\n        end := add(pos, 32)\n    }\n\n    function abi_encode_t_stringliteral_fba01d52a7cd84480d0573725899486a0b5e55c20ff45d6628874349375d1650_to_t_string_memory_ptr_fromStack(pos) -> end {\n        pos := array_storeLengthForEncoding_t_string_memory_ptr_fromStack(pos, 3)\n        store_literal_in_memory_fba01d52a7cd84480d0573725899486a0b5e55c20ff45d6628874349375d1650(pos)\n        end := add(pos, 32)\n    }\n\n    function abi_encode_t_uint256_to_t_uint256_fromStack(value, pos) {\n        mstore(pos, cleanup_t_uint256(value))\n    }\n\n    function abi_encode_t_uint8_to_t_uint8_fromStack(value, pos) {\n        mstore(pos, cleanup_t_uint8(value))\n    }\n\n    function abi_encode_tuple_t_bool__to_t_bool__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_bool_to_t_bool_fromStack(value0,  add(headStart, 0))\n\n    }\n\n    function abi_encode_tuple_t_stringliteral_0b4e5230cbb23d43884bd7a6c51d197b231469c6c725a7c84afbf650fd705896__to_t_string_memory_ptr__fromStack_reversed(headStart ) -> tail {\n        tail := add(headStart, 32)\n\n        mstore(add(headStart, 0), sub(tail, headStart))\n        tail := abi_encode_t_stringliteral_0b4e5230cbb23d43884bd7a6c51d197b231469c6c725a7c84afbf650fd705896_to_t_string_memory_ptr_fromStack( tail)\n\n    }\n\n    function abi_encode_tuple_t_stringliteral_3f4bfb57514d38112a8a68a083861d6548bd4411782df4469765dcc10181a0cd__to_t_string_memory_ptr__fromStack_reversed(headStart ) -> tail {\n        tail := add(headStart, 32)\n\n        mstore(add(headStart, 0), sub(tail, headStart))\n        tail := abi_encode_t_stringliteral_3f4bfb57514d38112a8a68a083861d6548bd4411782df4469765dcc10181a0cd_to_t_string_memory_ptr_fromStack( tail)\n\n    }\n\n    function abi_encode_tuple_t_stringliteral_4259564b459b7f2329d6dfde1735bd513320c28bd67c2fe25b44aa76ee2a6087__to_t_string_memory_ptr__fromStack_reversed(headStart ) -> tail {\n        tail := add(headStart, 32)\n\n        mstore(add(headStart, 0), sub(tail, headStart))\n        tail := abi_encode_t_stringliteral_4259564b459b7f2329d6dfde1735bd513320c28bd67c2fe25b44aa76ee2a6087_to_t_string_memory_ptr_fromStack( tail)\n\n    }\n\n    function abi_encode_tuple_t_stringliteral_88a61f625ba63fdffc8acec0fe31cf9547b2a4578d9a44edb0600c80b94d3c0d_t_stringliteral_06fac5dfb78ffa8a072771062056706a5d96f40c8f69cbb2f4454c0b76a107cb__to_t_string_memory_ptr_t_string_memory_ptr__fromStack_reversed(headStart ) -> tail {\n        tail := add(headStart, 64)\n\n        mstore(add(headStart, 0), sub(tail, headStart))\n        tail := abi_encode_t_stringliteral_88a61f625ba63fdffc8acec0fe31cf9547b2a4578d9a44edb0600c80b94d3c0d_to_t_string_memory_ptr_fromStack( tail)\n\n        mstore(add(headStart, 32), sub(tail, headStart))\n        tail := abi_encode_t_stringliteral_06fac5dfb78ffa8a072771062056706a5d96f40c8f69cbb2f4454c0b76a107cb_to_t_string_memory_ptr_fromStack( tail)\n\n    }\n\n    function abi_encode_tuple_t_stringliteral_88a61f625ba63fdffc8acec0fe31cf9547b2a4578d9a44edb0600c80b94d3c0d_t_stringliteral_06fac5dfb78ffa8a072771062056706a5d96f40c8f69cbb2f4454c0b76a107cb_t_uint256_t_uint8__to_t_string_memory_ptr_t_string_memory_ptr_t_uint256_t_uint8__fromStack_reversed(headStart , value1, value0) -> tail {\n        tail := add(headStart, 128)\n\n        mstore(add(headStart, 0), sub(tail, headStart))\n        tail := abi_encode_t_stringliteral_88a61f625ba63fdffc8acec0fe31cf9547b2a4578d9a44edb0600c80b94d3c0d_to_t_string_memory_ptr_fromStack( tail)\n\n        mstore(add(headStart, 32), sub(tail, headStart))\n        tail := abi_encode_t_stringliteral_06fac5dfb78ffa8a072771062056706a5d96f40c8f69cbb2f4454c0b76a107cb_to_t_string_memory_ptr_fromStack( tail)\n\n        abi_encode_t_uint256_to_t_uint256_fromStack(value0,  add(headStart, 64))\n\n        abi_encode_t_uint8_to_t_uint8_fromStack(value1,  add(headStart, 96))\n\n    }\n\n    function abi_encode_tuple_t_stringliteral_a9c7e107bf007afa6ee7c131151939080ddc9fee203fabd78c205945bc6ea98e__to_t_string_memory_ptr__fromStack_reversed(headStart ) -> tail {\n        tail := add(headStart, 32)\n\n        mstore(add(headStart, 0), sub(tail, headStart))\n        tail := abi_encode_t_stringliteral_a9c7e107bf007afa6ee7c131151939080ddc9fee203fabd78c205945bc6ea98e_to_t_string_memory_ptr_fromStack( tail)\n\n    }\n\n    function abi_encode_tuple_t_stringliteral_aaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4_t_stringliteral_cb83cbb58eaa5007af6cad99939e4581c1e1b50d65609c30f303983301524ef3__to_t_string_memory_ptr_t_string_memory_ptr__fromStack_reversed(headStart ) -> tail {\n        tail := add(headStart, 64)\n\n        mstore(add(headStart, 0), sub(tail, headStart))\n        tail := abi_encode_t_stringliteral_aaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4_to_t_string_memory_ptr_fromStack( tail)\n\n        mstore(add(headStart, 32), sub(tail, headStart))\n        tail := abi_encode_t_stringliteral_cb83cbb58eaa5007af6cad99939e4581c1e1b50d65609c30f303983301524ef3_to_t_string_memory_ptr_fromStack( tail)\n\n    }\n\n    function abi_encode_tuple_t_stringliteral_bd96b1ed5c7b326773a6be52f6fd399ff9263aeb45597abb2af8de7934df67c1__to_t_string_memory_ptr__fromStack_reversed(headStart ) -> tail {\n        tail := add(headStart, 32)\n\n        mstore(add(headStart, 0), sub(tail, headStart))\n        tail := abi_encode_t_stringliteral_bd96b1ed5c7b326773a6be52f6fd399ff9263aeb45597abb2af8de7934df67c1_to_t_string_memory_ptr_fromStack( tail)\n\n    }\n\n    function abi_encode_tuple_t_stringliteral_fba01d52a7cd84480d0573725899486a0b5e55c20ff45d6628874349375d1650_t_stringliteral_cb83cbb58eaa5007af6cad99939e4581c1e1b50d65609c30f303983301524ef3__to_t_string_memory_ptr_t_string_memory_ptr__fromStack_reversed(headStart ) -> tail {\n        tail := add(headStart, 64)\n\n        mstore(add(headStart, 0), sub(tail, headStart))\n        tail := abi_encode_t_stringliteral_fba01d52a7cd84480d0573725899486a0b5e55c20ff45d6628874349375d1650_to_t_string_memory_ptr_fromStack( tail)\n\n        mstore(add(headStart, 32), sub(tail, headStart))\n        tail := abi_encode_t_stringliteral_cb83cbb58eaa5007af6cad99939e4581c1e1b50d65609c30f303983301524ef3_to_t_string_memory_ptr_fromStack( tail)\n\n    }\n\n    function abi_encode_tuple_t_stringliteral_fba01d52a7cd84480d0573725899486a0b5e55c20ff45d6628874349375d1650_t_stringliteral_cb83cbb58eaa5007af6cad99939e4581c1e1b50d65609c30f303983301524ef3_t_uint256_t_uint8__to_t_string_memory_ptr_t_string_memory_ptr_t_uint256_t_uint8__fromStack_reversed(headStart , value1, value0) -> tail {\n        tail := add(headStart, 128)\n\n        mstore(add(headStart, 0), sub(tail, headStart))\n        tail := abi_encode_t_stringliteral_fba01d52a7cd84480d0573725899486a0b5e55c20ff45d6628874349375d1650_to_t_string_memory_ptr_fromStack( tail)\n\n        mstore(add(headStart, 32), sub(tail, headStart))\n        tail := abi_encode_t_stringliteral_cb83cbb58eaa5007af6cad99939e4581c1e1b50d65609c30f303983301524ef3_to_t_string_memory_ptr_fromStack( tail)\n\n        abi_encode_t_uint256_to_t_uint256_fromStack(value0,  add(headStart, 64))\n\n        abi_encode_t_uint8_to_t_uint8_fromStack(value1,  add(headStart, 96))\n\n    }\n\n    function abi_encode_tuple_t_uint256__to_t_uint256__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_uint256_to_t_uint256_fromStack(value0,  add(headStart, 0))\n\n    }\n\n    function allocate_memory(size) -> memPtr {\n        memPtr := allocate_unbounded()\n        finalize_allocation(memPtr, size)\n    }\n\n    function allocate_unbounded() -> memPtr {\n        memPtr := mload(64)\n    }\n\n    function array_storeLengthForEncoding_t_string_memory_ptr_fromStack(pos, length) -> updated_pos {\n        mstore(pos, length)\n        updated_pos := add(pos, 0x20)\n    }\n\n    function checked_add_t_uint8(x, y) -> sum {\n        x := cleanup_t_uint8(x)\n        y := cleanup_t_uint8(y)\n\n        // overflow, if x > (maxValue - y)\n        if gt(x, sub(0xff, y)) { panic_error_0x11() }\n\n        sum := add(x, y)\n    }\n\n    function checked_div_t_uint256(x, y) -> r {\n        x := cleanup_t_uint256(x)\n        y := cleanup_t_uint256(y)\n        if iszero(y) { panic_error_0x12() }\n\n        r := div(x, y)\n    }\n\n    function checked_exp_helper(_power, _base, exponent, max) -> power, base {\n        power := _power\n        base  := _base\n        for { } gt(exponent, 1) {}\n        {\n            // overflow check for base * base\n            if gt(base, div(max, base)) { panic_error_0x11() }\n            if and(exponent, 1)\n            {\n                // No checks for power := mul(power, base) needed, because the check\n                // for base * base above is sufficient, since:\n                // |power| <= base (proof by induction) and thus:\n                // |power * base| <= base * base <= max <= |min| (for signed)\n                // (this is equally true for signed and unsigned exp)\n                power := mul(power, base)\n            }\n            base := mul(base, base)\n            exponent := shift_right_1_unsigned(exponent)\n        }\n    }\n\n    function checked_exp_t_uint256_t_uint8(base, exponent) -> power {\n        base := cleanup_t_uint256(base)\n        exponent := cleanup_t_uint8(exponent)\n\n        power := checked_exp_unsigned(base, exponent, 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff)\n\n    }\n\n    function checked_exp_unsigned(base, exponent, max) -> power {\n        // This function currently cannot be inlined because of the\n        // \"leave\" statements. We have to improve the optimizer.\n\n        // Note that 0**0 == 1\n        if iszero(exponent) { power := 1 leave }\n        if iszero(base) { power := 0 leave }\n\n        // Specializations for small bases\n        switch base\n        // 0 is handled above\n        case 1 { power := 1 leave }\n        case 2\n        {\n            if gt(exponent, 255) { panic_error_0x11() }\n            power := exp(2, exponent)\n            if gt(power, max) { panic_error_0x11() }\n            leave\n        }\n        if or(\n            and(lt(base, 11), lt(exponent, 78)),\n            and(lt(base, 307), lt(exponent, 32))\n        )\n        {\n            power := exp(base, exponent)\n            if gt(power, max) { panic_error_0x11() }\n            leave\n        }\n\n        power, base := checked_exp_helper(1, base, exponent, max)\n\n        if gt(power, div(max, base)) { panic_error_0x11() }\n        power := mul(power, base)\n    }\n\n    function checked_mul_t_uint256(x, y) -> product {\n        x := cleanup_t_uint256(x)\n        y := cleanup_t_uint256(y)\n\n        // overflow, if x != 0 and y > (maxValue / x)\n        if and(iszero(iszero(x)), gt(y, div(0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff, x))) { panic_error_0x11() }\n\n        product := mul(x, y)\n    }\n\n    function checked_sub_t_uint256(x, y) -> diff {\n        x := cleanup_t_uint256(x)\n        y := cleanup_t_uint256(y)\n\n        if lt(x, y) { panic_error_0x11() }\n\n        diff := sub(x, y)\n    }\n\n    function cleanup_t_address(value) -> cleaned {\n        cleaned := cleanup_t_uint160(value)\n    }\n\n    function cleanup_t_address_payable(value) -> cleaned {\n        cleaned := cleanup_t_uint160(value)\n    }\n\n    function cleanup_t_bool(value) -> cleaned {\n        cleaned := iszero(iszero(value))\n    }\n\n    function cleanup_t_uint160(value) -> cleaned {\n        cleaned := and(value, 0xffffffffffffffffffffffffffffffffffffffff)\n    }\n\n    function cleanup_t_uint256(value) -> cleaned {\n        cleaned := value\n    }\n\n    function cleanup_t_uint8(value) -> cleaned {\n        cleaned := and(value, 0xff)\n    }\n\n    function finalize_allocation(memPtr, size) {\n        let newFreePtr := add(memPtr, round_up_to_mul_of_32(size))\n        // protect against overflow\n        if or(gt(newFreePtr, 0xffffffffffffffff), lt(newFreePtr, memPtr)) { panic_error_0x41() }\n        mstore(64, newFreePtr)\n    }\n\n    function panic_error_0x11() {\n        mstore(0, 35408467139433450592217433187231851964531694900788300625387963629091585785856)\n        mstore(4, 0x11)\n        revert(0, 0x24)\n    }\n\n    function panic_error_0x12() {\n        mstore(0, 35408467139433450592217433187231851964531694900788300625387963629091585785856)\n        mstore(4, 0x12)\n        revert(0, 0x24)\n    }\n\n    function panic_error_0x41() {\n        mstore(0, 35408467139433450592217433187231851964531694900788300625387963629091585785856)\n        mstore(4, 0x41)\n        revert(0, 0x24)\n    }\n\n    function round_up_to_mul_of_32(value) -> result {\n        result := and(add(value, 31), not(31))\n    }\n\n    function shift_right_1_unsigned(value) -> newValue {\n        newValue :=\n\n        shr(1, value)\n\n    }\n\n    function store_literal_in_memory_06fac5dfb78ffa8a072771062056706a5d96f40c8f69cbb2f4454c0b76a107cb(memPtr) {\n\n        mstore(add(memPtr, 0), \"OCX\")\n\n    }\n\n    function store_literal_in_memory_0b4e5230cbb23d43884bd7a6c51d197b231469c6c725a7c84afbf650fd705896(memPtr) {\n\n        mstore(add(memPtr, 0), \"Invalid contract index\")\n\n    }\n\n    function store_literal_in_memory_3f4bfb57514d38112a8a68a083861d6548bd4411782df4469765dcc10181a0cd(memPtr) {\n\n        mstore(add(memPtr, 0), \"For caller expected be creator\")\n\n    }\n\n    function store_literal_in_memory_4259564b459b7f2329d6dfde1735bd513320c28bd67c2fe25b44aa76ee2a6087(memPtr) {\n\n        mstore(add(memPtr, 0), \"Invalid creator address\")\n\n    }\n\n    function store_literal_in_memory_88a61f625ba63fdffc8acec0fe31cf9547b2a4578d9a44edb0600c80b94d3c0d(memPtr) {\n\n        mstore(add(memPtr, 0), \"OCAT\")\n\n    }\n\n    function store_literal_in_memory_a9c7e107bf007afa6ee7c131151939080ddc9fee203fabd78c205945bc6ea98e(memPtr) {\n\n        mstore(add(memPtr, 0), \"Expected non-zero address\")\n\n    }\n\n    function store_literal_in_memory_aaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4(memPtr) {\n\n        mstore(add(memPtr, 0), \"ETH\")\n\n    }\n\n    function store_literal_in_memory_bd96b1ed5c7b326773a6be52f6fd399ff9263aeb45597abb2af8de7934df67c1(memPtr) {\n\n        mstore(add(memPtr, 0), \"Must be admin\")\n\n    }\n\n    function store_literal_in_memory_cb83cbb58eaa5007af6cad99939e4581c1e1b50d65609c30f303983301524ef3(memPtr) {\n\n        mstore(add(memPtr, 0), \"AUD\")\n\n    }\n\n    function store_literal_in_memory_fba01d52a7cd84480d0573725899486a0b5e55c20ff45d6628874349375d1650(memPtr) {\n\n        mstore(add(memPtr, 0), \"UNI\")\n\n    }\n\n    function validator_revert_t_address(value) {\n        if iszero(eq(value, cleanup_t_address(value))) { revert(0, 0) }\n    }\n\n    function validator_revert_t_address_payable(value) {\n        if iszero(eq(value, cleanup_t_address_payable(value))) { revert(0, 0) }\n    }\n\n    function validator_revert_t_enum$_CommonContracts_$6508(value) {\n        if iszero(lt(value, 10)) { revert(0, 0) }\n    }\n\n    function validator_revert_t_uint256(value) {\n        if iszero(eq(value, cleanup_t_uint256(value))) { revert(0, 0) }\n    }\n\n    function validator_revert_t_uint8(value) {\n        if iszero(eq(value, cleanup_t_uint8(value))) { revert(0, 0) }\n    }\n\n}\n",
       "id": 41,
       "language": "Yul",
       "name": "#utility.yul"
@@ -11373,72 +11371,72 @@
     "absolutePath": "project:/contracts/balancer/OcxBalancer.sol",
     "exportedSymbols": {
       "CommonContracts": [
-        6491
+        6508
       ],
       "CurrencyIndex": [
-        6500
+        6517
       ],
       "CurrencyPriceInfo": [
-        6511
+        6528
       ],
       "FeeType": [
-        6480
+        6497
       ],
       "IERC20": [
         663
       ],
       "IOcat": [
-        6689
+        6706
       ],
       "IOcxBalancer": [
-        6694
+        6711
       ],
       "IOcxBase": [
-        6719
+        6736
       ],
       "IOcxERC20": [
-        6738
+        6755
       ],
       "IOcxExchange": [
-        6803
+        6820
       ],
       "IOcxPriceOracle": [
-        6882
+        6899
       ],
       "OcxAdmin": [
         2840
       ],
       "OcxBalancer": [
-        6473
+        6490
       ],
       "OcxBase": [
         2993
       ],
       "OcxPrice": [
-        6505
+        6522
       ],
       "POOL_FEE": [
-        6520
+        6537
       ],
       "QUOTE_DECIMALS": [
-        6523
+        6540
       ],
       "QUOTE_MULTIPLIER": [
-        6528
+        6545
       ],
       "UNISWAP_V3_QUOTER_ADDRESS": [
-        6517
+        6534
       ],
       "UNISWAP_V3_ROUTER_ADDRESS": [
-        6514
+        6531
       ]
     },
-    "id": 6474,
+    "id": 6491,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6218,
+        "id": 6235,
         "literals": [
           "solidity",
           "^",
@@ -11451,10 +11449,10 @@
       {
         "absolutePath": "@openzeppelin/contracts/token/ERC20/IERC20.sol",
         "file": "@openzeppelin/contracts/token/ERC20/IERC20.sol",
-        "id": 6219,
+        "id": 6236,
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
-        "scope": 6474,
+        "scope": 6491,
         "sourceUnit": 664,
         "src": "60:56:27",
         "symbolAliases": [],
@@ -11463,10 +11461,10 @@
       {
         "absolutePath": "project:/contracts/OcxBase.sol",
         "file": "../OcxBase.sol",
-        "id": 6220,
+        "id": 6237,
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
-        "scope": 6474,
+        "scope": 6491,
         "sourceUnit": 2994,
         "src": "221:24:27",
         "symbolAliases": [],
@@ -11475,11 +11473,11 @@
       {
         "absolutePath": "project:/contracts/interface/IOcxBalancer.sol",
         "file": "../interface/IOcxBalancer.sol",
-        "id": 6221,
+        "id": 6238,
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
-        "scope": 6474,
-        "sourceUnit": 6695,
+        "scope": 6491,
+        "sourceUnit": 6712,
         "src": "247:39:27",
         "symbolAliases": [],
         "unitAlias": ""
@@ -11487,11 +11485,11 @@
       {
         "absolutePath": "project:/contracts/interface/IOcxPriceOracle.sol",
         "file": "../interface/IOcxPriceOracle.sol",
-        "id": 6222,
+        "id": 6239,
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
-        "scope": 6474,
-        "sourceUnit": 6883,
+        "scope": 6491,
+        "sourceUnit": 6900,
         "src": "288:42:27",
         "symbolAliases": [],
         "unitAlias": ""
@@ -11499,11 +11497,11 @@
       {
         "absolutePath": "project:/contracts/interface/IOcxExchange.sol",
         "file": "../interface/IOcxExchange.sol",
-        "id": 6223,
+        "id": 6240,
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
-        "scope": 6474,
-        "sourceUnit": 6804,
+        "scope": 6491,
+        "sourceUnit": 6821,
         "src": "332:39:27",
         "symbolAliases": [],
         "unitAlias": ""
@@ -11511,11 +11509,11 @@
       {
         "absolutePath": "project:/contracts/interface/IOcxERC20.sol",
         "file": "../interface/IOcxERC20.sol",
-        "id": 6224,
+        "id": 6241,
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
-        "scope": 6474,
-        "sourceUnit": 6739,
+        "scope": 6491,
+        "sourceUnit": 6756,
         "src": "373:36:27",
         "symbolAliases": [],
         "unitAlias": ""
@@ -11523,11 +11521,11 @@
       {
         "absolutePath": "project:/contracts/common/OcxCommon.sol",
         "file": "../common/OcxCommon.sol",
-        "id": 6225,
+        "id": 6242,
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
-        "scope": 6474,
-        "sourceUnit": 6529,
+        "scope": 6491,
+        "sourceUnit": 6546,
         "src": "411:33:27",
         "symbolAliases": [],
         "unitAlias": ""
@@ -11537,25 +11535,25 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 6226,
+              "id": 6243,
               "name": "OcxBase",
               "nodeType": "IdentifierPath",
               "referencedDeclaration": 2993,
               "src": "472:7:27"
             },
-            "id": 6227,
+            "id": 6244,
             "nodeType": "InheritanceSpecifier",
             "src": "472:7:27"
           },
           {
             "baseName": {
-              "id": 6228,
+              "id": 6245,
               "name": "IOcxBalancer",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 6694,
+              "referencedDeclaration": 6711,
               "src": "481:12:27"
             },
-            "id": 6229,
+            "id": 6246,
             "nodeType": "InheritanceSpecifier",
             "src": "481:12:27"
           }
@@ -11563,12 +11561,12 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "fullyImplemented": true,
-        "id": 6473,
+        "id": 6490,
         "linearizedBaseContracts": [
-          6473,
-          6694,
+          6490,
+          6711,
           2993,
-          6719,
+          6736,
           2840
         ],
         "name": "OcxBalancer",
@@ -11577,12 +11575,12 @@
         "nodes": [
           {
             "constant": true,
-            "id": 6232,
+            "id": 6249,
             "mutability": "constant",
             "name": "MAX_ALLOWED_OCAT_PRICE",
             "nameLocation": "528:22:27",
             "nodeType": "VariableDeclaration",
-            "scope": 6473,
+            "scope": 6490,
             "src": "503:53:27",
             "stateVariable": true,
             "storageLocation": "default",
@@ -11591,7 +11589,7 @@
               "typeString": "uint256"
             },
             "typeName": {
-              "id": 6230,
+              "id": 6247,
               "name": "uint256",
               "nodeType": "ElementaryTypeName",
               "src": "503:7:27",
@@ -11602,7 +11600,7 @@
             },
             "value": {
               "hexValue": "313130",
-              "id": 6231,
+              "id": 6248,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
@@ -11620,12 +11618,12 @@
           },
           {
             "constant": true,
-            "id": 6235,
+            "id": 6252,
             "mutability": "constant",
             "name": "MIN_ALLOWED_OCAT_PRICE",
             "nameLocation": "588:22:27",
             "nodeType": "VariableDeclaration",
-            "scope": 6473,
+            "scope": 6490,
             "src": "563:53:27",
             "stateVariable": true,
             "storageLocation": "default",
@@ -11634,7 +11632,7 @@
               "typeString": "uint256"
             },
             "typeName": {
-              "id": 6233,
+              "id": 6250,
               "name": "uint256",
               "nodeType": "ElementaryTypeName",
               "src": "563:7:27",
@@ -11645,7 +11643,7 @@
             },
             "value": {
               "hexValue": "3930",
-              "id": 6234,
+              "id": 6251,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
@@ -11663,33 +11661,33 @@
           },
           {
             "constant": false,
-            "id": 6238,
+            "id": 6255,
             "mutability": "mutable",
             "name": "ethAudQuote",
             "nameLocation": "634:11:27",
             "nodeType": "VariableDeclaration",
-            "scope": 6473,
+            "scope": 6490,
             "src": "625:20:27",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_struct$_OcxPrice_$6505_storage",
+              "typeIdentifier": "t_struct$_OcxPrice_$6522_storage",
               "typeString": "struct OcxPrice"
             },
             "typeName": {
-              "id": 6237,
+              "id": 6254,
               "nodeType": "UserDefinedTypeName",
               "pathNode": {
-                "id": 6236,
+                "id": 6253,
                 "name": "OcxPrice",
                 "nodeType": "IdentifierPath",
-                "referencedDeclaration": 6505,
+                "referencedDeclaration": 6522,
                 "src": "625:8:27"
               },
-              "referencedDeclaration": 6505,
+              "referencedDeclaration": 6522,
               "src": "625:8:27",
               "typeDescriptions": {
-                "typeIdentifier": "t_struct$_OcxPrice_$6505_storage_ptr",
+                "typeIdentifier": "t_struct$_OcxPrice_$6522_storage_ptr",
                 "typeString": "struct OcxPrice"
               }
             },
@@ -11697,12 +11695,12 @@
           },
           {
             "body": {
-              "id": 6241,
+              "id": 6258,
               "nodeType": "Block",
               "src": "674:8:27",
               "statements": []
             },
-            "id": 6242,
+            "id": 6259,
             "implemented": true,
             "kind": "constructor",
             "modifiers": [],
@@ -11710,18 +11708,18 @@
             "nameLocation": "-1:-1:-1",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6239,
+              "id": 6256,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "665:8:27"
             },
             "returnParameters": {
-              "id": 6240,
+              "id": 6257,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "674:0:27"
             },
-            "scope": 6473,
+            "scope": 6490,
             "src": "654:28:27",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -11729,91 +11727,91 @@
           },
           {
             "body": {
-              "id": 6471,
+              "id": 6488,
               "nodeType": "Block",
               "src": "1275:2589:27",
               "statements": [
                 {
                   "assignments": [
-                    6267
+                    6284
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 6267,
+                      "id": 6284,
                       "mutability": "mutable",
                       "name": "ocxPriceOracle",
                       "nameLocation": "1302:14:27",
                       "nodeType": "VariableDeclaration",
-                      "scope": 6471,
+                      "scope": 6488,
                       "src": "1286:30:27",
                       "stateVariable": false,
                       "storageLocation": "default",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_contract$_IOcxPriceOracle_$6882",
+                        "typeIdentifier": "t_contract$_IOcxPriceOracle_$6899",
                         "typeString": "contract IOcxPriceOracle"
                       },
                       "typeName": {
-                        "id": 6266,
+                        "id": 6283,
                         "nodeType": "UserDefinedTypeName",
                         "pathNode": {
-                          "id": 6265,
+                          "id": 6282,
                           "name": "IOcxPriceOracle",
                           "nodeType": "IdentifierPath",
-                          "referencedDeclaration": 6882,
+                          "referencedDeclaration": 6899,
                           "src": "1286:15:27"
                         },
-                        "referencedDeclaration": 6882,
+                        "referencedDeclaration": 6899,
                         "src": "1286:15:27",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_IOcxPriceOracle_$6882",
+                          "typeIdentifier": "t_contract$_IOcxPriceOracle_$6899",
                           "typeString": "contract IOcxPriceOracle"
                         }
                       },
                       "visibility": "internal"
                     }
                   ],
-                  "id": 6274,
+                  "id": 6291,
                   "initialValue": {
                     "arguments": [
                       {
                         "baseExpression": {
-                          "id": 6269,
+                          "id": 6286,
                           "name": "contractAddress",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
                           "referencedDeclaration": 2861,
                           "src": "1335:15:27",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_mapping$_t_enum$_CommonContracts_$6491_$_t_address_$",
+                            "typeIdentifier": "t_mapping$_t_enum$_CommonContracts_$6508_$_t_address_$",
                             "typeString": "mapping(enum CommonContracts => address)"
                           }
                         },
-                        "id": 6272,
+                        "id": 6289,
                         "indexExpression": {
                           "expression": {
-                            "id": 6270,
+                            "id": 6287,
                             "name": "CommonContracts",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 6491,
+                            "referencedDeclaration": 6508,
                             "src": "1351:15:27",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_type$_t_enum$_CommonContracts_$6491_$",
+                              "typeIdentifier": "t_type$_t_enum$_CommonContracts_$6508_$",
                               "typeString": "type(enum CommonContracts)"
                             }
                           },
-                          "id": 6271,
+                          "id": 6288,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
                           "lValueRequested": false,
                           "memberName": "PRICE_ORACLE",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 6487,
+                          "referencedDeclaration": 6504,
                           "src": "1351:28:27",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_enum$_CommonContracts_$6491",
+                            "typeIdentifier": "t_enum$_CommonContracts_$6508",
                             "typeString": "enum CommonContracts"
                           }
                         },
@@ -11836,18 +11834,18 @@
                           "typeString": "address"
                         }
                       ],
-                      "id": 6268,
+                      "id": 6285,
                       "name": "IOcxPriceOracle",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 6882,
+                      "referencedDeclaration": 6899,
                       "src": "1319:15:27",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_type$_t_contract$_IOcxPriceOracle_$6882_$",
+                        "typeIdentifier": "t_type$_t_contract$_IOcxPriceOracle_$6899_$",
                         "typeString": "type(contract IOcxPriceOracle)"
                       }
                     },
-                    "id": 6273,
+                    "id": 6290,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -11858,7 +11856,7 @@
                     "src": "1319:62:27",
                     "tryCall": false,
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IOcxPriceOracle_$6882",
+                      "typeIdentifier": "t_contract$_IOcxPriceOracle_$6899",
                       "typeString": "contract IOcxPriceOracle"
                     }
                   },
@@ -11867,85 +11865,85 @@
                 },
                 {
                   "assignments": [
-                    6277
+                    6294
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 6277,
+                      "id": 6294,
                       "mutability": "mutable",
                       "name": "ocXchange",
                       "nameLocation": "1405:9:27",
                       "nodeType": "VariableDeclaration",
-                      "scope": 6471,
+                      "scope": 6488,
                       "src": "1392:22:27",
                       "stateVariable": false,
                       "storageLocation": "default",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_contract$_IOcxExchange_$6803",
+                        "typeIdentifier": "t_contract$_IOcxExchange_$6820",
                         "typeString": "contract IOcxExchange"
                       },
                       "typeName": {
-                        "id": 6276,
+                        "id": 6293,
                         "nodeType": "UserDefinedTypeName",
                         "pathNode": {
-                          "id": 6275,
+                          "id": 6292,
                           "name": "IOcxExchange",
                           "nodeType": "IdentifierPath",
-                          "referencedDeclaration": 6803,
+                          "referencedDeclaration": 6820,
                           "src": "1392:12:27"
                         },
-                        "referencedDeclaration": 6803,
+                        "referencedDeclaration": 6820,
                         "src": "1392:12:27",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_IOcxExchange_$6803",
+                          "typeIdentifier": "t_contract$_IOcxExchange_$6820",
                           "typeString": "contract IOcxExchange"
                         }
                       },
                       "visibility": "internal"
                     }
                   ],
-                  "id": 6284,
+                  "id": 6301,
                   "initialValue": {
                     "arguments": [
                       {
                         "baseExpression": {
-                          "id": 6279,
+                          "id": 6296,
                           "name": "contractAddress",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
                           "referencedDeclaration": 2861,
                           "src": "1430:15:27",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_mapping$_t_enum$_CommonContracts_$6491_$_t_address_$",
+                            "typeIdentifier": "t_mapping$_t_enum$_CommonContracts_$6508_$_t_address_$",
                             "typeString": "mapping(enum CommonContracts => address)"
                           }
                         },
-                        "id": 6282,
+                        "id": 6299,
                         "indexExpression": {
                           "expression": {
-                            "id": 6280,
+                            "id": 6297,
                             "name": "CommonContracts",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 6491,
+                            "referencedDeclaration": 6508,
                             "src": "1446:15:27",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_type$_t_enum$_CommonContracts_$6491_$",
+                              "typeIdentifier": "t_type$_t_enum$_CommonContracts_$6508_$",
                               "typeString": "type(enum CommonContracts)"
                             }
                           },
-                          "id": 6281,
+                          "id": 6298,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
                           "lValueRequested": false,
                           "memberName": "EXCHANGE",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 6488,
+                          "referencedDeclaration": 6505,
                           "src": "1446:24:27",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_enum$_CommonContracts_$6491",
+                            "typeIdentifier": "t_enum$_CommonContracts_$6508",
                             "typeString": "enum CommonContracts"
                           }
                         },
@@ -11968,18 +11966,18 @@
                           "typeString": "address"
                         }
                       ],
-                      "id": 6278,
+                      "id": 6295,
                       "name": "IOcxExchange",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 6803,
+                      "referencedDeclaration": 6820,
                       "src": "1417:12:27",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_type$_t_contract$_IOcxExchange_$6803_$",
+                        "typeIdentifier": "t_type$_t_contract$_IOcxExchange_$6820_$",
                         "typeString": "type(contract IOcxExchange)"
                       }
                     },
-                    "id": 6283,
+                    "id": 6300,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -11990,7 +11988,7 @@
                     "src": "1417:55:27",
                     "tryCall": false,
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_IOcxExchange_$6803",
+                      "typeIdentifier": "t_contract$_IOcxExchange_$6820",
                       "typeString": "contract IOcxExchange"
                     }
                   },
@@ -11999,50 +11997,50 @@
                 },
                 {
                   "assignments": [
-                    6287
+                    6304
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 6287,
+                      "id": 6304,
                       "mutability": "mutable",
                       "name": "newEthAudQuote",
                       "nameLocation": "1531:14:27",
                       "nodeType": "VariableDeclaration",
-                      "scope": 6471,
+                      "scope": 6488,
                       "src": "1515:30:27",
                       "stateVariable": false,
                       "storageLocation": "memory",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_OcxPrice_$6505_memory_ptr",
+                        "typeIdentifier": "t_struct$_OcxPrice_$6522_memory_ptr",
                         "typeString": "struct OcxPrice"
                       },
                       "typeName": {
-                        "id": 6286,
+                        "id": 6303,
                         "nodeType": "UserDefinedTypeName",
                         "pathNode": {
-                          "id": 6285,
+                          "id": 6302,
                           "name": "OcxPrice",
                           "nodeType": "IdentifierPath",
-                          "referencedDeclaration": 6505,
+                          "referencedDeclaration": 6522,
                           "src": "1515:8:27"
                         },
-                        "referencedDeclaration": 6505,
+                        "referencedDeclaration": 6522,
                         "src": "1515:8:27",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_OcxPrice_$6505_storage_ptr",
+                          "typeIdentifier": "t_struct$_OcxPrice_$6522_storage_ptr",
                           "typeString": "struct OcxPrice"
                         }
                       },
                       "visibility": "internal"
                     }
                   ],
-                  "id": 6293,
+                  "id": 6310,
                   "initialValue": {
                     "arguments": [
                       {
                         "hexValue": "455448",
-                        "id": 6290,
+                        "id": 6307,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -12058,7 +12056,7 @@
                       },
                       {
                         "hexValue": "415544",
-                        "id": 6291,
+                        "id": 6308,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -12085,32 +12083,32 @@
                         }
                       ],
                       "expression": {
-                        "id": 6288,
+                        "id": 6305,
                         "name": "ocxPriceOracle",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 6267,
+                        "referencedDeclaration": 6284,
                         "src": "1548:14:27",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_IOcxPriceOracle_$6882",
+                          "typeIdentifier": "t_contract$_IOcxPriceOracle_$6899",
                           "typeString": "contract IOcxPriceOracle"
                         }
                       },
-                      "id": 6289,
+                      "id": 6306,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
                       "lValueRequested": false,
                       "memberName": "getCryptoPrice",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 6881,
+                      "referencedDeclaration": 6898,
                       "src": "1548:29:27",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_function_external_nonpayable$_t_string_memory_ptr_$_t_string_memory_ptr_$returns$_t_struct$_OcxPrice_$6505_memory_ptr_$",
+                        "typeIdentifier": "t_function_external_nonpayable$_t_string_memory_ptr_$_t_string_memory_ptr_$returns$_t_struct$_OcxPrice_$6522_memory_ptr_$",
                         "typeString": "function (string memory,string memory) external returns (struct OcxPrice memory)"
                       }
                     },
-                    "id": 6292,
+                    "id": 6309,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -12121,7 +12119,7 @@
                     "src": "1548:43:27",
                     "tryCall": false,
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_OcxPrice_$6505_memory_ptr",
+                      "typeIdentifier": "t_struct$_OcxPrice_$6522_memory_ptr",
                       "typeString": "struct OcxPrice memory"
                     }
                   },
@@ -12134,32 +12132,32 @@
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     },
-                    "id": 6297,
+                    "id": 6314,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftExpression": {
                       "expression": {
-                        "id": 6294,
+                        "id": 6311,
                         "name": "ethAudQuote",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 6238,
+                        "referencedDeclaration": 6255,
                         "src": "1606:11:27",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_OcxPrice_$6505_storage",
+                          "typeIdentifier": "t_struct$_OcxPrice_$6522_storage",
                           "typeString": "struct OcxPrice storage ref"
                         }
                       },
-                      "id": 6295,
+                      "id": 6312,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
                       "lValueRequested": false,
                       "memberName": "value",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 6502,
+                      "referencedDeclaration": 6519,
                       "src": "1606:17:27",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -12170,7 +12168,7 @@
                     "operator": "==",
                     "rightExpression": {
                       "hexValue": "30",
-                      "id": 6296,
+                      "id": 6313,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -12190,54 +12188,54 @@
                       "typeString": "bool"
                     }
                   },
-                  "id": 6303,
+                  "id": 6320,
                   "nodeType": "IfStatement",
                   "src": "1602:83:27",
                   "trueBody": {
-                    "id": 6302,
+                    "id": 6319,
                     "nodeType": "Block",
                     "src": "1630:55:27",
                     "statements": [
                       {
                         "expression": {
-                          "id": 6300,
+                          "id": 6317,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
                           "lValueRequested": false,
                           "leftHandSide": {
-                            "id": 6298,
+                            "id": 6315,
                             "name": "ethAudQuote",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 6238,
+                            "referencedDeclaration": 6255,
                             "src": "1645:11:27",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_struct$_OcxPrice_$6505_storage",
+                              "typeIdentifier": "t_struct$_OcxPrice_$6522_storage",
                               "typeString": "struct OcxPrice storage ref"
                             }
                           },
                           "nodeType": "Assignment",
                           "operator": "=",
                           "rightHandSide": {
-                            "id": 6299,
+                            "id": 6316,
                             "name": "newEthAudQuote",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 6287,
+                            "referencedDeclaration": 6304,
                             "src": "1659:14:27",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_struct$_OcxPrice_$6505_memory_ptr",
+                              "typeIdentifier": "t_struct$_OcxPrice_$6522_memory_ptr",
                               "typeString": "struct OcxPrice memory"
                             }
                           },
                           "src": "1645:28:27",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_OcxPrice_$6505_storage",
+                            "typeIdentifier": "t_struct$_OcxPrice_$6522_storage",
                             "typeString": "struct OcxPrice storage ref"
                           }
                         },
-                        "id": 6301,
+                        "id": 6318,
                         "nodeType": "ExpressionStatement",
                         "src": "1645:28:27"
                       }
@@ -12250,32 +12248,32 @@
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     },
-                    "id": 6308,
+                    "id": 6325,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftExpression": {
                       "expression": {
-                        "id": 6304,
+                        "id": 6321,
                         "name": "ethAudQuote",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 6238,
+                        "referencedDeclaration": 6255,
                         "src": "1699:11:27",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_OcxPrice_$6505_storage",
+                          "typeIdentifier": "t_struct$_OcxPrice_$6522_storage",
                           "typeString": "struct OcxPrice storage ref"
                         }
                       },
-                      "id": 6305,
+                      "id": 6322,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
                       "lValueRequested": false,
                       "memberName": "value",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 6502,
+                      "referencedDeclaration": 6519,
                       "src": "1699:17:27",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -12286,25 +12284,25 @@
                     "operator": "!=",
                     "rightExpression": {
                       "expression": {
-                        "id": 6306,
+                        "id": 6323,
                         "name": "newEthAudQuote",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 6287,
+                        "referencedDeclaration": 6304,
                         "src": "1720:14:27",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_OcxPrice_$6505_memory_ptr",
+                          "typeIdentifier": "t_struct$_OcxPrice_$6522_memory_ptr",
                           "typeString": "struct OcxPrice memory"
                         }
                       },
-                      "id": 6307,
+                      "id": 6324,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
                       "lValueRequested": false,
                       "memberName": "value",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 6502,
+                      "referencedDeclaration": 6519,
                       "src": "1720:20:27",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -12317,27 +12315,27 @@
                       "typeString": "bool"
                     }
                   },
-                  "id": 6390,
+                  "id": 6407,
                   "nodeType": "IfStatement",
                   "src": "1695:1286:27",
                   "trueBody": {
-                    "id": 6389,
+                    "id": 6406,
                     "nodeType": "Block",
                     "src": "1742:1239:27",
                     "statements": [
                       {
                         "assignments": [
-                          6310
+                          6327
                         ],
                         "declarations": [
                           {
                             "constant": false,
-                            "id": 6310,
+                            "id": 6327,
                             "mutability": "mutable",
                             "name": "changePercentage",
                             "nameLocation": "1762:16:27",
                             "nodeType": "VariableDeclaration",
-                            "scope": 6389,
+                            "scope": 6406,
                             "src": "1757:21:27",
                             "stateVariable": false,
                             "storageLocation": "default",
@@ -12346,7 +12344,7 @@
                               "typeString": "uint256"
                             },
                             "typeName": {
-                              "id": 6309,
+                              "id": 6326,
                               "name": "uint",
                               "nodeType": "ElementaryTypeName",
                               "src": "1757:4:27",
@@ -12358,13 +12356,13 @@
                             "visibility": "internal"
                           }
                         ],
-                        "id": 6319,
+                        "id": 6336,
                         "initialValue": {
                           "commonType": {
                             "typeIdentifier": "t_uint256",
                             "typeString": "uint256"
                           },
-                          "id": 6318,
+                          "id": 6335,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -12376,32 +12374,32 @@
                                   "typeIdentifier": "t_uint256",
                                   "typeString": "uint256"
                                 },
-                                "id": 6314,
+                                "id": 6331,
                                 "isConstant": false,
                                 "isLValue": false,
                                 "isPure": false,
                                 "lValueRequested": false,
                                 "leftExpression": {
                                   "expression": {
-                                    "id": 6311,
+                                    "id": 6328,
                                     "name": "newEthAudQuote",
                                     "nodeType": "Identifier",
                                     "overloadedDeclarations": [],
-                                    "referencedDeclaration": 6287,
+                                    "referencedDeclaration": 6304,
                                     "src": "1782:14:27",
                                     "typeDescriptions": {
-                                      "typeIdentifier": "t_struct$_OcxPrice_$6505_memory_ptr",
+                                      "typeIdentifier": "t_struct$_OcxPrice_$6522_memory_ptr",
                                       "typeString": "struct OcxPrice memory"
                                     }
                                   },
-                                  "id": 6312,
+                                  "id": 6329,
                                   "isConstant": false,
                                   "isLValue": true,
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "memberName": "value",
                                   "nodeType": "MemberAccess",
-                                  "referencedDeclaration": 6502,
+                                  "referencedDeclaration": 6519,
                                   "src": "1782:20:27",
                                   "typeDescriptions": {
                                     "typeIdentifier": "t_uint256",
@@ -12412,7 +12410,7 @@
                                 "operator": "*",
                                 "rightExpression": {
                                   "hexValue": "313030",
-                                  "id": 6313,
+                                  "id": 6330,
                                   "isConstant": false,
                                   "isLValue": false,
                                   "isPure": true,
@@ -12433,7 +12431,7 @@
                                 }
                               }
                             ],
-                            "id": 6315,
+                            "id": 6332,
                             "isConstant": false,
                             "isInlineArray": false,
                             "isLValue": false,
@@ -12450,25 +12448,25 @@
                           "operator": "/",
                           "rightExpression": {
                             "expression": {
-                              "id": 6316,
+                              "id": 6333,
                               "name": "ethAudQuote",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 6238,
+                              "referencedDeclaration": 6255,
                               "src": "1812:11:27",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_struct$_OcxPrice_$6505_storage",
+                                "typeIdentifier": "t_struct$_OcxPrice_$6522_storage",
                                 "typeString": "struct OcxPrice storage ref"
                               }
                             },
-                            "id": 6317,
+                            "id": 6334,
                             "isConstant": false,
                             "isLValue": true,
                             "isPure": false,
                             "lValueRequested": false,
                             "memberName": "value",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 6502,
+                            "referencedDeclaration": 6519,
                             "src": "1812:17:27",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint256",
@@ -12490,7 +12488,7 @@
                             "typeIdentifier": "t_bool",
                             "typeString": "bool"
                           },
-                          "id": 6326,
+                          "id": 6343,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -12500,17 +12498,17 @@
                               "typeIdentifier": "t_uint256",
                               "typeString": "uint256"
                             },
-                            "id": 6322,
+                            "id": 6339,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
                             "lValueRequested": false,
                             "leftExpression": {
-                              "id": 6320,
+                              "id": 6337,
                               "name": "changePercentage",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 6310,
+                              "referencedDeclaration": 6327,
                               "src": "1848:16:27",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -12520,11 +12518,11 @@
                             "nodeType": "BinaryOperation",
                             "operator": "<",
                             "rightExpression": {
-                              "id": 6321,
+                              "id": 6338,
                               "name": "MIN_ALLOWED_OCAT_PRICE",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 6235,
+                              "referencedDeclaration": 6252,
                               "src": "1867:22:27",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -12544,17 +12542,17 @@
                               "typeIdentifier": "t_uint256",
                               "typeString": "uint256"
                             },
-                            "id": 6325,
+                            "id": 6342,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
                             "lValueRequested": false,
                             "leftExpression": {
-                              "id": 6323,
+                              "id": 6340,
                               "name": "changePercentage",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 6310,
+                              "referencedDeclaration": 6327,
                               "src": "1893:16:27",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -12564,11 +12562,11 @@
                             "nodeType": "BinaryOperation",
                             "operator": ">",
                             "rightExpression": {
-                              "id": 6324,
+                              "id": 6341,
                               "name": "MAX_ALLOWED_OCAT_PRICE",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 6232,
+                              "referencedDeclaration": 6249,
                               "src": "1912:22:27",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -12587,11 +12585,11 @@
                             "typeString": "bool"
                           }
                         },
-                        "id": 6384,
+                        "id": 6401,
                         "nodeType": "IfStatement",
                         "src": "1844:1071:27",
                         "trueBody": {
-                          "id": 6383,
+                          "id": 6400,
                           "nodeType": "Block",
                           "src": "1936:979:27",
                           "statements": [
@@ -12601,17 +12599,17 @@
                                   "typeIdentifier": "t_uint256",
                                   "typeString": "uint256"
                                 },
-                                "id": 6329,
+                                "id": 6346,
                                 "isConstant": false,
                                 "isLValue": false,
                                 "isPure": false,
                                 "lValueRequested": false,
                                 "leftExpression": {
-                                  "id": 6327,
+                                  "id": 6344,
                                   "name": "changePercentage",
                                   "nodeType": "Identifier",
                                   "overloadedDeclarations": [],
-                                  "referencedDeclaration": 6310,
+                                  "referencedDeclaration": 6327,
                                   "src": "1959:16:27",
                                   "typeDescriptions": {
                                     "typeIdentifier": "t_uint256",
@@ -12621,11 +12619,11 @@
                                 "nodeType": "BinaryOperation",
                                 "operator": ">",
                                 "rightExpression": {
-                                  "id": 6328,
+                                  "id": 6345,
                                   "name": "MAX_ALLOWED_OCAT_PRICE",
                                   "nodeType": "Identifier",
                                   "overloadedDeclarations": [],
-                                  "referencedDeclaration": 6232,
+                                  "referencedDeclaration": 6249,
                                   "src": "1978:22:27",
                                   "typeDescriptions": {
                                     "typeIdentifier": "t_uint256",
@@ -12639,23 +12637,23 @@
                                 }
                               },
                               "falseBody": {
-                                "id": 6381,
+                                "id": 6398,
                                 "nodeType": "Block",
                                 "src": "2473:427:27",
                                 "statements": [
                                   {
                                     "assignments": [
-                                      6357
+                                      6374
                                     ],
                                     "declarations": [
                                       {
                                         "constant": false,
-                                        "id": 6357,
+                                        "id": 6374,
                                         "mutability": "mutable",
                                         "name": "increaseAmount",
                                         "nameLocation": "2559:14:27",
                                         "nodeType": "VariableDeclaration",
-                                        "scope": 6381,
+                                        "scope": 6398,
                                         "src": "2551:22:27",
                                         "stateVariable": false,
                                         "storageLocation": "default",
@@ -12664,7 +12662,7 @@
                                           "typeString": "uint256"
                                         },
                                         "typeName": {
-                                          "id": 6356,
+                                          "id": 6373,
                                           "name": "uint256",
                                           "nodeType": "ElementaryTypeName",
                                           "src": "2551:7:27",
@@ -12676,13 +12674,13 @@
                                         "visibility": "internal"
                                       }
                                     ],
-                                    "id": 6374,
+                                    "id": 6391,
                                     "initialValue": {
                                       "commonType": {
                                         "typeIdentifier": "t_uint256",
                                         "typeString": "uint256"
                                       },
-                                      "id": 6373,
+                                      "id": 6390,
                                       "isConstant": false,
                                       "isLValue": false,
                                       "isPure": false,
@@ -12694,7 +12692,7 @@
                                               "typeIdentifier": "t_uint256",
                                               "typeString": "uint256"
                                             },
-                                            "id": 6370,
+                                            "id": 6387,
                                             "isConstant": false,
                                             "isLValue": false,
                                             "isPure": false,
@@ -12706,17 +12704,17 @@
                                                     "typeIdentifier": "t_uint256",
                                                     "typeString": "uint256"
                                                   },
-                                                  "id": 6360,
+                                                  "id": 6377,
                                                   "isConstant": false,
                                                   "isLValue": false,
                                                   "isPure": false,
                                                   "lValueRequested": false,
                                                   "leftExpression": {
-                                                    "id": 6358,
+                                                    "id": 6375,
                                                     "name": "changePercentage",
                                                     "nodeType": "Identifier",
                                                     "overloadedDeclarations": [],
-                                                    "referencedDeclaration": 6310,
+                                                    "referencedDeclaration": 6327,
                                                     "src": "2634:16:27",
                                                     "typeDescriptions": {
                                                       "typeIdentifier": "t_uint256",
@@ -12727,7 +12725,7 @@
                                                   "operator": "-",
                                                   "rightExpression": {
                                                     "hexValue": "313030",
-                                                    "id": 6359,
+                                                    "id": 6376,
                                                     "isConstant": false,
                                                     "isLValue": false,
                                                     "isPure": true,
@@ -12748,7 +12746,7 @@
                                                   }
                                                 }
                                               ],
-                                              "id": 6361,
+                                              "id": 6378,
                                               "isConstant": false,
                                               "isInlineArray": false,
                                               "isLValue": false,
@@ -12771,42 +12769,42 @@
                                                   "arguments": [
                                                     {
                                                       "baseExpression": {
-                                                        "id": 6363,
+                                                        "id": 6380,
                                                         "name": "contractAddress",
                                                         "nodeType": "Identifier",
                                                         "overloadedDeclarations": [],
                                                         "referencedDeclaration": 2861,
                                                         "src": "2697:15:27",
                                                         "typeDescriptions": {
-                                                          "typeIdentifier": "t_mapping$_t_enum$_CommonContracts_$6491_$_t_address_$",
+                                                          "typeIdentifier": "t_mapping$_t_enum$_CommonContracts_$6508_$_t_address_$",
                                                           "typeString": "mapping(enum CommonContracts => address)"
                                                         }
                                                       },
-                                                      "id": 6366,
+                                                      "id": 6383,
                                                       "indexExpression": {
                                                         "expression": {
-                                                          "id": 6364,
+                                                          "id": 6381,
                                                           "name": "CommonContracts",
                                                           "nodeType": "Identifier",
                                                           "overloadedDeclarations": [],
-                                                          "referencedDeclaration": 6491,
+                                                          "referencedDeclaration": 6508,
                                                           "src": "2713:15:27",
                                                           "typeDescriptions": {
-                                                            "typeIdentifier": "t_type$_t_enum$_CommonContracts_$6491_$",
+                                                            "typeIdentifier": "t_type$_t_enum$_CommonContracts_$6508_$",
                                                             "typeString": "type(enum CommonContracts)"
                                                           }
                                                         },
-                                                        "id": 6365,
+                                                        "id": 6382,
                                                         "isConstant": false,
                                                         "isLValue": false,
                                                         "isPure": true,
                                                         "lValueRequested": false,
                                                         "memberName": "OCAT",
                                                         "nodeType": "MemberAccess",
-                                                        "referencedDeclaration": 6482,
+                                                        "referencedDeclaration": 6499,
                                                         "src": "2713:20:27",
                                                         "typeDescriptions": {
-                                                          "typeIdentifier": "t_enum$_CommonContracts_$6491",
+                                                          "typeIdentifier": "t_enum$_CommonContracts_$6508",
                                                           "typeString": "enum CommonContracts"
                                                         }
                                                       },
@@ -12829,7 +12827,7 @@
                                                         "typeString": "address"
                                                       }
                                                     ],
-                                                    "id": 6362,
+                                                    "id": 6379,
                                                     "name": "IERC20",
                                                     "nodeType": "Identifier",
                                                     "overloadedDeclarations": [],
@@ -12840,7 +12838,7 @@
                                                       "typeString": "type(contract IERC20)"
                                                     }
                                                   },
-                                                  "id": 6367,
+                                                  "id": 6384,
                                                   "isConstant": false,
                                                   "isLValue": false,
                                                   "isPure": false,
@@ -12855,7 +12853,7 @@
                                                     "typeString": "contract IERC20"
                                                   }
                                                 },
-                                                "id": 6368,
+                                                "id": 6385,
                                                 "isConstant": false,
                                                 "isLValue": false,
                                                 "isPure": false,
@@ -12869,7 +12867,7 @@
                                                   "typeString": "function () view external returns (uint256)"
                                                 }
                                               },
-                                              "id": 6369,
+                                              "id": 6386,
                                               "isConstant": false,
                                               "isLValue": false,
                                               "isPure": false,
@@ -12891,7 +12889,7 @@
                                             }
                                           }
                                         ],
-                                        "id": 6371,
+                                        "id": 6388,
                                         "isConstant": false,
                                         "isInlineArray": false,
                                         "isLValue": false,
@@ -12908,7 +12906,7 @@
                                       "operator": "/",
                                       "rightExpression": {
                                         "hexValue": "313030",
-                                        "id": 6372,
+                                        "id": 6389,
                                         "isConstant": false,
                                         "isLValue": false,
                                         "isPure": true,
@@ -12935,11 +12933,11 @@
                                     "expression": {
                                       "arguments": [
                                         {
-                                          "id": 6378,
+                                          "id": 6395,
                                           "name": "increaseAmount",
                                           "nodeType": "Identifier",
                                           "overloadedDeclarations": [],
-                                          "referencedDeclaration": 6357,
+                                          "referencedDeclaration": 6374,
                                           "src": "2865:14:27",
                                           "typeDescriptions": {
                                             "typeIdentifier": "t_uint256",
@@ -12955,32 +12953,32 @@
                                           }
                                         ],
                                         "expression": {
-                                          "id": 6375,
+                                          "id": 6392,
                                           "name": "ocXchange",
                                           "nodeType": "Identifier",
                                           "overloadedDeclarations": [],
-                                          "referencedDeclaration": 6277,
+                                          "referencedDeclaration": 6294,
                                           "src": "2846:9:27",
                                           "typeDescriptions": {
-                                            "typeIdentifier": "t_contract$_IOcxExchange_$6803",
+                                            "typeIdentifier": "t_contract$_IOcxExchange_$6820",
                                             "typeString": "contract IOcxExchange"
                                           }
                                         },
-                                        "id": 6377,
+                                        "id": 6394,
                                         "isConstant": false,
                                         "isLValue": false,
                                         "isPure": false,
                                         "lValueRequested": false,
                                         "memberName": "mintOcat",
                                         "nodeType": "MemberAccess",
-                                        "referencedDeclaration": 6766,
+                                        "referencedDeclaration": 6783,
                                         "src": "2846:18:27",
                                         "typeDescriptions": {
                                           "typeIdentifier": "t_function_external_nonpayable$_t_uint256_$returns$__$",
                                           "typeString": "function (uint256) external"
                                         }
                                       },
-                                      "id": 6379,
+                                      "id": 6396,
                                       "isConstant": false,
                                       "isLValue": false,
                                       "isPure": false,
@@ -12995,33 +12993,33 @@
                                         "typeString": "tuple()"
                                       }
                                     },
-                                    "id": 6380,
+                                    "id": 6397,
                                     "nodeType": "ExpressionStatement",
                                     "src": "2846:34:27"
                                   }
                                 ]
                               },
-                              "id": 6382,
+                              "id": 6399,
                               "nodeType": "IfStatement",
                               "src": "1955:945:27",
                               "trueBody": {
-                                "id": 6355,
+                                "id": 6372,
                                 "nodeType": "Block",
                                 "src": "2002:465:27",
                                 "statements": [
                                   {
                                     "assignments": [
-                                      6331
+                                      6348
                                     ],
                                     "declarations": [
                                       {
                                         "constant": false,
-                                        "id": 6331,
+                                        "id": 6348,
                                         "mutability": "mutable",
                                         "name": "decreaseAmount",
                                         "nameLocation": "2126:14:27",
                                         "nodeType": "VariableDeclaration",
-                                        "scope": 6355,
+                                        "scope": 6372,
                                         "src": "2118:22:27",
                                         "stateVariable": false,
                                         "storageLocation": "default",
@@ -13030,7 +13028,7 @@
                                           "typeString": "uint256"
                                         },
                                         "typeName": {
-                                          "id": 6330,
+                                          "id": 6347,
                                           "name": "uint256",
                                           "nodeType": "ElementaryTypeName",
                                           "src": "2118:7:27",
@@ -13042,13 +13040,13 @@
                                         "visibility": "internal"
                                       }
                                     ],
-                                    "id": 6348,
+                                    "id": 6365,
                                     "initialValue": {
                                       "commonType": {
                                         "typeIdentifier": "t_uint256",
                                         "typeString": "uint256"
                                       },
-                                      "id": 6347,
+                                      "id": 6364,
                                       "isConstant": false,
                                       "isLValue": false,
                                       "isPure": false,
@@ -13060,7 +13058,7 @@
                                               "typeIdentifier": "t_uint256",
                                               "typeString": "uint256"
                                             },
-                                            "id": 6344,
+                                            "id": 6361,
                                             "isConstant": false,
                                             "isLValue": false,
                                             "isPure": false,
@@ -13072,14 +13070,14 @@
                                                     "typeIdentifier": "t_uint256",
                                                     "typeString": "uint256"
                                                   },
-                                                  "id": 6334,
+                                                  "id": 6351,
                                                   "isConstant": false,
                                                   "isLValue": false,
                                                   "isPure": false,
                                                   "lValueRequested": false,
                                                   "leftExpression": {
                                                     "hexValue": "313030",
-                                                    "id": 6332,
+                                                    "id": 6349,
                                                     "isConstant": false,
                                                     "isLValue": false,
                                                     "isPure": true,
@@ -13096,11 +13094,11 @@
                                                   "nodeType": "BinaryOperation",
                                                   "operator": "-",
                                                   "rightExpression": {
-                                                    "id": 6333,
+                                                    "id": 6350,
                                                     "name": "changePercentage",
                                                     "nodeType": "Identifier",
                                                     "overloadedDeclarations": [],
-                                                    "referencedDeclaration": 6310,
+                                                    "referencedDeclaration": 6327,
                                                     "src": "2207:16:27",
                                                     "typeDescriptions": {
                                                       "typeIdentifier": "t_uint256",
@@ -13114,7 +13112,7 @@
                                                   }
                                                 }
                                               ],
-                                              "id": 6335,
+                                              "id": 6352,
                                               "isConstant": false,
                                               "isInlineArray": false,
                                               "isLValue": false,
@@ -13137,42 +13135,42 @@
                                                   "arguments": [
                                                     {
                                                       "baseExpression": {
-                                                        "id": 6337,
+                                                        "id": 6354,
                                                         "name": "contractAddress",
                                                         "nodeType": "Identifier",
                                                         "overloadedDeclarations": [],
                                                         "referencedDeclaration": 2861,
                                                         "src": "2264:15:27",
                                                         "typeDescriptions": {
-                                                          "typeIdentifier": "t_mapping$_t_enum$_CommonContracts_$6491_$_t_address_$",
+                                                          "typeIdentifier": "t_mapping$_t_enum$_CommonContracts_$6508_$_t_address_$",
                                                           "typeString": "mapping(enum CommonContracts => address)"
                                                         }
                                                       },
-                                                      "id": 6340,
+                                                      "id": 6357,
                                                       "indexExpression": {
                                                         "expression": {
-                                                          "id": 6338,
+                                                          "id": 6355,
                                                           "name": "CommonContracts",
                                                           "nodeType": "Identifier",
                                                           "overloadedDeclarations": [],
-                                                          "referencedDeclaration": 6491,
+                                                          "referencedDeclaration": 6508,
                                                           "src": "2280:15:27",
                                                           "typeDescriptions": {
-                                                            "typeIdentifier": "t_type$_t_enum$_CommonContracts_$6491_$",
+                                                            "typeIdentifier": "t_type$_t_enum$_CommonContracts_$6508_$",
                                                             "typeString": "type(enum CommonContracts)"
                                                           }
                                                         },
-                                                        "id": 6339,
+                                                        "id": 6356,
                                                         "isConstant": false,
                                                         "isLValue": false,
                                                         "isPure": true,
                                                         "lValueRequested": false,
                                                         "memberName": "OCAT",
                                                         "nodeType": "MemberAccess",
-                                                        "referencedDeclaration": 6482,
+                                                        "referencedDeclaration": 6499,
                                                         "src": "2280:20:27",
                                                         "typeDescriptions": {
-                                                          "typeIdentifier": "t_enum$_CommonContracts_$6491",
+                                                          "typeIdentifier": "t_enum$_CommonContracts_$6508",
                                                           "typeString": "enum CommonContracts"
                                                         }
                                                       },
@@ -13195,7 +13193,7 @@
                                                         "typeString": "address"
                                                       }
                                                     ],
-                                                    "id": 6336,
+                                                    "id": 6353,
                                                     "name": "IERC20",
                                                     "nodeType": "Identifier",
                                                     "overloadedDeclarations": [],
@@ -13206,7 +13204,7 @@
                                                       "typeString": "type(contract IERC20)"
                                                     }
                                                   },
-                                                  "id": 6341,
+                                                  "id": 6358,
                                                   "isConstant": false,
                                                   "isLValue": false,
                                                   "isPure": false,
@@ -13221,7 +13219,7 @@
                                                     "typeString": "contract IERC20"
                                                   }
                                                 },
-                                                "id": 6342,
+                                                "id": 6359,
                                                 "isConstant": false,
                                                 "isLValue": false,
                                                 "isPure": false,
@@ -13235,7 +13233,7 @@
                                                   "typeString": "function () view external returns (uint256)"
                                                 }
                                               },
-                                              "id": 6343,
+                                              "id": 6360,
                                               "isConstant": false,
                                               "isLValue": false,
                                               "isPure": false,
@@ -13257,7 +13255,7 @@
                                             }
                                           }
                                         ],
-                                        "id": 6345,
+                                        "id": 6362,
                                         "isConstant": false,
                                         "isInlineArray": false,
                                         "isLValue": false,
@@ -13274,7 +13272,7 @@
                                       "operator": "/",
                                       "rightExpression": {
                                         "hexValue": "313030",
-                                        "id": 6346,
+                                        "id": 6363,
                                         "isConstant": false,
                                         "isLValue": false,
                                         "isPure": true,
@@ -13301,11 +13299,11 @@
                                     "expression": {
                                       "arguments": [
                                         {
-                                          "id": 6352,
+                                          "id": 6369,
                                           "name": "decreaseAmount",
                                           "nodeType": "Identifier",
                                           "overloadedDeclarations": [],
-                                          "referencedDeclaration": 6331,
+                                          "referencedDeclaration": 6348,
                                           "src": "2432:14:27",
                                           "typeDescriptions": {
                                             "typeIdentifier": "t_uint256",
@@ -13321,32 +13319,32 @@
                                           }
                                         ],
                                         "expression": {
-                                          "id": 6349,
+                                          "id": 6366,
                                           "name": "ocXchange",
                                           "nodeType": "Identifier",
                                           "overloadedDeclarations": [],
-                                          "referencedDeclaration": 6277,
+                                          "referencedDeclaration": 6294,
                                           "src": "2413:9:27",
                                           "typeDescriptions": {
-                                            "typeIdentifier": "t_contract$_IOcxExchange_$6803",
+                                            "typeIdentifier": "t_contract$_IOcxExchange_$6820",
                                             "typeString": "contract IOcxExchange"
                                           }
                                         },
-                                        "id": 6351,
+                                        "id": 6368,
                                         "isConstant": false,
                                         "isLValue": false,
                                         "isPure": false,
                                         "lValueRequested": false,
                                         "memberName": "burnOcat",
                                         "nodeType": "MemberAccess",
-                                        "referencedDeclaration": 6771,
+                                        "referencedDeclaration": 6788,
                                         "src": "2413:18:27",
                                         "typeDescriptions": {
                                           "typeIdentifier": "t_function_external_nonpayable$_t_uint256_$returns$__$",
                                           "typeString": "function (uint256) external"
                                         }
                                       },
-                                      "id": 6353,
+                                      "id": 6370,
                                       "isConstant": false,
                                       "isLValue": false,
                                       "isPure": false,
@@ -13361,7 +13359,7 @@
                                         "typeString": "tuple()"
                                       }
                                     },
-                                    "id": 6354,
+                                    "id": 6371,
                                     "nodeType": "ExpressionStatement",
                                     "src": "2413:34:27"
                                   }
@@ -13373,44 +13371,44 @@
                       },
                       {
                         "expression": {
-                          "id": 6387,
+                          "id": 6404,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
                           "lValueRequested": false,
                           "leftHandSide": {
-                            "id": 6385,
+                            "id": 6402,
                             "name": "ethAudQuote",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 6238,
+                            "referencedDeclaration": 6255,
                             "src": "2941:11:27",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_struct$_OcxPrice_$6505_storage",
+                              "typeIdentifier": "t_struct$_OcxPrice_$6522_storage",
                               "typeString": "struct OcxPrice storage ref"
                             }
                           },
                           "nodeType": "Assignment",
                           "operator": "=",
                           "rightHandSide": {
-                            "id": 6386,
+                            "id": 6403,
                             "name": "newEthAudQuote",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 6287,
+                            "referencedDeclaration": 6304,
                             "src": "2955:14:27",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_struct$_OcxPrice_$6505_memory_ptr",
+                              "typeIdentifier": "t_struct$_OcxPrice_$6522_memory_ptr",
                               "typeString": "struct OcxPrice memory"
                             }
                           },
                           "src": "2941:28:27",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_OcxPrice_$6505_storage",
+                            "typeIdentifier": "t_struct$_OcxPrice_$6522_storage",
                             "typeString": "struct OcxPrice storage ref"
                           }
                         },
-                        "id": 6388,
+                        "id": 6405,
                         "nodeType": "ExpressionStatement",
                         "src": "2941:28:27"
                       }
@@ -13419,50 +13417,50 @@
                 },
                 {
                   "assignments": [
-                    6393
+                    6410
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 6393,
+                      "id": 6410,
                       "mutability": "mutable",
                       "name": "uniAudQuote",
                       "nameLocation": "3039:11:27",
                       "nodeType": "VariableDeclaration",
-                      "scope": 6471,
+                      "scope": 6488,
                       "src": "3023:27:27",
                       "stateVariable": false,
                       "storageLocation": "memory",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_OcxPrice_$6505_memory_ptr",
+                        "typeIdentifier": "t_struct$_OcxPrice_$6522_memory_ptr",
                         "typeString": "struct OcxPrice"
                       },
                       "typeName": {
-                        "id": 6392,
+                        "id": 6409,
                         "nodeType": "UserDefinedTypeName",
                         "pathNode": {
-                          "id": 6391,
+                          "id": 6408,
                           "name": "OcxPrice",
                           "nodeType": "IdentifierPath",
-                          "referencedDeclaration": 6505,
+                          "referencedDeclaration": 6522,
                           "src": "3023:8:27"
                         },
-                        "referencedDeclaration": 6505,
+                        "referencedDeclaration": 6522,
                         "src": "3023:8:27",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_OcxPrice_$6505_storage_ptr",
+                          "typeIdentifier": "t_struct$_OcxPrice_$6522_storage_ptr",
                           "typeString": "struct OcxPrice"
                         }
                       },
                       "visibility": "internal"
                     }
                   ],
-                  "id": 6399,
+                  "id": 6416,
                   "initialValue": {
                     "arguments": [
                       {
                         "hexValue": "554e49",
-                        "id": 6396,
+                        "id": 6413,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -13478,7 +13476,7 @@
                       },
                       {
                         "hexValue": "415544",
-                        "id": 6397,
+                        "id": 6414,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -13505,32 +13503,32 @@
                         }
                       ],
                       "expression": {
-                        "id": 6394,
+                        "id": 6411,
                         "name": "ocxPriceOracle",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 6267,
+                        "referencedDeclaration": 6284,
                         "src": "3053:14:27",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_IOcxPriceOracle_$6882",
+                          "typeIdentifier": "t_contract$_IOcxPriceOracle_$6899",
                           "typeString": "contract IOcxPriceOracle"
                         }
                       },
-                      "id": 6395,
+                      "id": 6412,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
                       "lValueRequested": false,
                       "memberName": "getCryptoPrice",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 6881,
+                      "referencedDeclaration": 6898,
                       "src": "3053:29:27",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_function_external_nonpayable$_t_string_memory_ptr_$_t_string_memory_ptr_$returns$_t_struct$_OcxPrice_$6505_memory_ptr_$",
+                        "typeIdentifier": "t_function_external_nonpayable$_t_string_memory_ptr_$_t_string_memory_ptr_$returns$_t_struct$_OcxPrice_$6522_memory_ptr_$",
                         "typeString": "function (string memory,string memory) external returns (struct OcxPrice memory)"
                       }
                     },
-                    "id": 6398,
+                    "id": 6415,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -13541,7 +13539,7 @@
                     "src": "3053:43:27",
                     "tryCall": false,
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_OcxPrice_$6505_memory_ptr",
+                      "typeIdentifier": "t_struct$_OcxPrice_$6522_memory_ptr",
                       "typeString": "struct OcxPrice memory"
                     }
                   },
@@ -13550,50 +13548,50 @@
                 },
                 {
                   "assignments": [
-                    6402
+                    6419
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 6402,
+                      "id": 6419,
                       "mutability": "mutable",
                       "name": "oldUniAudQuote",
                       "nameLocation": "3123:14:27",
                       "nodeType": "VariableDeclaration",
-                      "scope": 6471,
+                      "scope": 6488,
                       "src": "3107:30:27",
                       "stateVariable": false,
                       "storageLocation": "memory",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_OcxPrice_$6505_memory_ptr",
+                        "typeIdentifier": "t_struct$_OcxPrice_$6522_memory_ptr",
                         "typeString": "struct OcxPrice"
                       },
                       "typeName": {
-                        "id": 6401,
+                        "id": 6418,
                         "nodeType": "UserDefinedTypeName",
                         "pathNode": {
-                          "id": 6400,
+                          "id": 6417,
                           "name": "OcxPrice",
                           "nodeType": "IdentifierPath",
-                          "referencedDeclaration": 6505,
+                          "referencedDeclaration": 6522,
                           "src": "3107:8:27"
                         },
-                        "referencedDeclaration": 6505,
+                        "referencedDeclaration": 6522,
                         "src": "3107:8:27",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_OcxPrice_$6505_storage_ptr",
+                          "typeIdentifier": "t_struct$_OcxPrice_$6522_storage_ptr",
                           "typeString": "struct OcxPrice"
                         }
                       },
                       "visibility": "internal"
                     }
                   ],
-                  "id": 6408,
+                  "id": 6425,
                   "initialValue": {
                     "arguments": [
                       {
                         "hexValue": "554e49",
-                        "id": 6405,
+                        "id": 6422,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -13609,7 +13607,7 @@
                       },
                       {
                         "hexValue": "415544",
-                        "id": 6406,
+                        "id": 6423,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -13636,32 +13634,32 @@
                         }
                       ],
                       "expression": {
-                        "id": 6403,
+                        "id": 6420,
                         "name": "ocXchange",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 6277,
+                        "referencedDeclaration": 6294,
                         "src": "3140:9:27",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_IOcxExchange_$6803",
+                          "typeIdentifier": "t_contract$_IOcxExchange_$6820",
                           "typeString": "contract IOcxExchange"
                         }
                       },
-                      "id": 6404,
+                      "id": 6421,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
                       "lValueRequested": false,
                       "memberName": "getQuote",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 6802,
+                      "referencedDeclaration": 6819,
                       "src": "3140:18:27",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_function_external_view$_t_string_memory_ptr_$_t_string_memory_ptr_$returns$_t_struct$_OcxPrice_$6505_memory_ptr_$",
+                        "typeIdentifier": "t_function_external_view$_t_string_memory_ptr_$_t_string_memory_ptr_$returns$_t_struct$_OcxPrice_$6522_memory_ptr_$",
                         "typeString": "function (string memory,string memory) view external returns (struct OcxPrice memory)"
                       }
                     },
-                    "id": 6407,
+                    "id": 6424,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -13672,7 +13670,7 @@
                     "src": "3140:32:27",
                     "tryCall": false,
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_OcxPrice_$6505_memory_ptr",
+                      "typeIdentifier": "t_struct$_OcxPrice_$6522_memory_ptr",
                       "typeString": "struct OcxPrice memory"
                     }
                   },
@@ -13685,32 +13683,32 @@
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     },
-                    "id": 6412,
+                    "id": 6429,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftExpression": {
                       "expression": {
-                        "id": 6409,
+                        "id": 6426,
                         "name": "oldUniAudQuote",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 6402,
+                        "referencedDeclaration": 6419,
                         "src": "3187:14:27",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_OcxPrice_$6505_memory_ptr",
+                          "typeIdentifier": "t_struct$_OcxPrice_$6522_memory_ptr",
                           "typeString": "struct OcxPrice memory"
                         }
                       },
-                      "id": 6410,
+                      "id": 6427,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
                       "lValueRequested": false,
                       "memberName": "value",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 6502,
+                      "referencedDeclaration": 6519,
                       "src": "3187:20:27",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -13721,7 +13719,7 @@
                     "operator": "==",
                     "rightExpression": {
                       "hexValue": "30",
-                      "id": 6411,
+                      "id": 6428,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -13741,11 +13739,11 @@
                       "typeString": "bool"
                     }
                   },
-                  "id": 6429,
+                  "id": 6446,
                   "nodeType": "IfStatement",
                   "src": "3183:174:27",
                   "trueBody": {
-                    "id": 6428,
+                    "id": 6445,
                     "nodeType": "Block",
                     "src": "3214:143:27",
                     "statements": [
@@ -13754,7 +13752,7 @@
                           "arguments": [
                             {
                               "hexValue": "554e49",
-                              "id": 6416,
+                              "id": 6433,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": true,
@@ -13770,7 +13768,7 @@
                             },
                             {
                               "hexValue": "415544",
-                              "id": 6417,
+                              "id": 6434,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": true,
@@ -13786,25 +13784,25 @@
                             },
                             {
                               "expression": {
-                                "id": 6418,
+                                "id": 6435,
                                 "name": "uniAudQuote",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 6393,
+                                "referencedDeclaration": 6410,
                                 "src": "3262:11:27",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$_OcxPrice_$6505_memory_ptr",
+                                  "typeIdentifier": "t_struct$_OcxPrice_$6522_memory_ptr",
                                   "typeString": "struct OcxPrice memory"
                                 }
                               },
-                              "id": 6419,
+                              "id": 6436,
                               "isConstant": false,
                               "isLValue": true,
                               "isPure": false,
                               "lValueRequested": false,
                               "memberName": "value",
                               "nodeType": "MemberAccess",
-                              "referencedDeclaration": 6502,
+                              "referencedDeclaration": 6519,
                               "src": "3262:17:27",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -13813,25 +13811,25 @@
                             },
                             {
                               "expression": {
-                                "id": 6420,
+                                "id": 6437,
                                 "name": "uniAudQuote",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 6393,
+                                "referencedDeclaration": 6410,
                                 "src": "3281:11:27",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_struct$_OcxPrice_$6505_memory_ptr",
+                                  "typeIdentifier": "t_struct$_OcxPrice_$6522_memory_ptr",
                                   "typeString": "struct OcxPrice memory"
                                 }
                               },
-                              "id": 6421,
+                              "id": 6438,
                               "isConstant": false,
                               "isLValue": true,
                               "isPure": false,
                               "lValueRequested": false,
                               "memberName": "decimals",
                               "nodeType": "MemberAccess",
-                              "referencedDeclaration": 6504,
+                              "referencedDeclaration": 6521,
                               "src": "3281:20:27",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint8",
@@ -13859,32 +13857,32 @@
                               }
                             ],
                             "expression": {
-                              "id": 6413,
+                              "id": 6430,
                               "name": "ocXchange",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 6277,
+                              "referencedDeclaration": 6294,
                               "src": "3229:9:27",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_contract$_IOcxExchange_$6803",
+                                "typeIdentifier": "t_contract$_IOcxExchange_$6820",
                                 "typeString": "contract IOcxExchange"
                               }
                             },
-                            "id": 6415,
+                            "id": 6432,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
                             "lValueRequested": false,
                             "memberName": "setQuote",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 6792,
+                            "referencedDeclaration": 6809,
                             "src": "3229:18:27",
                             "typeDescriptions": {
                               "typeIdentifier": "t_function_external_nonpayable$_t_string_memory_ptr_$_t_string_memory_ptr_$_t_uint256_$_t_uint8_$returns$__$",
                               "typeString": "function (string memory,string memory,uint256,uint8) external"
                             }
                           },
-                          "id": 6422,
+                          "id": 6439,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -13899,50 +13897,50 @@
                             "typeString": "tuple()"
                           }
                         },
-                        "id": 6423,
+                        "id": 6440,
                         "nodeType": "ExpressionStatement",
                         "src": "3229:73:27"
                       },
                       {
                         "expression": {
-                          "id": 6426,
+                          "id": 6443,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
                           "lValueRequested": false,
                           "leftHandSide": {
-                            "id": 6424,
+                            "id": 6441,
                             "name": "oldUniAudQuote",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 6402,
+                            "referencedDeclaration": 6419,
                             "src": "3317:14:27",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_struct$_OcxPrice_$6505_memory_ptr",
+                              "typeIdentifier": "t_struct$_OcxPrice_$6522_memory_ptr",
                               "typeString": "struct OcxPrice memory"
                             }
                           },
                           "nodeType": "Assignment",
                           "operator": "=",
                           "rightHandSide": {
-                            "id": 6425,
+                            "id": 6442,
                             "name": "uniAudQuote",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 6393,
+                            "referencedDeclaration": 6410,
                             "src": "3334:11:27",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_struct$_OcxPrice_$6505_memory_ptr",
+                              "typeIdentifier": "t_struct$_OcxPrice_$6522_memory_ptr",
                               "typeString": "struct OcxPrice memory"
                             }
                           },
                           "src": "3317:28:27",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_OcxPrice_$6505_memory_ptr",
+                            "typeIdentifier": "t_struct$_OcxPrice_$6522_memory_ptr",
                             "typeString": "struct OcxPrice memory"
                           }
                         },
-                        "id": 6427,
+                        "id": 6444,
                         "nodeType": "ExpressionStatement",
                         "src": "3317:28:27"
                       }
@@ -13955,32 +13953,32 @@
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     },
-                    "id": 6434,
+                    "id": 6451,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftExpression": {
                       "expression": {
-                        "id": 6430,
+                        "id": 6447,
                         "name": "oldUniAudQuote",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 6402,
+                        "referencedDeclaration": 6419,
                         "src": "3371:14:27",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_OcxPrice_$6505_memory_ptr",
+                          "typeIdentifier": "t_struct$_OcxPrice_$6522_memory_ptr",
                           "typeString": "struct OcxPrice memory"
                         }
                       },
-                      "id": 6431,
+                      "id": 6448,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
                       "lValueRequested": false,
                       "memberName": "value",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 6502,
+                      "referencedDeclaration": 6519,
                       "src": "3371:20:27",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -13991,25 +13989,25 @@
                     "operator": "!=",
                     "rightExpression": {
                       "expression": {
-                        "id": 6432,
+                        "id": 6449,
                         "name": "uniAudQuote",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 6393,
+                        "referencedDeclaration": 6410,
                         "src": "3395:11:27",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_OcxPrice_$6505_memory_ptr",
+                          "typeIdentifier": "t_struct$_OcxPrice_$6522_memory_ptr",
                           "typeString": "struct OcxPrice memory"
                         }
                       },
-                      "id": 6433,
+                      "id": 6450,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
                       "lValueRequested": false,
                       "memberName": "value",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 6502,
+                      "referencedDeclaration": 6519,
                       "src": "3395:17:27",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -14022,27 +14020,27 @@
                       "typeString": "bool"
                     }
                   },
-                  "id": 6470,
+                  "id": 6487,
                   "nodeType": "IfStatement",
                   "src": "3367:490:27",
                   "trueBody": {
-                    "id": 6469,
+                    "id": 6486,
                     "nodeType": "Block",
                     "src": "3414:443:27",
                     "statements": [
                       {
                         "assignments": [
-                          6436
+                          6453
                         ],
                         "declarations": [
                           {
                             "constant": false,
-                            "id": 6436,
+                            "id": 6453,
                             "mutability": "mutable",
                             "name": "changePercentage",
                             "nameLocation": "3498:16:27",
                             "nodeType": "VariableDeclaration",
-                            "scope": 6469,
+                            "scope": 6486,
                             "src": "3493:21:27",
                             "stateVariable": false,
                             "storageLocation": "default",
@@ -14051,7 +14049,7 @@
                               "typeString": "uint256"
                             },
                             "typeName": {
-                              "id": 6435,
+                              "id": 6452,
                               "name": "uint",
                               "nodeType": "ElementaryTypeName",
                               "src": "3493:4:27",
@@ -14063,13 +14061,13 @@
                             "visibility": "internal"
                           }
                         ],
-                        "id": 6445,
+                        "id": 6462,
                         "initialValue": {
                           "commonType": {
                             "typeIdentifier": "t_uint256",
                             "typeString": "uint256"
                           },
-                          "id": 6444,
+                          "id": 6461,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -14081,32 +14079,32 @@
                                   "typeIdentifier": "t_uint256",
                                   "typeString": "uint256"
                                 },
-                                "id": 6440,
+                                "id": 6457,
                                 "isConstant": false,
                                 "isLValue": false,
                                 "isPure": false,
                                 "lValueRequested": false,
                                 "leftExpression": {
                                   "expression": {
-                                    "id": 6437,
+                                    "id": 6454,
                                     "name": "uniAudQuote",
                                     "nodeType": "Identifier",
                                     "overloadedDeclarations": [],
-                                    "referencedDeclaration": 6393,
+                                    "referencedDeclaration": 6410,
                                     "src": "3518:11:27",
                                     "typeDescriptions": {
-                                      "typeIdentifier": "t_struct$_OcxPrice_$6505_memory_ptr",
+                                      "typeIdentifier": "t_struct$_OcxPrice_$6522_memory_ptr",
                                       "typeString": "struct OcxPrice memory"
                                     }
                                   },
-                                  "id": 6438,
+                                  "id": 6455,
                                   "isConstant": false,
                                   "isLValue": true,
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "memberName": "value",
                                   "nodeType": "MemberAccess",
-                                  "referencedDeclaration": 6502,
+                                  "referencedDeclaration": 6519,
                                   "src": "3518:17:27",
                                   "typeDescriptions": {
                                     "typeIdentifier": "t_uint256",
@@ -14117,7 +14115,7 @@
                                 "operator": "*",
                                 "rightExpression": {
                                   "hexValue": "313030",
-                                  "id": 6439,
+                                  "id": 6456,
                                   "isConstant": false,
                                   "isLValue": false,
                                   "isPure": true,
@@ -14138,7 +14136,7 @@
                                 }
                               }
                             ],
-                            "id": 6441,
+                            "id": 6458,
                             "isConstant": false,
                             "isInlineArray": false,
                             "isLValue": false,
@@ -14155,25 +14153,25 @@
                           "operator": "/",
                           "rightExpression": {
                             "expression": {
-                              "id": 6442,
+                              "id": 6459,
                               "name": "oldUniAudQuote",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 6402,
+                              "referencedDeclaration": 6419,
                               "src": "3545:14:27",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_struct$_OcxPrice_$6505_memory_ptr",
+                                "typeIdentifier": "t_struct$_OcxPrice_$6522_memory_ptr",
                                 "typeString": "struct OcxPrice memory"
                               }
                             },
-                            "id": 6443,
+                            "id": 6460,
                             "isConstant": false,
                             "isLValue": true,
                             "isPure": false,
                             "lValueRequested": false,
                             "memberName": "value",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 6502,
+                            "referencedDeclaration": 6519,
                             "src": "3545:20:27",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint256",
@@ -14191,50 +14189,50 @@
                       },
                       {
                         "assignments": [
-                          6448
+                          6465
                         ],
                         "declarations": [
                           {
                             "constant": false,
-                            "id": 6448,
+                            "id": 6465,
                             "mutability": "mutable",
                             "name": "oldOcatOcxQuote",
                             "nameLocation": "3596:15:27",
                             "nodeType": "VariableDeclaration",
-                            "scope": 6469,
+                            "scope": 6486,
                             "src": "3580:31:27",
                             "stateVariable": false,
                             "storageLocation": "memory",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_struct$_OcxPrice_$6505_memory_ptr",
+                              "typeIdentifier": "t_struct$_OcxPrice_$6522_memory_ptr",
                               "typeString": "struct OcxPrice"
                             },
                             "typeName": {
-                              "id": 6447,
+                              "id": 6464,
                               "nodeType": "UserDefinedTypeName",
                               "pathNode": {
-                                "id": 6446,
+                                "id": 6463,
                                 "name": "OcxPrice",
                                 "nodeType": "IdentifierPath",
-                                "referencedDeclaration": 6505,
+                                "referencedDeclaration": 6522,
                                 "src": "3580:8:27"
                               },
-                              "referencedDeclaration": 6505,
+                              "referencedDeclaration": 6522,
                               "src": "3580:8:27",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_struct$_OcxPrice_$6505_storage_ptr",
+                                "typeIdentifier": "t_struct$_OcxPrice_$6522_storage_ptr",
                                 "typeString": "struct OcxPrice"
                               }
                             },
                             "visibility": "internal"
                           }
                         ],
-                        "id": 6454,
+                        "id": 6471,
                         "initialValue": {
                           "arguments": [
                             {
                               "hexValue": "4f434154",
-                              "id": 6451,
+                              "id": 6468,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": true,
@@ -14250,7 +14248,7 @@
                             },
                             {
                               "hexValue": "4f4358",
-                              "id": 6452,
+                              "id": 6469,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": true,
@@ -14277,32 +14275,32 @@
                               }
                             ],
                             "expression": {
-                              "id": 6449,
+                              "id": 6466,
                               "name": "ocXchange",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 6277,
+                              "referencedDeclaration": 6294,
                               "src": "3614:9:27",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_contract$_IOcxExchange_$6803",
+                                "typeIdentifier": "t_contract$_IOcxExchange_$6820",
                                 "typeString": "contract IOcxExchange"
                               }
                             },
-                            "id": 6450,
+                            "id": 6467,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
                             "lValueRequested": false,
                             "memberName": "getQuote",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 6802,
+                            "referencedDeclaration": 6819,
                             "src": "3614:18:27",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_function_external_view$_t_string_memory_ptr_$_t_string_memory_ptr_$returns$_t_struct$_OcxPrice_$6505_memory_ptr_$",
+                              "typeIdentifier": "t_function_external_view$_t_string_memory_ptr_$_t_string_memory_ptr_$returns$_t_struct$_OcxPrice_$6522_memory_ptr_$",
                               "typeString": "function (string memory,string memory) view external returns (struct OcxPrice memory)"
                             }
                           },
-                          "id": 6453,
+                          "id": 6470,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -14313,7 +14311,7 @@
                           "src": "3614:33:27",
                           "tryCall": false,
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_OcxPrice_$6505_memory_ptr",
+                            "typeIdentifier": "t_struct$_OcxPrice_$6522_memory_ptr",
                             "typeString": "struct OcxPrice memory"
                           }
                         },
@@ -14325,7 +14323,7 @@
                           "arguments": [
                             {
                               "hexValue": "4f434154",
-                              "id": 6458,
+                              "id": 6475,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": true,
@@ -14341,7 +14339,7 @@
                             },
                             {
                               "hexValue": "4f4358",
-                              "id": 6459,
+                              "id": 6476,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": true,
@@ -14360,7 +14358,7 @@
                                 "typeIdentifier": "t_uint256",
                                 "typeString": "uint256"
                               },
-                              "id": 6465,
+                              "id": 6482,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": false,
@@ -14370,32 +14368,32 @@
                                   "typeIdentifier": "t_uint256",
                                   "typeString": "uint256"
                                 },
-                                "id": 6463,
+                                "id": 6480,
                                 "isConstant": false,
                                 "isLValue": false,
                                 "isPure": false,
                                 "lValueRequested": false,
                                 "leftExpression": {
                                   "expression": {
-                                    "id": 6460,
+                                    "id": 6477,
                                     "name": "oldOcatOcxQuote",
                                     "nodeType": "Identifier",
                                     "overloadedDeclarations": [],
-                                    "referencedDeclaration": 6448,
+                                    "referencedDeclaration": 6465,
                                     "src": "3750:15:27",
                                     "typeDescriptions": {
-                                      "typeIdentifier": "t_struct$_OcxPrice_$6505_memory_ptr",
+                                      "typeIdentifier": "t_struct$_OcxPrice_$6522_memory_ptr",
                                       "typeString": "struct OcxPrice memory"
                                     }
                                   },
-                                  "id": 6461,
+                                  "id": 6478,
                                   "isConstant": false,
                                   "isLValue": true,
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "memberName": "value",
                                   "nodeType": "MemberAccess",
-                                  "referencedDeclaration": 6502,
+                                  "referencedDeclaration": 6519,
                                   "src": "3750:21:27",
                                   "typeDescriptions": {
                                     "typeIdentifier": "t_uint256",
@@ -14405,11 +14403,11 @@
                                 "nodeType": "BinaryOperation",
                                 "operator": "*",
                                 "rightExpression": {
-                                  "id": 6462,
+                                  "id": 6479,
                                   "name": "changePercentage",
                                   "nodeType": "Identifier",
                                   "overloadedDeclarations": [],
-                                  "referencedDeclaration": 6436,
+                                  "referencedDeclaration": 6453,
                                   "src": "3774:16:27",
                                   "typeDescriptions": {
                                     "typeIdentifier": "t_uint256",
@@ -14426,7 +14424,7 @@
                               "operator": "/",
                               "rightExpression": {
                                 "hexValue": "313030",
-                                "id": 6464,
+                                "id": 6481,
                                 "isConstant": false,
                                 "isLValue": false,
                                 "isPure": true,
@@ -14447,11 +14445,11 @@
                               }
                             },
                             {
-                              "id": 6466,
+                              "id": 6483,
                               "name": "QUOTE_DECIMALS",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 6523,
+                              "referencedDeclaration": 6540,
                               "src": "3816:14:27",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint8",
@@ -14479,32 +14477,32 @@
                               }
                             ],
                             "expression": {
-                              "id": 6455,
+                              "id": 6472,
                               "name": "ocXchange",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 6277,
+                              "referencedDeclaration": 6294,
                               "src": "3662:9:27",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_contract$_IOcxExchange_$6803",
+                                "typeIdentifier": "t_contract$_IOcxExchange_$6820",
                                 "typeString": "contract IOcxExchange"
                               }
                             },
-                            "id": 6457,
+                            "id": 6474,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
                             "lValueRequested": false,
                             "memberName": "setQuote",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 6792,
+                            "referencedDeclaration": 6809,
                             "src": "3662:18:27",
                             "typeDescriptions": {
                               "typeIdentifier": "t_function_external_nonpayable$_t_string_memory_ptr_$_t_string_memory_ptr_$_t_uint256_$_t_uint8_$returns$__$",
                               "typeString": "function (string memory,string memory,uint256,uint8) external"
                             }
                           },
-                          "id": 6467,
+                          "id": 6484,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -14519,7 +14517,7 @@
                             "typeString": "tuple()"
                           }
                         },
-                        "id": 6468,
+                        "id": 6485,
                         "nodeType": "ExpressionStatement",
                         "src": "3662:183:27"
                       }
@@ -14529,7 +14527,7 @@
               ]
             },
             "functionSelector": "c0406226",
-            "id": 6472,
+            "id": 6489,
             "implemented": true,
             "kind": "function",
             "modifiers": [
@@ -14537,42 +14535,42 @@
                 "arguments": [
                   {
                     "baseExpression": {
-                      "id": 6245,
+                      "id": 6262,
                       "name": "contractAddress",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 2861,
                       "src": "1084:15:27",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_mapping$_t_enum$_CommonContracts_$6491_$_t_address_$",
+                        "typeIdentifier": "t_mapping$_t_enum$_CommonContracts_$6508_$_t_address_$",
                         "typeString": "mapping(enum CommonContracts => address)"
                       }
                     },
-                    "id": 6248,
+                    "id": 6265,
                     "indexExpression": {
                       "expression": {
-                        "id": 6246,
+                        "id": 6263,
                         "name": "CommonContracts",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 6491,
+                        "referencedDeclaration": 6508,
                         "src": "1100:15:27",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_type$_t_enum$_CommonContracts_$6491_$",
+                          "typeIdentifier": "t_type$_t_enum$_CommonContracts_$6508_$",
                           "typeString": "type(enum CommonContracts)"
                         }
                       },
-                      "id": 6247,
+                      "id": 6264,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
                       "lValueRequested": false,
                       "memberName": "EXCHANGE",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 6488,
+                      "referencedDeclaration": 6505,
                       "src": "1100:24:27",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_enum$_CommonContracts_$6491",
+                        "typeIdentifier": "t_enum$_CommonContracts_$6508",
                         "typeString": "enum CommonContracts"
                       }
                     },
@@ -14588,10 +14586,10 @@
                     }
                   }
                 ],
-                "id": 6249,
+                "id": 6266,
                 "kind": "modifierInvocation",
                 "modifierName": {
-                  "id": 6244,
+                  "id": 6261,
                   "name": "onlyValidAddress",
                   "nodeType": "IdentifierPath",
                   "referencedDeclaration": 2779,
@@ -14604,42 +14602,42 @@
                 "arguments": [
                   {
                     "baseExpression": {
-                      "id": 6251,
+                      "id": 6268,
                       "name": "contractAddress",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 2861,
                       "src": "1150:15:27",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_mapping$_t_enum$_CommonContracts_$6491_$_t_address_$",
+                        "typeIdentifier": "t_mapping$_t_enum$_CommonContracts_$6508_$_t_address_$",
                         "typeString": "mapping(enum CommonContracts => address)"
                       }
                     },
-                    "id": 6254,
+                    "id": 6271,
                     "indexExpression": {
                       "expression": {
-                        "id": 6252,
+                        "id": 6269,
                         "name": "CommonContracts",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 6491,
+                        "referencedDeclaration": 6508,
                         "src": "1166:15:27",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_type$_t_enum$_CommonContracts_$6491_$",
+                          "typeIdentifier": "t_type$_t_enum$_CommonContracts_$6508_$",
                           "typeString": "type(enum CommonContracts)"
                         }
                       },
-                      "id": 6253,
+                      "id": 6270,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
                       "lValueRequested": false,
                       "memberName": "PRICE_ORACLE",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 6487,
+                      "referencedDeclaration": 6504,
                       "src": "1166:28:27",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_enum$_CommonContracts_$6491",
+                        "typeIdentifier": "t_enum$_CommonContracts_$6508",
                         "typeString": "enum CommonContracts"
                       }
                     },
@@ -14655,10 +14653,10 @@
                     }
                   }
                 ],
-                "id": 6255,
+                "id": 6272,
                 "kind": "modifierInvocation",
                 "modifierName": {
-                  "id": 6250,
+                  "id": 6267,
                   "name": "onlyValidAddress",
                   "nodeType": "IdentifierPath",
                   "referencedDeclaration": 2779,
@@ -14671,42 +14669,42 @@
                 "arguments": [
                   {
                     "baseExpression": {
-                      "id": 6257,
+                      "id": 6274,
                       "name": "contractAddress",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 2861,
                       "src": "1220:15:27",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_mapping$_t_enum$_CommonContracts_$6491_$_t_address_$",
+                        "typeIdentifier": "t_mapping$_t_enum$_CommonContracts_$6508_$_t_address_$",
                         "typeString": "mapping(enum CommonContracts => address)"
                       }
                     },
-                    "id": 6260,
+                    "id": 6277,
                     "indexExpression": {
                       "expression": {
-                        "id": 6258,
+                        "id": 6275,
                         "name": "CommonContracts",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 6491,
+                        "referencedDeclaration": 6508,
                         "src": "1236:15:27",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_type$_t_enum$_CommonContracts_$6491_$",
+                          "typeIdentifier": "t_type$_t_enum$_CommonContracts_$6508_$",
                           "typeString": "type(enum CommonContracts)"
                         }
                       },
-                      "id": 6259,
+                      "id": 6276,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
                       "lValueRequested": false,
                       "memberName": "OCAT",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 6482,
+                      "referencedDeclaration": 6499,
                       "src": "1236:20:27",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_enum$_CommonContracts_$6491",
+                        "typeIdentifier": "t_enum$_CommonContracts_$6508",
                         "typeString": "enum CommonContracts"
                       }
                     },
@@ -14722,10 +14720,10 @@
                     }
                   }
                 ],
-                "id": 6261,
+                "id": 6278,
                 "kind": "modifierInvocation",
                 "modifierName": {
-                  "id": 6256,
+                  "id": 6273,
                   "name": "onlyValidAddress",
                   "nodeType": "IdentifierPath",
                   "referencedDeclaration": 2779,
@@ -14735,10 +14733,10 @@
                 "src": "1203:55:27"
               },
               {
-                "id": 6263,
+                "id": 6280,
                 "kind": "modifierInvocation",
                 "modifierName": {
-                  "id": 6262,
+                  "id": 6279,
                   "name": "onlyAdmin",
                   "nodeType": "IdentifierPath",
                   "referencedDeclaration": 2802,
@@ -14752,25 +14750,25 @@
             "nameLocation": "1047:3:27",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6243,
+              "id": 6260,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1050:2:27"
             },
             "returnParameters": {
-              "id": 6264,
+              "id": 6281,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1275:0:27"
             },
-            "scope": 6473,
+            "scope": 6490,
             "src": "1038:2826:27",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 6474,
+        "scope": 6491,
         "src": "448:3419:27",
         "usedErrors": []
       }
@@ -14790,8 +14788,7 @@
     }
   },
   "schemaVersion": "3.4.7",
-  "updatedAt": "2022-05-05T00:08:05.373Z",
-  "networkType": "ethereum",
+  "updatedAt": "2022-05-05T00:51:43.641Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},

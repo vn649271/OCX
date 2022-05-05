@@ -210,48 +210,48 @@
     "absolutePath": "project:/contracts/interface/IOcxPriceOracle.sol",
     "exportedSymbols": {
       "CommonContracts": [
-        6491
+        6508
       ],
       "CurrencyIndex": [
-        6500
-      ],
-      "CurrencyPriceInfo": [
-        6511
-      ],
-      "FeeType": [
-        6480
-      ],
-      "IOcxBase": [
-        6719
-      ],
-      "IOcxPriceOracle": [
-        6882
-      ],
-      "OcxPrice": [
-        6505
-      ],
-      "POOL_FEE": [
-        6520
-      ],
-      "QUOTE_DECIMALS": [
-        6523
-      ],
-      "QUOTE_MULTIPLIER": [
-        6528
-      ],
-      "UNISWAP_V3_QUOTER_ADDRESS": [
         6517
       ],
+      "CurrencyPriceInfo": [
+        6528
+      ],
+      "FeeType": [
+        6497
+      ],
+      "IOcxBase": [
+        6736
+      ],
+      "IOcxPriceOracle": [
+        6899
+      ],
+      "OcxPrice": [
+        6522
+      ],
+      "POOL_FEE": [
+        6537
+      ],
+      "QUOTE_DECIMALS": [
+        6540
+      ],
+      "QUOTE_MULTIPLIER": [
+        6545
+      ],
+      "UNISWAP_V3_QUOTER_ADDRESS": [
+        6534
+      ],
       "UNISWAP_V3_ROUTER_ADDRESS": [
-        6514
+        6531
       ]
     },
-    "id": 6883,
+    "id": 6900,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6805,
+        "id": 6822,
         "literals": [
           "solidity",
           "^",
@@ -264,11 +264,11 @@
       {
         "absolutePath": "project:/contracts/common/OcxCommon.sol",
         "file": "./../common/OcxCommon.sol",
-        "id": 6806,
+        "id": 6823,
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
-        "scope": 6883,
-        "sourceUnit": 6529,
+        "scope": 6900,
+        "sourceUnit": 6546,
         "src": "60:35:37",
         "symbolAliases": [],
         "unitAlias": ""
@@ -276,11 +276,11 @@
       {
         "absolutePath": "project:/contracts/interface/IOcxBase.sol",
         "file": "./IOcxBase.sol",
-        "id": 6807,
+        "id": 6824,
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
-        "scope": 6883,
-        "sourceUnit": 6720,
+        "scope": 6900,
+        "sourceUnit": 6737,
         "src": "97:24:37",
         "symbolAliases": [],
         "unitAlias": ""
@@ -291,15 +291,15 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 6808,
+          "id": 6825,
           "nodeType": "StructuredDocumentation",
           "src": "123:72:37",
           "text": " @dev Interface of the ERC20 standard as defined in the EIP."
         },
         "fullyImplemented": false,
-        "id": 6882,
+        "id": 6899,
         "linearizedBaseContracts": [
-          6882
+          6899
         ],
         "name": "IOcxPriceOracle",
         "nameLocation": "207:15:37",
@@ -307,7 +307,7 @@
         "nodes": [
           {
             "functionSelector": "d5b76705",
-            "id": 6816,
+            "id": 6833,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -315,38 +315,38 @@
             "nameLocation": "239:16:37",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6814,
+              "id": 6831,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6811,
+                  "id": 6828,
                   "mutability": "mutable",
                   "name": "feeType",
                   "nameLocation": "264:7:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6816,
+                  "scope": 6833,
                   "src": "256:15:37",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_enum$_FeeType_$6480",
+                    "typeIdentifier": "t_enum$_FeeType_$6497",
                     "typeString": "enum FeeType"
                   },
                   "typeName": {
-                    "id": 6810,
+                    "id": 6827,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 6809,
+                      "id": 6826,
                       "name": "FeeType",
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 6480,
+                      "referencedDeclaration": 6497,
                       "src": "256:7:37"
                     },
-                    "referencedDeclaration": 6480,
+                    "referencedDeclaration": 6497,
                     "src": "256:7:37",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_enum$_FeeType_$6480",
+                      "typeIdentifier": "t_enum$_FeeType_$6497",
                       "typeString": "enum FeeType"
                     }
                   },
@@ -354,12 +354,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6813,
+                  "id": 6830,
                   "mutability": "mutable",
                   "name": "percentValue",
                   "nameLocation": "281:12:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6816,
+                  "scope": 6833,
                   "src": "273:20:37",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -368,7 +368,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6812,
+                    "id": 6829,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "273:7:37",
@@ -383,12 +383,12 @@
               "src": "255:39:37"
             },
             "returnParameters": {
-              "id": 6815,
+              "id": 6832,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "303:0:37"
             },
-            "scope": 6882,
+            "scope": 6899,
             "src": "230:74:37",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -396,7 +396,7 @@
           },
           {
             "functionSelector": "61d9285a",
-            "id": 6826,
+            "id": 6843,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -404,38 +404,38 @@
             "nameLocation": "319:16:37",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6820,
+              "id": 6837,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6819,
+                  "id": 6836,
                   "mutability": "mutable",
                   "name": "feeType",
                   "nameLocation": "344:7:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6826,
+                  "scope": 6843,
                   "src": "336:15:37",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_enum$_FeeType_$6480",
+                    "typeIdentifier": "t_enum$_FeeType_$6497",
                     "typeString": "enum FeeType"
                   },
                   "typeName": {
-                    "id": 6818,
+                    "id": 6835,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 6817,
+                      "id": 6834,
                       "name": "FeeType",
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 6480,
+                      "referencedDeclaration": 6497,
                       "src": "336:7:37"
                     },
-                    "referencedDeclaration": 6480,
+                    "referencedDeclaration": 6497,
                     "src": "336:7:37",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_enum$_FeeType_$6480",
+                      "typeIdentifier": "t_enum$_FeeType_$6497",
                       "typeString": "enum FeeType"
                     }
                   },
@@ -445,17 +445,17 @@
               "src": "335:17:37"
             },
             "returnParameters": {
-              "id": 6825,
+              "id": 6842,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6822,
+                  "id": 6839,
                   "mutability": "mutable",
                   "name": "percentage",
                   "nameLocation": "393:10:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6826,
+                  "scope": 6843,
                   "src": "385:18:37",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -464,7 +464,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6821,
+                    "id": 6838,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "385:7:37",
@@ -477,12 +477,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6824,
+                  "id": 6841,
                   "mutability": "mutable",
                   "name": "feeDecimals",
                   "nameLocation": "413:11:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6826,
+                  "scope": 6843,
                   "src": "405:19:37",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -491,7 +491,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6823,
+                    "id": 6840,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "405:7:37",
@@ -505,7 +505,7 @@
               ],
               "src": "384:41:37"
             },
-            "scope": 6882,
+            "scope": 6899,
             "src": "310:116:37",
             "stateMutability": "view",
             "virtual": false,
@@ -513,7 +513,7 @@
           },
           {
             "functionSelector": "c89be5a5",
-            "id": 6833,
+            "id": 6850,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -521,17 +521,17 @@
             "nameLocation": "441:12:37",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6831,
+              "id": 6848,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6828,
+                  "id": 6845,
                   "mutability": "mutable",
                   "name": "_applicationFee",
                   "nameLocation": "462:15:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6833,
+                  "scope": 6850,
                   "src": "454:23:37",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -540,7 +540,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6827,
+                    "id": 6844,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "454:7:37",
@@ -553,12 +553,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6830,
+                  "id": 6847,
                   "mutability": "mutable",
                   "name": "_valuationFee",
                   "nameLocation": "487:13:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6833,
+                  "scope": 6850,
                   "src": "479:21:37",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -567,7 +567,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6829,
+                    "id": 6846,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "479:7:37",
@@ -582,12 +582,12 @@
               "src": "453:48:37"
             },
             "returnParameters": {
-              "id": 6832,
+              "id": 6849,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "510:0:37"
             },
-            "scope": 6882,
+            "scope": 6899,
             "src": "432:79:37",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -595,7 +595,7 @@
           },
           {
             "functionSelector": "7ea2b8e0",
-            "id": 6840,
+            "id": 6857,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -603,23 +603,23 @@
             "nameLocation": "526:12:37",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6834,
+              "id": 6851,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "538:2:37"
             },
             "returnParameters": {
-              "id": 6839,
+              "id": 6856,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6836,
+                  "id": 6853,
                   "mutability": "mutable",
                   "name": "application",
                   "nameLocation": "582:11:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6840,
+                  "scope": 6857,
                   "src": "574:19:37",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -628,7 +628,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6835,
+                    "id": 6852,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "574:7:37",
@@ -641,12 +641,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6838,
+                  "id": 6855,
                   "mutability": "mutable",
                   "name": "valuation",
                   "nameLocation": "603:9:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6840,
+                  "scope": 6857,
                   "src": "595:17:37",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -655,7 +655,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6837,
+                    "id": 6854,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "595:7:37",
@@ -669,7 +669,7 @@
               ],
               "src": "573:40:37"
             },
-            "scope": 6882,
+            "scope": 6899,
             "src": "517:97:37",
             "stateMutability": "view",
             "virtual": false,
@@ -677,7 +677,7 @@
           },
           {
             "functionSelector": "4ad4f0f5",
-            "id": 6849,
+            "id": 6866,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -685,17 +685,17 @@
             "nameLocation": "629:12:37",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6843,
+              "id": 6860,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6842,
+                  "id": 6859,
                   "mutability": "mutable",
                   "name": "assetPrice",
                   "nameLocation": "650:10:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6849,
+                  "scope": 6866,
                   "src": "642:18:37",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -704,7 +704,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6841,
+                    "id": 6858,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "642:7:37",
@@ -719,17 +719,17 @@
               "src": "641:20:37"
             },
             "returnParameters": {
-              "id": 6848,
+              "id": 6865,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6845,
+                  "id": 6862,
                   "mutability": "mutable",
                   "name": "value",
                   "nameLocation": "702:5:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6849,
+                  "scope": 6866,
                   "src": "694:13:37",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -738,7 +738,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6844,
+                    "id": 6861,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "694:7:37",
@@ -751,12 +751,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6847,
+                  "id": 6864,
                   "mutability": "mutable",
                   "name": "feeDecimals",
                   "nameLocation": "717:11:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6849,
+                  "scope": 6866,
                   "src": "709:19:37",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -765,7 +765,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6846,
+                    "id": 6863,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "709:7:37",
@@ -779,7 +779,7 @@
               ],
               "src": "693:36:37"
             },
-            "scope": 6882,
+            "scope": 6899,
             "src": "620:110:37",
             "stateMutability": "view",
             "virtual": false,
@@ -787,7 +787,7 @@
           },
           {
             "functionSelector": "cdc0eec4",
-            "id": 6860,
+            "id": 6877,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -795,23 +795,23 @@
             "nameLocation": "745:21:37",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6850,
+              "id": 6867,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "766:2:37"
             },
             "returnParameters": {
-              "id": 6859,
+              "id": 6876,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6852,
+                  "id": 6869,
                   "mutability": "mutable",
                   "name": "mintFee",
                   "nameLocation": "809:7:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6860,
+                  "scope": 6877,
                   "src": "801:15:37",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -820,7 +820,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6851,
+                    "id": 6868,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "801:7:37",
@@ -833,12 +833,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6854,
+                  "id": 6871,
                   "mutability": "mutable",
                   "name": "loanFee",
                   "nameLocation": "826:7:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6860,
+                  "scope": 6877,
                   "src": "818:15:37",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -847,7 +847,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6853,
+                    "id": 6870,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "818:7:37",
@@ -860,12 +860,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6856,
+                  "id": 6873,
                   "mutability": "mutable",
                   "name": "restoreFee",
                   "nameLocation": "843:10:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6860,
+                  "scope": 6877,
                   "src": "835:18:37",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -874,7 +874,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6855,
+                    "id": 6872,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "835:7:37",
@@ -887,12 +887,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6858,
+                  "id": 6875,
                   "mutability": "mutable",
                   "name": "feeDecimals",
                   "nameLocation": "863:11:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6860,
+                  "scope": 6877,
                   "src": "855:19:37",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -901,7 +901,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6857,
+                    "id": 6874,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "855:7:37",
@@ -915,7 +915,7 @@
               ],
               "src": "800:75:37"
             },
-            "scope": 6882,
+            "scope": 6899,
             "src": "736:140:37",
             "stateMutability": "view",
             "virtual": false,
@@ -923,7 +923,7 @@
           },
           {
             "functionSelector": "bbaaeef6",
-            "id": 6871,
+            "id": 6888,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -931,17 +931,17 @@
             "nameLocation": "891:14:37",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6869,
+              "id": 6886,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6862,
+                  "id": 6879,
                   "mutability": "mutable",
                   "name": "cryptoName",
                   "nameLocation": "930:10:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6871,
+                  "scope": 6888,
                   "src": "916:24:37",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -950,7 +950,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 6861,
+                    "id": 6878,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "916:6:37",
@@ -963,12 +963,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6864,
+                  "id": 6881,
                   "mutability": "mutable",
                   "name": "fiatName",
                   "nameLocation": "966:8:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6871,
+                  "scope": 6888,
                   "src": "952:22:37",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -977,7 +977,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 6863,
+                    "id": 6880,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "952:6:37",
@@ -990,12 +990,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6866,
+                  "id": 6883,
                   "mutability": "mutable",
                   "name": "price",
                   "nameLocation": "994:5:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6871,
+                  "scope": 6888,
                   "src": "986:13:37",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1004,7 +1004,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6865,
+                    "id": 6882,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "986:7:37",
@@ -1017,12 +1017,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6868,
+                  "id": 6885,
                   "mutability": "mutable",
                   "name": "priceDecimals",
                   "nameLocation": "1017:13:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6871,
+                  "scope": 6888,
                   "src": "1011:19:37",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1031,7 +1031,7 @@
                     "typeString": "uint8"
                   },
                   "typeName": {
-                    "id": 6867,
+                    "id": 6884,
                     "name": "uint8",
                     "nodeType": "ElementaryTypeName",
                     "src": "1011:5:37",
@@ -1046,12 +1046,12 @@
               "src": "905:132:37"
             },
             "returnParameters": {
-              "id": 6870,
+              "id": 6887,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1046:0:37"
             },
-            "scope": 6882,
+            "scope": 6899,
             "src": "882:165:37",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -1059,7 +1059,7 @@
           },
           {
             "functionSelector": "81af6cd1",
-            "id": 6881,
+            "id": 6898,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -1067,17 +1067,17 @@
             "nameLocation": "1062:14:37",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6876,
+              "id": 6893,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6873,
+                  "id": 6890,
                   "mutability": "mutable",
                   "name": "cryptoName",
                   "nameLocation": "1101:10:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6881,
+                  "scope": 6898,
                   "src": "1087:24:37",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -1086,7 +1086,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 6872,
+                    "id": 6889,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "1087:6:37",
@@ -1099,12 +1099,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6875,
+                  "id": 6892,
                   "mutability": "mutable",
                   "name": "fiatName",
                   "nameLocation": "1137:8:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6881,
+                  "scope": 6898,
                   "src": "1123:22:37",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -1113,7 +1113,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 6874,
+                    "id": 6891,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "1123:6:37",
@@ -1128,38 +1128,38 @@
               "src": "1076:76:37"
             },
             "returnParameters": {
-              "id": 6880,
+              "id": 6897,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6879,
+                  "id": 6896,
                   "mutability": "mutable",
                   "name": "priceInfo",
                   "nameLocation": "1186:9:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6881,
+                  "scope": 6898,
                   "src": "1170:25:37",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_OcxPrice_$6505_memory_ptr",
+                    "typeIdentifier": "t_struct$_OcxPrice_$6522_memory_ptr",
                     "typeString": "struct OcxPrice"
                   },
                   "typeName": {
-                    "id": 6878,
+                    "id": 6895,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 6877,
+                      "id": 6894,
                       "name": "OcxPrice",
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 6505,
+                      "referencedDeclaration": 6522,
                       "src": "1170:8:37"
                     },
-                    "referencedDeclaration": 6505,
+                    "referencedDeclaration": 6522,
                     "src": "1170:8:37",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_OcxPrice_$6505_storage_ptr",
+                      "typeIdentifier": "t_struct$_OcxPrice_$6522_storage_ptr",
                       "typeString": "struct OcxPrice"
                     }
                   },
@@ -1168,14 +1168,14 @@
               ],
               "src": "1169:27:37"
             },
-            "scope": 6882,
+            "scope": 6899,
             "src": "1053:144:37",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 6883,
+        "scope": 6900,
         "src": "197:1003:37",
         "usedErrors": []
       }
@@ -1188,7 +1188,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.7",
-  "updatedAt": "2022-05-05T00:02:33.297Z",
+  "updatedAt": "2022-05-05T00:51:43.863Z",
   "devdoc": {
     "details": "Interface of the ERC20 standard as defined in the EIP.",
     "kind": "dev",
