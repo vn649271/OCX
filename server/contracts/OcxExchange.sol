@@ -101,7 +101,7 @@ contract OcxExchange is OcxBase {
     }
     function getAmountsOut(uint256 amountIn, address[2] memory path) public 
     onlyValidAddress(path[0]) onlyValidAddress(path[1])
-    view returns(uint256 expectedAmountOut) {
+    returns(uint256 expectedAmountOut) {
         require(amountIn > 0, "Invalid amountIn");
         require(quotes["OCAT"].vs["OCX"].decimals > 0, "Invalid OCAT/OCX quote");
         uint256 deadline = block.timestamp + 15; // using 'now' for convenience, for mainnet pass deadline from frontend!
@@ -122,16 +122,16 @@ contract OcxExchange is OcxBase {
                 tokenIn = contractAddress[CommonContracts.OCX];
             }
         }
-        // ISwapRouter.ExactInputSingleParams  memory params = ISwapRouter.ExactInputSingleParams  (
-        //     tokenIn,
-        //     tokenOut,
-        //     fee,
-        //     recipient,
-        //     deadline,
-        //     amountIn,
-        //     amountOutMinimum,
-        //     sqrtPriceLimitX96
-        // );
+        ISwapRouter.ExactInputSingleParams  memory params = ISwapRouter.ExactInputSingleParams  (
+            tokenIn,
+            tokenOut,
+            fee,
+            recipient,
+            deadline,
+            amountIn,
+            amountOutMinimum,
+            sqrtPriceLimitX96
+        );
         // expectedAmountOut = uniswapRouter.exactInputSingle(params);
         // if (path[0] == contractAddress[CommonContracts.UNI] 
         // && path[1] == contractAddress[CommonContracts.OCAT]) {
