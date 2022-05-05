@@ -102,7 +102,7 @@ class OpenchainRouter {
                             priceOracleAddress
                         );
                         let ethAudPrice = Math.round((self.ethAudPrice - 0) * 1000000);
-                        priceOracleContract.methods.setCurrencyRatio("ETH", "AUD", ethAudPrice)
+                        priceOracleContract.methods.setCryptoPrice("ETH", "AUD", ethAudPrice)
                         .send({
                             from: self.myAddress
                         }).then(ret => {
@@ -158,7 +158,7 @@ class OpenchainRouter {
                             priceOracleAddress
                         );
                         let uniAudPrice = Math.round((self.uniAudPrice - 0) * 1000000);
-                        priceOracleContract.methods.setCurrencyRatio("UNI", "AUD", uniAudPrice)
+                        priceOracleContract.methods.setCryptoPrice("UNI", "AUD", uniAudPrice)
                         .send({ from: self.myAddress }).then(ret => {
                             if (ret.error != undefined && ret.error) {
                                 console.log("Error occurred in save UNI/AUD: ", ret.data);
