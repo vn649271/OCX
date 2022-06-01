@@ -26,9 +26,11 @@ class UserAuthController {
             if (!g_userTokenMap) {
                 g_userTokenMap = {};
             }
-            allRecords.map((r, i) => {
-                g_userTokenMap[r.token] = r;
-            });
+            if (allRecords != null) {
+                allRecords.map((r, i) => {
+                    g_userTokenMap[r.token] = r;
+                });
+            }
         });
     }
 
