@@ -56,7 +56,7 @@ class AccountController {
             // !!!!!!!!!!!!! Check if the passphrase exists
             var accountInfo = await self.getById(userInfo.account);
             if (accountInfo) {
-                return resp.json({ error: -50, data: "The passphrase exists. Plese generate another one and retry." });
+                return resp.json({ error: -51, data: "The passphrase exists. Plese generate another one and retry." });
             }
             var accountPassword = PasswordGenerator.generate({
                 length: 20,
