@@ -554,15 +554,16 @@ export default class Register extends Component {
     // setTimeout(MAX_TIMEOUT, this.onConnectionTimeout);
     if (this.validate()) {
       // Perform additional validation for email-phone
-      this.setState({ loading: true });
-      validatePhoneNumber(this.state.input.phone_for_email, resp => {
-        me.setState({ loading: false });
-        if (!resp.error) { // If no error
-          me.setState({ loading: true });
-          return this.recaptchaComponent.run(this.submitData);
-        }
-        this.showMessageForEmailPhone(resp.message);
-      });
+      // this.setState({ loading: true });
+      // validatePhoneNumber(this.state.input.phone_for_email, resp => {
+      //   me.setState({ loading: false });
+      //   if (!resp.error) { // If no error
+      //     me.setState({ loading: true });
+      //     return this.recaptchaComponent.run(this.submitData);
+          return this.submitData();
+      //   }
+      //   this.showMessageForEmailPhone(resp.message);
+      // });
     } else {
       this.setState({ loading: false });
     }
